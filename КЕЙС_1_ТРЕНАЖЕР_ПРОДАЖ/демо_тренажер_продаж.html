@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный диалоговый тренажер B2B | Бюро «МЕТОДИКО»</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-sub: #f1f5f9;
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --navy: #0f172a;
+            --accent: #2563eb;
+            --gold: #b45309;
+            --gold-bg: #fef3c7;
+            --green: #15803d;
+            --green-bg: #dcfce7;
+            --red: #b91c1c;
+            --red-bg: #fee2e2;
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .trainer-wrapper {
+            max-width: 860px;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .trainer-header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 26px;
+        }
+
+        .brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--navy);
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-sop-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-sub);
+            border: 1px solid var(--border);
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sop-link:hover {
+            border-color: var(--navy);
+            background: #ffffff;
+        }
+
+        .score-pill {
+            background: var(--green-bg);
+            border: 1px solid #bbf7d0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: var(--surface-sub);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--green);
+            width: 40%;
+            transition: width 0.3s ease;
+        }
+
+        /* Body Area */
+        .trainer-body {
+            padding: 32px 36px;
+        }
+
+        /* Client Banner */
+        .client-banner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--surface-sub);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .client-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .client-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 2px;
+        }
+
+        .client-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Speech Box */
+        .speech-box {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--red);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 26px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .speech-speaker {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--red);
+            margin-bottom: 6px;
+        }
+
+        .speech-text {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--navy);
+            font-style: italic;
+        }
+
+        .prompt-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            text-align: left;
+            color: var(--text-body);
+            font-size: 14px;
+            line-height: 1.5;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background: var(--surface-sub);
+            border-color: var(--navy);
+            transform: translateY(-1px);
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--surface-sub);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--navy);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .option-btn.selected-correct {
+            border-color: var(--green);
+            background: var(--green-bg);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .option-btn.selected-correct .option-letter {
+            background: var(--green);
+            color: #ffffff;
+            border-color: var(--green);
+        }
+
+        .option-btn.selected-wrong {
+            border-color: var(--red);
+            background: var(--red-bg);
+            color: var(--red);
+        }
+
+        .option-btn.selected-wrong .option-letter {
+            background: var(--red);
+            color: #ffffff;
+            border-color: var(--red);
+        }
+
+        /* Feedback Box */
+        .feedback-box {
+            display: none;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-top: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-header {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-header.success { color: var(--green); }
+        .feedback-header.failure { color: var(--red); }
+
+        .feedback-text {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        .feedback-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+            gap: 12px;
+        }
+
+        .btn-feedback-action {
+            background: var(--navy);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-feedback-action:hover {
+            background: #1e293b;
+        }
+
+        /* Footer */
+        .trainer-footer {
+            background: var(--surface-sub);
+            border-top: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="trainer-wrapper">
+        
+        <!-- Header -->
+        <div class="trainer-header">
+            <div class="brand-box">
+                <span class="brand-icon">⚡</span>
+                <div>
+                    <div class="brand-title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+                    <div class="brand-sub">Интерактивный диалоговый тренажер переговоров • B2B Onboarding</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="регламент_онбординга_3_дня.html" class="btn-sop-link">
+                    ← Регламент онбординга
+                </a>
+                <div class="score-pill">
+                    <span>✓</span>
+                    <span id="score-val">Результат: 85 баллов</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <!-- Body -->
+        <div class="trainer-body">
+            
+            <div class="client-banner">
+                <div class="client-avatar">👔</div>
+                <div class="client-info">
+                    <h4>Респондент: Азамат Серикович</h4>
+                    <p>Директор сети учебных центров • Принимает решение об оплате регламентов</p>
+                </div>
+            </div>
+
+            <div class="speech-box">
+                <div class="speech-speaker">● Клиент озвучивает возражение:</div>
+                <div class="speech-text">
+                    «У вас слишком дорого. Нам прислали коммерческое предложение от другой студии, где обещают сделать полный пакет документации и базу знаний в два раза дешевле вашей цены».
+                </div>
+            </div>
+
+            <div class="prompt-title">Выберите наиболее профессиональный ответ менеджера:</div>
+
+            <div class="options-grid" id="options-grid">
+                
+                <div class="option-btn" onclick="submitChoice(this, 'wrong_1')">
+                    <div class="option-letter">A</div>
+                    <div>
+                        <strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? В принципе, если вы оплатите сегодня, мы можем сделать скидку 30% от нашего прайса».
+                    </div>
+                </div>
+
+                <div class="option-btn" onclick="submitChoice(this, 'wrong_2')">
+                    <div class="option-letter">B</div>
+                    <div>
+                        <strong>Спор о качестве:</strong> «Ну вы же понимаете, что дешево хорошим не бывает? У них наверняка студенты пишут, а у нас профессиональные методологи с 20-летним опытом».
+                    </div>
+                </div>
+
+                <div class="option-btn" onclick="submitChoice(this, 'correct')">
+                    <div class="option-letter">C</div>
+                    <div>
+                        <strong>Методологический перехват:</strong> «Понимаю ваше желание оптимизировать бюджет. Скажите, когда вы сравниваете предложения, вы смотрите только на цену или на то, сколько часов времени руководителя уйдет на доработку сырых документов и сколько реальных звонков сделает новичок уже на 4-й день?»
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Feedback Card -->
+            <div class="feedback-box" id="feedback-box">
+                <div class="feedback-header" id="feedback-header"></div>
+                <div class="feedback-text" id="feedback-text"></div>
+                <div class="feedback-actions">
+                    <button class="btn-feedback-action" onclick="resetDialogue()">Попробовать снова</button>
+                    <a href="регламент_онбординга_3_дня.html" class="btn-feedback-action" style="text-decoration: none; display: inline-block;">Вернуться к чек-листу</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="trainer-footer">
+            <span>Методология: Таксономия Блума (уровень «Применение» и «Оценка»)</span>
+            <span>Стандарт аттестации: 85+ баллов для допуска к базе лидов</span>
+        </div>
+
+    </div>
+
+    <script>
+        let answered = false;
+
+        function submitChoice(el, type) {
+            if (answered) return;
+            answered = true;
+
+            const grid = document.getElementById('options-grid');
+            const btns = grid.querySelectorAll('.option-btn');
+            const fbBox = document.getElementById('feedback-box');
+            const fbHeader = document.getElementById('feedback-header');
+            const fbText = document.getElementById('feedback-text');
+            const scoreVal = document.getElementById('score-val');
+            const pBar = document.getElementById('progress-bar');
+
+            if (type === 'correct') {
+                el.classList.add('selected-correct');
+                scoreVal.innerText = 'Результат: 100 баллов (Аттестован)';
+                pBar.style.width = '100%';
+                fbHeader.className = 'feedback-header success';
+                fbHeader.innerHTML = '✓ ЭТАЛОННЫЙ ОТВЕТ (+35 БАЛЛОВ). АТТЕСТАЦИЯ ПРОЙДЕНА!';
+                fbText.innerHTML = `
+                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
+                    Вы применили золотую связку <em>«Присоединение + Перевод фокуса с цены на ценность времени руководителя»</em>.<br>
+                    Клиент понимает, что дешевый документ за 50 000 ₸ заставит его самого сидеть ночами и переписывать инструкции. Вы сохранили статус эксперта, не ушли в унизительный торг и вывели диалог на критерии реальной окупаемости.
+                `;
+            } else if (type === 'wrong_1') {
+                el.classList.add('selected-wrong');
+                scoreVal.innerText = 'Результат: 50 баллов (Не аттестован)';
+                pBar.style.width = '50%';
+                fbHeader.className = 'feedback-header failure';
+                fbHeader.innerHTML = '✕ ГРУБАЯ ОШИБКА: ОБЕСЦЕНИВАНИЕ ПРОДУКТА (-35 БАЛЛОВ)';
+                fbText.innerHTML = `
+                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
+                    Моментальное предложение скидки показывает клиенту, что ваша изначальная цена была «дутой» и необоснованной. Клиент теряет доверие к экспертности бюро и продолжит продавливать вас по цене до минимума.
+                `;
+            } else {
+                el.classList.add('selected-wrong');
+                scoreVal.innerText = 'Результат: 65 баллов (Повторная сдача)';
+                pBar.style.width = '65%';
+                fbHeader.className = 'feedback-header failure';
+                fbHeader.innerHTML = '✕ ОШИБКА: ПРЯМАЯ КОНФРОНТАЦИЯ И ХВАЛИЧЕСТВО (-20 БАЛЛОВ)';
+                fbText.innerHTML = `
+                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
+                    Фраза «дешево хорошим не бывает» ставит под сомнение адекватность клиента, а критика конкурентов без доказательств выглядит непрофессионально. Клиент закрывается в оборону.
+                `;
+            }
+
+            fbBox.style.display = 'block';
+        }
+
+        function resetDialogue() {
+            answered = false;
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected-correct', 'selected-wrong');
+            });
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('score-val').innerText = 'Результат: 85 баллов';
+            document.getElementById('progress-bar').style.width = '40%';
+        }
+    </script>
+</body>
+</html>

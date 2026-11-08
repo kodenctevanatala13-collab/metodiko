@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выбор обложки тетради: Светлый академический стиль | Бюро «МЕТОДИКО»</title>
+  <style>
+    :root {
+      --bg-cream: #F7F5F0;
+      --card-bg: #FFFFFF;
+      --text-main: #1F2937;
+      --text-muted: #5A6A80;
+      --wine: #8B3A3C;
+      --wine-light: #FBF4F4;
+      --gold: #C29D59;
+      --gold-light: #F6F1E5;
+      --navy: #152238;
+      --navy-light: #F0F4FA;
+      --border-soft: #E5E0D8;
+      --border-focus: #C29D59;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+      --shadow-md: 0 10px 28px rgba(0,0,0,0.08);
+      --shadow-lg: 0 18px 42px rgba(0,0,0,0.12);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-main);
+      line-height: 1.55;
+      padding-bottom: 70px;
+    }
+
+    /* HEADER */
+    header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 22px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      padding: 4px;
+      background: #FAFAFA;
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .badge-stage {
+      background: var(--wine-light);
+      color: var(--wine);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(139, 58, 60, 0.25);
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+    .hero {
+      max-width: 1400px;
+      margin: 28px auto 20px;
+      padding: 0 32px;
+    }
+
+    .hero-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-left: 6px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 28px 36px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-pill {
+      display: inline-block;
+      background: var(--gold-light);
+      color: #7D5F26;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      color: var(--navy);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: #4A5568;
+      max-width: 1100px;
+      line-height: 1.6;
+    }
+
+    .changes-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #F1F4F9;
+    }
+
+    .change-item {
+      background: #FAF8F5;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      border-left: 3px solid var(--navy);
+    }
+
+    .change-item strong {
+      color: var(--navy);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    /* SECTION TITLE */
+    .section-head {
+      max-width: 1400px;
+      margin: 32px auto 18px;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* HYBRID 2-COLUMN GRID (PRIMARY SPOTLIGHT) */
+    .hybrids-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 980px) {
+      .hybrids-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hybrid-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 2px solid var(--border-soft);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .hybrid-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      border-color: var(--gold);
+    }
+
+    .hybrid-card.selected {
+      border-color: var(--wine);
+      box-shadow: 0 0 0 4px rgba(139, 58, 60, 0.18), var(--shadow-lg);
+    }
+
+    .card-top-tag {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      background: rgba(21, 34, 56, 0.9);
+      color: #FFFFFF;
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .card-selected-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      background: var(--wine);
+      color: #FFFFFF;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .hybrid-card.selected .card-selected-badge {
+      display: block;
+    }
+
+    .cover-visual-wrap {
+      background: #EDEAE3;
+      padding: 32px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: zoom-in;
+      overflow: hidden;
+      min-height: 480px;
+    }
+
+    .cover-img {
+      width: 100%;
+      max-width: 360px;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.18), 0 3px 10px rgba(0,0,0,0.1);
+      transition: transform 0.35s ease;
+      display: block;
+    }
+
+    .cover-visual-wrap:hover .cover-img {
+      transform: scale(1.02);
+    }
+
+    .zoom-hint {
+      position: absolute;
+      bottom: 14px;
+      right: 16px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .card-body {
+      padding: 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .variant-header {
+      margin-bottom: 16px;
+      border-bottom: 1px solid #F1F4F9;
+      padding-bottom: 14px;
+    }
+
+    .variant-badge-sub {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .variant-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+
+    .variant-desc-short {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .palette-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      background: #FAF8F5;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .swatch-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #4A5568;
+      font-weight: 600;
+    }
+
+    .swatch-circle {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .feature-list {
+      list-style: none;
+      font-size: 13px;
+      color: #374151;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+      flex: 1;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+
+    .feature-list li::before {
+      content: "✔";
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 13px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .hybrid-card.selected .feature-list li::before {
+      color: var(--wine);
+    }
+
+    .btn-select {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      background: #FFFFFF;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-select:hover {
+      background: var(--navy);
+      color: #FFFFFF;
+      border-color: var(--navy);
+    }
+
+    .hybrid-card.selected .btn-select {
+      background: var(--wine);
+      color: #FFFFFF;
+      border-color: var(--wine);
+    }
+
+    /* ACCORDION / TOGGLE FOR PREVIOUS 3 INITIAL OPTIONS */
+    .archive-section {
+      max-width: 1400px;
+      margin: 48px auto 0;
+      padding: 0 32px;
+    }
+
+    .archive-toggle-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .archive-toggle-box h3 {
+      font-size: 15px;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .archive-toggle-box p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .archive-content {
+      display: none;
+      margin-top: 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .archive-content.open {
+      display: grid;
+    }
+
+    .archive-mini-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .archive-mini-card:hover {
+      opacity: 1;
+    }
+
+    .archive-mini-img {
+      width: 100%;
+      max-width: 180px;
+      height: auto;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      cursor: zoom-in;
+    }
+
+    /* DECISION STRIP */
+    .decision-strip {
+      max-width: 1400px;
+      margin: 40px auto 0;
+      padding: 0 32px;
+    }
+
+    .decision-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-left: 6px solid var(--wine);
+      border-radius: var(--radius);
+      padding: 24px 32px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .decision-text h3 {
+      font-size: 17px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .decision-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .selected-summary-pill {
+      display: inline-block;
+      background: var(--gold-light);
+      color: var(--wine);
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 12px;
+      margin-left: 6px;
+    }
+
+    /* LIGHTBOX */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 16, 26, 0.94);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .lightbox-modal.open {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 84vh;
+      border-radius: 8px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+    }
+
+    .lightbox-caption {
+      color: #FFFFFF;
+      margin-top: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      color: #FFFFFF;
+      font-size: 36px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-block">
+        <img src="assets/Metodico_logo_gold_png.png" alt="МЕТОДИКО" class="brand-logo" onerror="this.src='assets/Metodico_logo_black_png.png'">
+        <div>
+          <div class="brand-title">Бюро стандартов «МЕТОДИКО»</div>
+          <div class="brand-subtitle">Кейс 3: Школы и Учителя • Программа аттестации «Ұстаз» & Тетрадь ученика</div>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="badge-stage">Светлый академический гибрид</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-card">
+      <span class="hero-pill">Точная доработка под ваши требования</span>
+      <h1 class="hero-title">Синтез Варианта 1 и Варианта 2: Светлый тон, академизм и ноль пафоса</h1>
+      <p class="hero-desc">
+        Мы полностью переработали концепцию по вашему замечанию: убрали тяжелый темный бархат и вычурное массивное золото, 
+        но сохранили фундаментальную академическую строгость и добавили легкий светлый фон со скандинавской чистотой. 
+        Представляем два выверенных варианта этого гибрида для вашего утверждения.
+      </p>
+
+      <div class="changes-strip">
+        <div class="change-item">
+          <strong>1. Светлый фон вместо темно-синего:</strong>
+          Теплый матовый айвори / хлопок ручной работы — приятно глазу, идеально для письма и заметок.
+        </div>
+        <div class="change-item">
+          <strong>2. Лаконичная академическая эмблема:</strong>
+          Вместо пышного герба — тонкая геометрия открытой книги и компаса интеллекта.
+        </div>
+        <div class="change-item">
+          <strong>3. Четкая персонализация ученика:</strong>
+          Аккуратный блок внизу: Фамилия, Класс (5–9), Школа + гриф аттестации «Ұстаз».
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION HEAD -->
+  <div class="section-head">
+    <div>
+      <h2 class="section-title">Два обновленных гибридных варианта на выбор</h2>
+      <p class="section-subtitle">Кликните на изображение, чтобы раскрыть его на весь экран, или нажмите «Выбрать вариант»</p>
+    </div>
+  </div>
+
+  <!-- HYBRIDS SPOTLIGHT GRID -->
+  <main class="hybrids-grid">
+
+    <!-- HYBRID A: CAMBRIDGE NAVY LIGHT -->
+    <div class="hybrid-card" id="card-ha">
+      <div class="card-top-tag">Гибрид А • Cambridge Light</div>
+      <div class="card-selected-badge">✓ Выбран вами</div>
+
+      <div class="cover-visual-wrap" onclick="openLightbox('assets/cover_hybrid_cambridge_navy.jpg', 'Гибрид А: Университетский Кембридж / Гарвард (Светлый айвори + глубокий Navy & тонкое золото)')">
+        <img src="assets/cover_hybrid_cambridge_navy.jpg" alt="Гибрид А: Кембриджский светлый академический стиль" class="cover-img">
+        <div class="zoom-hint">🔍 Увеличить на весь экран</div>
+      </div>
+
+      <div class="card-body">
+        <div class="variant-header">
+          <div class="variant-badge-sub">Вариант 1.1 • Университетский канон</div>
+          <h3 class="variant-title">Кембриджский академический светлый</h3>
+          <p class="variant-desc-short">Айвори, глубокий чернильный Navy и тончайшая золотая нить</p>
+        </div>
+
+        <div class="palette-row">
+          <div class="swatch-item"><span class="swatch-circle" style="background: #F9F7F2;"></span> Айвори #F9F7F2</div>
+          <div class="swatch-item"><span class="swatch-circle" style="background: #152238;"></span> Чернила Navy #152238</div>
+          <div class="swatch-item"><span class="swatch-circle" style="background: #C29D59;"></span> Золотая нить #C29D59</div>
+        </div>
+
+        <ul class="feature-list">
+          <li><strong>Светлый фон без тяжести:</strong> Премиальная текстура благородной матовой бумаги для академических тетрадей.</li>
+          <li><strong>Университетская строгость:</strong> Тонкая двойная рамка в глубоком синем цвете без вычурных завитков и корон.</li>
+          <li><strong>Сдержанный знак науки:</strong> Минималистичный графический символ открытой книги и ориентира мышления.</li>
+          <li><strong>Практичность:</strong> Четко читаемые поля для ФИО ученика, школы и класса, утвержденные для школ РК.</li>
+        </ul>
+
+        <button class="btn-select" onclick="selectHybrid('Гибрид А (Кембридж Navy Light)', 'card-ha')">
+          <span>Выбрать Гибрид А (Кембридж Navy)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- HYBRID B: METODIKO WINE & BRONZE -->
+    <div class="hybrid-card" id="card-hb">
+      <div class="card-top-tag">Гибрид Б • METODIKO Edition</div>
+      <div class="card-selected-badge">✓ Выбран вами</div>
+
+      <div class="cover-visual-wrap" onclick="openLightbox('assets/cover_hybrid_metodiko_wine.jpg', 'Гибрид Б: Академический МЕТОДИКО (Алебастр + сдержанный бордо-вино & матовая бронза)')">
+        <img src="assets/cover_hybrid_metodiko_wine.jpg" alt="Гибрид Б: Фирменный стиль МЕТОДИКО" class="cover-img">
+        <div class="zoom-hint">🔍 Увеличить на весь экран</div>
+      </div>
+
+      <div class="card-body">
+        <div class="variant-header">
+          <div class="variant-badge-sub">Вариант 1.2 • Фирменная эстетика</div>
+          <h3 class="variant-title">Академический стандарт «МЕТОДИКО»</h3>
+          <p class="variant-desc-short">Алебастр, сдержанный благородный бордо и матовая бронза</p>
+        </div>
+
+        <div class="palette-row">
+          <div class="swatch-item"><span class="swatch-circle" style="background: #FAF8F5;"></span> Алебастр #FAF8F5</div>
+          <div class="swatch-item"><span class="swatch-circle" style="background: #8B3A3C;"></span> Вино МЕТОДИКО #8B3A3C</div>
+          <div class="swatch-item"><span class="swatch-circle" style="background: #B88E4B;"></span> Матовая бронза #B88E4B</div>
+        </div>
+
+        <ul class="feature-list">
+          <li><strong>Сквозная узнаваемость бренда:</strong> Полная гармония с официальным фирменным стилем Бюро стандартов «МЕТОДИКО».</li>
+          <li><strong>Кристалл интеллекта:</strong> Лаконичный геометрический полигон Soft Skills в центре в паре с книгой знаний.</li>
+          <li><strong>Меньше официальной сухости:</strong> Теплый оттенок бордо добавляет педагогического тепла (канон «педагогики сердца»).</li>
+          <li><strong>Престиж аттестации:</strong> Смотрится дорого, современно и полностью готово к тиражу в типографии.</li>
+        </ul>
+
+        <button class="btn-select" onclick="selectHybrid('Гибрид Б (МЕТОДИКО Wine & Bronze)', 'card-hb')">
+          <span>Выбрать Гибрид Б (МЕТОДИКО Wine)</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- DECISION STRIP -->
+  <div class="decision-strip">
+    <div class="decision-box">
+      <div class="decision-text">
+        <h3>Текущий выбор: <span id="selected-label" class="selected-summary-pill">Ещё не выбран</span></h3>
+        <p>Выберите вариант выше и напишите в чате: <strong>«Утверждаю Гибрид А»</strong> или <strong>«Утверждаю Гибрид Б»</strong>, и мы сразу начнем сборку Кейса 3!</p>
+      </div>
+      <div>
+        <button class="btn-select" style="background: var(--navy); color: #FFF; border: none; padding: 12px 24px;" onclick="announceChoice()">
+          Подтвердить выбор в чат
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHIVE SECTION (PREVIOUS 3 VARIANTS FOR COMPARISON) -->
+  <section class="archive-section">
+    <div class="archive-toggle-box" onclick="toggleArchive()">
+      <div>
+        <h3>📁 Посмотреть первые 3 черновых концепта для сравнения</h3>
+        <p>Нажмите, чтобы развернуть предыдущие первоначальные варианты (включая первоначальный темный Вариант 1)</p>
+      </div>
+      <span id="archive-arrow" style="font-size: 18px; color: var(--navy);">▼</span>
+    </div>
+
+    <div class="archive-content" id="archive-content">
+      <div class="archive-mini-card">
+        <img src="assets/cover_variant1_british.jpg" class="archive-mini-img" onclick="openLightbox('assets/cover_variant1_british.jpg', 'Прежний Вариант 1: Темный классический Navy')" alt="Вариант 1">
+        <h4 style="font-size: 13px; color: var(--navy);">Прежний Вариант 1</h4>
+        <p style="font-size: 11px; color: #666;">Темно-синий бархат, тяжелое золото (слишком пафосно)</p>
+      </div>
+
+      <div class="archive-mini-card">
+        <img src="assets/cover_variant2_minimal.jpg" class="archive-mini-img" onclick="openLightbox('assets/cover_variant2_minimal.jpg', 'Вариант 2: Скандинавский минимализм')" alt="Вариант 2">
+        <h4 style="font-size: 13px; color: var(--navy);">Вариант 2</h4>
+        <p style="font-size: 11px; color: #666;">Скандинавско-сингапурский минимализм</p>
+      </div>
+
+      <div class="archive-mini-card">
+        <img src="assets/cover_variant3_kazakh.jpg" class="archive-mini-img" onclick="openLightbox('assets/cover_variant3_kazakh.jpg', 'Вариант 3: Премиальный Казахстан')" alt="Вариант 3">
+        <h4 style="font-size: 13px; color: var(--navy);">Вариант 3</h4>
+        <p style="font-size: 11px; color: #666;">Изумруд и современный орнамент</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX MODAL -->
+  <div class="lightbox-modal" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close">&times;</button>
+    <img src="" alt="Full view" class="lightbox-img" id="lightbox-img">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+
+  <script>
+    let currentSelected = null;
+
+    function selectHybrid(name, cardId) {
+      currentSelected = name;
+      document.querySelectorAll('.hybrid-card').forEach(c => c.classList.remove('selected'));
+      const card = document.getElementById(cardId);
+      if (card) {
+        card.classList.add('selected');
+      }
+      document.getElementById('selected-label').textContent = name;
+      document.querySelector('.decision-strip').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleArchive() {
+      const content = document.getElementById('archive-content');
+      const arrow = document.getElementById('archive-arrow');
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        arrow.textContent = '▼';
+      } else {
+        content.classList.add('open');
+        arrow.textContent = '▲';
+      }
+    }
+
+    function openLightbox(src, caption) {
+      const modal = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const cap = document.getElementById('lightbox-caption');
+      img.src = src;
+      cap.textContent = caption;
+      modal.classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    function announceChoice() {
+      if (!currentSelected) {
+        alert('Пожалуйста, сначала кликните на кнопку «Выбрать» под одним из двух гибридных вариантов.');
+        return;
+      }
+      alert('Отлично! Вы выбрали: ' + currentSelected + '.\n\nНапишите об этом в чате, чтобы мы приступили к верстке Кейса 3!');
+    }
+  </script>
+</body>
+</html>

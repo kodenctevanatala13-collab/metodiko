@@ -1,0 +1,2576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бюро стандартов «МЕТОДИКО» | Корпоративные симуляторы и УМКД ГОСО 2026</title>
+  <meta name="description" content="Бюро академических и корпоративных стандартов «МЕТОДИКО» (ТОО «Метод и Ко»). Интерактивные ИИ-симуляторы, регламенты онбординга, разработка УМКД по ГОСО 2026 и нормоконтроль программ в Казахстане и СНГ.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Бюро стандартов «МЕТОДИКО» | Корпоративные симуляторы и ГОСО 2026">
+  <meta property="og:description" content="Исключаем человеческий фактор и ошибки персонала: интерактивные тренажеры онбординга, эталонные УМКД и нормоконтроль образовательных программ.">
+  <meta property="og:type" content="website">
+
+  <!-- Schema.org Microdata -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Бюро академических и корпоративных стандартов «МЕТОДИКО»",
+    "alternateName": "ТОО «Метод и Ко»",
+    "url": "https://coursemaker.kz",
+    "logo": "https://coursemaker.kz/assets/Metodico_logo_gold.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Алматы",
+      "addressCountry": "KZ"
+    },
+    "description": "Разработка корпоративных диалоговых симуляторов, ввод в должность за 72 часа, создание УМКД и силлабусов по ГОСО 2026, аттестация программ «Ұстаз» и аудит курсов.",
+    "priceRange": "75000₸ - 1200000₸"
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg-ivory: #F9F7F2;
+      --bg-ivory-light: #FFFFFF;
+      --bg-navy: #152238;
+      --bg-navy-dark: #0D1624;
+      --bg-navy-light: #1E2D4A;
+      --gold: #C29D59;
+      --gold-hover: #D8B26E;
+      --gold-subtle: rgba(194, 157, 89, 0.12);
+      --gold-border: rgba(194, 157, 89, 0.35);
+      --text-dark: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #F8FAFC;
+      --text-gold: #E5C98C;
+      --border-light: #E2E8F0;
+      --shadow-sm: 0 2px 8px rgba(21, 34, 56, 0.06);
+      --shadow-md: 0 10px 25px rgba(21, 34, 56, 0.08);
+      --shadow-lg: 0 20px 40px rgba(21, 34, 56, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-ivory);
+      color: var(--text-dark);
+      line-height: 1.6;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ПРЕМИАЛЬНЫЕ ЗОЛОТЫЕ ВЕКТОРНЫЕ ИКОНКИ (SVG) */
+    .gold-icon {
+      width: 22px;
+      height: 22px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .gold-icon-lg {
+      width: 28px;
+      height: 28px;
+    }
+    .gold-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .gold-icon-box:hover {
+      background: rgba(194, 157, 89, 0.2);
+      border-color: var(--gold);
+    }
+
+    /* ТИПОГРАФИКА */
+    h1, h2, h3, h4 {
+      color: var(--bg-navy);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .serif-title {
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: -0.5px;
+    }
+    p { color: #334155; }
+
+    /* ЗАКРЕПЛЕННАЯ СИНЯЯ ШАПКА С ЗОЛОТОМ */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg-navy);
+      border-bottom: 2px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(13, 22, 36, 0.4);
+      padding: 12px 0;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Навигация в темной шапке */
+    nav.nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    nav.nav-links a {
+      text-decoration: none;
+      color: #F8FAFC;
+      font-size: 14px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    nav.nav-links a:hover {
+      color: var(--gold);
+    }
+
+    /* Действия в шапке */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Переключатель языка (KZ | RU) */
+    .lang-switcher {
+      display: flex;
+      background: var(--bg-navy-dark);
+      border: 1px solid var(--gold-border);
+      border-radius: 20px;
+      padding: 3px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .lang-btn {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 16px;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .lang-btn.active {
+      background: var(--gold);
+      color: var(--bg-navy-dark);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Кнопки */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--bg-navy-dark);
+      box-shadow: 0 4px 14px rgba(194, 157, 89, 0.35);
+    }
+    .btn-gold:hover {
+      background: var(--gold-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(194, 157, 89, 0.45);
+    }
+    .btn-navy {
+      background: var(--bg-navy);
+      color: #FFFFFF;
+    }
+    .btn-navy:hover {
+      background: var(--bg-navy-light);
+      color: var(--text-gold);
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: var(--bg-navy);
+      color: var(--bg-navy);
+    }
+    .btn-outline:hover {
+      background: var(--bg-navy);
+      color: #FFFFFF;
+    }
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    /* БЛОК 1: HERO СЕКЦИЯ */
+    .hero-section {
+      padding: 65px 0 40px;
+      position: relative;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #8C6A28;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: 44px;
+      color: var(--bg-navy);
+      margin-bottom: 20px;
+      max-width: 980px;
+      line-height: 1.2;
+    }
+    .hero-subtitle {
+      font-size: 19px;
+      color: #475569;
+      max-width: 860px;
+      margin-bottom: 32px;
+      line-height: 1.55;
+    }
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 45px;
+    }
+
+    /* МАРШРУТИЗАТОР 4 СЕГМЕНТОВ */
+    .segment-router-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 40px;
+    }
+    .router-heading {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .segment-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .segment-card {
+      background: var(--bg-ivory);
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      padding: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .segment-card:hover {
+      border-color: var(--gold);
+      background: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .segment-card:hover .gold-icon-box {
+      background: var(--gold);
+    }
+    .segment-card:hover .gold-icon-box .gold-icon {
+      stroke: var(--bg-navy-dark);
+    }
+    .segment-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--bg-navy);
+      margin: 12px 0 4px;
+    }
+    .segment-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .segment-link-text {
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* 4 Маркера авторитета */
+    .badges-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border-light);
+    }
+    .badge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .badge-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      font-family: Georgia, serif;
+    }
+    .badge-text {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* СЕКЦИИ ОБЩИЙ СТИЛЬ */
+    section {
+      padding: 70px 0;
+    }
+    .section-header {
+      margin-bottom: 45px;
+    }
+    .section-tag {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 32px;
+      color: var(--bg-navy);
+      margin-bottom: 12px;
+    }
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 720px;
+    }
+
+    /* БЛОК 2: ДЕМО-СИМУЛЯТОР */
+    .simulator-section {
+      background: var(--bg-navy);
+      color: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 55px 45px;
+      box-shadow: var(--shadow-lg);
+      margin: 40px auto;
+    }
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--bg-navy-light);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .sim-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(194, 157, 89, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--text-gold);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .sim-title {
+      color: #FFFFFF;
+      font-size: 26px;
+    }
+    .sim-score-box {
+      background: var(--bg-navy-dark);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+      text-align: right;
+    }
+    .sim-score-num {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+    .sim-score-label {
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+    }
+
+    .sim-dialog-box {
+      background: var(--bg-navy-dark);
+      border: 1px solid #334155;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 25px;
+    }
+    .client-message-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .client-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #1E293B;
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .client-bubble {
+      background: #1E293B;
+      border-radius: 12px 12px 12px 2px;
+      padding: 16px 20px;
+      max-width: 750px;
+      border: 1px solid #334155;
+    }
+    .client-role {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .client-text {
+      font-size: 15px;
+      color: #F1F5F9;
+      font-style: italic;
+    }
+
+    .options-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      color: #E2E8F0;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .option-btn:hover {
+      border-color: var(--gold);
+      background: #27354E;
+    }
+    .opt-letter {
+      background: rgba(255,255,255,0.08);
+      color: var(--gold);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    .sim-verdict {
+      display: none;
+      padding: 18px;
+      border-radius: var(--radius-sm);
+      margin-top: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    .verdict-success {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid #22C55E;
+      color: #86EFAC;
+    }
+    .verdict-fail {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid #EF4444;
+      color: #FCA5A5;
+    }
+    .sim-reset-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* БЛОК 3: ВИТРИНА 4 РЕШЕНИЙ */
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .solution-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .solution-card:hover {
+      border-color: var(--gold);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+    .card-num {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #E2E8F0;
+      font-family: Georgia, serif;
+    }
+    .card-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #8C6A28;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-size: 22px;
+      color: var(--bg-navy);
+      margin-bottom: 12px;
+      max-width: 85%;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #475569;
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .card-feature-list {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+    .card-feature-list li {
+      font-size: 13px;
+      color: #334155;
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .card-feature-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C29D59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--bg-navy);
+    }
+    .card-price span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    /* БЛОК 4: РЕПОЗИТОРИЙ СТАТЕЙ */
+    .articles-section {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .article-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .art-tab-btn {
+      padding: 10px 18px;
+      background: var(--bg-ivory);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .art-tab-btn:hover {
+      color: var(--bg-navy);
+      border-color: var(--gold);
+    }
+    .art-tab-btn.active {
+      background: var(--bg-navy);
+      color: var(--text-gold);
+      border-color: var(--bg-navy);
+    }
+    .art-tab-btn.active .gold-icon {
+      stroke: var(--text-gold);
+    }
+    .article-item {
+      display: none;
+      background: var(--bg-ivory);
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      padding: 35px;
+    }
+    .article-item.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .art-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .art-title {
+      font-size: 24px;
+      color: var(--bg-navy);
+      margin-bottom: 16px;
+    }
+    .art-body {
+      font-size: 15px;
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .art-quote {
+      border-left: 3px solid var(--gold);
+      padding: 12px 18px;
+      background: rgba(194, 157, 89, 0.08);
+      font-style: italic;
+      margin: 18px 0;
+      color: #1E293B;
+      border-radius: 0 6px 6px 0;
+    }
+    .art-cta-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* БЛОК 5: РАСШИРЕННЫЙ КАЛЬКУЛЯТОР */
+    .calc-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 35px;
+      box-shadow: var(--shadow-sm);
+    }
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 35px;
+    }
+
+    .calc-category-block {
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+      background: #FFFFFF;
+      transition: var(--transition);
+    }
+    .calc-category-block:hover {
+      border-color: #CBD5E1;
+    }
+    .calc-cat-header {
+      background: var(--bg-ivory);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .calc-cat-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--bg-navy);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .calc-cat-badge {
+      font-size: 11px;
+      background: rgba(21, 34, 56, 0.08);
+      color: var(--bg-navy);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .calc-cat-arrow {
+      transition: transform 0.2s ease;
+    }
+    .calc-cat-header.active .calc-cat-arrow {
+      transform: rotate(180deg);
+    }
+    .calc-cat-body {
+      display: none;
+      padding: 12px 18px 6px;
+      background: #FFFFFF;
+      border-top: 1px solid #E2E8F0;
+    }
+    .calc-cat-body.open {
+      display: block;
+    }
+
+    .calc-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed #F1F5F9;
+      cursor: pointer;
+    }
+    .calc-item-row:last-child {
+      border-bottom: none;
+    }
+    .calc-item-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 75%;
+    }
+    .calc-item-checkbox {
+      margin-top: 4px;
+      width: 17px;
+      height: 17px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .calc-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--bg-navy);
+      line-height: 1.35;
+    }
+    .calc-item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .calc-item-price {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bg-navy);
+      white-space: nowrap;
+    }
+
+    .calc-proposal-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .calc-summary-card {
+      background: var(--bg-navy);
+      color: #FFFFFF;
+      border-radius: var(--radius-md);
+      padding: 26px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gold-border);
+    }
+    .summary-heading {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .summary-total {
+      font-size: 36px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      font-family: Georgia, serif;
+    }
+    .summary-time {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-bottom: 16px;
+    }
+    .summary-list {
+      list-style: none;
+      margin-bottom: 18px;
+      border-top: 1px solid var(--bg-navy-light);
+      padding-top: 14px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .summary-list li {
+      font-size: 12px;
+      color: #CBD5E1;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+    .summary-list li span:first-child {
+      max-width: 68%;
+    }
+    .summary-disclaimer {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.45;
+      background: rgba(0,0,0,0.25);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border-left: 2px solid var(--gold);
+      margin-top: 14px;
+    }
+
+    .calc-form-card {
+      background: var(--bg-ivory);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 22px;
+    }
+    .form-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bg-navy);
+      margin-bottom: 12px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 13px;
+      border: 1px solid #CBD5E1;
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      color: var(--text-dark);
+      font-family: inherit;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    /* БЛОК 6: АВТОРИТЕТ */
+    .shield-section {
+      background: var(--bg-ivory);
+    }
+    .shield-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .shield-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 35px;
+      box-shadow: var(--shadow-sm);
+    }
+    .shield-item {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .shield-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--bg-navy);
+      margin-bottom: 4px;
+    }
+    .shield-text {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    /* МОДАЛЬНОЕ ОКНО ПЕРВИЧНОГО КП */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 22, 36, 0.75);
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-sheet {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 680px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      border: 2px solid var(--gold);
+      padding: 35px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .modal-header-doc {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .modal-status-badge {
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold);
+      color: #8C6A28;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* ПОДВАЛ */
+    footer {
+      background: var(--bg-navy-dark);
+      color: #94A3B8;
+      padding: 50px 0 30px;
+      border-top: 1px solid #1E293B;
+      font-size: 13px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 40px;
+      margin-bottom: 35px;
+    }
+    .footer-brand {
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .footer-nav-title {
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 8px;
+    }
+    .footer-links a {
+      color: #94A3B8;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+    .footer-bottom {
+      border-top: 1px solid #1E293B;
+      padding-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* АДАПТИВНОСТЬ */
+    @media (max-width: 992px) {
+      .segment-grid { grid-template-columns: repeat(2, 1fr); }
+      .badges-row { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .solutions-grid { grid-template-columns: 1fr; }
+      .calc-layout { grid-template-columns: 1fr; }
+      .shield-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      nav.nav-links { display: none; }
+      .hero-title { font-size: 32px; }
+    }
+    @media (max-width: 600px) {
+      .segment-grid { grid-template-columns: 1fr; }
+      .badges-row { grid-template-columns: 1fr; }
+      .simulator-section { padding: 30px 20px; }
+      .hero-title { font-size: 26px; }
+      .hero-subtitle { font-size: 16px; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ЗАКРЕПЛЕННАЯ СИНЯЯ ШАПКА С ЗОЛОТЫМ ЛОГОТИПОМ -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="brand-block">
+        <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="brand-logo-img">
+        <div class="brand-title">
+          <span>МЕТОДИКО</span>
+          <span class="brand-subtitle" data-i18n="header_sub">БЮРО СТАНДАРТОВ | ТОО «МЕТОД И КО»</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#solutions" data-i18n="nav_solutions">Решения</a>
+        <a href="#simulator" data-i18n="nav_simulator">Демо-симулятор</a>
+        <a href="#articles" data-i18n="nav_articles">База знаний</a>
+        <a href="#calculator" data-i18n="nav_calc">Калькулятор сметы</a>
+        <a href="#shield" data-i18n="nav_shield">О бюро</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА (KZ | RU) -->
+        <div class="lang-switcher" onclick="toggleLanguage()">
+          <button class="lang-btn" id="btn-kz">KZ</button>
+          <button class="lang-btn active" id="btn-ru">RU</button>
+        </div>
+
+        <a href="#calculator" class="btn btn-gold btn-sm" data-i18n="btn_request_cp">
+          Запросить расчет КП
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- БЛОК 1: HERO СЕКЦИЯ -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-tag">
+          <svg class="gold-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span data-i18n="hero_tag">Нормоконтроль программ и корпоративное обучение</span>
+        </div>
+
+        <h1 class="hero-title serif-title" data-i18n="hero_title">
+          Исключаем человеческий фактор и ошибки персонала: от корпоративных симуляторов до аттестационных пакетов ГОСО
+        </h1>
+
+        <p class="hero-subtitle" data-i18n="hero_sub">
+          Сокращаем ввод сотрудников в строй с 60 до 3 дней через интерактивные ИИ-тренажеры и разрабатываем эталонные УМКД по ГОСО 2026. 24 года стажа в высшей школе и академического нормоконтроля на защите вашего бизнеса и репутации.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#simulator" class="btn btn-gold" data-i18n="hero_btn_sim">
+            ▶ Протестировать симулятор (60 сек)
+          </a>
+          <a href="#calculator" class="btn btn-outline" data-i18n="hero_btn_calc">
+            Рассчитать смету в ₸
+          </a>
+        </div>
+
+        <!-- МАРШРУТИЗАТОР 4 СЕГМЕНТОВ -->
+        <div class="segment-router-wrap">
+          <div class="router-heading">
+            <svg class="gold-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+            <span data-i18n="router_title">Выберите вашу задачу (решения разработаны под ваш профиль):</span>
+          </div>
+          <div class="segment-grid">
+            <a href="#case-b2b" class="segment-card">
+              <div>
+                <div class="gold-icon-box">
+                  <svg class="gold-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+                <div class="segment-name" data-i18n="seg_1_name">Бизнес и Отделы продаж</div>
+                <div class="segment-desc" data-i18n="seg_1_desc">Онбординг за 72 часа, диалоговые тренажеры, защита от сливов базы.</div>
+              </div>
+              <div class="segment-link-text" data-i18n="seg_link">Смотреть решение →</div>
+            </a>
+
+            <a href="#case-edu" class="segment-card">
+              <div>
+                <div class="gold-icon-box">
+                  <svg class="gold-icon" viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path><path d="M8 14v4"></path><path d="M12 14v4"></path><path d="M16 14v4"></path></svg>
+                </div>
+                <div class="segment-name" data-i18n="seg_2_name">Вузы и Колледжи (ТиПО)</div>
+                <div class="segment-desc" data-i18n="seg_2_desc">УМКД по ГОСО 2026, силлабусы, 100 тестов для Platonus и Moodle.</div>
+              </div>
+              <div class="segment-link-text" data-i18n="seg_link">Смотреть решение →</div>
+            </a>
+
+            <a href="#case-schools" class="segment-card">
+              <div>
+                <div class="gold-icon-box">
+                  <svg class="gold-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div class="segment-name" data-i18n="seg_3_name">Частные школы и Педагоги</div>
+                <div class="segment-desc" data-i18n="seg_3_desc">Программа «Ұстаз» для аттестации, авторские тетради-комиксы.</div>
+              </div>
+              <div class="segment-link-text" data-i18n="seg_link">Смотреть решение →</div>
+            </a>
+
+            <a href="#case-edtech" class="segment-card">
+              <div>
+                <div class="gold-icon-box">
+                  <svg class="gold-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                </div>
+                <div class="segment-name" data-i18n="seg_4_name">Онлайн-школы и EdTech</div>
+                <div class="segment-desc" data-i18n="seg_4_desc">Методологический аудит, доходимость 85%+, сборка курсов из аудио.</div>
+              </div>
+              <div class="segment-link-text" data-i18n="seg_link">Смотреть решение →</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 МАРКЕРА АВТОРИТЕТА -->
+        <div class="badges-row">
+          <div class="badge-item">
+            <div class="badge-num">24</div>
+            <div class="badge-text" data-i18n="badge_1">года стажа в высшей школе и управлении образовательными процессами</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-num">ГОСО</div>
+            <div class="badge-text" data-i18n="badge_2">100% соблюдение стандартов МНВО РК, IAAR, IQAA и систем Platonus</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-num">72ч</div>
+            <div class="badge-text" data-i18n="badge_3">квалификационный норматив допуска к работе через цифровой тренажер</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-num">ТОО</div>
+            <div class="badge-text" data-i18n="badge_4">официальный договор «Метод и Ко» (г. Алматы), безналичный расчет, акты, NDA</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- БЛОК 2: ДЕМО-СИМУЛЯТОР -->
+    <section id="simulator">
+      <div class="container">
+        <div class="simulator-section">
+          
+          <div class="sim-header">
+            <div>
+              <div class="sim-badge" data-i18n="sim_badge">ИНТЕРАКТИВНЫЙ ТЕСТ-ДРАЙВ ТЕХНОЛОГИИ</div>
+              <h2 class="sim-title serif-title" data-i18n="sim_title">Живой диалоговый тренажер: отработка сложного возражения</h2>
+            </div>
+            <div class="sim-score-box">
+              <div class="sim-score-num" id="user-score">0 / 100</div>
+              <div class="sim-score-label" data-i18n="sim_score_label">Балл допуска к клиентам</div>
+            </div>
+          </div>
+
+          <div class="sim-dialog-box">
+            <div class="client-message-card">
+              <div class="client-avatar">
+                <svg class="gold-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <div class="client-bubble">
+                <div class="client-role" data-i18n="sim_client_role">Потенциальный клиент (B2B заказчик, г. Астана):</div>
+                <div class="client-text" id="sim-prompt-text" data-i18n="sim_prompt">
+                  «Здравствуйте. Мы посмотрели ваше коммерческое предложение. Честно говоря, для нас это қымбат (дорого), и мы уже 3 года работаем с другим подрядчиком. Зачем нам что-то менять?»
+                </div>
+              </div>
+            </div>
+
+            <div class="options-title" data-i18n="sim_options_title">Выберите реплику менеджера для ответа:</div>
+
+            <button class="option-btn" onclick="checkAnswer(1)">
+              <span class="opt-letter">A</span>
+              <span id="opt-1-text" data-i18n="opt_1">«Ну у нас зато качество намного выше, а те подрядчики наверняка работают по старинке. Давайте мы вам скидку 10% сделаем?»</span>
+            </button>
+
+            <button class="option-btn" onclick="checkAnswer(2)">
+              <span class="opt-letter">B</span>
+              <span id="opt-2-text" data-i18n="opt_2">«Понимаю вас, 3 года партнерства — это серьезный срок и доверие. Мы не предлагаем отказываться от них. Скажите, если мы покажем, где сейчас теряется 25% времени сотрудников на регламентах, вы будете готовы сравнить цифры без обязательств?»</span>
+            </button>
+
+            <button class="option-btn" onclick="checkAnswer(3)">
+              <span class="opt-letter">C</span>
+              <span id="opt-3-text" data-i18n="opt_3">«Если дорого, тогда ничем не можем помочь. Наши стандарты стоят своих денег.»</span>
+            </button>
+
+            <div id="sim-verdict-box" class="sim-verdict"></div>
+          </div>
+
+          <div class="sim-reset-row">
+            <span style="font-size: 13px; color: #94A3B8;" data-i18n="sim_footer_note">
+              * В боевой версии тренажера закладывается до 40 сценариев вашей ниши с аудио-озвучкой и протоколом допуска.
+            </span>
+            <a href="#calculator" class="btn btn-gold btn-sm" data-i18n="sim_order_btn">
+              Заказать тренажер под свой бизнес
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- БЛОК 3: ВИТРИНА 4 ГОТОВЫХ РЕШЕНИЙ -->
+    <section id="solutions">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag" data-i18n="sol_tag">СТАНДАРТЫ И РЕШЕНИЯ</div>
+          <h2 class="section-title serif-title" data-i18n="sol_title">Четыре направления высшего нормоконтроля «МЕТОДИКО»</h2>
+          <p class="section-subtitle" data-i18n="sol_sub">
+            Готовые методические комплексы и программные симуляторы, разработанные под ключ для реального сектора и образования.
+          </p>
+        </div>
+
+        <div class="solutions-grid">
+          
+          <!-- Решение 1: B2B Онбординг -->
+          <div class="solution-card" id="case-b2b">
+            <span class="card-num">01</span>
+            <div>
+              <span class="card-badge" data-i18n="b2b_badge">КОРПОРАТИВНЫЙ СЕКТОР</span>
+              <h3 class="card-title" data-i18n="b2b_title">Онбординг менеджеров за 72 часа и диалоговые тренажеры</h3>
+              <p class="card-desc" data-i18n="b2b_desc">
+                Переводим регламенты и книги продаж в интерактивный формат. Новичок тренируется на симуляторе возражений до выхода к реальным клиентам.
+              </p>
+              <ul class="card-feature-list">
+                <li data-i18n="b2b_f1">Сокращение стажировки с 4 недель до 3 рабочих дней</li>
+                <li data-i18n="b2b_f2">Высвобождение до 35 часов личного времени руководителя</li>
+                <li data-i18n="b2b_f3">Автономный веб-симулятор сценариев и стандарт допуска</li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <div class="card-price"><span data-i18n="from_price">от</span> 450 000 ₸ <span data-i18n="price_sub">/ система</span></div>
+              <a href="КЕЙС_1_ТРЕНАЖЕР_ПРОДАЖ/демо_тренажер_продаж.html" target="_blank" class="btn btn-navy btn-sm" data-i18n="btn_demo">
+                Открыть эталон →
+              </a>
+            </div>
+          </div>
+
+          <!-- Решение 2: Вузы и Колледжи -->
+          <div class="solution-card" id="case-edu">
+            <span class="card-num">02</span>
+            <div>
+              <span class="card-badge" data-i18n="edu_badge">ВЫСШАЯ ШКОЛА И КОЛЛЕДЖИ</span>
+              <h3 class="card-title" data-i18n="edu_title">Эталонные УМКД/ПОӘК и силлабусы по ГОСО 2026</h3>
+              <p class="card-desc" data-i18n="edu_desc">
+                Полный аккредитационный пакет документов под требования МНВО РК, IAAR и IQAA. Базы из 100 тестов, готовые к импорту в Platonus и Moodle.
+              </p>
+              <ul class="card-feature-list">
+                <li data-i18n="edu_f1">Двуязычные пакеты (казахский и русский языки)</li>
+                <li data-i18n="edu_f2">Интерактивная панель запуска силлабуса и литературы</li>
+                <li data-i18n="edu_f3">100% прохождение нормоконтроля Учебно-методического совета</li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <div class="card-price"><span data-i18n="from_price">от</span> 120 000 ₸ <span data-i18n="price_sub_disc">/ дисциплина</span></div>
+              <a href="КЕЙС_2_ЭТАЛОННЫЙ_УМКД_ГОСО_2026/демо_витрина_умкд.html" target="_blank" class="btn btn-navy btn-sm" data-i18n="btn_demo">
+                Открыть эталон →
+              </a>
+            </div>
+          </div>
+
+          <!-- Решение 3: Школы и Учителя -->
+          <div class="solution-card" id="case-schools">
+            <span class="card-num">03</span>
+            <div>
+              <span class="card-badge" data-i18n="sch_badge">ШКОЛЫ И ПЕДАГОГИ</span>
+              <h3 class="card-title" data-i18n="sch_title">Аттестация «Ұстаз» и рабочие тетради-комиксы</h3>
+              <p class="card-desc" data-i18n="sch_desc">
+                Разработка авторских программ для частных школ и пакетов аттестации педагогов на высшие категории («педагог-исследователь», «педагог-мастер»).
+              </p>
+              <ul class="card-feature-list">
+                <li data-i18n="sch_f1">Методический паспорт и КТП на 34/68 часов по ГОСО</li>
+                <li data-i18n="sch_f2">Иллюстрированные воркбуки для учеников начальных и средних классов</li>
+                <li data-i18n="sch_f3">Защитный протокол проверки для экспертных советов «Өрлеу»</li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <div class="card-price"><span data-i18n="from_price">от</span> 75 000 ₸ <span data-i18n="price_sub_pkg">/ пакет</span></div>
+              <a href="КЕЙС_3_ШКОЛЫ_И_УЧИТЕЛЯ/демо_витрина_авторская_программа.html" target="_blank" class="btn btn-navy btn-sm" data-i18n="btn_demo">
+                Открыть эталон →
+              </a>
+            </div>
+          </div>
+
+          <!-- Решение 4: EdTech и Эксперты -->
+          <div class="solution-card" id="case-edtech">
+            <span class="card-num">04</span>
+            <div>
+              <span class="card-badge" data-i18n="edt_badge">ОНЛАЙН-ОБРАЗОВАНИЕ</span>
+              <h3 class="card-title" data-i18n="edt_title">Методический аудит и сборка курсов из аудио</h3>
+              <p class="card-desc" data-i18n="edt_desc">
+                Технология Voice-to-Course: эксперт наговаривает мысли в аудио, а мы превращаем их в эталонный курс по циклу Колба с доходимостью 85%+.
+              </p>
+              <ul class="card-feature-list">
+                <li data-i18n="edt_f1">Аудит текущей программы и устранение причин отвала учеников</li>
+                <li data-i18n="edt_f2">Сценарные планы уроков и домашние задания с автопроверкой</li>
+                <li data-i18n="edt_f3">Экономия 80+ часов эксперта на записи и пересъемках</li>
+              </ul>
+            </div>
+            <div class="card-footer">
+              <div class="card-price"><span data-i18n="from_price">от</span> 150 000 ₸ <span data-i18n="price_sub_aud">/ аудит</span></div>
+              <a href="КЕЙС_4_ОНЛАЙН_КУРСЫ_И_ЭКСПЕРТЫ/демо_витрина_реанимация_курса_edtech.html" target="_blank" class="btn btn-navy btn-sm" data-i18n="btn_demo">
+                Открыть эталон →
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- БЛОК 4: БАЗА ЗНАНИЙ И СТАТЬИ -->
+    <section id="articles" class="articles-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag" data-i18n="art_tag">АНАЛИТИКА И СТАНДАРТЫ</div>
+          <h2 class="section-title serif-title" data-i18n="art_title">Репозиторий стандартов: экспертные статьи и нормы 2026</h2>
+          <p class="section-subtitle" data-i18n="art_sub">
+            Практические руководства и стандарты для руководителей бизнеса, проректоров вузов и директоров частных школ.
+          </p>
+        </div>
+
+        <div class="article-tabs">
+          <button class="art-tab-btn active" onclick="switchArticle(1)">
+            <svg class="gold-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span data-i18n="tab_art_1">Онбординг за 72 часа (B2B)</span>
+          </button>
+          <button class="art-tab-btn" onclick="switchArticle(2)">
+            <svg class="gold-icon" viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path></svg>
+            <span data-i18n="tab_art_2">Проверки ГОСО и Platonus (Вузы)</span>
+          </button>
+          <button class="art-tab-btn" onclick="switchArticle(3)">
+            <svg class="gold-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span data-i18n="tab_art_3">Аттестация «Ұстаз» (Школы)</span>
+          </button>
+          <button class="art-tab-btn" onclick="switchArticle(4)">
+            <svg class="gold-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <span data-i18n="tab_art_4">Доходимость курсов 85% (EdTech)</span>
+          </button>
+        </div>
+
+        <!-- Статья 1 (B2B) -->
+        <article class="article-item active" id="article-1">
+          <div class="art-meta">
+            <span data-i18n="art_meta_1">Регламент Бюро стандартов</span> • <span data-i18n="art_read_time_3">Время чтения: 3 мин</span>
+          </div>
+          <h3 class="art-title" data-i18n="art1_title">Как сократить стажировку менеджера с 2 месяцев до 72 часов через интерактивные тренажеры</h3>
+          <div class="art-body" data-i18n="art1_body">
+            В традиционной модели корпоративного бизнеса адаптация менеджера по продажам занимает от 4 до 8 недель. В этот период компания несет двойные убытки: выплачивает оклад стажеру и теряет до 40% входящих лидов из-за неуверенных ответов и ошибок в переписке.
+            <div class="art-quote" data-i18n="art1_quote">
+              «Квалификационный норматив допуска: сотрудник не имеет права выходить на звонки клиентам, пока не наберет 85+ баллов в автономном диалоговом симуляторе.»
+            </div>
+            Внедрение стандарта «МЕТОДИКО» переводит обучение в микрошаги: День 1 — продуктовый базис, День 2 — отработка 30 возражений в симуляторе, День 3 — аттестация и допуск. Руководитель освобождает до 35 часов личного времени в месяц.
+          </div>
+          <div class="art-cta-box">
+            <span style="font-size: 14px; font-weight: 600;" data-i18n="art_cta_text">Хотите внедрить подобные стандарты в своей организации?</span>
+            <a href="#calculator" class="btn btn-navy btn-sm" data-i18n="art_cta_btn">Рассчитать смету в калькуляторе →</a>
+          </div>
+        </article>
+
+        <!-- Статья 2 (Вузы) -->
+        <article class="article-item" id="article-2">
+          <div class="art-meta">
+            <span data-i18n="art_meta_2">Нормоконтроль ГОСО 2026</span> • <span data-i18n="art_read_time_4">Время чтения: 4 мин</span>
+          </div>
+          <h3 class="art-title" data-i18n="art2_title">Чек-лист готовности кафедры к проверкам МНВО РК и аккредитации IAAR/IQAA</h3>
+          <div class="art-body" data-i18n="art2_body">
+            Новые требования ГОСО 2026 ужесточили контроль за формулировкой Результатов Обучения (РО) по таксономии Блума и привязкой к Дублинским дескрипторам. Типичная причина замечаний комиссий — несоответствие тестовых заданий заявленным компетенциям и литература старше 5 лет.
+            <div class="art-quote" data-i18n="art2_quote">
+              «Эталонный УМКД обязан содержать не только силлабус, но и проверенный фонд оценочных средств (ФОС) с прозрачной матрицей оценивания (Rubrics).»
+            </div>
+            Бюро «МЕТОДИКО» готовит двуязычные пакеты УМКД/ПОӘК с базой из 100 валидированных тестов для систем Platonus/Moodle, гарантируя прохождение нормоконтроля УМС с первого раза.
+          </div>
+          <div class="art-cta-box">
+            <span style="font-size: 14px; font-weight: 600;" data-i18n="art_cta_text">Хотите внедрить подобные стандарты в своей организации?</span>
+            <a href="#calculator" class="btn btn-navy btn-sm" data-i18n="art_cta_btn">Рассчитать смету в калькуляторе →</a>
+          </div>
+        </article>
+
+        <!-- Статья 3 (Школы) -->
+        <article class="article-item" id="article-3">
+          <div class="art-meta">
+            <span data-i18n="art_meta_3">Аттестация педагогов</span> • <span data-i18n="art_read_time_3">Время чтения: 3 мин</span>
+          </div>
+          <h3 class="art-title" data-i18n="art3_title">Защита авторской программы на платформе «Ұстаз»: критерии экспертных советов</h3>
+          <div class="art-body" data-i18n="art3_body">
+            При подаче документов на квалификационную категорию «педагог-исследователь» или «педагог-мастер» свыше 60% программ отклоняются экспертными комиссиями («Өрлеу») из-за отсутствия новизны, нарушения структуры пояснительной записки и отсутствия измеримой системы диагностики учащихся.
+            <div class="art-quote" data-i18n="art3_quote">
+              «Авторская программа обязана опираться на доказательную педагогику и сопровождаться полноценным дидактическим комплексом — рабочими тетрадями и диагностическими картами.»
+            </div>
+            Мы упаковываем авторские методики учителей и частных школ в строгом соответствии с типовыми учебными планами, создавая яркие рабочие тетради, вызывающие восторг у детей и одобрение у комиссий.
+          </div>
+          <div class="art-cta-box">
+            <span style="font-size: 14px; font-weight: 600;" data-i18n="art_cta_text">Хотите внедрить подобные стандарты в своей организации?</span>
+            <a href="#calculator" class="btn btn-navy btn-sm" data-i18n="art_cta_btn">Рассчитать смету в калькуляторе →</a>
+          </div>
+        </article>
+
+        <!-- Статья 4 (EdTech) -->
+        <article class="article-item" id="article-4">
+          <div class="art-meta">
+            <span data-i18n="art_meta_4">Методология EdTech</span> • <span data-i18n="art_read_time_3">Время чтения: 3 мин</span>
+          </div>
+          <h3 class="art-title" data-i18n="art4_title">Почему доходимость онлайн-курсов падает ниже 20% и как реанимировать флагман без пересъемки</h3>
+          <div class="art-body" data-i18n="art4_body">
+            Главная ошибка авторов курсов — перегруз лекциями по 40–60 минут. Взрослый студент теряет концентрацию уже на 12-й минуте. Если после теории нет немедленного микродействия с положительным подкреплением, студент выгорает и бросает обучение.
+            <div class="art-quote" data-i18n="art4_quote">
+              «Применение 4-тактного цикла Колба (Опыт → Осмысление → Модель → Проба) поднимает completion rate (COR) с 18% до 82% даже на сложных профессиональных программах.»
+            </div>
+            Методологический аудит позволяет выявить точки потери мотивации, разбить материал на спринты и внедрить систему «быстрых побед» без необходимости тратить средства на перезапись студийных видео.
+          </div>
+          <div class="art-cta-box">
+            <span style="font-size: 14px; font-weight: 600;" data-i18n="art_cta_text">Хотите внедрить подобные стандарты в своей организации?</span>
+            <a href="#calculator" class="btn btn-navy btn-sm" data-i18n="art_cta_btn">Рассчитать смету в калькуляторе →</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- БЛОК 5: РАСШИРЕННЫЙ КАЛЬКУЛЯТОР С АККОРДЕОНАМИ -->
+    <section id="calculator">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag" data-i18n="calc_tag">ПРОЗРАЧНЫЙ РАСЧЕТ</div>
+          <h2 class="section-title serif-title" data-i18n="calc_title">Интерактивный калькулятор стоимости и сроков</h2>
+          <p class="section-subtitle" data-i18n="calc_sub">
+            Раскройте интересующие категории, отметьте галочками нужные модули и сформируйте первичное коммерческое предложение.
+          </p>
+        </div>
+
+        <div class="calc-container">
+          <div class="calc-layout">
+            
+            <!-- Левая колонка: Категории -->
+            <div class="calc-categories-wrap">
+              
+              <!-- Категория 1: B2B -->
+              <div class="calc-category-block">
+                <div class="calc-cat-header active" onclick="toggleCategoryAccordion(this)">
+                  <div class="calc-cat-title">
+                    <svg class="gold-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    <span data-i18n="cat_b2b_title">1. Корпоративное обучение и B2B-симуляторы</span>
+                    <span class="calc-cat-badge" data-i18n="badge_4_opt">4 опции</span>
+                  </div>
+                  <div class="calc-cat-arrow">
+                    <svg class="gold-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+                <div class="calc-cat-body open">
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Диалоговый ИИ-симулятор (до 20 сценариев)" data-name-kz="Диалогтік AI-симулятор (20 сценарийге дейін)" data-price="350000" data-days="3" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_sim_name">Диалоговый ИИ-симулятор (до 20 сценариев)</div>
+                        <div class="calc-item-desc" data-i18n="c_sim_desc">Интерактивный тренажер диалогов и отработки сложных возражений</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">350 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Стандарты онбординга и регламент допуска (72 часа)" data-name-kz="Бейімдеу стандарттары және рұқсат регламенті (72 сағат)" data-price="150000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_onb_name">Стандарты онбординга и регламент допуска (72 часа)</div>
+                        <div class="calc-item-desc" data-i18n="c_onb_desc">Книга новичка, чек-лист квалификации и приказ о допуске</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">150 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Книга продаж и матрица речевых модулей" data-name-kz="Сату кітабы және сөздік модульдер матрицасы" data-price="250000" data-days="3" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_book_name">Книга продаж и матрица речевых модулей</div>
+                        <div class="calc-item-desc" data-i18n="c_book_desc">Скрипты переписки/звонков, классификатор ЦА и отработка возражений</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">250 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Отдел контроля качества (QA): чек-листы и KPI" data-name-kz="Сапаны бақылау бөлімі (QA): бақылау парақтары мен KPI" data-price="180000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_qa_name">Отдел контроля качества (QA): чек-листы и KPI</div>
+                        <div class="calc-item-desc" data-i18n="c_qa_desc">Матрица оценки звонков, критерии брака диалога и система грейдов</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">180 000 ₸</div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Категория 2: Вузы -->
+              <div class="calc-category-block">
+                <div class="calc-cat-header" onclick="toggleCategoryAccordion(this)">
+                  <div class="calc-cat-title">
+                    <svg class="gold-icon" viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path></svg>
+                    <span data-i18n="cat_edu_title">2. Высшая школа и Колледжи (ГОСО 2026)</span>
+                    <span class="calc-cat-badge" data-i18n="badge_4_opt">4 опции</span>
+                  </div>
+                  <div class="calc-cat-arrow">
+                    <svg class="gold-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+                <div class="calc-cat-body">
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Эталонный УМКД/ПОӘК под ключ (1 дисциплина)" data-name-kz="Эталондық ПОӘК толық әзірлеу (1 пән)" data-price="120000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_umkd_name">Эталонный УМКД/ПОӘК под ключ (1 дисциплина)</div>
+                        <div class="calc-item-desc" data-i18n="c_umkd_desc">Силлабус, результаты обучения (РО), литература за последние 3 года</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">120 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Фонд оценочных средств (100 тестов Platonus/Moodle)" data-name-kz="Бағалау құралдарының қоры (Platonus/Moodle үшін 100 тест)" data-price="90000" data-days="1" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_fos_name">Фонд оценочных средств (100 тестов Platonus/Moodle)</div>
+                        <div class="calc-item-desc" data-i18n="c_fos_desc">Банк тестовых заданий с единичным и множественным выбором</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">90 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Комплексный цикл кафедры (4–5 дисциплин под ключ)" data-name-kz="Кафедраның кешенді циклі (4–5 пән толық пакет)" data-price="550000" data-days="7" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_dept_name">Комплексный цикл кафедры (4–5 дисциплин под ключ)</div>
+                        <div class="calc-item-desc" data-i18n="c_dept_desc">Полный пакет образовательной программы под аккредитацию IAAR/IQAA</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">550 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Интерактивная панель запуска дисциплины (HTML)" data-name-kz="Пәнді іске қосудың интерактивті панелі (HTML)" data-price="80000" data-days="1" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_dash_name">Интерактивная панель запуска дисциплины (HTML)</div>
+                        <div class="calc-item-desc" data-i18n="c_dash_desc">Автономный цифровой навигатор по силлабусу и лекционному фонду</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">80 000 ₸</div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Категория 3: Школы -->
+              <div class="calc-category-block">
+                <div class="calc-cat-header" onclick="toggleCategoryAccordion(this)">
+                  <div class="calc-cat-title">
+                    <svg class="gold-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span data-i18n="cat_sch_title">3. Частные школы и Педагоги (Платформа «Ұстаз»)</span>
+                    <span class="calc-cat-badge" data-i18n="badge_3_opt">3 опции</span>
+                  </div>
+                  <div class="calc-cat-arrow">
+                    <svg class="gold-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+                <div class="calc-cat-body">
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Пакет аттестации «Ұстаз» (авторская программа + КТП)" data-name-kz="«Ұстаз» аттестаттау пакеті (авторлық бағдарлама + КТЖ)" data-price="85000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_ustaz_name">Пакет аттестации «Ұстаз» (авторская программа + КТП)</div>
+                        <div class="calc-item-desc" data-i18n="c_ustaz_desc">Пояснительная записка, календарный план (34/68 ч), диагностика</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">85 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Рабочая тетрадь-комикс для учащихся под ключ" data-name-kz="Оқушыларға арналған авторлық комикс-дәптер" data-price="160000" data-days="3" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_wb_name">Рабочая тетрадь-комикс для учащихся под ключ</div>
+                        <div class="calc-item-desc" data-i18n="c_wb_desc">Методологическая концепция, сценарий персонажа и верстка</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">160 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Стандарты преподавания и QA для частной школы" data-name-kz="Жеке мектепке арналған оқыту стандарттары мен QA" data-price="280000" data-days="4" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_schstd_name">Стандарты преподавания и QA для частной школы</div>
+                        <div class="calc-item-desc" data-i18n="c_schstd_desc">Регламент урока, чек-листы контроля учителей и книга наставника</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">280 000 ₸</div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Категория 4: EdTech -->
+              <div class="calc-category-block">
+                <div class="calc-cat-header" onclick="toggleCategoryAccordion(this)">
+                  <div class="calc-cat-title">
+                    <svg class="gold-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    <span data-i18n="cat_edt_title">4. Онлайн-школы и EdTech (Методология и Voice-to-Course)</span>
+                    <span class="calc-cat-badge" data-i18n="badge_3_opt">3 опции</span>
+                  </div>
+                  <div class="calc-cat-arrow">
+                    <svg class="gold-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+                <div class="calc-cat-body">
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Методологический экспресс-аудит курса (план роста COR)" data-name-kz="Курстың әдістемелік экспресс-аудиті (COR өсіру жоспары)" data-price="150000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_ea_name">Методологический экспресс-аудит курса (план роста COR)</div>
+                        <div class="calc-item-desc" data-i18n="c_ea_desc">Анализ причин отвала, карта мотивации и аудит домашних заданий</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">150 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Сборка курса из аудио эксперта (Voice-to-Course)" data-name-kz="Сарапшының аудиосынан курс құрастыру (Voice-to-Course)" data-price="380000" data-days="5" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_vtc_name">Сборка курса из аудио эксперта (Voice-to-Course)</div>
+                        <div class="calc-item-desc" data-i18n="c_vtc_desc">Транскрибация, сценарные паспорта уроков, рабочие тетради</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">380 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Переупаковка программы по 4-тактному циклу Колба" data-name-kz="Бағдарламаны Колбтың 4 тактілі циклімен қайта жинақтау" data-price="240000" data-days="3" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_kolb_name">Переупаковка программы по 4-тактному циклу Колба</div>
+                        <div class="calc-item-desc" data-i18n="c_kolb_desc">Трансформация лекций в практический цикл для взрослых студентов</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">240 000 ₸</div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Категория 5: Локализация -->
+              <div class="calc-category-block">
+                <div class="calc-cat-header" onclick="toggleCategoryAccordion(this)">
+                  <div class="calc-cat-title">
+                    <svg class="gold-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span data-i18n="cat_loc_title">5. Языковая локализация и экспертное сопровождение</span>
+                    <span class="calc-cat-badge" data-i18n="badge_2_opt">2 опции</span>
+                  </div>
+                  <div class="calc-cat-arrow">
+                    <svg class="gold-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </div>
+                </div>
+                <div class="calc-cat-body">
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Полная локализация на казахский язык (Қазақ тілі)" data-name-kz="Қазақ тіліне толық кәсіби локализация жасау" data-price="100000" data-days="2" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_kz_name">Полная локализация на казахский язык (Қазақ тілі)</div>
+                        <div class="calc-item-desc" data-i18n="c_kz_desc">Профессиональный академический и отраслевой перевод всех материалов</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">100 000 ₸</div>
+                  </label>
+
+                  <label class="calc-item-row">
+                    <div class="calc-item-left">
+                      <input type="checkbox" class="calc-item-checkbox" data-name-ru="Экспертное сопровождение и защита на нормоконтроле (1 мес)" data-name-kz="Сараптамалық сүйемелдеу және нормобақылауда қорғау (1 ай)" data-price="120000" data-days="0" onchange="recalculate()">
+                      <div>
+                        <div class="calc-item-name" data-i18n="c_sopr_name">Экспертное сопровождение и защита на нормоконтроле (1 мес)</div>
+                        <div class="calc-item-desc" data-i18n="c_sopr_desc">Внесение правок комиссий, методические консультации руководителя</div>
+                      </div>
+                    </div>
+                    <div class="calc-item-price">120 000 ₸</div>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Правая колонка: Смета и опросник -->
+            <div class="calc-proposal-panel">
+              
+              <div class="calc-summary-card">
+                <div class="summary-heading" data-i18n="sum_heading">Предварительный расчет сметы</div>
+                <div class="summary-total" id="calc-total-sum">0 ₸</div>
+                <div class="summary-time" id="calc-total-days" data-i18n="sum_time">Срок: выберите опции слева</div>
+
+                <ul class="summary-list" id="calc-selected-items">
+                  <li style="color: #64748B; font-style: italic;" data-i18n="sum_empty">Опции пока не выбраны. Отметьте нужные пункты в меню слева.</li>
+                </ul>
+
+                <div class="summary-disclaimer" data-i18n="sum_disclaimer">
+                  ℹ️ Примечание: расчет формирует первичное предварительное КП. Окончательная стоимость и график внедрения утверждаются руководителем Бюро «МЕТОДИКО» после заполнения брифа и уточнения ТЗ.
+                </div>
+              </div>
+
+              <!-- Форма экспресс-опроса -->
+              <div class="calc-form-card">
+                <div class="form-title" data-i18n="form_title">Получить первичное КП на утверждение:</div>
+                <div class="form-group">
+                  <input type="text" id="lead-name" class="form-input" placeholder="Ваше имя">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="lead-org" class="form-input" placeholder="Организация / Сфера бизнеса">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="lead-contact" class="form-input" placeholder="Телефон / Email / Telegram">
+                </div>
+                <button onclick="generateCommercialProposal()" class="btn btn-navy" style="width: 100%; font-size: 14px;" data-i18n="btn_gen_kp">
+                  Сформировать первичное КП
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- БЛОК 6: АВТОРИТЕТ И СТАНДАРТЫ -->
+    <section id="shield" class="shield-section">
+      <div class="container">
+        <div class="shield-grid">
+          
+          <div>
+            <div class="section-tag" data-i18n="shield_tag">АВТОРИТЕТ И СТАНДАРТЫ</div>
+            <h2 class="section-title serif-title" data-i18n="shield_title">Академический стандарт: опыт высшей школы на службе вашего бизнеса</h2>
+            <p style="margin-bottom: 24px; color: #475569;" data-i18n="shield_p1">
+              Бюро стандартов «МЕТОДИКО» основано ведущими экспертами с 24-летним стажем управления учебными отделами в высших учебных заведениях и преподавателями КазНУ им. аль-Фараби.
+            </p>
+            <p style="color: #475569;" data-i18n="shield_p2">
+              Мы объединили принципы академического нормоконтроля, дисциплины регламентов и современных педагогических стандартов. В наших разработках нет дилетантских штампов и пустых обещаний — только точные цифры, измеримый KPI и юридическая ответственность.
+            </p>
+          </div>
+
+          <div class="shield-card">
+            
+            <div class="shield-item">
+              <div class="gold-icon-box">
+                <svg class="gold-icon" viewBox="0 0 24 24"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path><path d="M18 8h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"></path><circle cx="8" cy="12" r="2"></circle></svg>
+              </div>
+              <div>
+                <div class="shield-title" data-i18n="sh1_title">Юридическая безупречность</div>
+                <div class="shield-text" data-i18n="sh1_desc">Официальный договор с юридическим лицом ТОО «Метод и Ко» (г. Алматы), безналичный расчет, регистрация на портале закупок, закрывающие электронные счета-фактуры (ЭСФ).</div>
+              </div>
+            </div>
+
+            <div class="shield-item">
+              <div class="gold-icon-box">
+                <svg class="gold-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div>
+                <div class="shield-title" data-i18n="sh2_title">Абсолютная конфиденциальность (NDA)</div>
+                <div class="shield-text" data-i18n="sh2_desc">Формат «Серый кардинал»: мы работаем без публикации лиц и коммерческих тайн заказчика. Ваши скрипты, базы данных и авторские программы защищены соглашением о неразглашении.</div>
+              </div>
+            </div>
+
+            <div class="shield-item">
+              <div class="gold-icon-box">
+                <svg class="gold-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div>
+                <div class="shield-title" data-i18n="sh3_title">Гарантия нормоконтроля</div>
+                <div class="shield-text" data-i18n="sh3_desc">100% соответствие действующему законодательству РК, типовым учебным планам (РУП/ТИП) и государственным стандартам высшего и школьного образования.</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- МОДАЛЬНОЕ ОКНО ПЕРВИЧНОГО КП -->
+  <div id="kp-modal" class="modal-overlay">
+    <div class="modal-sheet">
+      <button class="modal-close" onclick="closeKpModal()">✕</button>
+      
+      <div class="modal-header-doc">
+        <div>
+          <h3 style="font-size: 18px; color: var(--bg-navy); margin-bottom: 4px;" id="modal-heading-title">ПЕРВИЧНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ</h3>
+          <span style="font-size: 12px; color: #64748B;" id="modal-heading-sub">Бюро академических и корпоративных стандартов «МЕТОДИКО»</span>
+        </div>
+        <div class="modal-status-badge" id="modal-status-text">На согласовании</div>
+      </div>
+
+      <div style="font-size: 13px; color: #334155; margin-bottom: 20px; background: #F8FAFC; padding: 12px; border-radius: 6px; border: 1px solid #E2E8F0;">
+        <div><strong id="lbl-modal-client">Заказчик:</strong> <span id="modal-client-name">—</span> (<span id="modal-client-org">—</span>)</div>
+        <div><strong id="lbl-modal-contact">Контакт:</strong> <span id="modal-client-contact">—</span></div>
+        <div><strong id="lbl-modal-date">Дата формирования:</strong> <span id="modal-doc-date">08.11.2026</span></div>
+      </div>
+
+      <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--bg-navy);" id="modal-selected-head">Выбранный состав модулей и услуг:</h4>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #F1F5F9; text-align: left;">
+            <th style="padding: 8px; border: 1px solid #CBD5E1;">№</th>
+            <th style="padding: 8px; border: 1px solid #CBD5E1;" id="th-modal-name">Наименование модуля</th>
+            <th style="padding: 8px; border: 1px solid #CBD5E1; text-align: right;" id="th-modal-price">Стоимость (₸)</th>
+          </tr>
+        </thead>
+        <tbody id="modal-table-rows">
+          <!-- Заполняется JS -->
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: 800; background: #FAF5EA;">
+            <td colspan="2" style="padding: 10px; border: 1px solid #CBD5E1;" id="td-modal-total-label">Итоговая ориентировочная стоимость:</td>
+            <td id="modal-table-total" style="padding: 10px; border: 1px solid #CBD5E1; text-align: right; color: var(--bg-navy); font-size: 15px;">0 ₸</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="font-size: 12px; color: #64748B; line-height: 1.5; margin-bottom: 24px;" id="modal-disclaimer-doc">
+        * Данный документ является предварительным расчетом сметы. Окончательная спецификация и календарный план реализации закрепляются в договоре после собеседования и утверждения руководителем Бюро стандартов «МЕТОДИКО».
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="window.print()" class="btn btn-outline btn-sm" id="btn-modal-print">Печать / Сохранить в PDF</button>
+        <button onclick="closeKpModal()" class="btn btn-navy btn-sm" id="btn-modal-close">Понятно, закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПОДВАЛ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div>
+          <div class="footer-brand">МЕТОДИКО</div>
+          <p style="margin-bottom: 14px; font-size: 13px; color: #94A3B8;" data-i18n="foot_desc">
+            Бюро академических и корпоративных стандартов. Разработка ИИ-тренажеров, регламентов онбординга и аккредитационных пакетов ГОСО.
+          </p>
+          <div style="font-size: 12px; color: #64748B;">
+            ТОО «Метод и Ко» • БИН: 231040012345 • г. Алматы, Казахстан
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-nav-title" data-i18n="foot_nav">Навигация</div>
+          <ul class="footer-links">
+            <li><a href="#solutions" data-i18n="nav_solutions">Решения для сегментов</a></li>
+            <li><a href="#simulator" data-i18n="nav_simulator">Диалоговый симулятор</a></li>
+            <li><a href="#articles" data-i18n="nav_articles">База знаний и статьи</a></li>
+            <li><a href="#calculator" data-i18n="nav_calc">Калькулятор сметы</a></li>
+            <li><a href="#shield" data-i18n="nav_shield">О бюро и гарантиях</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-nav-title" data-i18n="foot_contact">Отдел методологии и стандартов</div>
+          <p style="margin-bottom: 8px; font-size: 13px;">
+            Электронная почта: info@coursemaker.kz
+          </p>
+          <p style="margin-bottom: 14px; font-size: 13px;">
+            Режим приема обращений: Пн–Сб, 09:00 – 19:00 (Алматы, GMT+5)
+          </p>
+          <a href="#calculator" class="btn btn-gold btn-sm" style="display: inline-flex;" data-i18n="btn_foot_cp">
+            Оставить заявку на расчет КП →
+          </a>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 ТОО «Метод и Ко» («МЕТОДИКО»). Все права защищены.</div>
+        <div style="font-size: 12px; color: #64748B;">coursemaker.kz • Казахстан и СНГ</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ИНТЕРАКТИВНЫЕ СКРИПТЫ: ДВУЯЗЫЧИЕ, ТРЕНАЖЕР, КАЛЬКУЛЯТОР, КП МОДАЛ -->
+  <script>
+    /* =========================================================
+       1. СИСТЕМА ДВУЯЗЫЧИЯ (100% ПОКРЫТИЕ ВСЕХ БЛОКОВ И КНОПОК)
+       ========================================================= */
+    let currentLang = 'ru';
+
+    const translations = {
+      ru: {
+        header_sub: "БЮРО СТАНДАРТОВ | ТОО «МЕТОД И КО»",
+        nav_solutions: "Решения",
+        nav_simulator: "Демо-симулятор",
+        nav_articles: "База знаний",
+        nav_calc: "Калькулятор сметы",
+        nav_shield: "О бюро",
+        btn_request_cp: "Запросить расчет КП",
+        hero_tag: "Нормоконтроль программ и корпоративное обучение",
+        hero_title: "Исключаем человеческий фактор и ошибки персонала: от корпоративных симуляторов до аттестационных пакетов ГОСО",
+        hero_sub: "Сокращаем ввод сотрудников в строй с 60 до 3 дней через интерактивные ИИ-тренажеры и разрабатываем эталонные УМКД по ГОСО 2026. 24 года стажа в высшей школе и академического нормоконтроля на защите вашего бизнеса и репутации.",
+        hero_btn_sim: "▶ Протестировать симулятор (60 сек)",
+        hero_btn_calc: "Рассчитать смету в ₸",
+        router_title: "Выберите вашу задачу (решения разработаны под ваш профиль):",
+        seg_1_name: "Бизнес и Отделы продаж",
+        seg_1_desc: "Онбординг за 72 часа, диалоговые тренажеры, защита от сливов базы.",
+        seg_2_name: "Вузы и Колледжи (ТиПО)",
+        seg_2_desc: "УМКД по ГОСО 2026, силлабусы, 100 тестов для Platonus и Moodle.",
+        seg_3_name: "Частные школы и Педагоги",
+        seg_3_desc: "Программа «Ұстаз» для аттестации, авторские тетради-комиксы.",
+        seg_4_name: "Онлайн-школы и EdTech",
+        seg_4_desc: "Методологический аудит, доходимость 85%+, сборка курсов из аудио.",
+        seg_link: "Смотреть решение →",
+        badge_1: "года стажа в высшей школе и управлении образовательными процессами",
+        badge_2: "100% соблюдение стандартов МНВО РК, IAAR, IQAA и систем Platonus",
+        badge_3: "квалификационный норматив допуска к работе через цифровой тренажер",
+        badge_4: "официальный договор «Метод и Ко» (г. Алматы), безналичный расчет, акты, NDA",
+        sim_badge: "ИНТЕРАКТИВНЫЙ ТЕСТ-ДРАЙВ ТЕХНОЛОГИИ",
+        sim_title: "Живой диалоговый тренажер: отработка сложного возражения",
+        sim_score_label: "Балл допуска к клиентам",
+        sim_client_role: "Потенциальный клиент (B2B заказчик, г. Астана):",
+        sim_prompt: "«Здравствуйте. Мы посмотрели ваше коммерческое предложение. Честно говоря, для нас это қымбат (дорого), и мы уже 3 года работаем с другим подрядчиком. Зачем нам что-то менять?»",
+        sim_options_title: "Выберите реплику менеджера для ответа:",
+        opt_1: "«Ну у нас зато качество намного выше, а те подрядчики наверняка работают по старинке. Давайте мы вам скидку 10% сделаем?»",
+        opt_2: "«Понимаю вас, 3 года партнерства — это серьезный срок и доверие. Мы не предлагаем отказываться от них. Скажите, если мы покажем, где сейчас теряется 25% времени сотрудников на регламентах, вы будете готовы сравнить цифры без обязательств?»",
+        opt_3: "«Если дорого, тогда ничем не можем помочь. Наши стандарты стоят своих денег.»",
+        sim_footer_note: "* В боевой версии тренажера закладывается до 40 сценариев вашей ниши с аудио-озвучкой и протоколом допуска.",
+        sim_order_btn: "Заказать тренажер под свой бизнес",
+        sol_tag: "СТАНДАРТЫ И РЕШЕНИЯ",
+        sol_title: "Четыре направления высшего нормоконтроля «МЕТОДИКО»",
+        sol_sub: "Готовые методические комплексы и программные симуляторы, разработанные под ключ для реального сектора и образования.",
+        b2b_badge: "КОРПОРАТИВНЫЙ СЕКТОР",
+        b2b_title: "Онбординг менеджеров за 72 часа и диалоговые тренажеры",
+        b2b_desc: "Переводим регламенты и книги продаж в интерактивный формат. Новичок тренируется на симуляторе возражений до выхода к реальным клиентам.",
+        b2b_f1: "Сокращение стажировки с 4 недель до 3 рабочих дней",
+        b2b_f2: "Высвобождение до 35 часов личного времени руководителя",
+        b2b_f3: "Автономный веб-симулятор сценариев и стандарт допуска",
+        edu_badge: "ВЫСШАЯ ШКОЛА И КОЛЛЕДЖИ",
+        edu_title: "Эталонные УМКД/ПОӘК и силлабусы по ГОСО 2026",
+        edu_desc: "Полный аккредитационный пакет документов под требования МНВО РК, IAAR и IQAA. Базы из 100 тестов, готовые к импорту в Platonus и Moodle.",
+        edu_f1: "Двуязычные пакеты (казахский и русский языки)",
+        edu_f2: "Интерактивная панель запуска силлабуса и литературы",
+        edu_f3: "100% прохождение нормоконтроля Учебно-методического совета",
+        sch_badge: "ШКОЛЫ И ПЕДАГОГИ",
+        sch_title: "Аттестация «Ұстаз» и рабочие тетради-комиксы",
+        sch_desc: "Разработка авторских программ для частных школ и пакетов аттестации педагогов на высшие категории («педагог-исследователь», «педагог-мастер»).",
+        sch_f1: "Методический паспорт и КТП на 34/68 часов по ГОСО",
+        sch_f2: "Иллюстрированные воркбуки для учеников начальных и средних классов",
+        sch_f3: "Защитный протокол проверки для экспертных советов «Өрлеу»",
+        edt_badge: "ОНЛАЙН-ОБРАЗОВАНИЕ",
+        edt_title: "Методический аудит и сборка курсов из аудио",
+        edt_desc: "Технология Voice-to-Course: эксперт наговаривает мысли в аудио, а мы превращаем их в эталонный курс по циклу Колба с доходимостью 85%+.",
+        edt_f1: "Аудит текущей программы и устранение причин отвала учеников",
+        edt_f2: "Сценарные планы уроков и домашние задания с автопроверкой",
+        edt_f3: "Экономия 80+ часов эксперта на записи и пересъемках",
+        from_price: "от",
+        price_sub: "/ система",
+        price_sub_disc: "/ дисциплина",
+        price_sub_pkg: "/ пакет",
+        price_sub_aud: "/ аудит",
+        btn_demo: "Открыть эталон →",
+        art_tag: "АНАЛИТИКА И СТАНДАРТЫ",
+        art_title: "Репозиторий стандартов: экспертные статьи и нормы 2026",
+        art_sub: "Практические руководства и стандарты для руководителей бизнеса, проректоров вузов и директоров частных школ.",
+        tab_art_1: "Онбординг за 72 часа (B2B)",
+        tab_art_2: "Проверки ГОСО и Platonus (Вузы)",
+        tab_art_3: "Аттестация «Ұстаз» (Школы)",
+        tab_art_4: "Доходимость курсов 85% (EdTech)",
+        art_meta_1: "Регламент Бюро стандартов",
+        art_meta_2: "Нормоконтроль ГОСО 2026",
+        art_meta_3: "Аттестация педагогов",
+        art_meta_4: "Методология EdTech",
+        art_read_time_3: "Время чтения: 3 мин",
+        art_read_time_4: "Время чтения: 4 мин",
+        art1_title: "Как сократить стажировку менеджера с 2 месяцев до 72 часов через интерактивные тренажеры",
+        art1_body: "В традиционной модели корпоративного бизнеса адаптация менеджера по продажам занимает от 4 до 8 недель. В этот период компания несет двойные убытки: выплачивает оклад стажеру и теряет до 40% входящих лидов из-за неуверенных ответов и ошибок в переписке.",
+        art1_quote: "«Квалификационный норматив допуска: сотрудник не имеет права выходить на звонки клиентам, пока не наберет 85+ баллов в автономном диалоговом симуляторе.»",
+        art2_title: "Чек-лист готовности кафедры к проверкам МНВО РК и аккредитации IAAR/IQAA",
+        art2_body: "Новые требования ГОСО 2026 ужесточили контроль за формулировкой Результатов Обучения (РО) по таксономии Блума и привязкой к Дублинским дескрипторам. Типичная причина замечаний комиссий — несоответствие тестовых заданий заявленным компетенциям и литература старше 5 лет.",
+        art2_quote: "«Эталонный УМКД обязан содержать не только силлабус, но и проверенный фонд оценочных средств (ФОС) с прозрачной матрицей оценивания (Rubrics).»",
+        art3_title: "Защита авторской программы на платформе «Ұстаз»: критерии экспертных советов",
+        art3_body: "При подаче документов на квалификационную категорию «педагог-исследователь» или «педагог-мастер» свыше 60% программ отклоняются экспертными комиссиями («Өрлеу») из-за отсутствия новизны, нарушения структуры пояснительной записки и отсутствия измеримой системы диагностики учащихся.",
+        art3_quote: "«Авторская программа обязана опираться на доказательную педагогику и сопровождаться полноценным дидактическим комплексом — рабочими тетрадями и диагностическими картами.»",
+        art4_title: "Почему доходимость онлайн-курсов падает ниже 20% и как реанимировать флагман без пересъемки",
+        art4_body: "Главная ошибка авторов курсов — перегруз лекциями по 40–60 минут. Взрослый студент теряет концентрацию уже на 12-й минуте. Если после теории нет немедленного микродействия с положительным подкреплением, студент выгорает и бросает обучение.",
+        art4_quote: "«Применение 4-тактного цикла Колба (Опыт → Осмысление → Модель → Проба) поднимает completion rate (COR) с 18% до 82% даже на сложных профессиональных программах.»",
+        art_cta_text: "Хотите внедрить подобные стандарты в своей организации?",
+        art_cta_btn: "Рассчитать смету в калькуляторе →",
+        calc_tag: "ПРОЗРАЧНЫЙ РАСЧЕТ",
+        calc_title: "Интерактивный калькулятор стоимости и сроков",
+        calc_sub: "Раскройте интересующие категории, отметьте галочками нужные модули и сформируйте первичное коммерческое предложение.",
+        badge_4_opt: "4 опции",
+        badge_3_opt: "3 опции",
+        badge_2_opt: "2 опции",
+        cat_b2b_title: "1. Корпоративное обучение и B2B-симуляторы",
+        cat_edu_title: "2. Высшая школа и Колледжи (ГОСО 2026)",
+        cat_sch_title: "3. Частные школы и Педагоги (Платформа «Ұстаз»)",
+        cat_edt_title: "4. Онлайн-школы и EdTech (Методология и Voice-to-Course)",
+        cat_loc_title: "5. Языковая локализация и экспертное сопровождение",
+        c_sim_name: "Диалоговый ИИ-симулятор (до 20 сценариев)",
+        c_sim_desc: "Интерактивный тренажер диалогов и отработки сложных возражений",
+        c_onb_name: "Стандарты онбординга и регламент допуска (72 часа)",
+        c_onb_desc: "Книга новичка, чек-лист квалификации и приказ о допуске",
+        c_book_name: "Книга продаж и матрица речевых модулей",
+        c_book_desc: "Скрипты переписки/звонков, классификатор ЦА и отработка возражений",
+        c_qa_name: "Отдел контроля качества (QA): чек-листы и KPI",
+        c_qa_desc: "Матрица оценки звонков, критерии брака диалога и система грейдов",
+        c_umkd_name: "Эталонный УМКД/ПОӘК под ключ (1 дисциплина)",
+        c_umkd_desc: "Силлабус, результаты обучения (РО), литература за последние 3 года",
+        c_fos_name: "Фонд оценочных средств (100 тестов Platonus/Moodle)",
+        c_fos_desc: "Банк тестовых заданий с единичным и множественным выбором",
+        c_dept_name: "Комплексный цикл кафедры (4–5 дисциплин под ключ)",
+        c_dept_desc: "Полный пакет образовательной программы под аккредитацию IAAR/IQAA",
+        c_dash_name: "Интерактивная панель запуска дисциплины (HTML)",
+        c_dash_desc: "Автономный цифровой навигатор по силлабусу и лекционному фонду",
+        c_ustaz_name: "Пакет аттестации «Ұстаз» (авторская программа + КТП)",
+        c_ustaz_desc: "Пояснительная записка, календарный план (34/68 ч), диагностика",
+        c_wb_name: "Рабочая тетрадь-комикс для учащихся под ключ",
+        c_wb_desc: "Методологическая концепция, сценарий персонажа и верстка",
+        c_schstd_name: "Стандарты преподавания и QA для частной школы",
+        c_schstd_desc: "Регламент урока, чек-листы контроля учителей и книга наставника",
+        c_ea_name: "Методологический экспресс-аудит курса (план роста COR)",
+        c_ea_desc: "Анализ причин отвала, карта мотивации и аудит домашних заданий",
+        c_vtc_name: "Сборка курса из аудио эксперта (Voice-to-Course)",
+        c_vtc_desc: "Транскрибация, сценарные паспорта уроков, рабочие тетради",
+        c_kolb_name: "Переупаковка программы по 4-тактному циклу Колба",
+        c_kolb_desc: "Трансформация лекций в практический цикл для взрослых студентов",
+        c_kz_name: "Полная локализация на казахский язык (Қазақ тілі)",
+        c_kz_desc: "Профессиональный академический и отраслевой перевод всех материалов",
+        c_sopr_name: "Экспертное сопровождение и защита на нормоконтроле (1 мес)",
+        c_sopr_desc: "Внесение правок комиссий, методические консультации руководителя",
+        sum_heading: "Предварительный расчет сметы",
+        sum_time: "Срок: выберите опции слева",
+        sum_empty: "Опции пока не выбраны. Отметьте нужные пункты в меню слева.",
+        sum_disclaimer: "ℹ️ Примечание: расчет формирует первичное предварительное КП. Окончательная стоимость и график внедрения утверждаются руководителем Бюро «МЕТОДИКО» после заполнения брифа и уточнения ТЗ.",
+        form_title: "Получить первичное КП на утверждение:",
+        ph_name: "Ваше имя",
+        ph_org: "Организация / Сфера бизнеса",
+        ph_contact: "Телефон / Email / Telegram",
+        btn_gen_kp: "Сформировать первичное КП",
+        modal_title: "ПЕРВИЧНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ",
+        modal_sub: "Бюро академических и корпоративных стандартов «МЕТОДИКО»",
+        modal_status: "На согласовании",
+        modal_client_lbl: "Заказчик:",
+        modal_contact_lbl: "Контакт:",
+        modal_date_lbl: "Дата формирования:",
+        modal_list_head: "Выбранный состав модулей и услуг:",
+        modal_th_name: "Наименование модуля",
+        modal_th_price: "Стоимость (₸)",
+        modal_total_lbl: "Итоговая ориентировочная стоимость:",
+        modal_disclaimer: "* Данный документ является предварительным расчетом сметы. Окончательная спецификация и календарный план реализации закрепляются в договоре после собеседования и утверждения руководителем Бюро стандартов «МЕТОДИКО».",
+        modal_print_btn: "Печать / Сохранить в PDF",
+        modal_close_btn: "Понятно, закрыть",
+        shield_tag: "АВТОРИТЕТ И СТАНДАРТЫ",
+        shield_title: "Академический стандарт: опыт высшей школы на службе вашего бизнеса",
+        shield_p1: "Бюро стандартов «МЕТОДИКО» основано ведущими экспертами с 24-летним стажем управления учебными отделами в высших учебных заведениях и преподавателями КазНУ им. аль-Фараби.",
+        shield_p2: "Мы объединили принципы академического нормоконтроля, дисциплины регламентов и современных педагогических стандартов. В наших разработках нет дилетантских штампов и пустых обещаний — только точные цифры, измеримый KPI и юридическая ответственность.",
+        sh1_title: "Юридическая безупречность",
+        sh1_desc: "Официальный договор с юридическим лицом ТОО «Метод и Ко» (г. Алматы), безналичный расчет, регистрация на портале закупок, закрывающие электронные счета-фактуры (ЭСФ).",
+        sh2_title: "Абсолютная конфиденциальность (NDA)",
+        sh2_desc: "Формат «Серый кардинал»: мы работаем без публикации лиц и коммерческих тайн заказчика. Ваши скрипты, базы данных и авторские программы защищены соглашением о неразглашении.",
+        sh3_title: "Гарантия нормоконтроля",
+        sh3_desc: "100% соответствие действующему законодательству РК, типовым учебным планам (РУП/ТИП) и государственным стандартам высшего и школьного образования.",
+        foot_desc: "Бюро академических и корпоративных стандартов. Разработка ИИ-тренажеров, регламентов онбординга и аккредитационных пакетов ГОСО.",
+        foot_nav: "Навигация",
+        foot_contact: "Отдел методологии и стандартов",
+        btn_foot_cp: "Оставить заявку на расчет КП →"
+      },
+      kz: {
+        header_sub: "СТАНДАРТТАР БЮРОСЫ | «МЕТОД И КО» ЖШС",
+        nav_solutions: "Шешімдер",
+        nav_simulator: "Демо-симулятор",
+        nav_articles: "Әдістемелік база",
+        nav_calc: "Смета калькуляторы",
+        nav_shield: "Бюро туралы",
+        btn_request_cp: "КҰ есебін сұрау",
+        hero_tag: "Бағдарламалардың нормобақылауы және корпоративтік оқыту",
+        hero_title: "Қызметкерлердің қателіктері мен адами факторды түбегейлі жою: корпоративтік симуляторлардан бастап МЖМБС нормаларына дейін",
+        hero_sub: "Интерактивті AI-симуляторлар арқылы қызметкерлерді бейімдеу мерзімін 60 күннен 3 күнге дейін қысқартып, МЖМБС 2026 бойынша эталондық ПОӘК әзірлейміз. Жоғары мектептегі 24 жылдық басқару және академиялық нормобақылау тәжірибесі сіздің беделіңізді қорғайды.",
+        hero_btn_sim: "▶ Симуляторды сынап көру (60 сек)",
+        hero_btn_calc: "Бағасын ₸ есептеу",
+        router_title: "Өз міндетіңізді таңдаңыз (шешімдер сіздің бағытыңызға арналған):",
+        seg_1_name: "Бизнес және Сату бөлімдері",
+        seg_1_desc: "72 сағатта бейімдеу, диалогтік симуляторлар, клиенттерді жоғалтудан қорғау.",
+        seg_2_name: "ЖОО және Колледждер (ТжКБ)",
+        seg_2_desc: "МЖМБС 2026 ПОӘК, силлабустар, Platonus және Moodle үшін 100 тест.",
+        seg_3_name: "Жеке мектептер мен Ұстаздар",
+        seg_3_desc: "Аттестаттауға арналған «Ұстаз» бағдарламасы, авторлық комикс-дәптерлер.",
+        seg_4_name: "Онлайн-мектептер және EdTech",
+        seg_4_desc: "Әдіснамалық аудит, 85%+ бітіру көрсеткіші, аудиодан курс құрастыру.",
+        seg_link: "Шешімді көру →",
+        badge_1: "жыл жоғары мектеп пен оқу процестерін басқару өтілі",
+        badge_2: "ҚР ҒЖБМ, IAAR, IQAA стандарттары мен Platonus талаптарына 100% сәйкестік",
+        badge_3: "сандық симулятор арқылы қызметке жіберудің біліктілік нормативі",
+        badge_4: "«Метод и Ко» ресми келісімшарты (Алматы қ.), қолма-қолсыз есеп, актілер, NDA",
+        sim_badge: "ТЕХНОЛОГИЯНЫ ИНТЕРАКТИВТІ СЫНАП КӨРУ",
+        sim_title: "Диалогтік жаттықтырушы: күрделі қарсылықтарды пысықтау",
+        sim_score_label: "Клиенттермен жұмыс істеуге рұқсат балы",
+        sim_client_role: "Әлеуетті тапсырыс беруші (B2B клиент, Астана қ.):",
+        sim_prompt: "«Сәлеметсіз бе! Біз коммерциялық ұсынысты қарап шықтық. Шыны керек, бұл біз үшін тым қымбат, әрі біз басқа серіктеспен 3 жылдан бері бірге жұмыс істеп келеміз. Бізге қандай да бір өзгеріс жасаудың қажеті қанша?»",
+        sim_options_title: "Жауап беру үшін менеджердің сөзін таңдаңыз:",
+        opt_1: "«Біздің сапа олардан әлдеқайда жоғары ғой, ал олар ескі тәсілмен жұмыс істейді. Сізге 10% жеңілдік жасап берсек қайтеді?»",
+        opt_2: "«Сізді толық түсінемін, 3 жылдық серіктестік — бұл үлкен сенім мен тұрақтылық. Біз бұрынғы серіктесіңізден бас тартуды ұсынбаймыз. Дегенмен, қазір регламенттердің дұрыс болмауынан қызметкерлер уақытының 25%-ы қайда жоғалатынын көрсетсек, ешқандай міндеттемесіз сандарды салыстырып көруге қалай қарайсыз?»",
+        opt_3: "«Егер қымбат болса, көмектесе алмаймыз. Біздің стандарттар өз бағасына лайық.»",
+        sim_footer_note: "* Симулятордың негізгі нұсқасында аудио-дыбысталуы және рұқсат хаттамасы бар 40-қа дейін сценарий жасалады.",
+        sim_order_btn: "Өз бизнесіңізге симуляторға тапсырыс беру",
+        sol_tag: "СТАНДАРТТАР ЖӘНЕ ШЕШІМДЕР",
+        sol_title: "«МЕТОДИКО» жоғары нормобақылауының төрт бағыты",
+        sol_sub: "Нақты сектор мен білім беру саласы үшін дайын әдіснамалық кешендер мен бағдарламалық симуляторлар.",
+        b2b_badge: "КОРПОРАТИВТІК СЕКТОР",
+        b2b_title: "Менеджерлерді 72 сағатта бейімдеу және диалогтік симуляторлар",
+        b2b_desc: "Регламенттер мен сату кітаптарын интерактивті форматқа көшіреміз. Жаңа қызметкер нақты клиентке шыққанға дейін симуляторда жаттығады.",
+        b2b_f1: "Тәжірибеден өту мерзімін 4 аптадан 3 жұмыс күніне дейін қысқарту",
+        b2b_f2: "Сату бөлімі басшысының 35 сағат жеке уақытын босату",
+        b2b_f3: "Сценарийлер мен рұқсат беру регламентінің дербес веб-симуляторы",
+        edu_badge: "ЖОҒАРЫ МЕКТЕП ЖӘНЕ КОЛЛЕДЖДЕР",
+        edu_title: "МЖМБС 2026 бойынша эталондық ПОӘК және силлабустар",
+        edu_desc: "ҚР ҒЖБМ, IAAR және IQAA талаптарына сай құжаттардың толық аккредиттеу пакеті. Platonus пен Moodle жүйелеріне дайын 100 тест базасы.",
+        edu_f1: "Екі тілдегі толық пакеттер (қазақ және орыс тілдерінде)",
+        edu_f2: "Силлабус пен әдебиеттерді ашатын интерактивті басқару панелі",
+        edu_f3: "Оқу-әдістемелік кеңестің (ОӘК) нормобақылауынан 100% өту кепілдігі",
+        sch_badge: "МЕКТЕПТЕР МЕН ҰСТАЗДАР",
+        sch_title: "«Ұстаз» аттестаттауы және авторлық комикс-дәптерлер",
+        sch_desc: "Жеке мектептерге арналған авторлық бағдарламалар және мұғалімдерді жоғары санаттарға аттестаттау пакеттері («педагог-зерттеуші», «педагог-шебер»).",
+        sch_f1: "МЖМБС бойынша 34/68 сағаттық әдістемелік төлқұжат пен КТЖ",
+        sch_f2: "Бастауыш және орта буын оқушыларына арналған суретті воркбуктер",
+        sch_f3: "«Өрлеу» сараптамалық кеңестеріне арналған қорғаныс хаттамасы",
+        edt_badge: "ОНЛАЙН БІЛІМ БЕРУ",
+        edt_title: "Әдіснамалық аудит және аудиодан курс құрастыру",
+        edt_desc: "Voice-to-Course технологиясы: сарапшы ойларын аудиоға жазады, біз оны 85%+ аяқтау деңгейі бар Колб циклі бойынша курсқа айналдырамыз.",
+        edt_f1: "Қолданыстағы бағдарламаға аудит жүргізу және оқушылардың кету себептерін жою",
+        edt_f2: "Сабақтардың сценарийлік жоспарлары мен автоматты тексерілетін тапсырмалар",
+        edt_f3: "Сарапшының түсірілімге кететін 80+ сағат уақытын үнемдеу",
+        from_price: "бастап",
+        price_sub: "/ жүйе",
+        price_sub_disc: "/ пән",
+        price_sub_pkg: "/ пакет",
+        price_sub_aud: "/ аудит",
+        btn_demo: "Эталонды ашу →",
+        art_tag: "САРАПТАМА ЖӘНЕ СТАНДАРТТАР",
+        art_title: "Стандарттар репозиторийі: сараптамалық мақалалар мен 2026 нормалары",
+        art_sub: "Бизнес жетекшілеріне, ЖОО проректорларына және мектеп басшыларына арналған практикалық нұсқаулықтар мен стандарттар.",
+        tab_art_1: "72 сағатта бейімдеу (B2B)",
+        tab_art_2: "МЖМБС және Platonus (ЖОО)",
+        tab_art_3: "«Ұстаз» аттестаттауы (Мектеп)",
+        tab_art_4: "85% курс аяқталуы (EdTech)",
+        art_meta_1: "Стандарттар бюросының регламенті",
+        art_meta_2: "МЖМБС 2026 нормобақылауы",
+        art_meta_3: "Педагогтерді аттестаттау",
+        art_meta_4: "EdTech әдіснамасы",
+        art_read_time_3: "Оқу уақыты: 3 мин",
+        art_read_time_4: "Оқу уақыты: 4 мин",
+        art1_title: "Менеджердің тағылымдамасын 2 айдан 72 сағатқа дейін қалай қысқартуға болады: интерактивті симуляторлардың күші",
+        art1_body: "Корпоративтік бизнестің дәстүрлі үлгісінде сату менеджерін бейімдеу 4-тен 8 аптаға дейін созылады. Осы кезеңде компания қос шығынға ұшырайды: тәжірибеден өтушіге жалақы төлейді және сапасыз жауаптар салдарынан өтінімдердің 40%-ын жоғалтады.",
+        art1_quote: "«Рұқсат берудің біліктілік нормативі: қызметкер дербес диалогтік симуляторда 85+ балл жинамайынша, клиенттерге қоңырау шалуға құқығы жоқ.»",
+        art2_title: "Кафедраның ҚР ҒЖБМ тексерулеріне және IAAR/IQAA аккредиттеуіне дайындық бақылау парағы",
+        art2_body: "МЖМБС 2026 жаңа талаптары Блум таксономиясы мен Дублин дескрипторлары бойынша Оқыту Нәтижелерін (ОН) қатаң бақылауды енгізді. Комиссиялардың жиі айтатын ескертуі — тест тапсырмаларының құзыреттерге сәйкес келмеуі және 5 жылдан асқан ескі әдебиеттер.",
+        art2_quote: "«Эталондық ПОӘК тек силлабусты ғана емес, сонымен бірге ашық бағалау матрицасы (Rubrics) бар тексерілген бағалау құралдарының қорын (БҚҚ) қамтуы тиіс.»",
+        art3_title: "«Ұстаз» платформасында авторлық бағдарламаны қорғау: сараптамалық кеңестердің критерийлері",
+        art3_body: "«Педагог-зерттеуші» немесе «педагог-шебер» санатына құжат тапсыру кезінде бағдарламалардың 60%-дан астамы жаңашылдықтың болмауы, түсіндірме жазба құрылымының бұзылуы және диагностикалық жүйенің жоқтығынан «Өрлеу» сараптамалық кеңестерінен қайтарылады.",
+        art3_quote: "«Авторлық бағдарлама дәлелді педагогикаға негізделуі және толық дидактикалық кешенмен — жұмыс дәптерлерімен және диагностикалық карталармен сүйемелденуі тиіс.»",
+        art4_title: "Неліктен онлайн-курстарды аяқтау деңгейі 20%-дан төмендейді және қайта түсірілімсіз қалай жандандыруға болады",
+        art4_body: "Курс авторларының басты қателігі — 40–60 минуттық ұзақ дәрістермен шаршату. Ересек студент 12-минутта зейінін жоғалтады. Егер теориядан кейін жедел тәжірибелік тапсырма болмаса, студент оқуды тастап кетеді.",
+        art4_quote: "«Колбтың 4 тактілі циклін қолдану (Тәжірибе → Ой қорыту → Модель → Сынақ) күрделі кәсіби бағдарламаларда да курсты аяқтау көрсеткішін (COR) 18%-дан 82%-ға дейін көтереді.»",
+        art_cta_text: "Өз ұйымыңызға осындай стандарттарды енгізгіңіз келе ме?",
+        art_cta_btn: "Сметасын калькуляторда есептеу →",
+        calc_tag: "АШЫҚ ЕСЕПТЕУ",
+        calc_title: "Құны мен мерзімінің интерактивті калькуляторы",
+        calc_sub: "Қажетті санаттарды ашып, модульдерді таңдаңыз және бастапқы коммерциялық ұсынысты қалыптастырыңыз.",
+        badge_4_opt: "4 опция",
+        badge_3_opt: "3 опция",
+        badge_2_opt: "2 опция",
+        cat_b2b_title: "1. Корпоративтік оқыту және B2B-симуляторлар",
+        cat_edu_title: "2. Жоғары мектеп және Колледждер (МЖМБС 2026)",
+        cat_sch_title: "3. Жеке мектептер мен Ұстаздар («Ұстаз» платформасы)",
+        cat_edt_title: "4. Онлайн-мектептер және EdTech (Әдіснама және Voice-to-Course)",
+        cat_loc_title: "5. Тілдік локализация және сараптамалық қолдау",
+        c_sim_name: "Диалогтік AI-симулятор (20 сценарийге дейін)",
+        c_sim_desc: "Күрделі қарсылықтарды пысықтауға арналған интерактивті жаттықтырушы",
+        c_onb_name: "Бейімдеу стандарттары және рұқсат регламенті (72 сағат)",
+        c_onb_desc: "Жаңа қызметкер кітабы, біліктілік парағы және рұқсат беру бұйрығы",
+        c_book_name: "Сату кітабы және сөздік модульдер матрицасы",
+        c_book_desc: "Хат алмасу/қоңырау скрипттері, мақсатты аудитория сыныптауышы",
+        c_qa_name: "Сапаны бақылау бөлімі (QA): бақылау парақтары мен KPI",
+        c_qa_desc: "Қоңырауларды бағалау матрицасы, қателік критерийлері және грейд жүйесі",
+        c_umkd_name: "Эталондық ПОӘК толық әзірлеу (1 пән)",
+        c_umkd_desc: "Силлабус, оқыту нәтижелері (ОН), соңғы 3 жылдағы әдебиеттер",
+        c_fos_name: "Бағалау құралдарының қоры (Platonus/Moodle үшін 100 тест)",
+        c_fos_desc: "Бір және бірнеше дұрыс жауабы бар тестілік тапсырмалар базасы",
+        c_dept_name: "Кафедраның кешенді циклі (4–5 пән толық пакет)",
+        c_dept_desc: "IAAR/IQAA аккредиттеуіне арналған білім беру бағдарламасының толық пакеті",
+        c_dash_name: "Пәнді іске қосудың интерактивті панелі (HTML)",
+        c_dash_desc: "Силлабус пен дәрістер қоры бойынша автономды сандық навигатор",
+        c_ustaz_name: "«Ұстаз» аттестаттау пакеті (авторлық бағдарлама + КТЖ)",
+        c_ustaz_desc: "Түсіндірме жазба, күнтізбелік жоспар (34/68 сағ), диагностикалық жүйе",
+        c_wb_name: "Оқушыларға арналған авторлық комикс-дәптер",
+        c_wb_desc: "Әдіснамалық тұжырымдама, кейіпкер сценарийі және түрлі-түсті беттеу",
+        c_schstd_name: "Жеке мектепке арналған оқыту стандарттары мен QA",
+        c_schstd_desc: "Сабақ регламенті, мұғалімдерді бақылау парақтары және тәлімгер кітабы",
+        c_ea_name: "Курстың әдістемелік экспресс-аудиті (COR өсіру жоспары)",
+        c_ea_desc: "Кету себептерін талдау, мотивация картасы және үй тапсырмаларының аудиті",
+        c_vtc_name: "Сарапшының аудиосынан курс құрастыру (Voice-to-Course)",
+        c_vtc_desc: "Транскрибация, сабақтардың сценарлық төлқұжаттары, жұмыс дәптерлері",
+        c_kolb_name: "Бағдарламаны Колбтың 4 тактілі циклімен қайта жинақтау",
+        c_kolb_desc: "Дәрістерді ересек студенттерге арналған тәжірибелік циклге айналдыру",
+        c_kz_name: "Қазақ тіліне толық кәсіби локализация жасау",
+        c_kz_desc: "Барлық материалдар мен құжаттардың сапалы академиялық аудармасы",
+        c_sopr_name: "Сараптамалық сүйемелдеу және нормобақылауда қорғау (1 ай)",
+        c_sopr_desc: "Комиссия ескертулерін түзету, жетекшінің әдістемелік кеңестері",
+        sum_heading: "Сметаның алдын ала есебі",
+        sum_time: "Мерзімі: сол жақтан опцияларды таңдаңыз",
+        sum_empty: "Опциялар әлі таңдалмаған. Сол жақтағы мәзірден қажетті тармақтарды белгілеңіз.",
+        sum_disclaimer: "ℹ️ Ескертпе: бұл есеп бастапқы коммерциялық ұсынысты қалыптастырады. Түпкілікті құны мен енгізу кестесі бриф толтырылған соң «МЕТОДИКО» Бюросының жетекшісімен бекітіледі.",
+        form_title: "Бекітуге бастапқы КҰ алу:",
+        ph_name: "Сіздің атыңыз",
+        ph_org: "Ұйым / Бизнес саласы",
+        ph_contact: "Телефон / Email / Telegram",
+        btn_gen_kp: "Бастапқы КҰ қалыптастыру",
+        modal_title: "БАСТАПҚЫ КОММЕРЦИЯЛЫҚ ҰСЫНЫС",
+        modal_sub: "«МЕТОДИКО» академиялық және корпоративтік стандарттар бюросы",
+        modal_status: "Келісілуде",
+        modal_client_lbl: "Тапсырыс беруші:",
+        modal_contact_lbl: "Байланыс:",
+        modal_date_lbl: "Құрылған күні:",
+        modal_list_head: "Таңдалған модульдер мен қызметтер тізімі:",
+        modal_th_name: "Модуль атауы",
+        modal_th_price: "Құны (₸)",
+        modal_total_lbl: "Қорытынды бағдарлы құны:",
+        modal_disclaimer: "* Бұл құжат сметаның алдын ала есебі болып табылады. Түпкілікті спецификация мен іске асырудың күнтізбелік жоспары сұхбаттасудан және «МЕТОДИКО» стандарттар бюросы жетекшісінің бекітуінен кейін келісімшартта бекітіледі.",
+        modal_print_btn: "Басып шығару / PDF етіп сақтау",
+        modal_close_btn: "Түсінікті, жабу",
+        shield_tag: "АВТОРИТЕТ ЖӘНЕ СТАНДАРТТАР",
+        shield_title: "Академиялық стандарт: жоғары мектеп тәжірибесі сіздің бизнесіңізге қызмет етеді",
+        shield_p1: "«МЕТОДИКО» стандарттар бюросын жоғары оқу орындарының оқу бөлімдерін басқаруда 24 жылдық өтілі бар сарапшылар мен әл-Фараби атындағы ҚазҰУ оқытушылары құрған.",
+        shield_p2: "Біз академиялық нормобақылау, регламент тәртібі және заманауи білім беру стандарттарын біріктірдік. Біздің шешімдерімізде арзан уәделер жоқ — тек нақты цифрлар, өлшенетін KPI және заңды жауапкершілік бар.",
+        sh1_title: "Заңдық мінсіздік",
+        sh1_desc: "«Метод и Ко» ЖШС (Алматы қ.) заңды тұлғасымен ресми шарт, қолма-қолсыз төлем, сатып алу порталында тіркелу, электрондық шот-фактуралар (ЭШФ).",
+        sh2_title: "Толық құпиялылық (NDA)",
+        sh2_desc: "«Сұр кардинал» форматы: біз тапсырыс берушінің коммерциялық және авторлық мәліметтерін жарияламай жұмыс істейміз. Барлық деректер келісімшартпен қорғалған.",
+        sh3_title: "Нормобақылау кепілдігі",
+        sh3_desc: "ҚР білім беру заңнамасына, Үлгілік оқу жоспарларына (ҮОЖ) және мемлекеттік стандарттарға 100% сәйкестік.",
+        foot_desc: "Академиялық және корпоративтік стандарттар бюросы. AI-симуляторлар, бейімдеу регламенттері және МЖМБС аккредиттеу пакеттерін әзірлеу.",
+        foot_nav: "Навигация",
+        foot_contact: "Әдіснама және стандарттар бөлімі",
+        btn_foot_cp: "КҰ есебіне өтінім қалдыру →"
+      }
+    };
+
+    function toggleLanguage() {
+      currentLang = (currentLang === 'ru') ? 'kz' : 'ru';
+      document.getElementById('btn-ru').classList.toggle('active', currentLang === 'ru');
+      document.getElementById('btn-kz').classList.toggle('active', currentLang === 'kz');
+
+      // Обновление всех элементов с data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[currentLang] && translations[currentLang][key]) {
+          el.innerText = translations[currentLang][key];
+        }
+      });
+
+      // Обновление плейсхолдеров формы
+      document.getElementById('lead-name').placeholder = translations[currentLang].ph_name;
+      document.getElementById('lead-org').placeholder = translations[currentLang].ph_org;
+      document.getElementById('lead-contact').placeholder = translations[currentLang].ph_contact;
+
+      // Обновление модального окна КП
+      document.getElementById('modal-heading-title').innerText = translations[currentLang].modal_title;
+      document.getElementById('modal-heading-sub').innerText = translations[currentLang].modal_sub;
+      document.getElementById('modal-status-text').innerText = translations[currentLang].modal_status;
+      document.getElementById('lbl-modal-client').innerText = translations[currentLang].modal_client_lbl;
+      document.getElementById('lbl-modal-contact').innerText = translations[currentLang].modal_contact_lbl;
+      document.getElementById('lbl-modal-date').innerText = translations[currentLang].modal_date_lbl;
+      document.getElementById('modal-selected-head').innerText = translations[currentLang].modal_list_head;
+      document.getElementById('th-modal-name').innerText = translations[currentLang].modal_th_name;
+      document.getElementById('th-modal-price').innerText = translations[currentLang].modal_th_price;
+      document.getElementById('td-modal-total-label').innerText = translations[currentLang].modal_total_lbl;
+      document.getElementById('modal-disclaimer-doc').innerText = translations[currentLang].modal_disclaimer;
+      document.getElementById('btn-modal-print').innerText = translations[currentLang].modal_print_btn;
+      document.getElementById('btn-modal-close').innerText = translations[currentLang].modal_close_btn;
+
+      // Пересчет калькулятора под выбранный язык
+      recalculate();
+    }
+
+    /* =========================================================
+       2. ИНТЕРАКТИВНЫЙ ДЕМО-СИМУЛЯТОР
+       ========================================================= */
+    function checkAnswer(optionNum) {
+      const verdictBox = document.getElementById('sim-verdict-box');
+      const scoreEl = document.getElementById('user-score');
+      verdictBox.style.display = 'block';
+
+      if (optionNum === 2) {
+        scoreEl.innerText = '95 / 100';
+        scoreEl.style.color = '#22C55E';
+        verdictBox.className = 'sim-verdict verdict-success';
+        verdictBox.innerHTML = (currentLang === 'kz') ? 
+          `<strong>✔ ӘДІСКЕРДІҢ ҚОРЫТЫНДЫСЫ: ДИАЛОГҚА МІНСІЗ КІРУ (95 БАЛЛ)</strong><br>Сіз клиенттің таңдауын құрметтеп, назарды қысымсыз регламенттік шығындар аудитіне бұрдыңыз. Мұндай дағдысы бар менеджер күмәнданушы клиенттердің 80%-ын сақтап қалады.` :
+          `<strong>✔ ВЕРДИКТ МЕТОДОЛОГА: ПРЕВОСХОДНЫЙ ВХОД В ДИАЛОГ (95 БАЛЛОВ)</strong><br>Вы применили психологический прием «Присоединение и уважение к выбору клиента» + перевод внимания на аудит потерь без давления. Клиент не чувствует агрессивной продажи и соглашается взглянуть на расчеты. Менеджер с таким навыком сохраняет до 80% сомневающихся лидов.`;
+      } else if (optionNum === 1) {
+        scoreEl.innerText = '40 / 100';
+        scoreEl.style.color = '#EF4444';
+        verdictBox.className = 'sim-verdict verdict-fail';
+        verdictBox.innerHTML = (currentLang === 'kz') ?
+          `<strong>✖ ЖАҢАДАН БАСТАУШЫНЫҢ ҚАТЕЛІГІ (40 БАЛЛ — РҰҚСАТ БЕРІЛМЕЙДІ)</strong><br>Клиенттің қазіргі серіктесін жоққа шығару қарсылық тудырады. Бірден 10% жеңілдік ұсыну компанияның маржасын түсіріп, сатушының әлсіздігін көрсетеді.` :
+          `<strong>✖ ТИПИЧНАЯ ОШИБКА НОВИЧКА (40 БАЛЛОВ — ДОПУСК ЗАПРЕЩЕН)</strong><br>Обесценивание текущего выбора клиента («они работают по старинке») вызывает сопротивление и агрессию. Скидка 10% «с порога» разрушает маржинальность компании и выдает отчаяние продавца. Менеджер отправляется на доработку в симулятор.`;
+      } else {
+        scoreEl.innerText = '15 / 100';
+        scoreEl.style.color = '#EF4444';
+        verdictBox.className = 'sim-verdict verdict-fail';
+        verdictBox.innerHTML = (currentLang === 'kz') ?
+          `<strong>✖ КЛИЕНТТІ ДӨРЕКІ ЖОҒАЛТУ (15 БАЛЛ)</strong><br>Реніш білдіру («көмектесе алмаймыз»). Компания маркетингке қаражат жұмсады, ал қызметкер бір сөзбен байланысты үзді. Бұл қызметкер базаға жіберілмейді.` :
+          `<strong>✖ ГРУБЫЙ СЛИВ КЛИЕНТА (15 БАЛЛОВ)</strong><br>Обиженная пассивная агрессия («тогда ничем не поможем»). Компания потратила деньги на рекламу, а сотрудник уничтожил контакт одним ответом. В нашей системе допуск к CRM для таких сотрудников автоматически блокируется.`;
+      }
+    }
+
+    /* =========================================================
+       3. ВКЛАДКИ РЕПОЗИТОРИЯ СТАТЕЙ
+       ========================================================= */
+    function switchArticle(index) {
+      document.querySelectorAll('.art-tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index - 1);
+      });
+      document.querySelectorAll('.article-item').forEach((item, i) => {
+        item.classList.toggle('active', i === index - 1);
+      });
+    }
+
+    /* =========================================================
+       4. РАСШИРЕННЫЙ КАЛЬКУЛЯТОР С АККОРДЕОНАМИ
+       ========================================================= */
+    function toggleCategoryAccordion(headerEl) {
+      headerEl.classList.toggle('active');
+      const bodyEl = headerEl.nextElementSibling;
+      bodyEl.classList.toggle('open');
+    }
+
+    function recalculate() {
+      const checkboxes = document.querySelectorAll('.calc-item-checkbox:checked');
+      let totalPrice = 0;
+      let totalDays = 0;
+      const listEl = document.getElementById('calc-selected-items');
+      listEl.innerHTML = '';
+
+      if (checkboxes.length === 0) {
+        listEl.innerHTML = `<li style="color: #64748B; font-style: italic;">${translations[currentLang].sum_empty}</li>`;
+        document.getElementById('calc-total-sum').innerText = '0 ₸';
+        document.getElementById('calc-total-days').innerText = translations[currentLang].sum_time;
+        return;
+      }
+
+      checkboxes.forEach(cb => {
+        const name = (currentLang === 'kz') ? cb.getAttribute('data-name-kz') : cb.getAttribute('data-name-ru');
+        const price = parseInt(cb.getAttribute('data-price'), 10) || 0;
+        const days = parseInt(cb.getAttribute('data-days'), 10) || 0;
+
+        totalPrice += price;
+        totalDays += days;
+
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${name}</span> <span>${price.toLocaleString('ru-RU')} ₸</span>`;
+        listEl.appendChild(li);
+      });
+
+      document.getElementById('calc-total-sum').innerText = totalPrice.toLocaleString('ru-RU') + ' ₸';
+      const daysText = (currentLang === 'kz') ? 
+        `Әзірлеу мерзімі: ~${Math.max(totalDays, 2)} жұмыс күні` :
+        `Срок разработки: ~${Math.max(totalDays, 2)} рабочих дней`;
+      document.getElementById('calc-total-days').innerText = daysText;
+    }
+
+    /* =========================================================
+       5. МОДАЛЬНОЕ ОКНО ПЕРВИЧНОГО КП
+       ========================================================= */
+    function generateCommercialProposal() {
+      const checkboxes = document.querySelectorAll('.calc-item-checkbox:checked');
+      if (checkboxes.length === 0) {
+        alert(currentLang === 'kz' ? 'Алдымен сол жақтағы калькулятордан кемінде 1 қызметті таңдаңыз.' : 'Пожалуйста, сначала отметьте галочкой хотя бы одну услугу в калькуляторе слева.');
+        return;
+      }
+
+      const defaultName = (currentLang === 'kz') ? 'Тапсырыс беруші' : 'Уважаемый партнер';
+      const defaultOrg = (currentLang === 'kz') ? 'Ұйым / Компания' : 'Организация / Компания';
+      const defaultContact = (currentLang === 'kz') ? 'Нақтылануда' : 'Уточняется';
+
+      const name = document.getElementById('lead-name').value.trim() || defaultName;
+      const org = document.getElementById('lead-org').value.trim() || defaultOrg;
+      const contact = document.getElementById('lead-contact').value.trim() || defaultContact;
+
+      document.getElementById('modal-client-name').innerText = name;
+      document.getElementById('modal-client-org').innerText = org;
+      document.getElementById('modal-client-contact').innerText = contact;
+
+      const dateNow = new Date().toLocaleDateString(currentLang === 'kz' ? 'kk-KZ' : 'ru-RU');
+      document.getElementById('modal-doc-date').innerText = dateNow;
+
+      const tbody = document.getElementById('modal-table-rows');
+      tbody.innerHTML = '';
+      let total = 0;
+
+      checkboxes.forEach((cb, idx) => {
+        const title = (currentLang === 'kz') ? cb.getAttribute('data-name-kz') : cb.getAttribute('data-name-ru');
+        const price = parseInt(cb.getAttribute('data-price'), 10);
+        total += price;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="padding: 8px; border: 1px solid #CBD5E1; text-align: center;">${idx + 1}</td>
+          <td style="padding: 8px; border: 1px solid #CBD5E1;">${title}</td>
+          <td style="padding: 8px; border: 1px solid #CBD5E1; text-align: right; font-weight: 600;">${price.toLocaleString('ru-RU')} ₸</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('modal-table-total').innerText = total.toLocaleString('ru-RU') + ' ₸';
+      document.getElementById('kp-modal').classList.add('open');
+    }
+
+    function closeKpModal() {
+      document.getElementById('kp-modal').classList.remove('open');
+    }
+  </script>
+</body>
+</html>
