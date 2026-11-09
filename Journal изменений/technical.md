@@ -5,6 +5,20 @@
 
 ---
 
+## CHG-005 | 2026-11-09 18:40:00 +0500
+* **Цель:** Архитектурная перестройка UI: гибрид «Концепт 3 (Light Luxury) + Концепт 2 (Bento Grid + интерактивный диагностический виджет)».
+* **Затронутые компоненты:**
+  * `index.html`: внедрен CSS Grid layout `.bento-hero-grid`, `.bento-main-hero` (span 7), `.bento-mini-widget` (span 5), 4 `.bento-metric-card` (span 3).
+  * Навигатор по 4 ЦА: горизонтальный pill-switcher `.pill-tab-btn` + панели с прогрессивным раскрытием `.aud-accordion-trigger`.
+  * Двуязычный словарь: обновлен под новые элементы виджета и карточек (100% паритет KZ/RU).
+  * `Journal изменений/for-me.md` и `technical.md`.
+* **Тестирование:**
+  * Валидация селекторов DOM и событий JS (`selectWidgetSector`, `updateWidgetCalculation`, `switchAudienceTab`, `toggleAudienceAccordion`).
+  * Проверка расчета сметы и формирования КП.
+* **Точка возврата / Откат:** `git checkout HEAD~1`.
+
+---
+
 ## CHG-004 | 2026-11-09 18:10:00 +0500
 * **Цель:** Развертывание production-версии портала на GitHub Pages (branch: `main`, path: `/`). Обход двухфакторного барьера Vercel без потери функционала.
 * **Затронутые файлы / сервисы:**
