@@ -5,6 +5,20 @@
 
 ---
 
+## CHG-004 | 2026-11-09 18:10:00 +0500
+* **Цель:** Развертывание production-версии портала на GitHub Pages (branch: `main`, path: `/`). Обход двухфакторного барьера Vercel без потери функционала.
+* **Затронутые файлы / сервисы:**
+  * GitHub Pages configuration in `kodenctevanatala13-collab/metodiko`
+  * `docs/architecture.md`
+  * `Journal изменений/for-me.md`
+  * `Journal изменений/technical.md`
+* **Сетевой аудит и проверки:**
+  * `curl.exe -I "https://kodenctevanatala13-collab.github.io/metodiko/"` ➔ `HTTP/1.1 200 OK`, `Content-Length: 155877`, `Server: GitHub.com`, SSL активен.
+  * `curl.exe -I "https://kodenctevanatala13-collab.github.io/metodiko/assets/Metodico_logo_gold.png"` ➔ `HTTP/1.1 200 OK`, `Content-Length: 49194`.
+* **Точка возврата / Откат:** Настройки GitHub Pages могут быть переключены на `None` в любой момент в UI репозитория.
+
+---
+
 ## CHG-003 | 2026-11-08 22:30:00 +0500
 * **Цель:** Рефакторинг UI-иконок на inline SVG, полная локализация словаря `kz` для динамических модулей калькулятора и КП, фикс Windows CRLF в batch-скрипте, внедрение архитектурной карты `docs/` и регламентных журналов.
 * **Затронутые файлы:**
