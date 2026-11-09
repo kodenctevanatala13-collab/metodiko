@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кейс 4: Разработка и пересборка курса под ключ | Бюро стандартов «МЕТОДИКО»</title>
+  <style>
+    :root {
+      --bg-cream: #F8F7F4;
+      --card-bg: #FFFFFF;
+      --navy: #152238;
+      --navy-dark: #0D1726;
+      --navy-light: #F0F4FA;
+      --gold: #C29D59;
+      --gold-dark: #9E7D3B;
+      --gold-light: #F6F1E5;
+      --green: #2E7D32;
+      --green-light: #E8F5E9;
+      --red: #C62828;
+      --red-light: #FFEBEE;
+      --text-main: #1F2937;
+      --text-muted: #5A6A80;
+      --border: #E5E0D8;
+      --border-light: #EFECE6;
+      --shadow-sm: 0 2px 8px rgba(21, 34, 56, 0.06);
+      --shadow-md: 0 10px 24px rgba(21, 34, 56, 0.08);
+      --shadow-lg: 0 18px 40px rgba(21, 34, 56, 0.12);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* HEADER */
+    header {
+      background: #FFFFFF;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-block { display: flex; align-items: center; gap: 12px; }
+    .brand-logo {
+      width: 40px; height: 40px; object-fit: contain;
+      border-radius: 50%; border: 1.5px solid var(--gold); padding: 2px; background: #FFF;
+    }
+    .brand-title {
+      font-size: 17px; font-weight: 800; letter-spacing: 0.03em;
+      color: var(--navy); text-transform: uppercase; line-height: 1.2;
+    }
+    .brand-subtitle { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+
+    .badge-header {
+      background: var(--gold-light); color: var(--gold-dark);
+      border: 1px solid rgba(194, 157, 89, 0.5); padding: 5px 12px;
+      border-radius: 18px; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    /* HERO */
+    .hero { max-width: 1400px; margin: 18px auto 14px; padding: 0 32px; }
+    .hero-card {
+      background: #FFFFFF; border: 1px solid var(--border);
+      border-left: 5px solid var(--navy); border-radius: var(--radius);
+      padding: 20px 28px; box-shadow: var(--shadow-sm);
+    }
+    .hero-tag {
+      display: inline-block; background: var(--navy-light); color: var(--navy);
+      font-size: 11px; font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 5px; margin-bottom: 8px;
+    }
+    .hero-title { font-size: 21px; color: var(--navy); font-weight: 800; margin-bottom: 6px; line-height: 1.3; }
+    .hero-desc { font-size: 13.5px; color: #4A5568; max-width: 1150px; line-height: 1.55; }
+
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-light);
+    }
+    .stat-box {
+      background: #FAF8F5; padding: 10px 14px; border-radius: 6px; border-left: 3px solid var(--gold);
+    }
+    .stat-box strong { font-size: 15px; color: var(--navy); display: block; margin-bottom: 1px; }
+    .stat-box span { font-size: 11.5px; color: var(--text-muted); }
+
+    /* TABS */
+    .nav-tabs-wrap { max-width: 1400px; margin: 16px auto 0; padding: 0 32px; }
+    .tabs-bar {
+      display: flex; gap: 8px; border-bottom: 3px solid #DDD7CE;
+      overflow-x: auto; padding-bottom: 3px;
+    }
+    .tab-nav-btn {
+      border: 1px solid #D5CEBF; background: #FAF8F5;
+      padding: 11px 20px; font-size: 13px; font-weight: 700;
+      color: #475569; cursor: pointer; border-radius: 8px 8px 0 0;
+      white-space: nowrap; transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tab-nav-btn:hover {
+      background: #FFFFFF; color: var(--navy); border-color: var(--gold);
+    }
+    .tab-nav-btn.active {
+      background: var(--navy); color: #FFFFFF; border-color: var(--navy);
+      box-shadow: 0 4px 12px rgba(21, 34, 56, 0.18);
+    }
+    .tab-nav-btn.active .tab-badge-count {
+      background: var(--gold); color: #FFFFFF;
+    }
+    .tab-badge-count {
+      background: #E2E8F0; color: #475569; font-size: 10.5px;
+      font-weight: 800; padding: 2px 6px; border-radius: 8px;
+    }
+
+    /* TAB CONTENTS */
+    .tab-content { max-width: 1400px; margin: 18px auto 0; padding: 0 32px; display: none; }
+    .tab-content.active { display: block; }
+
+    .content-card {
+      background: #FFFFFF; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px 28px; box-shadow: var(--shadow-sm); margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 17px; color: var(--navy); font-weight: 800; margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .card-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5; }
+
+    /* SYMMETRICAL ARCHITECTURE LAYOUT */
+    .arch-container {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .arch-core-banner {
+      background: var(--navy); color: #FFFFFF; padding: 14px 20px; border-radius: 10px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      border-left: 5px solid var(--gold);
+    }
+    .arch-core-banner h3 { font-size: 15px; font-weight: 800; }
+    .arch-core-banner span { font-size: 12px; color: #D1D5DB; }
+
+    /* 2x2 SYMMETRICAL GRID */
+    .arch-grid-2x2 {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    @media (max-width: 900px) { .arch-grid-2x2 { grid-template-columns: 1fr; } }
+
+    .arch-card {
+      background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 18px; display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: var(--shadow-sm); transition: border-color 0.2s;
+    }
+    .arch-card:hover { border-color: var(--gold); }
+    .arch-card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1.5px solid var(--border-light); padding-bottom: 10px; margin-bottom: 12px;
+    }
+    .arch-card-title { font-size: 15px; font-weight: 800; color: var(--navy); }
+    .arch-card-badge {
+      font-size: 10.5px; font-weight: 800; padding: 3px 8px; border-radius: 5px; text-transform: uppercase;
+    }
+    .badge-blue { background: #DBEAFE; color: #1E40AF; }
+    .badge-amber { background: #FEF3C7; color: #92400E; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .badge-green { background: #DCFCE7; color: #166534; }
+    .badge-gold { background: var(--gold-light); color: var(--gold-dark); }
+
+    .arch-list { list-style: none; margin-bottom: 12px; font-size: 12.5px; }
+    .arch-item {
+      margin-bottom: 8px; padding-left: 22px; position: relative; line-height: 1.45;
+    }
+    .arch-item-icon { position: absolute; left: 0; top: 1px; font-size: 13px; }
+    .arch-item strong { color: var(--navy); }
+    .arch-item span { color: #4B5563; }
+
+    .arch-result-box {
+      background: #FAF8F5; border-left: 3px solid var(--gold); padding: 10px 12px;
+      border-radius: 5px; font-size: 12px;
+    }
+    .arch-result-box strong { color: var(--navy); display: block; margin-bottom: 2px; }
+    .arch-result-box span { color: #4B5563; }
+
+    /* FULL WIDTH CONCLUSION & GIFTS BLOCK */
+    .arch-conclusion-card {
+      background: #FFFFFF; border: 2px solid var(--gold); border-radius: 10px;
+      padding: 20px 24px; box-shadow: var(--shadow-sm);
+    }
+    .conclusion-header {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      border-bottom: 1.5px solid var(--border-light); padding-bottom: 12px; margin-bottom: 14px;
+    }
+    .conclusion-header h4 { font-size: 16px; font-weight: 800; color: var(--navy); }
+    .gifts-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;
+    }
+    .gift-item {
+      background: #FAF8F5; border: 1px solid var(--border-light); border-radius: 8px;
+      padding: 12px 14px; border-top: 3px solid var(--gold);
+    }
+    .gift-item strong { font-size: 12.5px; color: var(--navy); display: block; margin-bottom: 4px; }
+    .gift-item span { font-size: 11.5px; color: #5A6A80; line-height: 1.4; display: block; }
+
+    /* TRIPARTITE CALCULATOR (3 STAGES) */
+    .calc-tripartite-wrap {
+      display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px; margin-top: 10px;
+    }
+    @media (max-width: 960px) { .calc-tripartite-wrap { grid-template-columns: 1fr; } }
+
+    .calc-stage-box {
+      background: #FAF8F5; border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 14px;
+    }
+    .calc-stage-head {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    .calc-stage-head h4 { font-size: 14px; font-weight: 800; color: var(--navy); }
+    .calc-stage-head span { font-size: 13px; font-weight: 800; color: var(--gold-dark); }
+
+    .compact-check {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 12px; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--navy);
+      cursor: pointer;
+    }
+    .compact-check input { width: 16px; height: 16px; accent-color: var(--navy); margin-right: 8px; }
+
+    /* PILL BUTTONS (NO SLIDERS) */
+    .pills-row {
+      display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 10px;
+    }
+    .pill-btn {
+      flex: 1; min-width: 50px; text-align: center; padding: 7px 10px;
+      border: 1px solid var(--border); background: #FFFFFF; border-radius: 6px;
+      font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.15s;
+    }
+    .pill-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .pill-btn.active { background: var(--navy); color: #FFF; border-color: var(--navy); }
+
+    /* SUMMARY PANEL */
+    .calc-summary-panel {
+      background: #FFFFFF; border: 2px solid var(--gold); border-radius: 12px;
+      padding: 22px; display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-big-price { font-size: 28px; font-weight: 900; color: var(--navy); margin: 2px 0; }
+    .summary-sub-price { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+    .summary-specs {
+      list-style: none; font-size: 12px; color: #4B5563; margin-bottom: 18px;
+      border-top: 1px solid var(--border-light); padding-top: 12px;
+    }
+    .summary-specs li { margin-bottom: 6px; padding-left: 16px; position: relative; }
+    .summary-specs li::before {
+      content: "✔"; position: absolute; left: 0; color: var(--green); font-weight: bold;
+    }
+
+    .btn-estimate-modal {
+      width: 100%; border: none; background: var(--gold-dark); color: #FFFFFF;
+      padding: 12px; border-radius: 7px; font-size: 13.5px; font-weight: 800; cursor: pointer;
+      transition: background 0.2s; text-align: center;
+    }
+    .btn-estimate-modal:hover { background: #7C602B; }
+
+    /* FUNNEL SECTION (TAB 3) */
+    .funnel-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px;
+    }
+    .funnel-stage {
+      background: #FAF8F5; border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; border-top: 4px solid var(--navy);
+    }
+    .funnel-stage.critical { border-top-color: var(--red); background: #FFF9F9; }
+    .funnel-stage.success { border-top-color: var(--green); background: #F6FFF7; }
+    .funnel-stage-title { font-size: 13.5px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+    .funnel-stat-badge {
+      display: inline-block; font-size: 10.5px; font-weight: 800; padding: 2px 7px;
+      border-radius: 4px; margin-bottom: 6px;
+    }
+    .badge-drop { background: var(--red-light); color: var(--red); }
+    .badge-good { background: var(--green-light); color: var(--green); }
+    .funnel-desc { font-size: 12px; color: #4A5568; line-height: 1.4; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(13, 23, 38, 0.7); display: none; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px;
+    }
+    .modal-box {
+      background: #FFFFFF; border-radius: 12px; max-width: 620px; width: 100%;
+      padding: 24px 28px; box-shadow: var(--shadow-lg); border: 2px solid var(--gold);
+      position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 16px; font-size: 22px;
+      color: var(--text-muted); cursor: pointer; border: none; background: transparent;
+    }
+    .modal-close:hover { color: var(--navy); }
+    .estimate-text-box {
+      background: #FAF8F5; border: 1px solid var(--border); border-radius: 6px;
+      padding: 14px; font-family: "Courier New", Courier, monospace; font-size: 12px;
+      line-height: 1.5; color: #1F2937; margin: 14px 0; white-space: pre-wrap;
+    }
+
+    /* FOOTER */
+    footer {
+      max-width: 1400px; margin: 30px auto 0; padding: 20px 32px;
+      border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-block">
+        <img src="assets/Metodico_logo_gold_png.png" alt="МЕТОДИКО" class="brand-logo" onerror="this.style.display='none'">
+        <div>
+          <div class="brand-title">Бюро стандартов «МЕТОДИКО»</div>
+          <div class="brand-subtitle">Разработка и экспертный аудит образовательных продуктов</div>
+        </div>
+      </div>
+      <div class="badge-header">ТОО «Метод и Ко»</div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-tag">Кейс №4 • Сегмент «Онлайн-школы, EdTech и эксперты»</div>
+      <h1 class="hero-title">Методический аудит и сборка курса под ключ: от голосовых наговоров эксперта до доходимости 82%</h1>
+      <p class="hero-desc">
+        Практический пример пересборки программы <strong>«Договорная защита и безопасность бизнеса»</strong> (эксперт — судебный юрист со стажем 18 лет). Замена 80-минутных лекций на прикладные 14-минутные уроки с готовыми документами, внедрение рабочей тетради и устранение отвала слушателей.
+      </p>
+
+      <!-- ВАЖНОЕ ПОЯСНЕНИЕ О ВЫБОРЕ НИШИ И УНИВЕРСАЛЬНОСТИ БЮРО -->
+      <div style="background:#FAF8F5; border:1.5px solid var(--gold); border-left:5px solid var(--gold-dark); padding:12px 18px; border-radius:8px; margin-top:14px; font-size:13px; color:var(--navy); line-height:1.5;">
+        <strong>📌 Важное пояснение для заказчиков:</strong> Данный юридический курс представлен исключительно как <em>наглядный пример нашей работы и глубины практической проработки</em>. Бюро стандартов «МЕТОДИКО» разрабатывает с нуля и пересобирает образовательные продукты <strong>в абсолютно любой нише и любого формата</strong>: корпоративные академии, IT, финансы, медицина, продажи и сервис, производство, школы наставников и авторские курсы экспертов.
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-box">
+          <strong>Доходимость (COR): с 16.4% ➔ 82.5%</strong>
+          <span>Слушатели доходят до финала и внедряют документы в бизнес</span>
+        </div>
+        <div class="stat-box">
+          <strong>Длина уроков: с 78 мин ➔ 14 мин</strong>
+          <span>Коротко, по делу, без сложного птичьего языка юристов</span>
+        </div>
+        <div class="stat-box">
+          <strong>Возвраты денег: с 14.2% ➔ 1.1%</strong>
+          <span>Экономия 3.9 млн ₸ чистой прибыли школы на каждом потоке</span>
+        </div>
+        <div class="stat-box">
+          <strong>Продажи услуг эксперта: 24.2%</strong>
+          <span>Каждый 4-й выпускник покупает персональный аудит договоров</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABS NAVIGATOR (3 CLEAR STEPS) -->
+  <div class="nav-tabs-wrap">
+    <div class="tabs-bar">
+      <button class="tab-nav-btn active" onclick="openTab('tab-arch')">
+        <span>🗺️ 1. Архитектура курса</span>
+        <span class="tab-badge-count">5 блоков</span>
+      </button>
+      <button class="tab-nav-btn" onclick="openTab('tab-audit')">
+        <span>📊 2. Экспресс-аудит и точки отвала</span>
+        <span class="tab-badge-count">Воронка потерь</span>
+      </button>
+      <button class="tab-nav-btn" onclick="openTab('tab-calc')">
+        <span>💰 3. Расчет стоимости разработки</span>
+        <span class="tab-badge-count">3 этапа сметы</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 1: АРХИТЕКТУРА КУРСА (СИММЕТРИЧНО, БЕЗ ПУСТЫХ МЕСТ) -->
+  <section id="tab-arch" class="tab-content active">
+    <div class="content-card">
+      <div class="card-title">
+        <span>Архитектура образовательной программы</span>
+        <span class="badge-header">100% прикладной формат</span>
+      </div>
+      <p class="card-desc">
+        Программа выстроена по принципу: <strong>короткий урок (12–15 мин) ➔ готовый шаблон ➔ практическое задание на своем бизнесе ➔ защищенный документ в папке компании</strong>.
+      </p>
+
+      <div class="arch-container">
+        <!-- CORE BANNER -->
+        <div class="arch-core-banner">
+          <h3>КУРС: «ДОГОВОРНАЯ ЗАЩИТА И ПРАВОВАЯ БЕЗОПАСНОСТЬ БИЗНЕСА»</h3>
+          <span>Цель: защита денег и активов компании от недобросовестных партнеров, штрафов и судов</span>
+        </div>
+
+        <!-- 2x2 SYMMETRICAL ROW -->
+        <div class="arch-grid-2x2">
+          
+          <!-- BLOCK 0: ONBOARDING -->
+          <div class="arch-card">
+            <div>
+              <div class="arch-card-header">
+                <div class="arch-card-title">🚀 ОНБОРДИНГ: «Быстрый старт за 24 часа»</div>
+                <span class="arch-card-badge badge-amber">Вводный спринт</span>
+              </div>
+              <ul class="arch-list">
+                <li class="arch-item">
+                  <span class="arch-item-icon">🎬</span>
+                  <strong>Уроки:</strong>
+                  <span>0.1: Как устроен курс и где забрать шаблоны (7 мин)<br>0.2: Тест «7 уязвимостей в договорах вашей компании» (10 мин)</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">📋</span>
+                  <strong>Раздаточный материал:</strong>
+                  <span>Рабочая тетрадь (Воркбук) на 24 стр. + Чек-лист 7 уязвимостей</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">🛠️</span>
+                  <strong>Практика и ДЗ:</strong>
+                  <span>Пройти самодиагностику и загрузить типовой договор компании на проверку</span>
+                </li>
+              </ul>
+            </div>
+            <div class="arch-result-box">
+              <strong>🏆 Твердый артефакт на руках:</strong>
+              <span>Диагностическая карта правовых рисков: предприниматель точно знает уязвимые места своих договоров.</span>
+            </div>
+          </div>
+
+          <!-- BLOCK 1: MODULE 1 -->
+          <div class="arch-card">
+            <div>
+              <div class="arch-card-header">
+                <div class="arch-card-title">🛡️ МОДУЛЬ 1: Проверка партнеров и авансов</div>
+                <span class="arch-card-badge badge-blue">Модуль 1</span>
+              </div>
+              <ul class="arch-list">
+                <li class="arch-item">
+                  <span class="arch-item-icon">🎬</span>
+                  <strong>Уроки:</strong>
+                  <span>1.1: 7 красных флагов: как за 7 минут выявить банкрота (13 мин)<br>1.2: Проверка реальных полномочий директора и подписантов (12 мин)</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">📋</span>
+                  <strong>Раздаточный материал:</strong>
+                  <span>Таблица прямых ссылок на государственные реестры (налоги, суды, ЧСИ) + Памятка стоп-факторов</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">🛠️</span>
+                  <strong>Практика и ДЗ:</strong>
+                  <span>Пробить реального контрагента по 4 базам данных перед переводом аванса</span>
+                </li>
+              </ul>
+            </div>
+            <div class="arch-result-box">
+              <strong>🏆 Твердый артефакт на руках:</strong>
+              <span>Заключение безопасности по контрагенту в формате «Светофор» (зеленый / желтый / красный) и защищенный аванс.</span>
+            </div>
+          </div>
+
+          <!-- BLOCK 2: MODULE 2 -->
+          <div class="arch-card">
+            <div>
+              <div class="arch-card-header">
+                <div class="arch-card-title">⚖️ МОДУЛЬ 2: Защита от штрафов и неустоек</div>
+                <span class="arch-card-badge badge-red">Модуль 2</span>
+              </div>
+              <ul class="arch-list">
+                <li class="arch-item">
+                  <span class="arch-item-icon">🎬</span>
+                  <strong>Уроки:</strong>
+                  <span>2.1: Безопасная неустойка с потолком 5–10% (14 мин)<br>2.2: Родная подсудность без чужих судов (12 мин)<br>2.3: Односторонний отказ и форс-мажор (15 мин)</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">📋</span>
+                  <strong>Раздаточный материал:</strong>
+                  <span>Конструктор из 12 готовых защитных юридических формулировок + Таблица «Было / Стало»</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">🛠️</span>
+                  <strong>Практика и ДЗ:</strong>
+                  <span>Найти 3 опасных пункта в своем договоре и заменить их на защитные формулировки</span>
+                </li>
+              </ul>
+            </div>
+            <div class="arch-result-box">
+              <strong>🏆 Твердый артефакт на руках:</strong>
+              <span>Обезвреженный типовой договор компании, готовый к безопасному подписанию с клиентами и поставщиками.</span>
+            </div>
+          </div>
+
+          <!-- BLOCK 3: MODULE 3 -->
+          <div class="arch-card">
+            <div>
+              <div class="arch-card-header">
+                <div class="arch-card-title">✍️ МОДУЛЬ 3: Акты приемки и возврат долгов</div>
+                <span class="arch-card-badge badge-green">Модуль 3</span>
+              </div>
+              <ul class="arch-list">
+                <li class="arch-item">
+                  <span class="arch-item-icon">🎬</span>
+                  <strong>Уроки:</strong>
+                  <span>3.1: Автоприемка за 5 дней при молчании клиента (14 мин)<br>3.2: Переписка в WhatsApp и email как доказательство (11 мин)<br>3.3: Досудебная претензия за 24 часа (15 мин)</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">📋</span>
+                  <strong>Раздаточный материал:</strong>
+                  <span>Эталонный бланк Акта с оговоркой об автоприемке + Шаблон жесткой претензии по долгам</span>
+                </li>
+                <li class="arch-item">
+                  <span class="arch-item-icon">🛠️</span>
+                  <strong>Практика и ДЗ:</strong>
+                  <span>Внедрить правило автоприемки в бланк акта компании и отправить памятку менеджерам</span>
+                </li>
+              </ul>
+            </div>
+            <div class="arch-result-box">
+              <strong>🏆 Твердый артефакт на руках:</strong>
+              <span>Комплект документов закрытия сделок, исключающий задержки оплат и невозврат дебиторской задолженности.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- FULL-WIDTH CONCLUSION & GIFTS (СИММЕТРИЧНЫЙ ФИНАЛЬНЫЙ БЛОК) -->
+        <div class="arch-conclusion-card">
+          <div class="conclusion-header">
+            <div>
+              <h4>🎁 ЗАКЛЮЧЕНИЕ: Итоговая аттестация и библиотека подарков от эксперта</h4>
+              <div style="font-size:12px; color:var(--text-muted);">
+                Финальная защита документов компании + пожизненный комплект инструментов безопасности на руки выпускнику
+              </div>
+            </div>
+            <span class="arch-card-badge badge-gold">5 ценных активов</span>
+          </div>
+
+          <div class="gifts-grid">
+            <div class="gift-item">
+              <strong>1. Сборник законов и прецедентов</strong>
+              <span>Настольная шпаргалка ключевых статей ГК, НК и решений Верховного суда с разбором простыми словами.</span>
+            </div>
+            <div class="gift-item" style="border:1.5px solid var(--gold); background:#FFFDF9;">
+              <strong style="color:var(--navy);">2. Тренажер проверки договора (Интерактив)</strong>
+              <span>Пошаговый интерактивный алгоритм экспресс-вычитки любого контракта от контрагента за 10 минут.</span>
+              <button type="button" onclick="toggleContractTrainer()" id="btn-trainer-open" style="margin-top:8px; border:none; background:var(--navy); color:#FFF; padding:6px 12px; border-radius:5px; font-size:11.5px; font-weight:700; cursor:pointer; width:100%; transition:background 0.2s;">
+                ▶ Протестировать тренажер в действии
+              </button>
+            </div>
+            <div class="gift-item">
+              <strong>3. Тренажер сложных переговоров</strong>
+              <span>Сценарии диалогов с должниками: что отвечать, когда клиент задерживает оплату или угрожает судом.</span>
+            </div>
+            <div class="gift-item">
+              <strong>4. Чек-лист годового аудита</strong>
+              <span>Ревизия учредительных документов, доверенностей, договоров с сотрудниками, поставщиками и подрядчиками.</span>
+            </div>
+            <div class="gift-item">
+              <strong>5. Сертификат и закрытый клуб</strong>
+              <span>Официальный сертификат о прохождении курса + доступ в закрытый канал правовой безопасности для выпускников.</span>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE TRAINER PANEL -->
+          <div id="contract-trainer-panel" style="display:none; margin-top:20px; background:#FAF8F5; border:2px solid var(--gold); border-radius:10px; padding:22px; animation:fadeIn 0.3s ease;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1.5px solid var(--border-light); padding-bottom:12px; margin-bottom:14px;">
+              <div>
+                <h4 style="font-size:16px; font-weight:800; color:var(--navy); margin-bottom:2px;">
+                  🎯 Практический тренажер: «Экспресс-вычитка договора — найдите 3 скрытые мины»
+                </h4>
+                <div style="font-size:12px; color:var(--text-muted);">
+                  Вам прислали типовой договор поставки/услуг на 20 000 000 ₸. Найдите кабальные условия и обезвредьте их:
+                </div>
+              </div>
+              <div style="background:#FFFFFF; border:1px solid var(--border); padding:6px 14px; border-radius:20px; font-size:12.5px; font-weight:800; color:var(--navy);">
+                Обезврежено мин: <span id="trainer-score" style="color:var(--green); font-size:15px;">0</span> из 3
+              </div>
+            </div>
+
+            <!-- MINE 1 -->
+            <div style="background:#FFFFFF; border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px;" id="box-mine-1">
+              <div style="font-size:12px; font-weight:800; color:var(--navy); text-transform:uppercase; margin-bottom:4px;">
+                МИНИ-КЕЙС 1 • Пункт 6.2 «Неустойка и штрафы»
+              </div>
+              <div style="font-family:'Courier New', monospace; font-size:12.5px; background:#FAF8F5; padding:10px; border-radius:5px; border-left:3px solid var(--navy); color:#1F2937; margin-bottom:10px;">
+                «За нарушение сроков выполнения обязательств Исполнитель выплачивает Заказчику пеню в размере 0.5% от общей цены настоящего Договора за каждый день просрочки».
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;" id="btns-mine-1">
+                <button type="button" class="pill-btn" onclick="checkMine(1, false, this)">Формулировка стандартная, подписываем</button>
+                <button type="button" class="pill-btn" onclick="checkMine(1, true, this)">⚠️ Опасная мина: расчет от всей суммы договора (20 млн ₸), нет потолка штрафов (Cap)</button>
+              </div>
+              <div id="res-mine-1" style="display:none; margin-top:10px; font-size:12px; line-height:1.45;"></div>
+            </div>
+
+            <!-- MINE 2 -->
+            <div style="background:#FFFFFF; border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px;" id="box-mine-2">
+              <div style="font-size:12px; font-weight:800; color:var(--navy); text-transform:uppercase; margin-bottom:4px;">
+                МИНИ-КЕЙС 2 • Пункт 4.5 «Сдача-приемка и оплата»
+              </div>
+              <div style="font-family:'Courier New', monospace; font-size:12.5px; background:#FAF8F5; padding:10px; border-radius:5px; border-left:3px solid var(--navy); color:#1F2937; margin-bottom:10px;">
+                «Оплата производится Заказчиком в течение 5 банковских дней после подписания Акта приема-передачи Заказчиком. При наличии замечаний Заказчик сообщает о них Исполнителю».
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;" id="btns-mine-2">
+                <button type="button" class="pill-btn" onclick="checkMine(2, true, this)">⚠️ Опасная мина: нет срока проверки и автоприемки (клиент может молчать месяцами и не платить)</button>
+                <button type="button" class="pill-btn" onclick="checkMine(2, false, this)">Формулировка безопасная, 5 дней на оплату — это быстро</button>
+              </div>
+              <div id="res-mine-2" style="display:none; margin-top:10px; font-size:12px; line-height:1.45;"></div>
+            </div>
+
+            <!-- MINE 3 -->
+            <div style="background:#FFFFFF; border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px;" id="box-mine-3">
+              <div style="font-size:12px; font-weight:800; color:var(--navy); text-transform:uppercase; margin-bottom:4px;">
+                МИНИ-КЕЙС 3 • Пункт 9.1 «Порядок разрешения споров»
+              </div>
+              <div style="font-family:'Courier New', monospace; font-size:12.5px; background:#FAF8F5; padding:10px; border-radius:5px; border-left:3px solid var(--navy); color:#1F2937; margin-bottom:10px;">
+                «Все споры и разногласия по настоящему Договору подлежат рассмотрению в Арбитражном суде города Владивостока».
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;" id="btns-mine-3">
+                <button type="button" class="pill-btn" onclick="checkMine(3, false, this)">Договорная подсудность — обычная практика, не имеет значения</button>
+                <button type="button" class="pill-btn" onclick="checkMine(3, true, this)">⚠️ Опасная мина: чужой суд за 5 000 км — расходы на перелеты и юристов превысят сумму иска</button>
+              </div>
+              <div id="res-mine-3" style="display:none; margin-top:10px; font-size:12px; line-height:1.45;"></div>
+            </div>
+
+            <!-- FINAL VERDICT BANNER -->
+            <div id="trainer-final-banner" style="display:none; background:#F0FDF4; border:2px solid var(--green); border-radius:8px; padding:14px 18px; margin-top:14px; text-align:center;">
+              <div style="font-size:15px; font-weight:800; color:var(--green); margin-bottom:4px;">
+                🏆 Отличный результат! Все 3 мины обезврежены
+              </div>
+              <div style="font-size:12.5px; color:#166534; max-width:850px; margin:0 auto; line-height:1.5;">
+                Вы защитили компанию от потенциальных потерь до 15 000 000 ₸. Именно так устроены интерактивные тренажеры Бюро «МЕТОДИКО» в учебных программах: ученик сразу отрабатывает боевой навык без лишней теории.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: ЭКСПРЕСС-АУДИТ И ТОЧКИ ОТВАЛА -->
+  <section id="tab-audit" class="tab-content">
+    <div class="content-card">
+      <div class="card-title">
+        <span>Воронка отвала слушателей: почему 84% предпринимателей бросали курс</span>
+        <span class="badge-header">Диагностика до аудита</span>
+      </div>
+      <p class="card-desc">
+        Анализ цифрового следа и опросы бросивших учеников показали: на 2-й неделе предприниматель сталкивался с тяжелым языком судебных решений и бросал курс.
+      </p>
+
+      <div class="funnel-grid">
+        <div class="funnel-stage">
+          <div class="funnel-stat-badge badge-good">Старт: 100% учеников</div>
+          <div class="funnel-stage-title">Модуль 1: Введение и правовые основы</div>
+          <div class="funnel-desc">Слушатели вдохновлены. Смотрят вводные уроки. Доходимость модуля: 94%. Никаких тревожных сигналов на старте.</div>
+        </div>
+
+        <div class="funnel-stage critical">
+          <div class="funnel-stat-badge badge-drop">📉 Отвал 48% (Осталось 52%)</div>
+          <div class="funnel-stage-title">Модуль 2: Договорные ловушки и неустойка</div>
+          <div class="funnel-desc">Лекция 85 минут. Эксперт зачитывает статьи ГК. Предприниматель тонет в юридических терминах. Массовые запросы на возврат денег.</div>
+        </div>
+
+        <div class="funnel-stage critical">
+          <div class="funnel-stat-badge badge-drop">📉 Отвал еще 25% (Осталось 27%)</div>
+          <div class="funnel-stage-title">Модуль 3: Проверка контрагентов</div>
+          <div class="funnel-desc">Задание: «Проверьте своего партнера». Нет пошаговых ссылок и шаблона отчета. Ступор и «синдром чистого листа».</div>
+        </div>
+
+        <div class="funnel-stage">
+          <div class="funnel-stat-badge badge-drop">Финальный COR: 16.4%</div>
+          <div class="funnel-stage-title">Модули 4–6: Суд, налоги и финал</div>
+          <div class="funnel-desc">До итогового тестирования и защиты доходят лишь 16 человек из 100. Эксперт разочарован, продюсер несет убытки.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: РАСЧЕТ СТОИМОСТИ (3 ЭТАПА ПО ДОКУМЕНТАМ МЕТОДИКО) -->
+  <section id="tab-calc" class="tab-content">
+    <div class="content-card">
+      <div class="card-title">
+        <span>Калькулятор расчета стоимости методической разработки курса</span>
+        <span class="badge-header">Официальная смета «МЕТОДИКО»</span>
+      </div>
+      <p class="card-desc">
+        Смета рассчитывается строго по 3 независимым этапам разработки. Все параметры, сроки и этапы фиксируются в договоре.
+      </p>
+
+      <div class="calc-tripartite-wrap">
+        
+        <!-- LEFT: 3 STAGES -->
+        <div>
+
+          <!-- STAGE 1: AUDIT -->
+          <div class="calc-stage-box">
+            <div class="calc-stage-head">
+              <h4>ЭТАП 1. Аудит курса с экспертной оценкой</h4>
+              <span id="price-stage1">250 000 ₸</span>
+            </div>
+            <label class="compact-check">
+              <span style="display:flex; align-items:center;">
+                <input type="checkbox" id="check-stage1" checked onchange="calcTripartiteFee()">
+                <span>Включить аудит 10 уроков и поиск точек отвала учеников</span>
+              </span>
+              <span style="color:var(--text-muted); font-size:11.5px;">3–5 дней</span>
+            </label>
+            <div style="font-size:11.5px; color:#5A6A80; margin-top:4px;">
+              Включает: оцифровку цифрового следа, карту воронки отвала (Dropout Points), анализ причин возвратов, письменное экспертное заключение с планом реанимации.
+            </div>
+          </div>
+
+          <!-- STAGE 2: CONCEPT & ARCHITECTURE -->
+          <div class="calc-stage-box">
+            <div class="calc-stage-head">
+              <h4>ЭТАП 2. Концепция и архитектура курса</h4>
+              <span id="price-stage2">180 000 ₸</span>
+            </div>
+            <label class="compact-check">
+              <span style="display:flex; align-items:center;">
+                <input type="checkbox" id="check-stage2" checked onchange="calcTripartiteFee()">
+                <span>Включить проектирование онбординга и архитектуры</span>
+              </span>
+              <span style="color:var(--text-muted); font-size:11.5px;">3–4 дня</span>
+            </label>
+            <div style="font-size:11.5px; color:#5A6A80; margin-top:4px;">
+              Включает: дорожную карту студента (путь ученика), логику модулей, сценарий вводного спринта (онбординга), Tone of Voice и правила коммуникации.
+            </div>
+          </div>
+
+          <!-- STAGE 3: LESSONS & MATERIALS -->
+          <div class="calc-stage-box">
+            <div class="calc-stage-head">
+              <h4>ЭТАП 3. Поурочное исполнение с учебными материалами</h4>
+              <span id="price-stage3">660 000 ₸</span>
+            </div>
+
+            <div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:4px;">
+              Количество модулей под ключ (в каждый входит 3 урока по 12–15 мин):
+            </div>
+            <div class="pills-row">
+              <div class="pill-btn" onclick="selectModules(1)">1 модуль</div>
+              <div class="pill-btn" onclick="selectModules(2)">2 модуля</div>
+              <div class="pill-btn active" onclick="selectModules(3)">3 модуля (Базовый)</div>
+              <div class="pill-btn" onclick="selectModules(4)">4 модуля</div>
+              <div class="pill-btn" onclick="selectModules(5)">5 модулей</div>
+              <div class="pill-btn" onclick="selectModules(6)">6 модулей</div>
+            </div>
+
+            <div style="font-size:12px; font-weight:700; color:var(--navy); margin:10px 0 6px;">
+              Учебные материалы и практическая обвязка:
+            </div>
+            <label class="compact-check">
+              <span style="display:flex; align-items:center;">
+                <input type="checkbox" id="check-workbook" checked onchange="calcTripartiteFee()">
+                <span>Брендированная Рабочая тетрадь (Воркбук А4) со всеми раздатками</span>
+              </span>
+              <span style="color:var(--gold-dark); font-size:11.5px;">+150 000 ₸</span>
+            </label>
+            <label class="compact-check">
+              <span style="display:flex; align-items:center;">
+                <input type="checkbox" id="check-curators" checked onchange="calcTripartiteFee()">
+                <span>Регламент проверки ДЗ и нормоконтроля для кураторов</span>
+              </span>
+              <span style="color:var(--gold-dark); font-size:11.5px;">+120 000 ₸</span>
+            </label>
+            <label class="compact-check">
+              <span style="display:flex; align-items:center;">
+                <input type="checkbox" id="check-showcase" checked onchange="calcTripartiteFee()">
+                <span>Интерактивная демо-витрина курса (HTML) для продаж</span>
+              </span>
+              <span style="color:var(--gold-dark); font-size:11.5px;">+150 000 ₸</span>
+            </label>
+
+            <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+              <div style="flex:1; min-width:140px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:4px;">Исходные данные:</div>
+                <div style="display:flex; gap:4px;">
+                  <button type="button" class="pill-btn active" id="btn-src-audio" onclick="setSource('audio')">Голосовые аудио</button>
+                  <button type="button" class="pill-btn" id="btn-src-text" onclick="setSource('text')">Тексты/тезисы</button>
+                </div>
+              </div>
+              <div style="flex:1; min-width:140px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:4px;">Срочность:</div>
+                <div style="display:flex; gap:4px;">
+                  <button type="button" class="pill-btn active" id="btn-spd-std" onclick="setSpeed('std')">Стандарт (14 дн)</button>
+                  <button type="button" class="pill-btn" id="btn-spd-fast" onclick="setSpeed('fast')">Спринт (7 дн, +25%)</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT: SUMMARY -->
+        <div class="calc-summary-panel">
+          <div>
+            <div style="font-size:14px; font-weight:800; color:var(--navy);">ИТОГОВАЯ СТОИМОСТЬ СМЕТЫ:</div>
+            <div class="summary-big-price" id="sum-total-kzt">1 510 000 ₸</div>
+            <div class="summary-sub-price" id="sum-total-rub">≈ 302 000 ₽</div>
+
+            <div style="font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px;">
+              Срок реализации под ключ: <span id="sum-days" style="color:var(--gold-dark);">12–15 рабочих дней</span>
+            </div>
+
+            <ul class="summary-specs" id="sum-specs-list">
+              <li>Этап 1: Аудит курса с экспертной оценкой (10 уроков)</li>
+              <li>Этап 2: Концепция и архитектура курса (онбординг)</li>
+              <li>Этап 3: 3 модуля под ключ (9 микроуроков с раздатками)</li>
+              <li>Брендированная Рабочая тетрадь (Воркбук А4)</li>
+              <li>Регламент проверки ДЗ для кураторов</li>
+              <li>Интерактивная демо-витрина курса (HTML)</li>
+            </ul>
+          </div>
+
+          <div>
+            <button class="btn-estimate-modal" onclick="openEstimateModal()">Сформировать официальную смету</button>
+            <div style="text-align:center; font-size:11px; color:var(--text-muted); margin-top:8px;">
+              Оплата по безналичному расчету (договор с ТОО, закрывающие акты)
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL ESTIMATE -->
+  <div class="modal-overlay" id="estimateModal" onclick="closeEstimateModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeEstimateModalDirect()">&times;</button>
+      <div style="font-size:17px; font-weight:800; color:var(--navy); margin-bottom:4px;">СМЕТА НА РАЗРАБОТКУ ОБРАЗОВАТЕЛЬНОЙ ПРОГРАММЫ</div>
+      <div style="font-size:12px; color:var(--text-muted);">Исполнитель: Бюро стандартов «МЕТОДИКО» (ТОО «Метод и Ко»)</div>
+
+      <div class="estimate-text-box" id="estimateContent"></div>
+
+      <button class="btn-estimate-modal" onclick="copyEstimate()">Скопировать смету в буфер обмена</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>© 2026 Бюро стандартов «МЕТОДИКО» (ТОО «Метод и Ко»). Все права защищены.</div>
+    <div>Профессиональная методология и образовательный консалтинг</div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+
+      const btns = document.querySelectorAll('.tab-nav-btn');
+      if (tabId === 'tab-arch') btns[0].classList.add('active');
+      if (tabId === 'tab-audit') btns[1].classList.add('active');
+      if (tabId === 'tab-calc') btns[2].classList.add('active');
+    }
+
+    let selectedModules = 3;
+    let sourceFormat = 'audio';
+    let speedType = 'std';
+
+    function selectModules(n) {
+      selectedModules = n;
+      document.querySelectorAll('.pills-row .pill-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx + 1) === n);
+      });
+      calcTripartiteFee();
+    }
+
+    function setSource(fmt) {
+      sourceFormat = fmt;
+      document.getElementById('btn-src-audio').classList.toggle('active', fmt === 'audio');
+      document.getElementById('btn-src-text').classList.toggle('active', fmt === 'text');
+      calcTripartiteFee();
+    }
+
+    function setSpeed(spd) {
+      speedType = spd;
+      document.getElementById('btn-spd-std').classList.toggle('active', spd === 'std');
+      document.getElementById('btn-spd-fast').classList.toggle('active', spd === 'fast');
+      calcTripartiteFee();
+    }
+
+    function calcTripartiteFee() {
+      const hasStage1 = document.getElementById('check-stage1').checked;
+      const hasStage2 = document.getElementById('check-stage2').checked;
+      const hasWorkbook = document.getElementById('check-workbook').checked;
+      const hasCurators = document.getElementById('check-curators').checked;
+      const hasShowcase = document.getElementById('check-showcase').checked;
+
+      let stage1Price = hasStage1 ? 250000 : 0;
+      let stage2Price = hasStage2 ? 180000 : 0;
+      
+      // Stage 3: модули по 220 000 ₸ за модуль (3 урока + раздатки + ДЗ)
+      let stage3Modules = selectedModules * 220000;
+      let stage3Materials = (hasWorkbook ? 150000 : 0) + (hasCurators ? 120000 : 0) + (hasShowcase ? 150000 : 0);
+      let stage3Price = stage3Modules + stage3Materials;
+
+      document.getElementById('price-stage1').innerText = (hasStage1 ? '250 000 ₸' : '0 ₸');
+      document.getElementById('price-stage2').innerText = (hasStage2 ? '180 000 ₸' : '0 ₸');
+      document.getElementById('price-stage3').innerText = stage3Price.toLocaleString('ru-RU') + ' ₸';
+
+      let baseTotal = stage1Price + stage2Price + stage3Price;
+
+      let coeff = (sourceFormat === 'audio') ? 1.0 : 0.88;
+      let speedCoeff = (speedType === 'fast') ? 1.25 : 1.0;
+
+      let finalKzt = Math.round(baseTotal * coeff * speedCoeff / 10000) * 10000;
+      let finalRub = Math.round(finalKzt / 5);
+
+      document.getElementById('sum-total-kzt').innerText = finalKzt.toLocaleString('ru-RU') + ' ₸';
+      document.getElementById('sum-total-rub').innerText = '≈ ' + finalRub.toLocaleString('ru-RU') + ' ₽';
+
+      let days = (speedType === 'fast') ? '6–8 рабочих дней (Спринт)' : '12–15 рабочих дней (Стандарт)';
+      document.getElementById('sum-days').innerText = days;
+
+      let specs = [];
+      if (hasStage1) specs.push('Этап 1: Аудит курса с экспертной оценкой (10 уроков)');
+      if (hasStage2) specs.push('Этап 2: Концепция и архитектура курса (онбординг)');
+      specs.push(`Этап 3: ${selectedModules} ${selectedModules === 1 ? 'модуль' : (selectedModules < 5 ? 'модуля' : 'модулей')} под ключ (${selectedModules * 3} микроуроков с раздатками)`);
+      if (hasWorkbook) specs.push('Брендированная Рабочая тетрадь (Воркбук А4)');
+      if (hasCurators) specs.push('Регламент проверки ДЗ для кураторов');
+      if (hasShowcase) specs.push('Интерактивная демо-витрина курса (HTML)');
+
+      document.getElementById('sum-specs-list').innerHTML = specs.map(s => '<li>' + s + '</li>').join('');
+    }
+
+    function openEstimateModal() {
+      const priceKzt = document.getElementById('sum-total-kzt').innerText;
+      const priceRub = document.getElementById('sum-total-rub').innerText;
+      const days = document.getElementById('sum-days').innerText;
+
+      const items = Array.from(document.querySelectorAll('#sum-specs-list li')).map((li, i) => (i + 1) + '. ' + li.innerText).join('\n');
+
+      const text = 
+`СМЕТА НА РАЗРАБОТКУ ОБРАЗОВАТЕЛЬНОЙ ПРОГРАММЫ ПОД КЛЮЧ
+Исполнитель: Бюро стандартов «МЕТОДИКО» (ТОО «Метод и Ко»)
+Дата: ${new Date().toLocaleDateString('ru-RU')}
+
+ПЕРЕЧЕНЬ ЭТАПОВ И АРТЕФАКТОВ:
+${items}
+
+ФОРМАТ РАБОТЫ:
+• Исходные материалы: ${sourceFormat === 'audio' ? 'Сырые голосовые наговоры (транскрибация и упаковка на стороне Бюро)' : 'Текстовые тезисы эксперта'}
+• Срок исполнения: ${days}
+
+ИТОГОВАЯ СТОИМОСТЬ:
+• В тенге: ${priceKzt}
+• В рублях: ${priceRub}
+
+Условия: 50% предоплата при подписании договора, 50% по акту приема-передачи.
+Все исключительные права передаются Заказчику в полном объеме.`;
+
+      document.getElementById('estimateContent').innerText = text;
+      document.getElementById('estimateModal').style.display = 'flex';
+    }
+
+    function closeEstimateModal(event) {
+      if (event.target === document.getElementById('estimateModal')) {
+        document.getElementById('estimateModal').style.display = 'none';
+      }
+    }
+    function closeEstimateModalDirect() {
+      document.getElementById('estimateModal').style.display = 'none';
+    }
+
+    function copyEstimate() {
+      const text = document.getElementById('estimateContent').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Официальная смета успешно скопирована в буфер обмена!');
+      });
+    }
+
+    /* CONTRACT TRAINER (OPTION 1) */
+    let trainerDefused = { 1: false, 2: false, 3: false };
+
+    function toggleContractTrainer() {
+      const panel = document.getElementById('contract-trainer-panel');
+      const btn = document.getElementById('btn-trainer-open');
+      if (panel.style.display === 'none' || !panel.style.display) {
+        panel.style.display = 'block';
+        btn.innerText = '▲ Свернуть интерактивный тренажер';
+      } else {
+        panel.style.display = 'none';
+        btn.innerText = '▶ Протестировать тренажер в действии';
+      }
+    }
+
+    function checkMine(mineId, isCorrect, btnEl) {
+      const box = document.getElementById('box-mine-' + mineId);
+      const resEl = document.getElementById('res-mine-' + mineId);
+      const btns = document.querySelectorAll('#btns-mine-' + mineId + ' button');
+
+      btns.forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+
+      resEl.style.display = 'block';
+
+      if (isCorrect) {
+        trainerDefused[mineId] = true;
+        box.style.borderColor = 'var(--green)';
+        box.style.background = '#F6FFF7';
+
+        let explanation = '';
+        if (mineId === 1) {
+          explanation = '<strong>✅ МИНА ОБЕЗВРЕЖЕНА:</strong> Если задержать этап на 100 000 ₸ всего на 3 дня, по этому пункту заказчик насчитает штраф 300 000 ₸ (от всей суммы 20 млн ₸)!<br><strong>🛡️ Безопасная формулировка эксперта:</strong> <em>«...исключительно на стоимость фактически задержанной части обязательства, но не более 10% от суммы задержанного этапа»</em>.';
+        } else if (mineId === 2) {
+          explanation = '<strong>✅ МИНА ОБЕЗВРЕЖЕНА:</strong> Заказчик будет месяцами пользоваться вашей работой, но не подпишет акт, и по закону у него не возникнет обязанности платить!<br><strong>🛡️ Безопасная формулировка эксперта:</strong> <em>«Заказчик обязан рассмотреть Акт в течение 5 рабочих дней. При отсутствии мотивированного письменного отказа работы считаются принятыми в полном объеме»</em>.';
+        } else if (mineId === 3) {
+          explanation = '<strong>✅ МИНА ОБЕЗВРЕЖЕНА:</strong> Чужой суд за 5 000 км рассчитан на то, что вам будет экономически невыгодно летать на заседания и нанимать местных адвокатов.<br><strong>🛡️ Безопасная формулировка эксперта:</strong> <em>«...в суде по месту нахождения Ответчика (либо в городском суде по вашему адресу)»</em>.';
+        }
+
+        resEl.innerHTML = '<div style="color:var(--green); font-weight:700; margin-bottom:4px;">Верно! Опасная ловушка найдена.</div><div style="color:#1F2937;">' + explanation + '</div>';
+      } else {
+        box.style.borderColor = 'var(--red)';
+        box.style.background = '#FFF9F9';
+        resEl.innerHTML = '<div style="color:var(--red); font-weight:700; margin-bottom:4px;">❌ Ошибка! Это опасная мина, подписывать нельзя.</div><div style="color:#4B5563;">Внимательно посмотрите на второй вариант ответа — там кроется скрытый финансовый риск.</div>';
+      }
+
+      const score = Object.values(trainerDefused).filter(Boolean).length;
+      document.getElementById('trainer-score').innerText = score;
+
+      if (score === 3) {
+        document.getElementById('trainer-final-banner').style.display = 'block';
+      }
+    }
+
+    // Инициализация при старте
+    calcTripartiteFee();
+  </script>
+</body>
+</html>
