@@ -104,6 +104,30 @@
             gap: 12px;
         }
 
+        .lang-switch-box {
+            display: flex;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--navy);
+            color: #ffffff;
+        }
+
         .btn-sop-link {
             display: inline-flex;
             align-items: center;
@@ -382,13 +406,17 @@
             <div class="brand-box">
                 <span class="brand-icon">⚡</span>
                 <div>
-                    <div class="brand-title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
-                    <div class="brand-sub">Интерактивный диалоговый тренажер переговоров • B2B Onboarding</div>
+                    <div class="brand-title" id="txt-brand-title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+                    <div class="brand-sub" id="txt-brand-sub">Интерактивный диалоговый тренажер переговоров • B2B Onboarding</div>
                 </div>
             </div>
             <div class="header-actions">
-                <a href="регламент_онбординга_3_дня.html" class="btn-sop-link">
-                    ← Регламент онбординга
+                <div class="lang-switch-box">
+                    <button class="lang-btn active" id="btn-lang-ru" onclick="setSimLang('ru')">🇷🇺 RU</button>
+                    <button class="lang-btn" id="btn-lang-kz" onclick="setSimLang('kz')">🇰🇿 KZ</button>
+                </div>
+                <a href="index.html" class="btn-sop-link" id="txt-back-link">
+                    ← На главную
                 </a>
                 <div class="score-pill">
                     <span>✓</span>
@@ -407,39 +435,39 @@
             <div class="client-banner">
                 <div class="client-avatar">👔</div>
                 <div class="client-info">
-                    <h4>Респондент: Азамат Серикович</h4>
-                    <p>Директор сети учебных центров • Принимает решение об оплате регламентов</p>
+                    <h4 id="txt-resp-name">Респондент: Азамат Серикович</h4>
+                    <p id="txt-resp-role">Директор сети учебных центров • Принимает решение об оплате регламентов</p>
                 </div>
             </div>
 
             <div class="speech-box">
-                <div class="speech-speaker">● Клиент озвучивает возражение:</div>
-                <div class="speech-text">
+                <div class="speech-speaker" id="txt-speech-speaker">● Клиент озвучивает возражение:</div>
+                <div class="speech-text" id="txt-speech-text">
                     «У вас слишком дорого. Нам прислали коммерческое предложение от другой студии, где обещают сделать полный пакет документации и базу знаний в два раза дешевле вашей цены».
                 </div>
             </div>
 
-            <div class="prompt-title">Выберите наиболее профессиональный ответ менеджера:</div>
+            <div class="prompt-title" id="txt-prompt-title">Выберите наиболее профессиональный ответ менеджера:</div>
 
             <div class="options-grid" id="options-grid">
                 
                 <div class="option-btn" onclick="submitChoice(this, 'wrong_1')">
                     <div class="option-letter">A</div>
-                    <div>
+                    <div id="txt-opt-a">
                         <strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? В принципе, если вы оплатите сегодня, мы можем сделать скидку 30% от нашего прайса».
                     </div>
                 </div>
 
                 <div class="option-btn" onclick="submitChoice(this, 'wrong_2')">
                     <div class="option-letter">B</div>
-                    <div>
+                    <div id="txt-opt-b">
                         <strong>Спор о качестве:</strong> «Ну вы же понимаете, что дешево хорошим не бывает? У них наверняка студенты пишут, а у нас профессиональные методологи с 20-летним опытом».
                     </div>
                 </div>
 
                 <div class="option-btn" onclick="submitChoice(this, 'correct')">
                     <div class="option-letter">C</div>
-                    <div>
+                    <div id="txt-opt-c">
                         <strong>Методологический перехват:</strong> «Понимаю ваше желание оптимизировать бюджет. Скажите, когда вы сравниваете предложения, вы смотрите только на цену или на то, сколько часов времени руководителя уйдет на доработку сырых документов и сколько реальных звонков сделает новичок уже на 4-й день?»
                     </div>
                 </div>
@@ -451,8 +479,8 @@
                 <div class="feedback-header" id="feedback-header"></div>
                 <div class="feedback-text" id="feedback-text"></div>
                 <div class="feedback-actions">
-                    <button class="btn-feedback-action" onclick="resetDialogue()">Попробовать снова</button>
-                    <a href="регламент_онбординга_3_дня.html" class="btn-feedback-action" style="text-decoration: none; display: inline-block;">Вернуться к чек-листу</a>
+                    <button class="btn-feedback-action" id="btn-retry" onclick="resetDialogue()">Попробовать снова</button>
+                    <a href="index.html" class="btn-feedback-action" id="btn-back-home" style="text-decoration: none; display: inline-block;">На главную витрину</a>
                 </div>
             </div>
 
@@ -460,14 +488,101 @@
 
         <!-- Footer -->
         <div class="trainer-footer">
-            <span>Методология: Таксономия Блума (уровень «Применение» и «Оценка»)</span>
-            <span>Стандарт аттестации: 85+ баллов для допуска к базе лидов</span>
+            <span id="txt-ft-blume">Методология: Таксономия Блума (уровень «Применение» и «Оценка»)</span>
+            <span id="txt-ft-standard">Стандарт аттестации: 85+ баллов для допуска к базе лидов</span>
         </div>
 
     </div>
 
     <script>
         let answered = false;
+        let simCurrentLang = 'ru';
+
+        const simI18n = {
+            ru: {
+                brand_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО»",
+                brand_sub: "Интерактивный диалоговый тренажер переговоров • B2B Onboarding",
+                back_link: "← На главную",
+                score_base: "Результат: 85 баллов",
+                score_correct: "Результат: 100 баллов (Аттестован)",
+                score_w1: "Результат: 50 баллов (Не аттестован)",
+                score_w2: "Результат: 65 баллов (Повторная сдача)",
+                resp_name: "Респондент: Азамат Серикович",
+                resp_role: "Директор сети учебных центров • Принимает решение об оплате регламентов",
+                speaker: "● Клиент озвучивает возражение:",
+                speech: "«У вас слишком дорого. Нам прислали коммерческое предложение от другой студии, где обещают сделать полный пакет документации и базу знаний в два раза дешевле вашей цены».",
+                prompt: "Выберите наиболее профессиональный ответ менеджера:",
+                opt_a: "<strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? В принципе, если вы оплатите сегодня, мы можем сделать скидку 30% от нашего прайса».",
+                opt_b: "<strong>Спор о качестве:</strong> «Ну вы же понимаете, что дешево хорошим не бывает? У них наверняка студенты пишут, а у нас профессиональные методологи с 20-летним опытом».",
+                opt_c: "<strong>Методологический перехват:</strong> «Понимаю ваше желание оптимизировать бюджет. Скажите, когда вы сравниваете предложения, вы смотрите только на цену или на то, сколько часов времени руководителя уйдет на доработку сырых документов и сколько реальных звонков сделает новичок уже на 4-й день?»",
+                btn_retry: "Попробовать снова",
+                btn_home: "На главную витрину",
+                ft_blume: "Методология: Таксономия Блума (уровень «Применение» и «Оценка»)",
+                ft_standard: "Стандарт аттестации: 85+ баллов для допуска к базе лидов",
+                fb_h_success: "✓ ЭТАЛОННЫЙ ОТВЕТ (+35 БАЛЛОВ). АТТЕСТАЦИЯ ПРОЙДЕНА!",
+                fb_t_success: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Вы применили золотую связку <em>«Присоединение + Перевод фокуса с цены на ценность времени руководителя»</em>.<br>Клиент понимает, что дешевый документ за 50 000 ₸ заставит его самого сидеть ночами и переписывать инструкции. Вы сохранили статус эксперта, не ушли в унизительный торг и вывели диалог на критерии реальной окупаемости.",
+                fb_h_w1: "✕ ГРУБАЯ ОШИБКА: ОБЕСЦЕНИВАНИЕ ПРОДУКТА (-35 БАЛЛОВ)",
+                fb_t_w1: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Моментальное предложение скидки показывает клиенту, что ваша изначальная цена была «дутой» и необоснованной. Клиент теряет доверие к экспертности бюро и продолжит продавливать вас по цене до минимума.",
+                fb_h_w2: "✕ ОШИБКА: ПРЯМАЯ КОНФРОНТАЦИЯ И ХВАЛИЧЕСТВО (-20 БАЛЛОВ)",
+                fb_t_w2: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Фраза «дешево хорошим не бывает» ставит под сомнение адекватность клиента, а критика конкурентов без доказательств выглядит непрофессионально. Клиент закрывается в оборону."
+            },
+            kz: {
+                brand_title: "СТАНДАРТТАР БЮРОСЫ «МЕТОДИКО»",
+                brand_sub: "Келіссөздердің интерактивті диалогтік тренажері • B2B Onboarding",
+                back_link: "← Басты бетке",
+                score_base: "Нәтиже: 85 балл",
+                score_correct: "Нәтиже: 100 балл (Аттестатталды)",
+                score_w1: "Нәтиже: 50 балл (Аттестатталмады)",
+                score_w2: "Нәтиже: 65 балл (Қайта тапсыру)",
+                resp_name: "Респондент: Азамат Серікұлы",
+                resp_role: "Оқу орталықтары желісінің директоры • Регламенттерге төлем жасау шешімін қабылдайды",
+                speaker: "● Клиент қарсылық білдіруде:",
+                speech: "«Сіздерде тым қымбат. Бізге басқа студиядан коммерциялық ұсыныс келді, олар құжаттама мен білім базасының толық пакетін сіздердің бағаларыңыздан екі есе арзанға жасап беруге уәде етіп отыр».",
+                prompt: "Менеджердің барынша кәсіби жауабын таңдаңыз:",
+                opt_a: "<strong>Демпинг жасау (бағаны түсіру):</strong> «Ал сіз қанша төлеуге дайынсыз? Негізі, егер бүгін келісімшарт жасап төлесеңіз, біз бағамыздан 30% жеңілдік жасай аламыз».",
+                opt_b: "<strong>Сапа туралы дауласу:</strong> «Арзан заттың жақсы болмайтынын өзіңіз де білесіз ғой? Оларда студенттер жазатын болар, ал бізде 20 жылдық тәжірибесі бар кәсіби әдіскерлер».",
+                opt_c: "<strong>Әдіснамалық тосқауыл:</strong> «Бюджетті оңтайландыру ниетіңізді түсінемін. Айтыңызшы, ұсыныстарды салыстырғанда тек бағаға қарайсыз ба, әлде шикі құжаттарды түзетуге басшының қанша сағаты кететініне және жаңа қызметкер 4-күні нақты қанша нәтижелі қоңырау шалатынына мән бересіз бе?»",
+                btn_retry: "Қайтадан сынап көру",
+                btn_home: "Басты бетке оралу",
+                ft_blume: "Әдіснама: Блум таксономиясы («Қолдану» және «Бағалау» деңгейі)",
+                ft_standard: "Аттестаттау стандарты: Лидтер базасына рұқсат алу үшін 85+ балл",
+                fb_h_success: "✓ ЭТАЛОНДЫҚ ЖАУАП (+35 БАЛЛ). АТТЕСТАЦИЯДАН СӘТТІ ӨТТІҢІЗ!",
+                fb_t_success: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>Сіз «Жанасу + Назарды бағадан басшы уақытының құндылығына аудару» алтын байламын қолдандыңыз.<br>Клиент 50 000 ₸ тұратын арзан құжат оны түнімен нұсқаулықтарды қайта жазуға мәжбүр ететінін түсінді. Сіз сарапшылық мәртебені сақтап, нақты өзін-өзі ақтау критерийлеріне шықтыңыз.",
+                fb_h_w1: "✕ ӨРЕШКЕЛ ҚАТЕ: ӨНІМ ҚҰНДЫЛЫҒЫН ТҮСІРУ (-35 БАЛЛ)",
+                fb_t_w1: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>Лезде жеңілдік ұсыну клиентке бастапқы бағаңыздың негізсіз болғанын көрсетеді. Клиент бюроның сараптамасына сенімді жоғалтып, бағаны барынша төмен түсіре бастайды.",
+                fb_h_w2: "✕ ҚАТЕ: АШЫҚ ДАУЛАСУ ЖӘНЕ ӨЗІН-ӨЗІ МАҚТАУ (-20 БАЛЛ)",
+                fb_t_w2: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>«Арзан зат жақсы болмайды» деген сөз клиенттің талғамына күмән келтіреді, ал бәсекелестерді дәлелсіз сынау бейкәсіби көрінеді. Клиент қорғанысқа көшеді."
+            }
+        };
+
+        function setSimLang(lang) {
+            simCurrentLang = lang;
+            try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
+
+            document.getElementById('btn-lang-ru').classList.toggle('active', lang === 'ru');
+            document.getElementById('btn-lang-kz').classList.toggle('active', lang === 'kz');
+
+            const t = simI18n[lang];
+            document.getElementById('txt-brand-title').innerText = t.brand_title;
+            document.getElementById('txt-brand-sub').innerText = t.brand_sub;
+            document.getElementById('txt-back-link').innerText = t.back_link;
+            document.getElementById('txt-resp-name').innerText = t.resp_name;
+            document.getElementById('txt-resp-role').innerText = t.resp_role;
+            document.getElementById('txt-speech-speaker').innerText = t.speech_speaker;
+            document.getElementById('txt-speech-text').innerText = t.speech;
+            document.getElementById('txt-prompt-title').innerText = t.prompt;
+            document.getElementById('txt-opt-a').innerHTML = t.opt_a;
+            document.getElementById('txt-opt-b').innerHTML = t.opt_b;
+            document.getElementById('txt-opt-c').innerHTML = t.opt_c;
+            document.getElementById('btn-retry').innerText = t.btn_retry;
+            document.getElementById('btn-back-home').innerText = t.btn_home;
+            document.getElementById('txt-ft-blume').innerText = t.ft_blume;
+            document.getElementById('txt-ft-standard').innerText = t.ft_standard;
+
+            if (!answered) {
+                document.getElementById('score-val').innerText = t.score_base;
+            }
+        }
 
         function submitChoice(el, type) {
             if (answered) return;
@@ -480,38 +595,29 @@
             const fbText = document.getElementById('feedback-text');
             const scoreVal = document.getElementById('score-val');
             const pBar = document.getElementById('progress-bar');
+            const t = simI18n[simCurrentLang];
 
             if (type === 'correct') {
                 el.classList.add('selected-correct');
-                scoreVal.innerText = 'Результат: 100 баллов (Аттестован)';
+                scoreVal.innerText = t.score_correct;
                 pBar.style.width = '100%';
                 fbHeader.className = 'feedback-header success';
-                fbHeader.innerHTML = '✓ ЭТАЛОННЫЙ ОТВЕТ (+35 БАЛЛОВ). АТТЕСТАЦИЯ ПРОЙДЕНА!';
-                fbText.innerHTML = `
-                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
-                    Вы применили золотую связку <em>«Присоединение + Перевод фокуса с цены на ценность времени руководителя»</em>.<br>
-                    Клиент понимает, что дешевый документ за 50 000 ₸ заставит его самого сидеть ночами и переписывать инструкции. Вы сохранили статус эксперта, не ушли в унизительный торг и вывели диалог на критерии реальной окупаемости.
-                `;
+                fbHeader.innerHTML = t.fb_h_success;
+                fbText.innerHTML = t.fb_t_success;
             } else if (type === 'wrong_1') {
                 el.classList.add('selected-wrong');
-                scoreVal.innerText = 'Результат: 50 баллов (Не аттестован)';
+                scoreVal.innerText = t.score_w1;
                 pBar.style.width = '50%';
                 fbHeader.className = 'feedback-header failure';
-                fbHeader.innerHTML = '✕ ГРУБАЯ ОШИБКА: ОБЕСЦЕНИВАНИЕ ПРОДУКТА (-35 БАЛЛОВ)';
-                fbText.innerHTML = `
-                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
-                    Моментальное предложение скидки показывает клиенту, что ваша изначальная цена была «дутой» и необоснованной. Клиент теряет доверие к экспертности бюро и продолжит продавливать вас по цене до минимума.
-                `;
+                fbHeader.innerHTML = t.fb_h_w1;
+                fbText.innerHTML = t.fb_t_w1;
             } else {
                 el.classList.add('selected-wrong');
-                scoreVal.innerText = 'Результат: 65 баллов (Повторная сдача)';
+                scoreVal.innerText = t.score_w2;
                 pBar.style.width = '65%';
                 fbHeader.className = 'feedback-header failure';
-                fbHeader.innerHTML = '✕ ОШИБКА: ПРЯМАЯ КОНФРОНТАЦИЯ И ХВАЛИЧЕСТВО (-20 БАЛЛОВ)';
-                fbText.innerHTML = `
-                    <strong>Разбор методолога «МЕТОДИКО»:</strong><br>
-                    Фраза «дешево хорошим не бывает» ставит под сомнение адекватность клиента, а критика конкурентов без доказательств выглядит непрофессионально. Клиент закрывается в оборону.
-                `;
+                fbHeader.innerHTML = t.fb_h_w2;
+                fbText.innerHTML = t.fb_t_w2;
             }
 
             fbBox.style.display = 'block';
@@ -523,9 +629,18 @@
                 btn.classList.remove('selected-correct', 'selected-wrong');
             });
             document.getElementById('feedback-box').style.display = 'none';
-            document.getElementById('score-val').innerText = 'Результат: 85 баллов';
+            document.getElementById('score-val').innerText = simI18n[simCurrentLang].score_base;
             document.getElementById('progress-bar').style.width = '40%';
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let initLang = urlParams.get('lang');
+            if (!initLang) {
+                try { initLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+            }
+            setSimLang(initLang === 'kz' ? 'kz' : 'ru');
+        });
     </script>
 </body>
 </html>

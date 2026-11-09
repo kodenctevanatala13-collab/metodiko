@@ -1895,6 +1895,7 @@
         // Language Switcher (Complete Isolation between RU and KZ)
         function setLanguage(lang) {
             currentLang = lang;
+            try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
             document.getElementById('btn-lang-ru').classList.toggle('active', lang === 'ru');
             document.getElementById('btn-lang-kz').classList.toggle('active', lang === 'kz');
 
@@ -2042,6 +2043,17 @@
         function closeAlertModal() {
             document.getElementById('modal-alert-box').style.display = 'none';
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let initLang = urlParams.get('lang');
+            if (!initLang) {
+                try { initLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+            }
+            if (initLang === 'kz') {
+                setLanguage('kz');
+            }
+        });
     </script>
 </body>
 </html>

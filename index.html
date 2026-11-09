@@ -1380,10 +1380,10 @@
 
             <div class="widget-step-label" data-i18n="w_step1">1. Выберите профиль организации:</div>
             <div class="widget-target-selector">
-              <button class="widget-target-btn active" onclick="selectWidgetSector('edu', this)">🏛️ Вузы / ТиПО</button>
-              <button class="widget-target-btn" onclick="selectWidgetSector('b2b', this)">🏢 Бизнес B2B</button>
-              <button class="widget-target-btn" onclick="selectWidgetSector('sch', this)">🎓 Школы / Ұстаз</button>
-              <button class="widget-target-btn" onclick="selectWidgetSector('edt', this)">🚀 EdTech курсы</button>
+              <button class="widget-target-btn active" onclick="selectWidgetSector('edu', this)" data-i18n="w_target_edu">🏛️ Вузы / ТиПО</button>
+              <button class="widget-target-btn" onclick="selectWidgetSector('b2b', this)" data-i18n="w_target_b2b">🏢 Бизнес B2B</button>
+              <button class="widget-target-btn" onclick="selectWidgetSector('sch', this)" data-i18n="w_target_sch">🎓 Школы / Ұстаз</button>
+              <button class="widget-target-btn" onclick="selectWidgetSector('edt', this)" data-i18n="w_target_edt">🚀 EdTech курсы</button>
             </div>
 
             <div class="widget-slider-wrap">
@@ -1413,7 +1413,7 @@
             <svg class="gold-icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
           <div>
-            <div class="metric-number">24 <span>года</span></div>
+            <div class="metric-number" data-i18n="m_1_num">24 <span>года</span></div>
             <div class="metric-label" data-i18n="m_1">стажа руководства учебными отделами в ведущих вузах (КазНУ)</div>
           </div>
         </div>
@@ -1424,7 +1424,7 @@
             <svg class="gold-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           </div>
           <div>
-            <div class="metric-number">100<span>%</span></div>
+            <div class="metric-number" data-i18n="m_2_num">100<span>%</span></div>
             <div class="metric-label" data-i18n="m_2">соответствие стандартам МНВО РК, IAAR, IQAA и платформы «Ұстаз»</div>
           </div>
         </div>
@@ -1435,7 +1435,7 @@
             <svg class="gold-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
           <div>
-            <div class="metric-number">72 <span>ч</span></div>
+            <div class="metric-number" data-i18n="m_3_num">72 <span>ч</span></div>
             <div class="metric-label" data-i18n="m_3">норматив допуска нового сотрудника к работе через цифровой симулятор</div>
           </div>
         </div>
@@ -1446,7 +1446,7 @@
             <svg class="gold-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
           <div>
-            <div class="metric-number">ТОО <span>РК</span></div>
+            <div class="metric-number" data-i18n="m_4_num">ТОО <span>РК</span></div>
             <div class="metric-label" data-i18n="m_4">официальный договор «Метод и Ко» (Алматы), акты, ЭСФ, строгий NDA</div>
           </div>
         </div>
@@ -1538,7 +1538,7 @@
           <div class="aud-right-panel">
             <div>
               <div class="aud-result-header" data-i18n="res_hdr">Гарантированный результат:</div>
-              <div class="aud-result-kpi">100<span>%</span></div>
+              <div class="aud-result-kpi" data-i18n="c2_kpi_num">100<span>%</span></div>
               <div class="aud-result-desc" data-i18n="c2_kpi_txt">
                 Успешный допуск дисциплины к аккредитации с первого предъявления без замечаний комиссии.
               </div>
@@ -1601,7 +1601,7 @@
           <div class="aud-right-panel">
             <div>
               <div class="aud-result-header" data-i18n="res_hdr">Гарантированный результат:</div>
-              <div class="aud-result-kpi">3 <span>дня</span></div>
+              <div class="aud-result-kpi" data-i18n="c1_kpi_num">3 <span>дня</span></div>
               <div class="aud-result-desc" data-i18n="c1_kpi_txt">
                 Вместо 2 месяцев ручного обучения РОПа. Полная независимость бизнеса от ухода «звездных» сотрудников.
               </div>
@@ -1725,7 +1725,7 @@
           <div class="aud-right-panel">
             <div>
               <div class="aud-result-header" data-i18n="res_hdr">Гарантированный результат:</div>
-              <div class="aud-result-kpi">+50<span>%</span></div>
+              <div class="aud-result-kpi" data-i18n="c3_kpi_num">+50<span>%</span></div>
               <div class="aud-result-desc" data-i18n="c3_kpi_txt">
                 К надбавке заработной платы педагога при присвоении категории «Педагог-исследователь».
               </div>
@@ -1788,7 +1788,7 @@
           <div class="aud-right-panel">
             <div>
               <div class="aud-result-header" data-i18n="res_hdr">Гарантированный результат:</div>
-              <div class="aud-result-kpi">85<span>%+</span></div>
+              <div class="aud-result-kpi" data-i18n="c4_kpi_num">85<span>%+</span></div>
               <div class="aud-result-desc" data-i18n="c4_kpi_txt">
                 Реальная доходимость студентов до финала программы с ростом повторных покупок (LTV).
               </div>
@@ -2259,6 +2259,18 @@
         w_step2: "2. Уровень стандартизации:",
         w_res_head: "Методический диагноз:",
         w_btn_solution: "Посмотреть эталонное решение →",
+        w_target_edu: "🏛️ Вузы / ТиПО",
+        w_target_b2b: "🏢 Бизнес B2B",
+        w_target_sch: "🎓 Школы / Ұстаз",
+        w_target_edt: "🚀 EdTech курсы",
+        m_1_num: '24 <span>года</span>',
+        m_2_num: '100<span>%</span>',
+        m_3_num: '72 <span>ч</span>',
+        m_4_num: 'ТОО <span>РК</span>',
+        c1_kpi_num: '3 <span>дня</span>',
+        c2_kpi_num: '100<span>%</span>',
+        c3_kpi_num: '+50<span>%</span>',
+        c4_kpi_num: '85<span>%+</span>',
         m_1: "стажа руководства учебными отделами в ведущих вузах (КазНУ)",
         m_2: "соответствие стандартам МНВО РК, IAAR, IQAA и платформы «Ұстаз»",
         m_3: "норматив допуска нового сотрудника к работе через цифровой симулятор",
@@ -2406,6 +2418,18 @@
         w_step2: "2. Стандарттау деңгейі:",
         w_res_head: "Әдіснамалық диагноз:",
         w_btn_solution: "Эталондық шешімді көру →",
+        w_target_edu: "🏛️ ЖОО / ТжКБ",
+        w_target_b2b: "🏢 Бизнес B2B",
+        w_target_sch: "🎓 Мектеп / Ұстаз",
+        w_target_edt: "🚀 EdTech курстар",
+        m_1_num: '24 <span>жыл</span>',
+        m_2_num: '100<span>%</span>',
+        m_3_num: '72 <span>сағ</span>',
+        m_4_num: 'ЖШС <span>ҚР</span>',
+        c1_kpi_num: '3 <span>күн</span>',
+        c2_kpi_num: '100<span>%</span>',
+        c3_kpi_num: '+50<span>%</span>',
+        c4_kpi_num: '85<span>%+</span>',
         m_1: "жетекші ЖОО-ларда (ҚазҰУ) оқу бөлімдерін басқару өтілі",
         m_2: "ҚР ҒЖБМ, IAAR, IQAA стандарттарына және «Ұстаз» талаптарына 100% сәйкестік",
         m_3: "сандық тренажер арқылы жаңа қызметкерді жіберудің біліктілік нормативі",
@@ -2542,6 +2566,7 @@
     function setLanguage(lang) {
       currentLanguage = lang;
       document.documentElement.lang = lang;
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
 
       // Кнопки переключения
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
@@ -2562,6 +2587,18 @@
           el.setAttribute('placeholder', i18n[lang][key]);
         }
       });
+
+      // Синхронизация ссылок на 4 кейса с языковым параметром
+      document.querySelectorAll('a[href^="case-"]').forEach(a => {
+        const base = a.getAttribute('href').split('?')[0];
+        a.setAttribute('href', `${base}?lang=${lang}`);
+      });
+
+      // Немедленное обновление виджета на выбранном языке
+      const rangeEl = document.getElementById('widget-range-input');
+      if (rangeEl) {
+        updateWidgetCalculation(rangeEl.value);
+      }
 
       // Пересчет сметы
       recalculateEstimate();
@@ -2770,8 +2807,12 @@
 
     // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
-      recalculateEstimate();
-      updateWidgetCalculation(30);
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialLang = urlParams.get('lang');
+      if (!initialLang) {
+        try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      setLanguage(initialLang || 'ru');
     });
   </script>
 

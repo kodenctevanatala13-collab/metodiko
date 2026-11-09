@@ -334,25 +334,31 @@
       <div class="brand-block">
         <img src="assets/Metodico_logo_gold_png.png" alt="МЕТОДИКО" class="brand-logo" onerror="this.style.display='none'">
         <div>
-          <div class="brand-title">Бюро стандартов «МЕТОДИКО»</div>
-          <div class="brand-subtitle">Разработка и экспертный аудит образовательных продуктов</div>
+          <div class="brand-title" id="txt-brand-title">Бюро стандартов «МЕТОДИКО»</div>
+          <div class="brand-subtitle" id="txt-brand-subtitle">Разработка и экспертный аудит образовательных продуктов</div>
         </div>
       </div>
-      <div class="badge-header">ТОО «Метод и Ко»</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="lang-switch-box" style="display:flex; background:#FFFFFF; border:1px solid var(--border); border-radius:6px; overflow:hidden;">
+          <button class="lang-btn active" id="btn-lang-ru" onclick="setEdtechLang('ru')" style="border:none; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; background:var(--navy); color:#fff;">🇷🇺 RU</button>
+          <button class="lang-btn" id="btn-lang-kz" onclick="setEdtechLang('kz')" style="border:none; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; background:transparent; color:var(--text-muted);">🇰🇿 KZ</button>
+        </div>
+        <div class="badge-header" id="txt-brand-org">ТОО «Метод и Ко»</div>
+      </div>
     </div>
   </header>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-card">
-      <div class="hero-tag">Кейс №4 • Сегмент «Онлайн-школы, EdTech и эксперты»</div>
-      <h1 class="hero-title">Методический аудит и сборка курса под ключ: от голосовых наговоров эксперта до доходимости 82%</h1>
-      <p class="hero-desc">
+      <div class="hero-tag" id="txt-hero-tag">Кейс №4 • Сегмент «Онлайн-школы, EdTech и эксперты»</div>
+      <h1 class="hero-title" id="txt-hero-title">Методический аудит и сборка курса под ключ: от голосовых наговоров эксперта до доходимости 82%</h1>
+      <p class="hero-desc" id="txt-hero-desc">
         Практический пример пересборки программы <strong>«Договорная защита и безопасность бизнеса»</strong> (эксперт — судебный юрист со стажем 18 лет). Замена 80-минутных лекций на прикладные 14-минутные уроки с готовыми документами, внедрение рабочей тетради и устранение отвала слушателей.
       </p>
 
       <!-- ВАЖНОЕ ПОЯСНЕНИЕ О ВЫБОРЕ НИШИ И УНИВЕРСАЛЬНОСТИ БЮРО -->
-      <div style="background:#FAF8F5; border:1.5px solid var(--gold); border-left:5px solid var(--gold-dark); padding:12px 18px; border-radius:8px; margin-top:14px; font-size:13px; color:var(--navy); line-height:1.5;">
+      <div id="txt-hero-note" style="background:#FAF8F5; border:1.5px solid var(--gold); border-left:5px solid var(--gold-dark); padding:12px 18px; border-radius:8px; margin-top:14px; font-size:13px; color:var(--navy); line-height:1.5;">
         <strong>📌 Важное пояснение для заказчиков:</strong> Данный юридический курс представлен исключительно как <em>наглядный пример нашей работы и глубины практической проработки</em>. Бюро стандартов «МЕТОДИКО» разрабатывает с нуля и пересобирает образовательные продукты <strong>в абсолютно любой нише и любого формата</strong>: корпоративные академии, IT, финансы, медицина, продажи и сервис, производство, школы наставников и авторские курсы экспертов.
       </div>
 
@@ -381,16 +387,16 @@
   <div class="nav-tabs-wrap">
     <div class="tabs-bar">
       <button class="tab-nav-btn active" onclick="openTab('tab-arch')">
-        <span>🗺️ 1. Архитектура курса</span>
-        <span class="tab-badge-count">5 блоков</span>
+        <span id="txt-tab-1">🗺️ 1. Архитектура курса</span>
+        <span class="tab-badge-count" id="txt-badge-1">5 блоков</span>
       </button>
       <button class="tab-nav-btn" onclick="openTab('tab-audit')">
-        <span>📊 2. Экспресс-аудит и точки отвала</span>
-        <span class="tab-badge-count">Воронка потерь</span>
+        <span id="txt-tab-2">📊 2. Экспресс-аудит и точки отвала</span>
+        <span class="tab-badge-count" id="txt-badge-2">Воронка потерь</span>
       </button>
       <button class="tab-nav-btn" onclick="openTab('tab-calc')">
-        <span>💰 3. Расчет стоимости разработки</span>
-        <span class="tab-badge-count">3 этапа сметы</span>
+        <span id="txt-tab-3">💰 3. Расчет стоимости разработки</span>
+        <span class="tab-badge-count" id="txt-badge-3">3 этапа сметы</span>
       </button>
     </div>
   </div>
@@ -1051,8 +1057,87 @@ ${items}
       }
     }
 
+    /* BILINGUAL LANGUAGE HANDLER (RU / KZ) */
+    const edtechI18n = {
+      ru: {
+        brand_title: "Бюро стандартов «МЕТОДИКО»",
+        brand_subtitle: "Разработка и экспертный аудит образовательных продуктов",
+        brand_org: "ТОО «Метод и Ко»",
+        hero_tag: "Кейс №4 • Сегмент «Онлайн-школы, EdTech и эксперты»",
+        hero_title: "Методический аудит и сборка курса под ключ: от голосовых наговоров эксперта до доходимости 82%",
+        hero_desc: "Практический пример пересборки программы <strong>«Договорная защита и безопасность бизнеса»</strong> (эксперт — судебный юрист со стажем 18 лет). Замена 80-минутных лекций на прикладные 14-минутные уроки с готовыми документами, внедрение рабочей тетради и устранение отвала слушателей.",
+        hero_note: "<strong>📌 Важное пояснение для заказчиков:</strong> Данный юридический курс представлен исключительно как <em>наглядный пример нашей работы и глубины практической проработки</em>. Бюро стандартов «МЕТОДИКО» разрабатывает с нуля и пересобирает образовательные продукты <strong>в абсолютно любой нише и любого формата</strong>: корпоративные академии, IT, финансы, медицина, продажи и сервис, производство, школы наставников и авторские курсы экспертов.",
+        tab_1: "🗺️ 1. Архитектура курса",
+        badge_1: "5 блоков",
+        tab_2: "📊 2. Экспресс-аудит и точки отвала",
+        badge_2: "Воронка потерь",
+        tab_3: "💰 3. Расчет стоимости разработки",
+        badge_3: "3 этапа сметы"
+      },
+      kz: {
+        brand_title: "«МЕТОДИКО» стандарттар бюросы",
+        brand_subtitle: "Білім беру өнімдерін әзірлеу және сараптамалық аудит",
+        brand_org: "«Метод и Ко» ЖШС",
+        hero_tag: "4-кейс • «Онлайн-мектептер, EdTech және сарапшылар» сегменті",
+        hero_title: "Курсты кілтке әдістемелік аудиттеу және жинақтау: сарапшының дауыстық жазбаларынан 82% аяқталуға (COR) дейін",
+        hero_desc: "<strong>«Келісімшарттық қорғаныс және бизнестің құқықтық қауіпсіздігі»</strong> бағдарламасын қайта жинақтаудың практикалық мысалы (сарапшы — 18 жылдық тәжірибесі бар сот заңгері). 80 минуттық дәрістерді дайын құжаттары бар 14 минуттық қолданбалы сабақтарға ауыстыру, жұмыс дәптерін енгізу және студенттердің кетуін тоқтату.",
+        hero_note: "<strong>📌 Тапсырыс берушілер үшін маңызды түсініктеме:</strong> Бұл заңгерлік курс біздің жұмысымыз бен практикалық тереңдігіміздің көрнекі үлгісі ретінде берілген. «МЕТОДИКО» стандарттар бюросы <strong>кез келген бағытта және кез келген форматта</strong> білім беру өнімдерін нөлден әзірлейді және қайта жинақтайды: корпоративтік академиялар, IT, қаржы, медицина, сату және қызмет көрсету, өндіріс, тәлімгерлер мектебі және сарапшылардың авторлық курстары.",
+        tab_1: "🗺️ 1. Курс архитектурасы",
+        badge_1: "5 блок",
+        tab_2: "📊 2. Экспресс-аудит және үзіліс нүктелері",
+        badge_2: "Шығындар воронкасы",
+        tab_3: "💰 3. Әзірлеу құнын есептеу",
+        badge_3: "3 кезеңдік смета"
+      }
+    };
+
+    function setEdtechLang(lang) {
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
+
+      document.getElementById('btn-lang-ru').classList.toggle('active', lang === 'ru');
+      document.getElementById('btn-lang-kz').classList.toggle('active', lang === 'kz');
+
+      if (lang === 'kz') {
+        document.getElementById('btn-lang-kz').style.background = 'var(--navy)';
+        document.getElementById('btn-lang-kz').style.color = '#fff';
+        document.getElementById('btn-lang-ru').style.background = 'transparent';
+        document.getElementById('btn-lang-ru').style.color = 'var(--text-muted)';
+      } else {
+        document.getElementById('btn-lang-ru').style.background = 'var(--navy)';
+        document.getElementById('btn-lang-ru').style.color = '#fff';
+        document.getElementById('btn-lang-kz').style.background = 'transparent';
+        document.getElementById('btn-lang-kz').style.color = 'var(--text-muted)';
+      }
+
+      const t = edtechI18n[lang];
+      document.getElementById('txt-brand-title').innerText = t.brand_title;
+      document.getElementById('txt-brand-subtitle').innerText = t.brand_subtitle;
+      document.getElementById('txt-brand-org').innerText = t.brand_org;
+      document.getElementById('txt-hero-tag').innerText = t.hero_tag;
+      document.getElementById('txt-hero-title').innerHTML = t.hero_title;
+      document.getElementById('txt-hero-desc').innerHTML = t.hero_desc;
+      document.getElementById('txt-hero-note').innerHTML = t.hero_note;
+      document.getElementById('txt-tab-1').innerText = t.tab_1;
+      document.getElementById('txt-badge-1').innerText = t.badge_1;
+      document.getElementById('txt-tab-2').innerText = t.tab_2;
+      document.getElementById('txt-badge-2').innerText = t.badge_2;
+      document.getElementById('txt-tab-3').innerText = t.tab_3;
+      document.getElementById('txt-badge-3').innerText = t.badge_3;
+    }
+
     // Инициализация при старте
-    calcTripartiteFee();
+    window.addEventListener('DOMContentLoaded', () => {
+      calcTripartiteFee();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let initLang = urlParams.get('lang');
+      if (!initLang) {
+        try { initLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      if (initLang === 'kz') {
+        setEdtechLang('kz');
+      }
+    });
   </script>
 </body>
 </html>

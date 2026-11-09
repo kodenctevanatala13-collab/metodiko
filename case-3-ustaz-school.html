@@ -2635,6 +2635,7 @@
   <script>
     // LANGUAGE SWITCHER
     function switchLang(lang) {
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
       const viewRu = document.getElementById('view-ru');
       const viewKz = document.getElementById('view-kz');
       const btnRu = document.getElementById('btn-lang-ru');
@@ -2934,9 +2935,20 @@
       document.getElementById('lightbox').classList.remove('open');
     }
 
-    // INITIALIZE CALCULATORS
+    // INITIALIZE CALCULATORS & LANGUAGE
     updateHourlyCalc();
     updateHourlyCalcKz();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      let initLang = urlParams.get('lang');
+      if (!initLang) {
+        try { initLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      if (initLang === 'kz') {
+        switchLang('kz');
+      }
+    });
   </script>
 </body>
 </html>
