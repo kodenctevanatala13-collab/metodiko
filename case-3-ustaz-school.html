@@ -1515,119 +1515,84 @@
       </div>
     </div>
 
-    <!-- TAB 4: HOURLY CALCULATOR WITH TRANSPARENT FORMULA -->
+    <!-- TAB 4: CONFIGURATOR (RU) -->
     <div class="tab-content" id="tab-calc-ru">
       <div class="calc-box">
         <div style="margin-bottom: 24px;">
           <h2 style="font-size: 21px; font-weight: 800; color: var(--navy);">
-            Калькулятор сметы: Прозрачный расчет стоимости по часам
+            Интерактивный конфигуратор программы «Ұстаз»
           </h2>
           <p style="font-size: 13.5px; color: var(--text-muted);">
-            Выберите объем вашей дисциплины и отметьте необходимые компоненты учебно-методического комплекса
+            Ознакомьтесь с эталонными компонентами авторского комплекса. Точный расчет сметы, академических часов (34 ч / 68 ч) и тиража тетрадей формируется в едином интерактивном калькуляторе с получением официального КП.
           </p>
         </div>
 
-        <!-- HOURS SLIDER -->
-        <div class="hours-slider-wrap">
-          <div class="slider-header">
-            <div>
-              <strong style="color: var(--navy); font-size: 15px;">Объем курса (академических часов):</strong>
-              <div style="font-size: 12px; color: var(--text-muted);">От краткосрочного спецкурса (12 ч) до годовой программы (68 ч)</div>
-            </div>
-            <div class="slider-hours-val" id="calc-hours-disp">34 часа</div>
-          </div>
-          <input type="range" min="12" max="68" step="2" value="34" class="range-input" id="calc-hours-range" oninput="updateHourlyCalc()">
-        </div>
-
-        <!-- MODULES CHECKLIST -->
+        <!-- MODULES LIST -->
         <div class="calc-modules-list">
-          <label class="calc-module-row">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-base" checked disabled>
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>1. Программа курса и КТП под аттестацию «Ұстаз» (Базовый стандарт)</strong>
                 <span>Пояснительная записка, цели SMART по Блуму, календарная сетка с дескрипторами, шаблон 1 урока тетради</span>
               </div>
             </div>
-            <div class="calc-module-rate">5 500 ₸ / час</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalc()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-teacher" checked onchange="updateHourlyCalc()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>2. Методическое руководство для учителя (Поурочные технологические карты)</strong>
                 <span>Поминутный тайминг на каждый урок, 4 фазы цикла Колба, шпаргалки с правильными ответами для педагога</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 6 500 ₸ / час</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalc()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-workbook" checked onchange="updateHourlyCalc()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>3. Рабочая тетрадь ученика (Все уроки с версткой под печать)</strong>
                 <span>Практические задания, кейсы, чек-листы и «Лестница успеха» к каждому уроку в готовом к типографии макете</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 5 500 ₸ / час</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalc()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-slides" onchange="updateHourlyCalc()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>4. Интерактивные презентации к каждому уроку (Слайды 16:9)</strong>
                 <span>Готовые комплекты слайдов для интерактивной доски и проектора к каждому занятию</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 3 500 ₸ / час</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalc()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-simulator" onchange="updateHourlyCalc()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
-                <strong>5. Интерактивный цифровой HTML-тренажер курса (Web-версия для экранов и планшетов) <span style="background: #EEF2FF; color: #4338CA; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">НОВИНКА</span></strong>
-                <span>Браузерная версия тетради для интерактивных досок, компьютеров и планшетов: автопроверка ответов, геймификация с детективными бейджами, звуковые эффекты и экспорт баллов ФО. Не требует установки ПО.</span>
+                <strong>5. Интерактивный цифровой HTML-тренажер курса (Web-версия для экранов и планшетов)</strong>
+                <span>Браузерная версия тетради для смарт-досок и планшетов: автопроверка ответов, геймификация и экспорт баллов ФО.</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 4 500 ₸ / час</div>
-          </label>
-        </div>
-
-        <!-- PRINT COPIES -->
-        <div style="background: #FAF8F5; border: 1px solid var(--border); padding: 18px 24px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-          <div>
-            <strong style="color: var(--navy); font-size: 14px; display: block;">Печать тетрадей учеников в типографии (Опционально):</strong>
-            <span style="font-size: 12px; color: var(--text-muted);">Плотная бумага 300 г/м², полноцветная печать, доставка в школу</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <label style="font-size: 13px; font-weight: 700; color: var(--navy);">Тираж (экз):</label>
-            <select id="calc-print-qty" onchange="updateHourlyCalc()" style="padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; font-weight: 700;">
-              <option value="0">Без печати (только цифровой макет)</option>
-              <option value="30">30 экз (1 класс) • 105 000 ₸</option>
-              <option value="60">60 экз (2 класса) • 210 000 ₸</option>
-              <option value="120" selected>120 экз (параллель) • 420 000 ₸</option>
-              <option value="250">250 экз (школа) • 875 000 ₸</option>
-            </select>
           </div>
         </div>
 
-        <!-- TOTAL SUMMARY -->
-        <div class="calc-summary-panel">
+        <!-- CALL TO ACTION PANEL -->
+        <div class="calc-summary-panel" style="background: linear-gradient(135deg, #152238 0%, #1e3352 100%); color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; padding: 24px; border-radius: 8px;">
           <div>
-            <div style="font-size: 12px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em;">Итоговая расчетная смета:</div>
-            <div class="calc-total-num" id="calc-total-val">595 000 ₸</div>
-            <div style="font-size: 12px; color: #CBD5E1; margin-top: 4px;" id="calc-sub-details">
-              34 часа × 17 500 ₸/час разработки + 0 ₸ печать
+            <div style="font-size: 12px; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Единый центр расчета:</div>
+            <div style="font-size: 20px; font-weight: 800; font-family: 'Georgia', serif; margin-top: 4px;">Интерактивный калькулятор сметы и КП</div>
+            <div style="font-size: 13px; color: #CBD5E1; margin-top: 4px;">
+              Выберите часы (34 ч / 68 ч), тираж тетрадей и опции — получите предварительное КП и отправьте на утверждение в 1 клик.
             </div>
           </div>
           <div>
-            <button class="btn-action-bright" style="background: #FBBF24; color: #152238; font-size: 14px; padding: 14px 28px;" onclick="alert('Смета зафиксирована. Мы свяжемся с вами для утверждения технического задания!')">
-              Заказать разработку по этой смете
-            </button>
+            <a href="index.html#calculator" class="btn-action-bright" style="background: #FBBF24; color: #152238; font-size: 14px; padding: 14px 28px; text-decoration: none; display: inline-block; font-weight: 700; border-radius: 6px;">
+              Рассчитать смету в калькуляторе →
+            </a>
           </div>
         </div>
 
@@ -2505,121 +2470,85 @@
 
     </div>
 
-    <!-- TAB 4: CALCULATOR (KZ) -->
+    <!-- TAB 4: CONFIGURATOR (KZ) -->
     <div class="tab-content" id="tab-calc-kz">
       <div class="calc-box">
         <div style="margin-bottom: 24px;">
           <h2 style="font-size: 21px; font-weight: 800; color: var(--navy);">
-            Смета калькуляторы: Сағат бойынша ашық есептеу
+            «Ұстаз» бағдарламасының интерактивті конфигураторы
           </h2>
           <p style="font-size: 13.5px; color: var(--text-muted);">
-            Курс көлемін таңдап, оқу-әдістемелік кешеннің қажетті компоненттерін белгілеңіз
+            Авторлық кешеннің эталондық компоненттерімен танысыңыз. Нақты сметаны, академиялық сағаттарды (34 с / 68 с) және дәптерлер таралымын есептеу бірыңғай интерактивті калькуляторда жүргізіліп, ресми КП беріледі.
           </p>
         </div>
 
-        <!-- HOURS SLIDER KZ -->
-        <div class="hours-slider-wrap">
-          <div class="slider-header">
-            <div>
-              <strong style="color: var(--navy); font-size: 15px;">Курс көлемі (академиялық сағат):</strong>
-              <div style="font-size: 12px; color: var(--text-muted);">Қысқа мерзімді арнайы курстан (12 сағ) толық жылдық бағдарламаға дейін (68 сағ)</div>
-            </div>
-            <div class="slider-hours-val" id="calc-hours-disp-kz">34 сағат</div>
-          </div>
-          <input type="range" min="12" max="68" step="2" value="34" class="range-input" id="calc-hours-range-kz" oninput="updateHourlyCalcKz()">
-        </div>
-
-        <!-- MODULES CHECKLIST KZ -->
         <div class="calc-modules-list">
-          <label class="calc-module-row">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-base-kz" checked disabled>
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>1. «Ұстаз» аттестаттауына арналған бағдарлама және КТЖ (Базалық стандарт)</strong>
                 <span>Түсінік хат, Блум таксономиясы бойынша SMART-мақсаттар, дескрипторлары бар күнтізбелік тор, 1 сабақ үлгісі</span>
               </div>
             </div>
-            <div class="calc-module-rate">5 500 ₸ / сағат</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalcKz()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-teacher-kz" checked onchange="updateHourlyCalcKz()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>2. Мұғалімнің әдістемелік құралы (Сабақтың технологиялық карталары)</strong>
                 <span>Әр сабаққа минуттық тайминг, Колб циклінің 4 кезеңі, педагогке арналған дайын жауаптары бар шпаргалка</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 6 500 ₸ / сағат</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalcKz()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-workbook-kz" checked onchange="updateHourlyCalcKz()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>3. Оқушының жұмыс дәптері (Баспаға толық дайын макет)</strong>
                 <span>Әр сабаққа арналған практикалық тапсырмалар, кейстер, чек-парақтар және баспаға дайын «Жетістік баспалдағы»</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 5 500 ₸ / сағат</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalcKz()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-slides-kz" onchange="updateHourlyCalcKz()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
                 <strong>4. Әр сабаққа арналған интерактивті презентациялар (16:9 слайдтар)</strong>
                 <span>Интерактивті тақта мен проекторға арналған әр сабақтың дайын слайдтар жиынтығы</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 3 500 ₸ / сағат</div>
-          </label>
+          </div>
 
-          <label class="calc-module-row" onclick="updateHourlyCalcKz()">
+          <div class="calc-module-row">
             <div style="display: flex; align-items: center; gap: 14px;">
-              <input type="checkbox" id="mod-simulator-kz" onchange="updateHourlyCalcKz()">
+              <span style="color: var(--gold); font-size: 18px; font-weight: bold;">✔</span>
               <div class="calc-module-info">
-                <strong>5. Курстың интерактивті сандық HTML-тренажері (Экрандар мен планшеттерге арналған Web-нұсқа) <span style="background: #EEF2FF; color: #4338CA; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">ЖАҢАЛЫҚ</span></strong>
-                <span>Интерактивті тақталар мен компьютерлік сыныптарға арналған браузерлік дәптер: жауаптарды автоматты тексеру, детективтік геймификация, дыбыстық әсерлер және ҚБ балдарын экспорттау. Бағдарлама орнатуды қажет етпейді.</span>
+                <strong>5. Курстың интерактивті сандық HTML-тренажері (Экрандар мен планшеттерге арналған Web-нұсқа)</strong>
+                <span>Интерактивті тақталар мен компьютерлік сыныптарға арналған браузерлік дәптер: жауаптарды автоматты тексеру, геймификация.</span>
               </div>
             </div>
-            <div class="calc-module-rate">+ 4 500 ₸ / сағат</div>
-          </label>
-        </div>
-
-        <!-- PRINT COPIES KZ -->
-        <div style="background: #FAF8F5; border: 1px solid var(--border); padding: 18px 24px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-          <div>
-            <strong style="color: var(--navy); font-size: 14px; display: block;">Баспаханада дәптерлерді басып шығару (Қосымша):</strong>
-            <span style="font-size: 12px; color: var(--text-muted);">Тығыз қағаз 300 г/м², толық түсті баспа, мектепке жеткізу</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <label style="font-size: 13px; font-weight: 700; color: var(--navy);">Таралымы (дана):</label>
-            <select id="calc-print-qty-kz" onchange="updateHourlyCalcKz()" style="padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; font-weight: 700;">
-              <option value="0">Баспасыз (тек сандық макет)</option>
-              <option value="30">30 дана (1 сынып) • 105 000 ₸</option>
-              <option value="60">60 дана (2 сынып) • 210 000 ₸</option>
-              <option value="120" selected>120 дана (параллель) • 420 000 ₸</option>
-              <option value="250">250 дана (мектеп) • 875 000 ₸</option>
-            </select>
           </div>
         </div>
 
-        <!-- TOTAL SUMMARY KZ -->
-        <div class="calc-summary-panel">
+        <div class="calc-summary-panel" style="background: linear-gradient(135deg, #152238 0%, #1e3352 100%); color: #FFFFFF; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; padding: 24px; border-radius: 8px;">
           <div>
-            <div style="font-size: 12px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em;">Есептелген жиынтық смета:</div>
-            <div class="calc-total-num" id="calc-total-val-kz">595 000 ₸</div>
-            <div style="font-size: 12px; color: #CBD5E1; margin-top: 4px;" id="calc-sub-details-kz">
-              34 сағат × 17 500 ₸/сағат әзірлеу + 420 000 ₸ баспа
+            <div style="font-size: 12px; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Бірыңғай есептеу орталығы:</div>
+            <div style="font-size: 20px; font-weight: 800; font-family: 'Georgia', serif; margin-top: 4px;">Смета мен КП-ның интерактивті калькуляторы</div>
+            <div style="font-size: 13px; color: #CBD5E1; margin-top: 4px;">
+              Сағаттарды (34 с / 68 с), дәптерлер таралымын және опцияларды таңдап, алдын ала КП алыңыз және 1 басу арқылы бекітуге жіберіңіз.
             </div>
           </div>
           <div>
-            <button class="btn-action-bright" style="background: #FBBF24; color: #152238; font-size: 14px; padding: 14px 28px;" onclick="alert('Смета бекітілді. Біз сізбен техникалық тапсырманы нақтылау үшін байланысамыз!')">
-              Осы сметамен тапсырыс беру
-            </button>
+            <a href="index.html?lang=kz#calculator" class="btn-action-bright" style="background: #FBBF24; color: #152238; font-size: 14px; padding: 14px 28px; text-decoration: none; display: inline-block; font-weight: 700; border-radius: 6px;">
+              Калькуляторда сметаны есептеу →
+            </a>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -2878,49 +2807,9 @@
       el.classList.add('active');
     }
 
-    // HOURLY CALCULATOR
-    function updateHourlyCalc() {
-      const hours = parseInt(document.getElementById('calc-hours-range').value);
-      document.getElementById('calc-hours-disp').textContent = hours + ' часов';
-
-      let ratePerHour = 5500; // base
-      if (document.getElementById('mod-teacher').checked) ratePerHour += 6500;
-      if (document.getElementById('mod-workbook').checked) ratePerHour += 5500;
-      if (document.getElementById('mod-slides').checked) ratePerHour += 3500;
-      if (document.getElementById('mod-simulator') && document.getElementById('mod-simulator').checked) ratePerHour += 4500;
-
-      const printQty = parseInt(document.getElementById('calc-print-qty').value);
-      const printCost = printQty * 3500;
-
-      const devCost = hours * ratePerHour;
-      const totalCost = devCost + printCost;
-
-      document.getElementById('calc-total-val').textContent = totalCost.toLocaleString('ru-RU') + ' ₸';
-      document.getElementById('calc-sub-details').textContent = hours + ' часов × ' + ratePerHour.toLocaleString('ru-RU') + ' ₸/час разработки + ' + printCost.toLocaleString('ru-RU') + ' ₸ печать';
-    }
-
-    function updateHourlyCalcKz() {
-      const hours = parseInt(document.getElementById('calc-hours-range-kz').value);
-      document.getElementById('calc-hours-disp-kz').textContent = hours + ' сағат';
-
-      let ratePerHour = 5500; // base
-      if (document.getElementById('mod-teacher-kz') && document.getElementById('mod-teacher-kz').checked) ratePerHour += 6500;
-      if (document.getElementById('mod-workbook-kz') && document.getElementById('mod-workbook-kz').checked) ratePerHour += 5500;
-      if (document.getElementById('mod-slides-kz') && document.getElementById('mod-slides-kz').checked) ratePerHour += 3500;
-      if (document.getElementById('mod-simulator-kz') && document.getElementById('mod-simulator-kz').checked) ratePerHour += 4500;
-
-      const printQty = parseInt(document.getElementById('calc-print-qty-kz').value);
-      const printCost = printQty * 3500;
-
-      const devCost = hours * ratePerHour;
-      const totalCost = devCost + printCost;
-
-      document.getElementById('calc-total-val-kz').textContent = totalCost.toLocaleString('ru-RU') + ' ₸';
-      const subDisp = document.getElementById('calc-sub-details-kz');
-      if (subDisp) {
-        subDisp.textContent = hours + ' сағат × ' + ratePerHour.toLocaleString('ru-RU') + ' ₸/сағат әзірлеу + ' + printCost.toLocaleString('ru-RU') + ' ₸ баспа';
-      }
-    }
+    // CONFIGURATOR STUB
+    function updateHourlyCalc() {}
+    function updateHourlyCalcKz() {}
 
     // LIGHTBOX
     function openLightbox(src, caption) {

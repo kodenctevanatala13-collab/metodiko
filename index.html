@@ -921,12 +921,269 @@
       line-height: 1.5;
     }
 
-    /* РАЗДЕЛ: КАЛЬКУЛЯТОР СМЕТЫ В ТЕНГЕ (5 РАСКРЫВАЮЩИХСЯ АККОРДЕОНОВ + КП) */
+    /* РАЗДЕЛ: КАЛЬКУЛЯТОР СМЕТЫ В ТЕНГЕ (4 БЛОКА ЦА + ОПРОСНИК + КП) */
     .calculator-section {
       padding: 45px 0;
       background: #FFFFFF;
       border-top: 1px solid var(--border-soft);
       border-bottom: 1px solid var(--border-soft);
+    }
+    .calc-tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .calc-tabs-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 550px) {
+      .calc-tabs-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+    .calc-tab-btn {
+      padding: 14px 16px;
+      background: var(--bg-page);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-header);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      line-height: 1.3;
+    }
+    .calc-tab-btn:hover {
+      border-color: var(--gold-border);
+      background: #FFFFFF;
+    }
+    .calc-tab-btn.active {
+      background: var(--navy-header);
+      color: #FFFFFF;
+      border-color: var(--gold-primary);
+      box-shadow: 0 4px 14px rgba(21, 34, 56, 0.25);
+    }
+    .calc-aud-block {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .calc-aud-block.active {
+      display: block;
+    }
+    .calc-question-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      transition: var(--transition);
+    }
+    .calc-question-box:hover {
+      border-color: var(--gold-border);
+    }
+    .calc-q-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--gold-primary);
+      margin-bottom: 4px;
+    }
+    .calc-q-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--navy-header);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .calc-q-multihint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .calc-voice-under-block {
+      margin-top: 36px;
+      padding: 24px 28px;
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      border-left: 5px solid var(--gold-primary);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+    .calc-voice-under-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .calc-voice-icon-box {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(194, 157, 89, 0.15) 0%, rgba(15, 23, 42, 0.06) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-primary);
+    }
+    .voice-large-icon {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .calc-voice-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy-header);
+      margin-bottom: 4px;
+    }
+    .calc-voice-subtitle {
+      font-size: 12.5px;
+      color: #64748B;
+      line-height: 1.5;
+    }
+    .calc-voice-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      background: #F8FAFC;
+      resize: vertical;
+      font-family: inherit;
+      color: var(--navy-header);
+      transition: var(--transition);
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .calc-voice-textarea:focus {
+      outline: none;
+      background: #FFFFFF;
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 3px rgba(194, 157, 89, 0.15);
+    }
+    .calc-voice-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-voice-rec-large {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1.5px solid #CBD5E1;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-header);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-voice-rec-large:hover {
+      background: #FFFDF8;
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+    .btn-voice-rec-large.recording {
+      background: #FEF2F2;
+      border-color: #EF4444;
+      color: #DC2626;
+      animation: pulseRecord 1.5s infinite;
+    }
+    .voice-btn-svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .calc-voice-hint-badge {
+      font-size: 12px;
+      color: #64748B;
+      background: #F1F5F9;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+    }
+    .btn-voice-mini {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy-header);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-voice-mini:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+    .btn-voice-mini.recording {
+      background: #FEF2F2;
+      border-color: #EF4444;
+      color: #DC2626;
+      animation: pulseRecord 1.5s infinite;
+    }
+    .summary-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      background: #FFFFFF;
+      resize: vertical;
+      font-family: inherit;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+    .summary-textarea:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 3px rgba(194, 157, 89, 0.15);
+    }
+    @keyframes pulseRecord {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .voice-mic-icon {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
     .calc-layout-grid {
       display: grid;
@@ -1549,7 +1806,7 @@
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть эталонный УМКД (Demo)</span>
               </a>
-              <a href="#calculator" class="btn-aud-calc" onclick="selectCalcCategory(1)" data-i18n="btn_calc_this">
+              <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(0)" data-i18n="btn_calc_this">
                 Рассчитать смету кафедры →
               </a>
             </div>
@@ -1612,7 +1869,7 @@
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть эталонный тренажер (Demo)</span>
               </a>
-              <a href="#calculator" class="btn-aud-calc" onclick="selectCalcCategory(0)" data-i18n="btn_calc_this">
+              <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(1)" data-i18n="btn_calc_this">
                 Рассчитать смету симулятора →
               </a>
             </div>
@@ -1736,7 +1993,7 @@
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть тетрадь-комикс (Demo)</span>
               </a>
-              <a href="#calculator" class="btn-aud-calc" onclick="selectCalcCategory(2)" data-i18n="btn_calc_this">
+              <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(2)" data-i18n="btn_calc_this">
                 Рассчитать смету школы →
               </a>
             </div>
@@ -1799,7 +2056,7 @@
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть демо реанимации курса</span>
               </a>
-              <a href="#calculator" class="btn-aud-calc" onclick="selectCalcCategory(3)" data-i18n="btn_calc_this">
+              <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(3)" data-i18n="btn_calc_this">
                 Рассчитать аудит курса →
               </a>
             </div>
@@ -1811,99 +2068,111 @@
   </section>
 
 
-  <!-- РАЗДЕЛ: КАЛЬКУЛЯТОР СМЕТЫ (5 АККОРДЕОНОВ + ГЕНЕРАТОР КП) -->
+    <!-- РАЗДЕЛ: КАЛЬКУЛЯТОР-КОНФИГУРАТОР СМЕТЫ ПО 4 ЦА + ГЕНЕРАТОР КП -->
   <section class="calculator-section" id="calculator">
     <div class="container">
       
       <div class="section-header-centered">
-        <div class="section-pill-badge" data-i18n="calc_pill_badge">Прозрачный бюджет проекта</div>
+        <div class="section-pill-badge" data-i18n="calc_pill_badge">Прозрачный бюджет и экспресс-опрос</div>
         <h2 class="section-main-title serif-title" data-i18n="calc_main_title">
-          Интерактивный калькулятор сметы и КП
+          Интерактивный конфигуратор сметы и КП
         </h2>
         <p class="section-subtitle-text" data-i18n="calc_sub_title">
-          Отметьте нужные модули галочками — смета пересчитается мгновенно. Первые 2 позиции не заблокированы — вы сами выбираете нужные опции.
+          Отметьте нужные модули галочками — смета пересчитается мгновенно. Вы сами выбираете нужные опции.
         </p>
+      </div>
+
+      <!-- НАВИГАЦИОННЫЕ ВКЛАДКИ ПО 4 ЦА -->
+      <div class="calc-tabs-bar">
+        <button type="button" class="calc-tab-btn active" onclick="switchCalcAudience(0, this)">
+          <span>🎓</span> <span>1. Колледжи и ВУЗы (ГОСО 2026, УМКД)</span>
+        </button>
+        <button type="button" class="calc-tab-btn" onclick="switchCalcAudience(1, this)">
+          <span>🏢</span> <span>2. Корпорации и B2B (Тренажеры, продажи)</span>
+        </button>
+        <button type="button" class="calc-tab-btn" onclick="switchCalcAudience(2, this)">
+          <span>📚</span> <span>3. Школы и «Ұстаз» (Авторские методики)</span>
+        </button>
+        <button type="button" class="calc-tab-btn" onclick="switchCalcAudience(3, this)">
+          <span>🚀</span> <span>4. EdTech и Онлайн-школы (Аудит, курсы)</span>
+        </button>
       </div>
 
       <div class="calc-layout-grid">
         
-        <!-- ЛЕВАЯ КОЛОНКА: 5 РАСКРЫВАЮЩИХСЯ АККОРДЕОНОВ -->
+        <!-- ЛЕВАЯ КОЛОНКА: 4 БЛОКА ОПРОСНИКА-КАЛЬКУЛЯТОРА -->
         <div class="calc-accordions-wrap">
           
-          <!-- АККОРДЕОН 1: СИМУЛЯТОРЫ И B2B -->
-          <div class="calc-cat-box open">
-            <div class="calc-cat-header" onclick="toggleCalcCategory(this)">
-              <div class="calc-cat-title-wrap">
-                <svg class="gold-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                <span data-i18n="cat_1_title">1. Корпоративные симуляторы и онбординг (B2B)</span>
-                <span class="calc-cat-badge">4 опции</span>
+          <!-- ==================== БЛОК 1: КОЛЛЕДЖИ И ВУЗЫ ==================== -->
+          <div class="calc-aud-block active" id="calc-block-vuz">
+            
+            <!-- ВОПРОС 1: СУТЬ ЗАДАЧИ -->
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 1 из 4</span>
+              <div class="calc-q-title">
+                <span>В чем главная суть задачи?</span>
+                <span class="calc-q-multihint">Можно выбрать несколько</span>
               </div>
-              <span class="calc-cat-arrow">▼</span>
+              
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-task="Подготовка к государственной аттестации" data-name-ru="Защитный контур: Подготовка УМКД к государственной аттестации" data-name-kz="Мемлекеттік аттестаттауға ПОӘК дайындау" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Срочная подготовка к государственной аттестации</div>
+                    <div class="calc-item-desc">Формирование защитного контура без замечаний комиссий МНВО / МОП РК</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color: #64748B; font-size: 12px;">Базовый фокус</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-task="Перевод программ на новый ГОСО 2026" data-name-ru="Перевод программ на ГОСО 2026 и цифровизацию" data-name-kz="Бағдарламаларды МЖМБС 2026 стандартына көшіру" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Перевод программ на ГОСО 2026 и цифровизацию</div>
+                    <div class="calc-item-desc">Интеграция ИИ-инструментов, кредитная система ECTS и микроквалификации</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color: #64748B; font-size: 12px;">Стандарт 2026</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-task="Разработка УМКД с нуля" data-name-ru="Разработка эталонного УМКД с нуля для новой дисциплины" data-name-kz="Жаңа пәнге арналған эталондық ПОӘК әзірлеу" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Разработка эталонного УМКД с нуля для новой специальности</div>
+                    <div class="calc-item-desc">Комплексный пакет: силлабус, лекции, практика и оценочные средства</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color: #64748B; font-size: 12px;">С нуля под ключ</div>
+              </label>
             </div>
-            <div class="calc-cat-body">
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Диалоговый ИИ-симулятор (до 20 сценариев)" data-name-kz="Диалогтік AI-симулятор (20 сценарийге дейін)" data-price="350000" data-days="5" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_sim_name">Диалоговый ИИ-симулятор (до 20 сценариев)</div>
-                    <div class="calc-item-desc" data-i18n="c_sim_desc">Интерактивный тренажер диалогов и отработки сложных возражений</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">350 000 ₸</div>
-              </label>
+
+            <!-- ВОПРОС 2: ОБЪЕМЫ И АКАДЕМИЧЕСКИЕ ЧАСЫ -->
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 2 из 4</span>
+              <div class="calc-q-title">
+                <span>Объем дисциплин и академические часы:</span>
+                <span class="calc-q-multihint">Отметьте нужные объемы часов</span>
+              </div>
 
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Стандарты онбординга и регламент допуска (72 часа)" data-name-kz="Бейімдеу стандарттары және рұқсат регламенті (72 сағат)" data-price="250000" data-days="3" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-hours="36" data-name-ru="Дисциплина 36 академических часов (краткий спецкурс)" data-name-kz="36 академиялық сағаттық пән (қысқа арнайы курс)" data-price="180000" data-days="3" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_onb_name">Стандарты онбординга и регламент допуска (72 часа)</div>
-                    <div class="calc-item-desc" data-i18n="c_onb_desc">Книга новичка, чек-лист квалификации и приказ о допуске</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">250 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Книга продаж и матрица речевых модулей" data-name-kz="Сату кітабы және сөйлеу модульдерінің матрицасы" data-price="200000" data-days="3" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_book_name">Книга продаж и матрица речевых модулей</div>
-                    <div class="calc-item-desc" data-i18n="c_book_desc">Скрипты переписки/звонков, классификатор ЦА и отработка возражений</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">200 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Отдел контроля качества (QA): чек-листы и KPI" data-name-kz="Сапаны бақылау бөлімі (QA): чек-парақтар және KPI" data-price="180000" data-days="2" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_qa_name">Отдел контроля качества (QA): чек-листы и KPI</div>
-                    <div class="calc-item-desc" data-i18n="c_qa_desc">Матрица оценки звонков, критерии брака диалога и система грейдов</div>
+                    <div class="calc-item-name">36 академических часов (краткий / элективный курс)</div>
+                    <div class="calc-item-desc">Силлабус, поурочный план, практические задания и рубежный контроль</div>
                   </div>
                 </div>
                 <div class="calc-item-price">180 000 ₸</div>
               </label>
-            </div>
-          </div>
 
-          <!-- АККОРДЕОН 2: ВУЗЫ И КОЛЛЕДЖИ -->
-          <div class="calc-cat-box">
-            <div class="calc-cat-header" onclick="toggleCalcCategory(this)">
-              <div class="calc-cat-title-wrap">
-                <svg class="gold-icon" viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M3 10h18"></path><path d="M5 6l7-3 7 3"></path><path d="M4 10v11"></path><path d="M20 10v11"></path><path d="M8 14v4"></path><path d="M12 14v4"></path><path d="M16 14v4"></path></svg>
-                <span data-i18n="cat_2_title">2. Высшая школа и ТиПО (ГОСО 2026, УМКД)</span>
-                <span class="calc-cat-badge">4 опции</span>
-              </div>
-              <span class="calc-cat-arrow">▼</span>
-            </div>
-            <div class="calc-cat-body">
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Эталонный УМКД/ПОЎК под ключ (1 дисциплина)" data-name-kz="Кілтке тапсырылатын эталондық ПӘӘК (1 пән)" data-price="300000" data-days="4" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-hours="72" data-name-ru="Дисциплина 72 академических часа (семестровый курс)" data-name-kz="72 академиялық сағаттық пән (семестрлік курс)" data-price="300000" data-days="4" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_umkd_name">Эталонный УМКД/ПОЎК под ключ (1 дисциплина)</div>
-                    <div class="calc-item-desc" data-i18n="c_umkd_desc">Силлабус, результаты обучения (РО), литература за последние 3 года</div>
+                    <div class="calc-item-name">72 академических часа (стандартный семестровый курс)</div>
+                    <div class="calc-item-desc">Полный УМКД: 15 недель лекций, лабораторных, СРО/СРСП и экзамен</div>
                   </div>
                 </div>
                 <div class="calc-item-price">300 000 ₸</div>
@@ -1911,113 +2180,10 @@
 
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Фонд оценочных средств (100 тестов Platonus/Moodle)" data-name-kz="Бағалау құралдарының қоры (Platonus/Moodle үшін 100 тест)" data-price="150000" data-days="2" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-hours="108-144" data-name-ru="Дисциплина 108–144 академических часа (годовой профильный модуль)" data-name-kz="108–144 сағаттық пән (жылдық бейіндік модуль)" data-price="450000" data-days="6" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_fos_name">Фонд оценочных средств (100 тестов Platonus/Moodle)</div>
-                    <div class="calc-item-desc" data-i18n="c_fos_desc">Банк тестовых заданий с единичным и множественным выбором</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">150 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Комплексный цикл кафедры (4–5 дисциплин под ключ)" data-name-kz="Кафедраның кешенді циклі (кілтке тапсырылатын 4–5 пән)" data-price="950000" data-days="10" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_dept_name">Комплексный цикл кафедры (4–5 дисциплин под ключ)</div>
-                    <div class="calc-item-desc" data-i18n="c_dept_desc">Полный пакет образовательной программы под аккредитацию IAAR/IQAA</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">950 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Интерактивная панель запуска дисциплины (HTML)" data-name-kz="Пәнді іске қосудың интерактивті панелі (HTML)" data-price="120000" data-days="2" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_dash_name">Интерактивная панель запуска дисциплины (HTML)</div>
-                    <div class="calc-item-desc" data-i18n="c_dash_desc">Автономный цифровой навигатор по силлабусу и лекционному фонду</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">120 000 ₸</div>
-              </label>
-            </div>
-          </div>
-
-          <!-- АККОРДЕОН 3: ШКОЛЫ И УЧИТЕЛЯ -->
-          <div class="calc-cat-box">
-            <div class="calc-cat-header" onclick="toggleCalcCategory(this)">
-              <div class="calc-cat-title-wrap">
-                <svg class="gold-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                <span data-i18n="cat_3_title">3. Школы и авторские программы («Ұстаз»)</span>
-                <span class="calc-cat-badge">3 опции</span>
-              </div>
-              <span class="calc-cat-arrow">▼</span>
-            </div>
-            <div class="calc-cat-body">
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Пакет аттестации «Ұстаз» (авторская программа + КТП)" data-name-kz="«Ұстаз» аттестаттау пакеті (авторлық бағдарлама + КТЖ)" data-price="220000" data-days="3" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_ustaz_name">Пакет аттестации «Ұстаз» (авторская программа + КТП)</div>
-                    <div class="calc-item-desc" data-i18n="c_ustaz_desc">Пояснительная записка, календарный план (34/68 ч), диагностика</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">220 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Рабочая тетрадь-комикс для учащихся под ключ" data-name-kz="Оқушыларға арналған кілтке тапсырылатын комикс-дәптер" data-price="180000" data-days="3" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_wb_name">Рабочая тетрадь-комикс для учащихся под ключ</div>
-                    <div class="calc-item-desc" data-i18n="c_wb_desc">Методологическая концепция, сценарий персонажа и верстка</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">180 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Стандарты преподавания и QA для частной школы" data-name-kz="Жеке мектеп үшін оқыту стандарттары және QA" data-price="280000" data-days="4" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_schstd_name">Стандарты преподавания и QA для частной школы</div>
-                    <div class="calc-item-desc" data-i18n="c_schstd_desc">Регламент урока, чек-листы контроля учителей и книга наставника</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">280 000 ₸</div>
-              </label>
-            </div>
-          </div>
-
-          <!-- АККОРДЕОН 4: EDTECH И ОНЛАЙН-ШКОЛЫ -->
-          <div class="calc-cat-box">
-            <div class="calc-cat-header" onclick="toggleCalcCategory(this)">
-              <div class="calc-cat-title-wrap">
-                <svg class="gold-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-                <span data-i18n="cat_4_title">4. EdTech и онлайн-курсы (Аудит, Voice-to-Course)</span>
-                <span class="calc-cat-badge">3 опции</span>
-              </div>
-              <span class="calc-cat-arrow">▼</span>
-            </div>
-            <div class="calc-cat-body">
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Методологический экспресс-аудит курса (COR, NPS)" data-name-kz="Курстың әдіснамалық экспресс-аудиті (COR, NPS)" data-price="150000" data-days="2" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_ea_name">Методологический экспресс-аудит курса (COR, NPS)</div>
-                    <div class="calc-item-desc" data-i18n="c_ea_desc">Карта провисаний, аудит домашних заданий, точки оттока студентов</div>
-                  </div>
-                </div>
-                <div class="calc-item-price">150 000 ₸</div>
-              </label>
-
-              <label class="calc-item-row">
-                <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Реанимация курса по циклу Колба под ключ" data-name-kz="Колб циклі бойынша курсты кілтке толық қайта жандандыру" data-price="450000" data-days="6" onchange="recalculateEstimate()">
-                  <div>
-                    <div class="calc-item-name" data-i18n="c_reanim_name">Реанимация курса по циклу Колба под ключ</div>
-                    <div class="calc-item-desc" data-i18n="c_reanim_desc">Перепроектирование уроков, геймификация, доводимость до 85%+</div>
+                    <div class="calc-item-name">108–144 академических часа (годовой профильный модуль)</div>
+                    <div class="calc-item-desc">Углубленный комплекс со сквозными кейсами и курсовым проектом</div>
                   </div>
                 </div>
                 <div class="calc-item-price">450 000 ₸</div>
@@ -2025,90 +2191,641 @@
 
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Упаковка курса из аудио-наговоров (Voice-to-Course)" data-name-kz="Аудиожазбалардан курс әзірлеу (Voice-to-Course)" data-price="350000" data-days="5" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-name-ru="Комплексный цикл кафедры (4–5 дисциплин под ключ со скидкой)" data-name-kz="Кафедраның кешенді циклі (4–5 пән жеңілдікпен)" data-price="950000" data-days="10" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_v2c_name">Упаковка курса из аудио-наговоров (Voice-to-Course)</div>
-                    <div class="calc-item-desc" data-i18n="c_v2c_desc">Транскрибация наговоров эксперта, конспекты, рабочие тетради</div>
+                    <div class="calc-item-name">Комплексный цикл кафедры (4–5 дисциплин под ключ со скидкой)</div>
+                    <div class="calc-item-desc">Полная упаковка кафедрального пула дисциплин единым методическим почерком</div>
                   </div>
                 </div>
-                <div class="calc-item-price">350 000 ₸</div>
+                <div class="calc-item-price">950 000 ₸</div>
               </label>
             </div>
-          </div>
 
-          <!-- АККОРДЕОН 5: ЛОКАЛИЗАЦИЯ И СОПРОВОЖДЕНИЕ -->
-          <div class="calc-cat-box">
-            <div class="calc-cat-header" onclick="toggleCalcCategory(this)">
-              <div class="calc-cat-title-wrap">
-                <svg class="gold-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                <span data-i18n="cat_5_title">5. Языковая локализация и сопровождение</span>
-                <span class="calc-cat-badge">2 опции</span>
+            <!-- ВОПРОС 3: МОДУЛИ И СПЕЦИФИКАЦИЯ ПРОСТЫМИ СЛОВАМИ -->
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 3 из 4</span>
+              <div class="calc-q-title">
+                <span>Компоненты пакета (простыми словами):</span>
+                <span class="calc-q-multihint">Выберите необходимые</span>
               </div>
-              <span class="calc-cat-arrow">▼</span>
-            </div>
-            <div class="calc-cat-body">
+
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Полная локализация на казахский язык (Қазақ тілі)" data-name-kz="Қазақ тіліне толық кәсіби локализация жасау" data-price="100000" data-days="2" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-name-ru="Пошаговая шкала оценки навыков студента (дескрипторы для аттестации)" data-name-kz="Студент дағдыларын бағалау шкаласы (аттестаттау дескрипторлары)" data-price="150000" data-days="2" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_kz_name">Полная локализация на казахский язык (Қазақ тілі)</div>
-                    <div class="calc-item-desc" data-i18n="c_kz_desc">Профессиональный академический и отраслевой перевод всех материалов</div>
+                    <div class="calc-item-name">Пошаговая шкала оценки навыков (критерии-дескрипторы)</div>
+                    <div class="calc-item-desc">Четкие критерии: за что конкретно выставляются баллы на экзамене и практике, чтобы у комиссии не было вопросов</div>
                   </div>
                 </div>
-                <div class="calc-item-price">100 000 ₸</div>
+                <div class="calc-item-price">150 000 ₸</div>
               </label>
 
               <label class="calc-item-row">
                 <div class="calc-item-left">
-                  <input type="checkbox" class="calc-item-checkbox" data-name-ru="Экспертное сопровождение и защита на нормоконтроле (1 мес)" data-name-kz="Сараптамалық сүйемелдеу және нормобақылауда қорғау (1 ай)" data-price="120000" data-days="0" onchange="recalculateEstimate()">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-name-ru="Фонд оценочных средств (100 тестов Platonus/Moodle)" data-name-kz="Бағалау құралдарының қоры (100 тест Platonus/Moodle)" data-price="150000" data-days="2" onchange="recalculateEstimate()">
                   <div>
-                    <div class="calc-item-name" data-i18n="c_sopr_name">Экспертное сопровождение и защита на нормоконтроле (1 мес)</div>
-                    <div class="calc-item-desc" data-i18n="c_sopr_desc">Внесение правок комиссий, методические консультации руководителя</div>
+                    <div class="calc-item-name">Фонд оценочных средств (100 тестов для Platonus / Moodle)</div>
+                    <div class="calc-item-desc">Банк тестовых заданий с единичным и множественным выбором, готовый к загрузке в систему</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">150 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="vuz" data-name-ru="Интерактивная панель запуска дисциплины (цифровой силлабус в HTML)" data-name-kz="Пәнді іске қосудың интерактивті панелі (HTML)" data-price="120000" data-days="2" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Интерактивная панель запуска дисциплины (HTML)</div>
+                    <div class="calc-item-desc">Цифровой виджет для студентов с поиском тем, ссылками на литературу и дедлайнами</div>
                   </div>
                 </div>
                 <div class="calc-item-price">120 000 ₸</div>
               </label>
             </div>
+
+            <!-- ВОПРОС 4: СРОК ГОТОВНОСТИ (СТРОГО В КОНЦЕ) -->
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 4 из 4 (Сроки)</span>
+              <div class="calc-q-title">
+                <span>К какому сроку необходима готовность?</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-vuz" value="std" class="calc-speed-radio" checked onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Планово (1–2 месяца, стандартный темп кафедры)</div>
+                    <div class="calc-item-desc">Качественная поэтапная разработка и согласование с преподавателями</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#10B981;">Базовый тариф</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-vuz" value="urgent" class="calc-speed-radio" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Срочно (до 10–14 рабочих дней к проверке/аттестации)</div>
+                    <div class="calc-item-desc">Форсированный режим нормоконтроля в две смены (+20% к стоимости)</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:var(--gold-dark); font-weight:700;">Срочно (+20%)</div>
+              </label>
+            </div>
+
+          </div>
+
+
+          <!-- ==================== БЛОК 2: КОРПОРАТИВЫ И B2B ==================== -->
+          <div class="calc-aud-block" id="calc-block-corp">
+            
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 1 из 4</span>
+              <div class="calc-q-title">
+                <span>В чем главная задача компании?</span>
+                <span class="calc-q-multihint">Можно выбрать несколько</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-task="Онбординг новичков" data-name-ru="Адаптация и онбординг новичков без отвлечения наставников" data-name-kz="Жаңа қызметкерлерді тәлімгерсіз жылдам бейімдеу" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Быстрый ввод сотрудников в должность за 72 часа</div>
+                    <div class="calc-item-desc">Снятие нагрузки с руководителей отделов и старших менеджеров</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Экономия ФОТ</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-task="Рост конверсии продаж" data-name-ru="Рост конверсии продаж и дожима сложных возражений" data-name-kz="Сату конверсиясын өсіру және күрделі қарсылықтармен жұмыс" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Отработка сложных возражений («дорого», «подумаю», «тендер»)</div>
+                    <div class="calc-item-desc">Устранение слива сделок из-за неопытности менеджеров</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Рост выручки</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 2 из 4</span>
+              <div class="calc-q-title">
+                <span>Кого обучаем и регламенты:</span>
+                <span class="calc-q-multihint">Выберите необходимые модули</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-name-ru="Книга продаж и матрица речевых модулей" data-name-kz="Сату кітабы және сөйлеу модульдерінің матрицасы" data-price="200000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Книга продаж и матрица речевых модулей</div>
+                    <div class="calc-item-desc">Боевые скрипты диалогов, классификатор возражений и переговорные связки</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">200 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-name-ru="Стандарты онбординга и регламент допуска (72 часа)" data-name-kz="Бейімдеу стандарттары және рұқсат регламенті (72 сағат)" data-price="250000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Стандарты онбординга и регламент допуска к клиентам</div>
+                    <div class="calc-item-desc">Книга новичка, проверочный тест допуска и чек-лист аттестации</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">250 000 ₸</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 3 из 4</span>
+              <div class="calc-q-title">
+                <span>Интерактивные тренажеры и контроль качества:</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-name-ru="Диалоговый ИИ-симулятор (до 20 боевых сценариев)" data-name-kz="Диалогтік AI-симулятор (20 сценарийге дейін)" data-price="350000" data-days="5" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Диалоговый ИИ-симулятор (до 20 боевых сценариев)</div>
+                    <div class="calc-item-desc">Интерактивный симулятор для тренировки персонала без риска потерять реального клиента</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">350 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="corp" data-name-ru="Отдел контроля качества (QA): чек-листы и KPI" data-name-kz="Сапаны бақылау бөлімі (QA): чек-парақтар және KPI" data-price="180000" data-days="2" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Отдел контроля качества (QA): чек-листы и грейды</div>
+                    <div class="calc-item-desc">Нормоконтроль звонков, критерии брака диалога и система материальной мотивации</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">180 000 ₸</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 4 из 4 (Сроки)</span>
+              <div class="calc-q-title">
+                <span>Желаемый срок внедрения:</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-corp" value="std" class="calc-speed-radio" checked onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Планово (3–4 недели под ключ)</div>
+                    <div class="calc-item-desc">Аудит звонков, калибровка сценариев и пилотный запуск</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#10B981;">Базовый тариф</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-corp" value="urgent" class="calc-speed-radio" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Срочно (до 10 дней к выходу нового потока)</div>
+                    <div class="calc-item-desc">Форсированная разработка регламентов (+20% к стоимости)</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:var(--gold-dark); font-weight:700;">Срочно (+20%)</div>
+              </label>
+            </div>
+
+          </div>
+
+
+          <!-- ==================== БЛОК 3: ШКОЛЫ И УЧИТЕЛЯ (ҰСТАЗ) ==================== -->
+          <div class="calc-aud-block" id="calc-block-school">
+            
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 1 из 4</span>
+              <div class="calc-q-title">
+                <span>Цель авторской программы:</span>
+                <span class="calc-q-multihint">Можно выбрать несколько</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-task="Аттестация Устаз" data-name-ru="Аттестация педагога на присвоение квалификационной категории" data-name-kz="Мұғалімді біліктілік санатына аттестаттау" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Аттестация педагога («Ұстаз», Эксперт, Исследователь)</div>
+                    <div class="calc-item-desc">Защита авторской методики перед экспертным советом без замечаний</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Аттестационный щит</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-task="Создание рабочей тетради-комикса" data-name-ru="Создание брендированной рабочей тетради-комикса" data-name-kz="Оқушыларға арналған брендтік комикс-дәптер әзірлеу" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Создание рабочей тетради-комикса для учеников</div>
+                    <div class="calc-item-desc">Иллюстрированные воркбуки для вовлечения детей в предмет</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Вовлечение 100%</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 2 из 4</span>
+              <div class="calc-q-title">
+                <span>Объем программы и тираж тетрадей:</span>
+                <span class="calc-q-multihint">Выберите подходящие параметры</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-hours="34" data-name-ru="Авторская программа на 34 часа (1 час в неделю, полугодие/спецкурс)" data-name-kz="34 сағаттық авторлық бағдарлама (аптасына 1 сағат)" data-price="180000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">34 академических часа (спецкурс / полугодие)</div>
+                    <div class="calc-item-desc">Программа, КТП, поурочные технологические карты по циклу Колба</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">180 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-hours="68" data-name-ru="Авторская программа на 68 часов (2 часа в неделю, годовой курс)" data-name-kz="68 сағаттық авторлық бағдарлама (аптасына 2 сағат)" data-price="280000" data-days="4" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">68 академических часов (годовой курс)</div>
+                    <div class="calc-item-desc">Полный годовой учебно-методический комплекс с критериями ФО/СОЧ</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">280 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-name-ru="Печать тетрадей в типографии: 30 экз (1 класс)" data-name-kz="Баспаханада дәптер басу: 30 дана (1 сынып)" data-price="105000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Печать тетрадей в типографии: 30 экз (1 класс)</div>
+                    <div class="calc-item-desc">Плотная бумага 300 г/м², цветная обложка, доставка в школу</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">105 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-name-ru="Печать тетрадей в типографии: 120 экз (параллель)" data-name-kz="Баспаханада дәптер басу: 120 дана (параллель)" data-price="420000" data-days="4" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Печать тетрадей в типографии: 120 экз (параллель)</div>
+                    <div class="calc-item-desc">Полный тираж на 4 класса с запасом для учителей</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">420 000 ₸</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 3 из 4</span>
+              <div class="calc-q-title">
+                <span>Интерактивные материалы и стандарты школы:</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-name-ru="Интерактивный цифровой HTML-тренажер программы (Web-версия)" data-name-kz="Бағдарламаның интерактивті HTML-тренажері" data-price="150000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Интерактивный цифровой HTML-тренажер программы</div>
+                    <div class="calc-item-desc">Браузерный тренажер для смарт-досок и планшетов с автопроверкой</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">150 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="school" data-name-ru="Стандарты преподавания и QA для частной школы" data-name-kz="Жеке мектеп үшін оқыту стандарттары және QA" data-price="280000" data-days="4" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Стандарты преподавания и QA для частной школы</div>
+                    <div class="calc-item-desc">Регламент ведения урока, чек-лист завуча и аттестация педколлектива</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">280 000 ₸</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 4 из 4 (Сроки)</span>
+              <div class="calc-q-title">
+                <span>Срок готовности:</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-school" value="std" class="calc-speed-radio" checked onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Планово (к следующей четверти / учебному году)</div>
+                    <div class="calc-item-desc">Спокойная методическая обкатка и утверждение на педсовете</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#10B981;">Базовый тариф</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-school" value="urgent" class="calc-speed-radio" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Срочно к аттестации (до 10 дней к подаче досье)</div>
+                    <div class="calc-item-desc">Форсированный нормоконтроль (+20% к стоимости)</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:var(--gold-dark); font-weight:700;">Срочно (+20%)</div>
+              </label>
+            </div>
+
+          </div>
+
+
+          <!-- ==================== БЛОК 4: EDTECH И ОНЛАЙН-КУРСЫ (АУДИТ) ==================== -->
+          <div class="calc-aud-block" id="calc-block-edtech">
+            
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 1 из 4</span>
+              <div class="calc-q-title">
+                <span>В чем главная проблема онлайн-курса?</span>
+                <span class="calc-q-multihint">Можно выбрать несколько</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-task="Низкая доходимость COR" data-name-ru="Низкая доходимость (COR) и отвал студентов после 2-го модуля" data-name-kz="Төмен өтімділік (COR) және 2-модульден кейін оқушылардың кетуі" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Низкая доходимость (COR): ученики бросают уроки на полпути</div>
+                    <div class="calc-item-desc">Уроки длинные, перегружены теорией, домашние задания вызывают стресс</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Проблема COR</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-task="Падение NPS и возвраты" data-name-ru="Падение удовлетворенности (NPS) и возвраты оплат" data-name-kz="Қанағаттану деңгейінің (NPS) төмендеуі және төлем қайтарулар" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Падение отзывов (NPS) и запросы на возврат денег</div>
+                    <div class="calc-item-desc">Кураторы проверяют задания формально, нет чувства результата</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">Проблема NPS</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-task="Упаковка курса из наговоров" data-name-ru="Упаковка курса из аудио-наговоров эксперта (Voice-to-Course)" data-name-kz="Сарапшының аудиожазбаларынан курс жасау (Voice-to-Course)" data-price="0" data-days="0" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">У эксперта нет времени писать тексты (нужна упаковка с голоса)</div>
+                    <div class="calc-item-desc">Эксперт наговаривает аудио — методолог делает готовый курс</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#64748B; font-size:12px;">С голоса под ключ</div>
+              </label>
+            </div>
+
+            <!-- ВЫДЕЛЕННЫЙ БЛОК: АУДИТ КУРСА -->
+            <div class="calc-question-box" style="border-left: 4px solid var(--gold-primary);">
+              <span class="calc-q-badge" style="color:var(--navy-header);">Шаг 2 из 4 • Выбор аудита</span>
+              <div class="calc-q-title">
+                <span>МЕТОДОЛОГИЧЕСКИЙ АУДИТ КУРСА:</span>
+                <span class="calc-q-multihint">Выберите глубину аудита</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Методологический экспресс-аудит курса (COR, NPS, точки оттока)" data-name-kz="Курстың әдіснамалық экспресс-аудиті (COR, NPS, кету нүктелері)" data-price="150000" data-days="2" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Методологический экспресс-аудит курса (COR, NPS, точки оттока)</div>
+                    <div class="calc-item-desc">Оцифровка воронки отвала, аудит структуры уроков и письменное заключение с планом правок</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">150 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Глубокий аудит 10 уроков и домашних заданий с картой ошибок" data-name-kz="10 сабақ пен үй тапсырмаларына қателіктер картасымен терең аудит" data-price="250000" data-days="4" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Глубокий аудит 10 уроков и домашних заданий с картой ошибок</div>
+                    <div class="calc-item-desc">Поминутный разбор видео, анализ формулировок ДЗ и перепроектирование точек сопротивления</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">250 000 ₸</div>
+              </label>
+            </div>
+
+            <!-- ШАГ 3: РЕАНИМАЦИЯ И МАТЕРИАЛЫ -->
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 3 из 4</span>
+              <div class="calc-q-title">
+                <span>Архитектура, реанимация и практические материалы:</span>
+                <span class="calc-q-multihint">Выберите модули</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Проектирование онбординга и архитектуры курса" data-name-kz="Онбординг пен курс архитектурасын жобалау" data-price="180000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Проектирование онбординга и архитектуры курса</div>
+                    <div class="calc-item-desc">Вводный спринт для быстрого первого результата и вовлечения 85%+ студентов</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">180 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Реанимация курса по циклу Колба под ключ (микромодули)" data-name-kz="Колб циклі бойынша курсты кілтке толық қайта жандандыру" data-price="450000" data-days="6" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Реанимация курса по циклу Колба под ключ</div>
+                    <div class="calc-item-desc">Перевод уроков в микрообучение (12–15 мин), геймификация и доводимость до 85%+</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">450 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Упаковка курса из аудио-наговоров эксперта (Voice-to-Course)" data-name-kz="Аудиожазбалардан курс әзірлеу (Voice-to-Course)" data-price="350000" data-days="5" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Упаковка курса из аудио-наговоров эксперта (Voice-to-Course)</div>
+                    <div class="calc-item-desc">Транскрибация речи эксперта, выжимка смыслов, воркбуки и поурочные презентации</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">350 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Брендированная Рабочая тетрадь (Воркбук А4) и шаблоны" data-name-kz="Брендтік Жұмыс дәптері (Воркбук А4) және үлестірмелер" data-price="150000" data-days="3" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Брендированная Рабочая тетрадь (Воркбук А4) и шаблоны</div>
+                    <div class="calc-item-desc">Дизайнерский PDF-комплект для практических заданий студентов</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">150 000 ₸</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="checkbox" class="calc-item-checkbox" data-cat="edtech" data-name-ru="Регламент проверки ДЗ и нормоконтроля для кураторов" data-name-kz="Кураторларға арналған үй тапсырмасын тексеру регламенті" data-price="120000" data-days="2" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Регламент проверки ДЗ и нормоконтроля кураторов</div>
+                    <div class="calc-item-desc">Критерии обратной связи, запрещенные фразы и тайминг ответа студенту</div>
+                  </div>
+                </div>
+                <div class="calc-item-price">120 000 ₸</div>
+              </label>
+            </div>
+
+            <div class="calc-question-box">
+              <span class="calc-q-badge">Шаг 4 из 4 (Сроки)</span>
+              <div class="calc-q-title">
+                <span>Срок запуска / обновления:</span>
+              </div>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-edtech" value="std" class="calc-speed-radio" checked onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Стандартный темп (14 рабочих дней)</div>
+                    <div class="calc-item-desc">Глубокая проработка без авралов к плановому запуску потока</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:#10B981;">Базовый тариф</div>
+              </label>
+
+              <label class="calc-item-row">
+                <div class="calc-item-left">
+                  <input type="radio" name="speed-edtech" value="urgent" class="calc-speed-radio" onchange="recalculateEstimate()">
+                  <div>
+                    <div class="calc-item-name">Спринт (7 рабочих дней, форсированный режим)</div>
+                    <div class="calc-item-desc">Срочная реанимация перед стартом продаж (+20% к стоимости)</div>
+                  </div>
+                </div>
+                <div class="calc-item-price" style="color:var(--gold-dark); font-weight:700;">Спринт (+20%)</div>
+              </label>
+            </div>
+
+          </div>
+
+          <!-- ОБЩИЕ ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ ДЛЯ ВСЕХ БЛОКОВ -->
+          <div class="calc-question-box" style="background: #FDFBF7; border-color: var(--gold-border);">
+            <div style="font-size: 13px; font-weight: 700; color: var(--navy-header); margin-bottom: 8px;">
+              🌐 Дополнительные возможности и сопровождение:
+            </div>
+
+            <label class="calc-item-row">
+              <div class="calc-item-left">
+                <input type="checkbox" class="calc-item-checkbox" data-global="true" data-name-ru="Полная локализация на казахский язык (Қазақ тілі)" data-name-kz="Қазақ тіліне кәсіби толық бейімдеу" data-price="100000" data-days="2" onchange="recalculateEstimate()">
+                <div>
+                  <div class="calc-item-name">Полная локализация на казахский язык (Қазақ тілі)</div>
+                  <div class="calc-item-desc">Академический и отраслевой перевод всех материалов без кальки</div>
+                </div>
+              </div>
+              <div class="calc-item-price">100 000 ₸</div>
+            </label>
+
+            <label class="calc-item-row">
+              <div class="calc-item-left">
+                <input type="checkbox" class="calc-item-checkbox" data-global="true" data-name-ru="Экспертное сопровождение и защита на нормоконтроле (1 мес)" data-name-kz="Сараптамалық сүйемелдеу және қорғауда көмек (1 ай)" data-price="120000" data-days="0" onchange="recalculateEstimate()">
+                <div>
+                  <div class="calc-item-name">Экспертное сопровождение и защита на нормоконтроле / совете (1 мес)</div>
+                  <div class="calc-item-desc">Внесение правок комиссий и аттестационный нормоконтроль</div>
+                </div>
+              </div>
+              <div class="calc-item-price">120 000 ₸</div>
+            </label>
           </div>
 
         </div>
 
         <!-- ПРАВАЯ ПАНЕЛЬ: ИТОГОВАЯ СМЕТА И ЗАПРОС НА УТВЕРЖДЕНИЕ КП -->
         <div class="calc-summary-panel">
-          <div class="summary-heading" data-i18n="sum_heading">Расчетная смета проекта</div>
+          <div class="summary-heading" data-i18n="sum_heading">Предварительный расчет сметы</div>
           <div class="summary-total-sum" id="calc-total-sum">0 ₸</div>
           <div class="summary-total-days" id="calc-total-days" data-i18n="sum_time">Срок: выберите опции слева</div>
 
           <div class="summary-divider"></div>
 
-          <div style="font-size: 12px; font-weight: 700; color: var(--navy-header); margin-bottom: 8px;" data-i18n="form_title">
-            Сформировать первичное КП на утверждение:
+          <div style="font-size: 12.5px; font-weight: 700; color: var(--navy-header); margin-bottom: 10px;">
+            Зафиксировать условия и получить предварительное КП:
           </div>
 
           <div class="summary-form-group">
-            <input type="text" id="lead-name" class="summary-input" placeholder="Ваше имя" data-i18n-ph="ph_name">
+            <input type="text" id="lead-name" class="summary-input" placeholder="Ваше имя *" required>
           </div>
           <div class="summary-form-group">
-            <input type="text" id="lead-org" class="summary-input" placeholder="Организация / Сфера деятельности" data-i18n-ph="ph_org">
+            <input type="text" id="lead-org" class="summary-input" placeholder="Организация / Учебное заведение / Должность">
           </div>
           <div class="summary-form-group">
-            <input type="text" id="lead-contact" class="summary-input" placeholder="Телефон / Email / Telegram" data-i18n-ph="ph_contact">
+            <input type="text" id="lead-phone" class="summary-input" placeholder="Телефон (WhatsApp) *" required>
+          </div>
+          <div class="summary-form-group">
+            <input type="email" id="lead-email" class="summary-input" placeholder="Email для официального КП и договора">
+          </div>
+          <div class="summary-form-group">
+            <input type="text" id="lead-tg" class="summary-input" placeholder="Telegram (@username или номер)">
           </div>
 
-          <button onclick="generateCommercialProposal()" class="btn-generate-kp">
+          <!-- БЫСТРОЕ ПОЛЕ ДЛЯ ВОПРОСА ВНУТРИ ПАНЕЛИ -->
+          <div class="summary-form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <label for="lead-question-side" style="font-size: 11.5px; font-weight: 600; color: #475569;" data-i18n="lbl_question">Вопрос руководителю (по желанию):</label>
+              <button type="button" class="btn-voice-mini" id="btn-voice-rec-side" onclick="toggleVoiceInput('side')" title="Надиктовать голосом">
+                🎙️ <span id="voice-side-btn-text">Голосом</span>
+              </button>
+            </div>
+            <textarea id="lead-question-side" class="summary-textarea" rows="2" placeholder="Вопрос по ценам, срокам или нормативам..."></textarea>
+          </div>
+
+          <button type="button" onclick="generateCommercialProposal()" class="btn-generate-kp">
             <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span data-i18n="btn_gen_kp">Сформировать КП</span>
+            <span>Получить предварительное КП и отправить на утверждение</span>
           </button>
 
-          <div class="summary-disclaimer" data-i18n="sum_disclaimer">
-            ℹ️ Примечание: смета формирует первичное КП. Окончательная стоимость и график внедрения утверждаются руководителем Бюро стандартов «МЕТОДИКО» после экспресс-опроса и согласования ТЗ.
+          <div class="summary-disclaimer">
+            ℹ️ Заявка принимается руководителем ТОО «Метод и Ко» Коденцевой Н.Н. Предварительный расчет фиксируется сразу. Окончательное утвержденное КП с гарантией сроков поступит вам в ближайшее время.
           </div>
         </div>
 
       </div>
 
+      <!-- ВЫДЕЛЕННЫЙ БЛОК ДЛЯ ВОПРОСОВ КЛИЕНТА С МИКРОФОНОМ (СТРОГО ПОД КАЛЬКУЛЯТОРОМ) -->
+      <div class="calc-voice-under-block" id="calc-voice-block">
+        <div class="calc-voice-under-header">
+          <div class="calc-voice-icon-box">
+            <svg viewBox="0 0 24 24" class="voice-large-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          </div>
+          <div class="calc-voice-header-text">
+            <div class="calc-voice-title" data-i18n="calc_voice_title">💬 Остались вопросы по ценам, договору или услугам?</div>
+            <div class="calc-voice-subtitle" data-i18n="calc_voice_sub">Напишите ваш вопрос или надиктуйте голосом с микрофона — руководитель Наталья Коденцева увидит его в заявке и заранее подготовит ответ к звонку:</div>
+          </div>
+        </div>
+
+        <textarea id="lead-question" class="calc-voice-textarea" rows="3" placeholder="Напишите ваш вопрос или нажмите кнопку с микрофоном ниже, чтобы надиктовать..."></textarea>
+
+        <div class="calc-voice-actions-row">
+          <button type="button" id="btn-voice-rec" class="btn-voice-rec-large" onclick="toggleVoiceInput('main')">
+            <svg viewBox="0 0 24 24" class="voice-btn-svg"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <span id="voice-btn-text">🎙️ Надиктовать вопрос голосом (микрофон)</span>
+          </button>
+          <div class="calc-voice-hint-badge" id="voice-hint">
+            Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
+
 
   <!-- ПОДВАЛ (FOOTER) -->
   <footer>
@@ -2171,8 +2888,16 @@
           <div class="sheet-meta-info">
             <div><strong>КП №:</strong> <span id="kp-number">MK-2026-01</span></div>
             <div><strong>Дата:</strong> <span id="kp-date">09.11.2026</span></div>
-            <div><strong>Статус:</strong> Первичный расчет</div>
+            <div><strong>Статус:</strong> <span style="background:#FEF3C7; color:#92400E; padding:2px 8px; border-radius:4px; font-weight:700;">Предварительный расчет (на утверждении)</span></div>
           </div>
+        </div>
+
+        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 12.5px; color: #166534;">
+          <strong>✅ Заявка принята в работу:</strong> Предварительная спецификация зафиксирована. Главный методолог Наталья Коденцева проверяет нормоконтроль и параметры. Окончательное утвержденное КП с гарантией сроков поступит вам в ближайшее время.
+        </div>
+
+        <div id="kp-client-question-box" style="display: none; background: #FFFBEB; border: 1px solid #FDE68A; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 12.5px; color: #92400E;">
+          <strong>Вопрос от Заказчика:</strong> <span id="kp-client-question-text">—</span>
         </div>
 
         <div style="margin-bottom: 16px;">
@@ -2334,7 +3059,10 @@
         sim_o3_txt: "«Зря вы так думаете. У нас 24 года стажа, а ваш старый подрядчик наверняка делает вам шаблонные бумажки без нормоконтроля».",
         calc_pill_badge: "Прозрачный бюджет проекта",
         calc_main_title: "Интерактивный калькулятор сметы и КП",
-        calc_sub_title: "Отметьте нужные модули галочками — смета пересчитается мгновенно. Первые 2 позиции не заблокированы — вы сами выбираете нужные опции.",
+        calc_sub_title: "Отметьте нужные модули галочками — смета пересчитается мгновенно. Вы сами выбираете нужные опции.",
+        calc_voice_title: "💬 Остались вопросы по ценам, договору или услугам?",
+        calc_voice_sub: "Напишите ваш вопрос или надиктуйте голосом с микрофона — руководитель Наталья Коденцева увидит его в заявке и заранее подготовит ответ к звонку:",
+        lbl_question: "Вопрос руководителю (по желанию):",
         cat_1_title: "1. Корпоративные симуляторы и онбординг (B2B)",
         cat_2_title: "2. Высшая школа и ТиПО (ГОСО 2026, УМКД)",
         cat_3_title: "3. Школы и авторские программы («Ұстаз»)",
@@ -2348,7 +3076,7 @@
         c_book_desc: "Скрипты переписки/звонков, классификатор ЦА и отработка возражений",
         c_qa_name: "Отдел контроля качества (QA): чек-листы и KPI",
         c_qa_desc: "Матрица оценки звонков, критерии брака диалога и система грейдов",
-        c_umkd_name: "Эталонный УМКД/ПОЎК под ключ (1 дисциплина)",
+        c_umkd_name: "Эталонный УМКД под ключ (1 дисциплина)",
         c_umkd_desc: "Силлабус, результаты обучения (РО), литература за последние 3 года",
         c_fos_name: "Фонд оценочных средств (100 тестов Platonus/Moodle)",
         c_fos_desc: "Банк тестовых заданий с единичным и множественным выбором",
@@ -2371,7 +3099,7 @@
         c_kz_name: "Полная локализация на казахский язык (Қазақ тілі)",
         c_kz_desc: "Профессиональный академический и отраслевой перевод всех материалов",
         c_sopr_name: "Экспертное сопровождение и защита на нормоконтроле (1 мес)",
-        c_sopr_desc: "Внесение правок комиссий, методические консультации руководителя",
+        c_sopr_desc: "Внесение правок комиссий и аттестационный нормоконтроль",
         sum_heading: "Расчетная смета проекта",
         sum_time: "Срок: выберите опции слева",
         form_title: "Сформировать первичное КП на утверждение:",
@@ -2493,7 +3221,10 @@
         sim_o3_txt: "«Олай ойлағаныңыз қате. Біздің 24 жылдық тәжірибеміз бар, ал бұрынғы мердігеріңіз нормабақылаусыз дайын қалыптарды беріп жүрген болар».",
         calc_pill_badge: "Жобаның ашық бюджеті",
         calc_main_title: "Интерактивті смета калькуляторы және КП",
-        calc_sub_title: "Қажетті модульдерді құсбелгімен белгілеңіз — смета лезде қайта есептеледі. Алғашқы 2 позиция бұғатталмаған — барлық баптарды өз еркіңізбен таңдайсыз.",
+        calc_sub_title: "Қажетті модульдерді құсбелгімен белгілеңіз — смета лезде қайта есептеледі. Сіз өзіңіз қажетті опцияларды таңдайсыз.",
+        calc_voice_title: "💬 Баға, келісімшарт немесе қызметтер бойынша сұрақтарыңыз қалды ма?",
+        calc_voice_sub: "Сұрағыңызды жазыңыз немесе микрофон арқылы дауыспен жазыңыз — жетекші Наталья Коденцева оны өтінімнен көріп, қоңырауға дейін жауабын дайындайды:",
+        lbl_question: "Жетекшіге сұрағыңыз (қалауыңыз бойынша):",
         cat_1_title: "1. Корпоративтік симуляторлар және бейімдеу (B2B)",
         cat_2_title: "2. Жоғары мектеп және ТжКБ (МЖМБС 2026, ПӘӘК)",
         cat_3_title: "3. Мектептер мен авторлық бағдарламалар («Ұстаз»)",
@@ -2530,7 +3261,7 @@
         c_kz_name: "Қазақ тіліне толық кәсіби локализация жасау",
         c_kz_desc: "Барлық материалдарды кәсіби академиялық және салалық аудару",
         c_sopr_name: "Сараптамалық сүйемелдеу және нормобақылауда қорғау (1 ай)",
-        c_sopr_desc: "Комиссиялардың түзетулерін енгізу, жетекшінің кеңестері",
+        c_sopr_desc: "Комиссиялардың түзетулерін енгізу және аттестаттау нормобақылауы",
         sum_heading: "Жобаның есептік сметасы",
         sum_time: "Мерзімі: сол жақтағы баптарды таңдаңыз",
         form_title: "Бекіту үшін бастапқы КП қалыптастыру:",
@@ -2598,6 +3329,34 @@
       const rangeEl = document.getElementById('widget-range-input');
       if (rangeEl) {
         updateWidgetCalculation(rangeEl.value);
+      }
+
+      // Обновление плейсхолдеров вопросов и подсказок к микрофону
+      const qMainEl = document.getElementById('lead-question');
+      const qSideEl = document.getElementById('lead-question-side');
+      if (qMainEl) {
+        qMainEl.placeholder = lang === 'ru' 
+          ? 'Напишите ваш вопрос или нажмите кнопку с микрофоном ниже, чтобы надиктовать...' 
+          : 'Сұрағыңызды жазыңыз немесе төмендегі микрофон түймесін басып дауыспен жазыңыз...';
+      }
+      if (qSideEl) {
+        qSideEl.placeholder = lang === 'ru'
+          ? 'Вопрос по ценам, срокам или нормативам...'
+          : 'Баға, мерзім немесе нормативтер бойынша сұрақ...';
+      }
+      const voiceMainBtnText = document.getElementById('voice-btn-text');
+      if (voiceMainBtnText && !isRecordingSpeech) {
+        voiceMainBtnText.innerText = lang === 'ru' ? '🎙️ Надиктовать вопрос голосом (микрофон)' : '🎙️ Сұрақты дауыспен жазу (микрофон)';
+      }
+      const voiceSideBtnText = document.getElementById('voice-side-btn-text');
+      if (voiceSideBtnText && !isRecordingSpeech) {
+        voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
+      }
+      const voiceHintEl = document.getElementById('voice-hint');
+      if (voiceHintEl && !isRecordingSpeech) {
+        voiceHintEl.innerText = lang === 'ru' 
+          ? 'Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)' 
+          : 'Түймені басып, микрофонға рұқсат беріңіз және сөйлеңіз (45 сек дейін)';
       }
 
       // Пересчет сметы
@@ -2705,84 +3464,243 @@
       }
     }
 
-    // КАЛЬКУЛЯТОР: РАСКРЫТИЕ КАТЕГОРИЙ-АККОРДЕОНОВ
-    function toggleCalcCategory(header) {
-      const box = header.parentElement;
-      box.classList.toggle('open');
-    }
+    // ПЕРЕКЛЮЧЕНИЕ 4-Х ВКЛАДОК КАЛЬКУЛЯТОРА
+    let currentAudienceIndex = 0;
+    const audienceBlockIds = ['calc-block-vuz', 'calc-block-corp', 'calc-block-school', 'calc-block-edtech'];
+    const audienceNamesRu = ['ВУЗы и Колледжи (ГОСО 2026)', 'Корпорации и B2B (Тренажеры)', 'Школы и «Ұстаз»', 'EdTech и Онлайн-школы'];
+    const audienceNamesKz = ['ЖОО және Колледждер (МЖМБС 2026)', 'Корпорациялар және B2B (Тренажерлер)', 'Мектептер және «Ұстаз»', 'EdTech және Онлайн-курстар'];
 
-    function selectCalcCategory(index) {
-      const boxes = document.querySelectorAll('.calc-cat-box');
-      if (boxes[index]) {
-        boxes.forEach((b, i) => {
-          if (i === index) b.classList.add('open');
-          else b.classList.remove('open');
-        });
-      }
-    }
-
-    // ПЕРЕСЧЕТ СМЕТЫ
-    function recalculateEstimate() {
-      const checkboxes = document.querySelectorAll('.calc-item-checkbox:checked');
-      let totalPrice = 0;
-      let totalDays = 0;
-
-      checkboxes.forEach(cb => {
-        totalPrice += parseInt(cb.getAttribute('data-price') || '0', 10);
-        totalDays += parseInt(cb.getAttribute('data-days') || '0', 10);
+    function switchCalcAudience(index, btn) {
+      currentAudienceIndex = index;
+      document.querySelectorAll('.calc-tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === index);
       });
+      audienceBlockIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', i === index);
+      });
+      recalculateEstimate();
+    }
+
+    // РАСЧЕТ СМЕТЫ С УЧЕТОМ МУЛЬТИВЫБОРА, ЧАСОВ И СРОЧНОСТИ
+    function recalculateEstimate() {
+      const activeBlockId = audienceBlockIds[currentAudienceIndex];
+      const activeBlock = document.getElementById(activeBlockId);
+
+      // Чекбоксы внутри активного блока + общие опции
+      const checkedBoxes = Array.from(document.querySelectorAll('.calc-item-checkbox:checked')).filter(cb => {
+        return cb.hasAttribute('data-global') || (activeBlock && activeBlock.contains(cb));
+      });
+
+      let basePrice = 0;
+      let baseDays = 0;
+
+      checkedBoxes.forEach(cb => {
+        basePrice += parseInt(cb.getAttribute('data-price') || '0', 10);
+        baseDays += parseInt(cb.getAttribute('data-days') || '0', 10);
+      });
+
+      // Проверка срочности в активном блоке
+      let isUrgent = false;
+      const urgentRadio = activeBlock ? activeBlock.querySelector('input[type="radio"].calc-speed-radio:checked') : null;
+      if (urgentRadio && urgentRadio.value === 'urgent') {
+        isUrgent = true;
+      }
+
+      // Коэффициент срочности +20%
+      let finalPrice = isUrgent ? Math.round(basePrice * 1.20 / 1000) * 1000 : basePrice;
+      let finalDays = isUrgent ? Math.max(3, Math.ceil(baseDays * 0.65)) : baseDays;
 
       const totalSumEl = document.getElementById('calc-total-sum');
       const totalDaysEl = document.getElementById('calc-total-days');
       const isRu = currentLanguage === 'ru';
 
-      totalSumEl.innerText = totalPrice.toLocaleString('ru-RU') + ' ₸';
+      totalSumEl.innerText = finalPrice.toLocaleString('ru-RU') + ' ₸';
 
-      if (checkboxes.length === 0) {
+      if (checkedBoxes.length === 0) {
         totalDaysEl.innerText = isRu ? 'Срок: выберите опции слева' : 'Мерзімі: сол жақтағы баптарды таңдаңыз';
       } else {
-        totalDaysEl.innerText = isRu ? `Срок реализации: от ${totalDays} раб. дней` : `Орындау мерзімі: ${totalDays} жұмыс күнінен бастап`;
+        totalDaysEl.innerText = isRu 
+          ? (isUrgent ? `⚡ Срочный режим: ${finalDays} раб. дней (форсированный)` : `Срок реализации: от ${finalDays} раб. дней`)
+          : (isUrgent ? `⚡ Жедел режим: ${finalDays} жұмыс күні (жеделдетілген)` : `Орындау мерзімі: ${finalDays} жұмыс күнінен бастап`);
       }
     }
 
-    // ГЕНЕРАЦИЯ КП (МОДАЛЬНОЕ ОКНО)
-    function generateCommercialProposal() {
-      const checkboxes = document.querySelectorAll('.calc-item-checkbox:checked');
+    // ГОЛОСОВОЙ ВВОД ВОПРОСА (WEB SPEECH API)
+    let speechRecognitionInstance = null;
+    let isRecordingSpeech = false;
+
+    function toggleVoiceInput(source = 'main') {
+      const btnMain = document.getElementById('btn-voice-rec');
+      const btnMainText = document.getElementById('voice-btn-text');
+      const btnSide = document.getElementById('btn-voice-rec-side');
+      const btnSideText = document.getElementById('voice-side-btn-text');
+      const qMain = document.getElementById('lead-question');
+      const qSide = document.getElementById('lead-question-side');
+      const hint = document.getElementById('voice-hint');
       const isRu = currentLanguage === 'ru';
 
-      if (checkboxes.length === 0) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert(isRu 
+          ? 'Ваш браузер не поддерживает прямое распознавание речи. Пожалуйста, напишите ваш вопрос текстом в поле ввода.' 
+          : 'Браузеріңіз дауысты тікелей тануды қолдамайды. Сұрағыңызды енгізу өрісіне мәтінмен жазыңыз.');
+        return;
+      }
+
+      if (isRecordingSpeech && speechRecognitionInstance) {
+        speechRecognitionInstance.stop();
+        return;
+      }
+
+      try {
+        speechRecognitionInstance = new SpeechRecognition();
+        speechRecognitionInstance.lang = isRu ? 'ru-RU' : 'kk-KZ';
+        speechRecognitionInstance.interimResults = false;
+        speechRecognitionInstance.maxAlternatives = 1;
+
+        speechRecognitionInstance.onstart = function() {
+          isRecordingSpeech = true;
+          if (btnMain) {
+            btnMain.classList.add('recording');
+            if (btnMainText) btnMainText.innerText = isRu ? '🔴 Слушаю... говорите (нажмите для остановки)' : '🔴 Тыңдап тұрмын... сөйлеңіз (тоқтату үшін басыңыз)';
+          }
+          if (btnSide) {
+            btnSide.classList.add('recording');
+            if (btnSideText) btnSideText.innerText = isRu ? '🔴 Слушаю' : '🔴 Тыңдауда';
+          }
+          if (hint) {
+            hint.innerText = isRu ? 'Идет запись... Говорите в микрофон (до 45 сек)' : 'Жазылуда... Микрофонға сөйлеңіз (45 сек дейін)';
+            hint.style.color = '#DC2626';
+            hint.style.fontWeight = '700';
+          }
+        };
+
+        speechRecognitionInstance.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          const currentVal = ((qMain ? qMain.value : '') || (qSide ? qSide.value : '')).trim();
+          const newVal = currentVal ? currentVal + ' ' + transcript : transcript;
+          if (qMain) qMain.value = newVal;
+          if (qSide) qSide.value = newVal;
+        };
+
+        function resetVoiceUI() {
+          isRecordingSpeech = false;
+          if (btnMain) {
+            btnMain.classList.remove('recording');
+            if (btnMainText) btnMainText.innerText = isRu ? '🎙️ Надиктовать вопрос голосом (микрофон)' : '🎙️ Сұрақты дауыспен жазу (микрофон)';
+          }
+          if (btnSide) {
+            btnSide.classList.remove('recording');
+            if (btnSideText) btnSideText.innerText = isRu ? 'Голосом' : 'Дауыспен';
+          }
+          if (hint) {
+            hint.innerText = isRu ? 'Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)' : 'Түймені басып, микрофонға рұқсат беріңіз және сөйлеңіз (45 сек дейін)';
+            hint.style.color = '#64748B';
+            hint.style.fontWeight = 'normal';
+          }
+        }
+
+        speechRecognitionInstance.onerror = function() {
+          resetVoiceUI();
+        };
+
+        speechRecognitionInstance.onend = function() {
+          resetVoiceUI();
+        };
+
+        speechRecognitionInstance.start();
+      } catch (err) {
+        console.warn('Speech error:', err);
+        isRecordingSpeech = false;
+        if (btnMain) btnMain.classList.remove('recording');
+        if (btnSide) btnSide.classList.remove('recording');
+      }
+    }
+
+    // ГЕНЕРАЦИЯ ПРЕДВАРИТЕЛЬНОГО КП И ОТПРАВКА НА УТВЕРЖДЕНИЕ
+    function generateCommercialProposal() {
+      const activeBlockId = audienceBlockIds[currentAudienceIndex];
+      const activeBlock = document.getElementById(activeBlockId);
+
+      const checkedBoxes = Array.from(document.querySelectorAll('.calc-item-checkbox:checked')).filter(cb => {
+        return cb.hasAttribute('data-global') || (activeBlock && activeBlock.contains(cb));
+      });
+
+      const isRu = currentLanguage === 'ru';
+
+      if (checkedBoxes.length === 0) {
         alert(isRu ? 'Пожалуйста, отметьте галочками хотя бы одну опцию в калькуляторе слева.' : 'Калькулятордан кем дегенде бір бапты таңдаңыз.');
         return;
       }
 
-      const clientName = document.getElementById('lead-name').value.trim() || (isRu ? 'Уважаемый заказчик' : 'Құрметті тапсырыс беруші');
+      const clientName = document.getElementById('lead-name').value.trim();
+      const clientPhone = document.getElementById('lead-phone').value.trim();
       const clientOrg = document.getElementById('lead-org').value.trim() || (isRu ? 'Организация заказчика' : 'Тапсырыс беруші мекемесі');
-      const clientContact = document.getElementById('lead-contact').value.trim() || (isRu ? 'Не указан' : 'Көрсетілмеген');
+      const clientEmail = document.getElementById('lead-email').value.trim() || '—';
+      const clientTg = document.getElementById('lead-tg').value.trim() || '—';
+      const clientQuestion = ((document.getElementById('lead-question') ? document.getElementById('lead-question').value : '') || (document.getElementById('lead-question-side') ? document.getElementById('lead-question-side').value : '')).trim();
 
-      document.getElementById('kp-client-name').innerText = clientName;
-      document.getElementById('kp-client-org').innerText = clientOrg;
-      document.getElementById('kp-client-contact').innerText = clientContact;
+      if (!clientName) {
+        alert(isRu ? 'Пожалуйста, укажите ваше имя.' : 'Атыңызды көрсетіңіз.');
+        document.getElementById('lead-name').focus();
+        return;
+      }
+      if (!clientPhone) {
+        alert(isRu ? 'Пожалуйста, укажите контактный телефон (WhatsApp).' : 'Байланыс телефонын (WhatsApp) көрсетіңіз.');
+        document.getElementById('lead-phone').focus();
+        return;
+      }
+
+      // Проверка срочности
+      let isUrgent = false;
+      const urgentRadio = activeBlock ? activeBlock.querySelector('input[type="radio"].calc-speed-radio:checked') : null;
+      if (urgentRadio && urgentRadio.value === 'urgent') isUrgent = true;
+
+      let basePrice = 0;
+      let baseDays = 0;
+
+      checkedBoxes.forEach(cb => {
+        basePrice += parseInt(cb.getAttribute('data-price') || '0', 10);
+        baseDays += parseInt(cb.getAttribute('data-days') || '0', 10);
+      });
+
+      let totalPrice = isUrgent ? Math.round(basePrice * 1.20 / 1000) * 1000 : basePrice;
+      let totalDays = isUrgent ? Math.max(3, Math.ceil(baseDays * 0.65)) : baseDays;
 
       // Номер и дата
       const today = new Date();
       const dateStr = today.toLocaleDateString(isRu ? 'ru-RU' : 'kk-KZ');
-      document.getElementById('kp-date').innerText = dateStr;
-      document.getElementById('kp-number').innerText = 'MK-' + today.getFullYear() + '-' + Math.floor(100 + Math.random() * 900);
+      const kpNumber = 'MK-' + today.getFullYear() + '-' + Math.floor(100 + Math.random() * 900);
 
-      // Заполнение таблицы
+      document.getElementById('kp-number').innerText = kpNumber;
+      document.getElementById('kp-date').innerText = dateStr;
+      document.getElementById('kp-client-name').innerText = clientName;
+      document.getElementById('kp-client-org').innerText = clientOrg;
+      document.getElementById('kp-client-contact').innerText = `${clientPhone} | ${clientEmail} | TG: ${clientTg}`;
+
+      // Вопрос клиента
+      const qBox = document.getElementById('kp-client-question-box');
+      const qText = document.getElementById('kp-client-question-text');
+      if (clientQuestion) {
+        qBox.style.display = 'block';
+        qText.innerText = clientQuestion;
+      } else {
+        qBox.style.display = 'none';
+      }
+
+      // Таблица услуг
       const tbody = document.getElementById('kp-table-body');
       tbody.innerHTML = '';
 
-      let totalPrice = 0;
-      let totalDays = 0;
+      const selectedItemsList = [];
 
-      checkboxes.forEach((cb, idx) => {
+      checkedBoxes.forEach((cb, idx) => {
         const name = isRu ? cb.getAttribute('data-name-ru') : cb.getAttribute('data-name-kz');
         const price = parseInt(cb.getAttribute('data-price') || '0', 10);
         const days = parseInt(cb.getAttribute('data-days') || '0', 10);
 
-        totalPrice += price;
-        totalDays += days;
+        selectedItemsList.push({ name, price, days });
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -2794,8 +3712,63 @@
         tbody.appendChild(row);
       });
 
+      if (isUrgent) {
+        const row = document.createElement('tr');
+        row.style.background = '#FFFBEB';
+        row.innerHTML = `
+          <td style="text-align: center; color: #D97706;">⚡</td>
+          <td><strong>${isRu ? 'Форсированный режим нормоконтроля (+20% к стоимости)' : 'Жеделдетілген нормобақылау режимі (+20%)'}</strong></td>
+          <td style="text-align: center; color: #D97706;">${isRu ? 'Срочно' : 'Жедел'}</td>
+          <td style="text-align: right; font-weight: 700; color: #D97706;">+${(totalPrice - basePrice).toLocaleString('ru-RU')} ₸</td>
+        `;
+        tbody.appendChild(row);
+      }
+
       document.getElementById('kp-total-days').innerText = `${totalDays} ${isRu ? 'раб. дн.' : 'жұм. күні'}`;
       document.getElementById('kp-total-price').innerText = totalPrice.toLocaleString('ru-RU') + ' ₸';
+
+      // ФОРМИРОВАНИЕ СТРУКТУРЫ ДЛЯ БАЗЫ И TELEGRAM
+      const leadPayload = {
+        kpNumber: kpNumber,
+        date: dateStr,
+        timestamp: new Date().toISOString(),
+        clientName: clientName,
+        clientOrg: clientOrg,
+        clientPhone: clientPhone,
+        clientEmail: clientEmail,
+        clientTg: clientTg,
+        audienceCategory: isRu ? audienceNamesRu[currentAudienceIndex] : audienceNamesKz[currentAudienceIndex],
+        selectedItems: selectedItemsList,
+        isUrgent: isUrgent,
+        totalPrice: totalPrice,
+        totalDays: totalDays,
+        clientQuestion: clientQuestion || 'Вопрос не указан',
+        status: 'Новая заявка (на утверждении)'
+      };
+
+      // 1. Сохранение в защищенный локальный буфер браузера
+      try {
+        const savedLeads = JSON.parse(localStorage.getItem('metodiko_leads') || '[]');
+        savedLeads.unshift(leadPayload);
+        localStorage.setItem('metodiko_leads', JSON.stringify(savedLeads));
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+      }
+
+      // 2. Отправка в Google Apps Script (если настроен webhook)
+      const webhookUrl = localStorage.getItem('metodiko_google_script_url');
+      if (webhookUrl) {
+        try {
+          fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(leadPayload)
+          });
+        } catch (netErr) {
+          console.warn('Webhook delivery error:', netErr);
+        }
+      }
 
       // Открытие модального окна
       document.getElementById('kp-modal').classList.add('active');
@@ -2813,6 +3786,23 @@
         try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
       }
       setLanguage(initialLang || 'ru');
+
+      // Переключение на нужную категорию из URL
+      const catParam = urlParams.get('cat');
+      if (catParam) {
+        const catMap = { 'vuz': 0, 'corp': 1, 'school': 2, 'edtech': 3 };
+        if (catMap[catParam] !== undefined) {
+          switchCalcAudience(catMap[catParam]);
+        }
+      }
+
+      // Двусторонняя синхронизация полей вопросов (под калькулятором и в боковой панели)
+      const qMainInput = document.getElementById('lead-question');
+      const qSideInput = document.getElementById('lead-question-side');
+      if (qMainInput && qSideInput) {
+        qMainInput.addEventListener('input', () => { qSideInput.value = qMainInput.value; });
+        qSideInput.addEventListener('input', () => { qMainInput.value = qSideInput.value; });
+      }
     });
   </script>
 

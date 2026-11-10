@@ -16,3 +16,4 @@ assets_visual/
 __pycache__/
 .DS_Store
 Thumbs.db
+_backup_*/

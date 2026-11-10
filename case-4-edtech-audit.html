@@ -706,149 +706,65 @@
   <!-- TAB 3: РАСЧЕТ СТОИМОСТИ (3 ЭТАПА ПО ДОКУМЕНТАМ МЕТОДИКО) -->
   <section id="tab-calc" class="tab-content">
     <div class="content-card">
-      <div class="card-title">
-        <span>Калькулятор расчета стоимости методической разработки курса</span>
-        <span class="badge-header">Официальная смета «МЕТОДИКО»</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <span style="font-size: 18px; font-weight: 800; color: var(--navy);">3 независимых этапа методической реанимации курса</span>
+        <span class="badge-header">Стандарты «МЕТОДИКО»</span>
       </div>
       <p class="card-desc">
-        Смета рассчитывается строго по 3 независимым этапам разработки. Все параметры, сроки и этапы фиксируются в договоре.
+        Разработка и реанимация курса проектируются по прозрачным этапам. Точный расчет сметы, выбор модулей и срока готовности формируется в едином интерактивном калькуляторе с получением официального КП.
       </p>
 
       <div class="calc-tripartite-wrap">
-        
-        <!-- LEFT: 3 STAGES -->
         <div>
-
           <!-- STAGE 1: AUDIT -->
           <div class="calc-stage-box">
             <div class="calc-stage-head">
-              <h4>ЭТАП 1. Аудит курса с экспертной оценкой</h4>
-              <span id="price-stage1">250 000 ₸</span>
+              <h4>ЭТАП 1. Аудит курса с экспертной оценкой (COR, NPS, точки отвала)</h4>
+              <span style="color: var(--gold-dark); font-weight: 700;">Экспресс / Глубокий аудит</span>
             </div>
-            <label class="compact-check">
-              <span style="display:flex; align-items:center;">
-                <input type="checkbox" id="check-stage1" checked onchange="calcTripartiteFee()">
-                <span>Включить аудит 10 уроков и поиск точек отвала учеников</span>
-              </span>
-              <span style="color:var(--text-muted); font-size:11.5px;">3–5 дней</span>
-            </label>
-            <div style="font-size:11.5px; color:#5A6A80; margin-top:4px;">
-              Включает: оцифровку цифрового следа, карту воронки отвала (Dropout Points), анализ причин возвратов, письменное экспертное заключение с планом реанимации.
+            <div style="font-size:12px; color:#5A6A80; margin-top:6px;">
+              Включает: оцифровку цифрового следа, карту воронки отвала (Dropout Points), анализ причин возвратов, письменное экспертное заключение с планом реанимации уроков.
             </div>
           </div>
 
           <!-- STAGE 2: CONCEPT & ARCHITECTURE -->
           <div class="calc-stage-box">
             <div class="calc-stage-head">
-              <h4>ЭТАП 2. Концепция и архитектура курса</h4>
-              <span id="price-stage2">180 000 ₸</span>
+              <h4>ЭТАП 2. Концепция и архитектура курса (онбординг, путь ученика)</h4>
+              <span style="color: var(--gold-dark); font-weight: 700;">Архитектура под ключ</span>
             </div>
-            <label class="compact-check">
-              <span style="display:flex; align-items:center;">
-                <input type="checkbox" id="check-stage2" checked onchange="calcTripartiteFee()">
-                <span>Включить проектирование онбординга и архитектуры</span>
-              </span>
-              <span style="color:var(--text-muted); font-size:11.5px;">3–4 дня</span>
-            </label>
-            <div style="font-size:11.5px; color:#5A6A80; margin-top:4px;">
-              Включает: дорожную карту студента (путь ученика), логику модулей, сценарий вводного спринта (онбординга), Tone of Voice и правила коммуникации.
+            <div style="font-size:12px; color:#5A6A80; margin-top:6px;">
+              Включает: дорожную карту студента, логику модулей по циклу Колба, сценарий вводного спринта (онбординга), Tone of Voice и правила коммуникации кураторов.
             </div>
           </div>
 
           <!-- STAGE 3: LESSONS & MATERIALS -->
           <div class="calc-stage-box">
             <div class="calc-stage-head">
-              <h4>ЭТАП 3. Поурочное исполнение с учебными материалами</h4>
-              <span id="price-stage3">660 000 ₸</span>
+              <h4>ЭТАП 3. Поурочное исполнение и практические материалы</h4>
+              <span style="color: var(--gold-dark); font-weight: 700;">Поурочный комплекс</span>
             </div>
-
-            <div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:4px;">
-              Количество модулей под ключ (в каждый входит 3 урока по 12–15 мин):
-            </div>
-            <div class="pills-row">
-              <div class="pill-btn" onclick="selectModules(1)">1 модуль</div>
-              <div class="pill-btn" onclick="selectModules(2)">2 модуля</div>
-              <div class="pill-btn active" onclick="selectModules(3)">3 модуля (Базовый)</div>
-              <div class="pill-btn" onclick="selectModules(4)">4 модуля</div>
-              <div class="pill-btn" onclick="selectModules(5)">5 модулей</div>
-              <div class="pill-btn" onclick="selectModules(6)">6 модулей</div>
-            </div>
-
-            <div style="font-size:12px; font-weight:700; color:var(--navy); margin:10px 0 6px;">
-              Учебные материалы и практическая обвязка:
-            </div>
-            <label class="compact-check">
-              <span style="display:flex; align-items:center;">
-                <input type="checkbox" id="check-workbook" checked onchange="calcTripartiteFee()">
-                <span>Брендированная Рабочая тетрадь (Воркбук А4) со всеми раздатками</span>
-              </span>
-              <span style="color:var(--gold-dark); font-size:11.5px;">+150 000 ₸</span>
-            </label>
-            <label class="compact-check">
-              <span style="display:flex; align-items:center;">
-                <input type="checkbox" id="check-curators" checked onchange="calcTripartiteFee()">
-                <span>Регламент проверки ДЗ и нормоконтроля для кураторов</span>
-              </span>
-              <span style="color:var(--gold-dark); font-size:11.5px;">+120 000 ₸</span>
-            </label>
-            <label class="compact-check">
-              <span style="display:flex; align-items:center;">
-                <input type="checkbox" id="check-showcase" checked onchange="calcTripartiteFee()">
-                <span>Интерактивная демо-витрина курса (HTML) для продаж</span>
-              </span>
-              <span style="color:var(--gold-dark); font-size:11.5px;">+150 000 ₸</span>
-            </label>
-
-            <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
-              <div style="flex:1; min-width:140px;">
-                <div style="font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:4px;">Исходные данные:</div>
-                <div style="display:flex; gap:4px;">
-                  <button type="button" class="pill-btn active" id="btn-src-audio" onclick="setSource('audio')">Голосовые аудио</button>
-                  <button type="button" class="pill-btn" id="btn-src-text" onclick="setSource('text')">Тексты/тезисы</button>
-                </div>
-              </div>
-              <div style="flex:1; min-width:140px;">
-                <div style="font-size:11.5px; font-weight:700; color:var(--navy); margin-bottom:4px;">Срочность:</div>
-                <div style="display:flex; gap:4px;">
-                  <button type="button" class="pill-btn active" id="btn-spd-std" onclick="setSpeed('std')">Стандарт (14 дн)</button>
-                  <button type="button" class="pill-btn" id="btn-spd-fast" onclick="setSpeed('fast')">Спринт (7 дн, +25%)</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-        <!-- RIGHT: SUMMARY -->
-        <div class="calc-summary-panel">
-          <div>
-            <div style="font-size:14px; font-weight:800; color:var(--navy);">ИТОГОВАЯ СТОИМОСТЬ СМЕТЫ:</div>
-            <div class="summary-big-price" id="sum-total-kzt">1 510 000 ₸</div>
-            <div class="summary-sub-price" id="sum-total-rub">≈ 302 000 ₽</div>
-
-            <div style="font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:6px;">
-              Срок реализации под ключ: <span id="sum-days" style="color:var(--gold-dark);">12–15 рабочих дней</span>
-            </div>
-
-            <ul class="summary-specs" id="sum-specs-list">
-              <li>Этап 1: Аудит курса с экспертной оценкой (10 уроков)</li>
-              <li>Этап 2: Концепция и архитектура курса (онбординг)</li>
-              <li>Этап 3: 3 модуля под ключ (9 микроуроков с раздатками)</li>
-              <li>Брендированная Рабочая тетрадь (Воркбук А4)</li>
-              <li>Регламент проверки ДЗ для кураторов</li>
-              <li>Интерактивная демо-витрина курса (HTML)</li>
-            </ul>
-          </div>
-
-          <div>
-            <button class="btn-estimate-modal" onclick="openEstimateModal()">Сформировать официальную смету</button>
-            <div style="text-align:center; font-size:11px; color:var(--text-muted); margin-top:8px;">
-              Оплата по безналичному расчету (договор с ТОО, закрывающие акты)
+            <div style="font-size:12px; color:#5A6A80; margin-top:6px;">
+              Включает: микроуроки по 12–15 мин, брендированный воркбук (А4), регламенты проверки домашних заданий и интерактивную HTML-витрину курса.
             </div>
           </div>
         </div>
 
+        <!-- RIGHT: CALL TO ACTION -->
+        <div class="calc-summary-panel" style="background: linear-gradient(135deg, #152238 0%, #1e3352 100%); color: #FFFFFF; padding: 28px; border-radius: 8px;">
+          <div>
+            <div style="font-size: 12px; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Единый центр расчета:</div>
+            <div style="font-size: 20px; font-weight: 800; font-family: 'Georgia', serif; margin-top: 4px; color: #FFFFFF;">Интерактивный калькулятор сметы и КП</div>
+            <div style="font-size: 13px; color: #CBD5E1; margin: 12px 0 16px;">
+              Выберите этапы аудита, количество модулей и желаемый срок — сформируйте предварительное КП с фиксацией условий и отправьте на утверждение руководителю.
+            </div>
+          </div>
+          <div>
+            <a href="index.html#calculator" class="btn-estimate-modal" style="display:block; text-align:center; text-decoration:none; background:#FBBF24; color:#152238; font-weight:700; padding:14px; border-radius:6px;">
+              Рассчитать стоимость в калькуляторе →
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -913,49 +829,7 @@
       calcTripartiteFee();
     }
 
-    function calcTripartiteFee() {
-      const hasStage1 = document.getElementById('check-stage1').checked;
-      const hasStage2 = document.getElementById('check-stage2').checked;
-      const hasWorkbook = document.getElementById('check-workbook').checked;
-      const hasCurators = document.getElementById('check-curators').checked;
-      const hasShowcase = document.getElementById('check-showcase').checked;
-
-      let stage1Price = hasStage1 ? 250000 : 0;
-      let stage2Price = hasStage2 ? 180000 : 0;
-      
-      // Stage 3: модули по 220 000 ₸ за модуль (3 урока + раздатки + ДЗ)
-      let stage3Modules = selectedModules * 220000;
-      let stage3Materials = (hasWorkbook ? 150000 : 0) + (hasCurators ? 120000 : 0) + (hasShowcase ? 150000 : 0);
-      let stage3Price = stage3Modules + stage3Materials;
-
-      document.getElementById('price-stage1').innerText = (hasStage1 ? '250 000 ₸' : '0 ₸');
-      document.getElementById('price-stage2').innerText = (hasStage2 ? '180 000 ₸' : '0 ₸');
-      document.getElementById('price-stage3').innerText = stage3Price.toLocaleString('ru-RU') + ' ₸';
-
-      let baseTotal = stage1Price + stage2Price + stage3Price;
-
-      let coeff = (sourceFormat === 'audio') ? 1.0 : 0.88;
-      let speedCoeff = (speedType === 'fast') ? 1.25 : 1.0;
-
-      let finalKzt = Math.round(baseTotal * coeff * speedCoeff / 10000) * 10000;
-      let finalRub = Math.round(finalKzt / 5);
-
-      document.getElementById('sum-total-kzt').innerText = finalKzt.toLocaleString('ru-RU') + ' ₸';
-      document.getElementById('sum-total-rub').innerText = '≈ ' + finalRub.toLocaleString('ru-RU') + ' ₽';
-
-      let days = (speedType === 'fast') ? '6–8 рабочих дней (Спринт)' : '12–15 рабочих дней (Стандарт)';
-      document.getElementById('sum-days').innerText = days;
-
-      let specs = [];
-      if (hasStage1) specs.push('Этап 1: Аудит курса с экспертной оценкой (10 уроков)');
-      if (hasStage2) specs.push('Этап 2: Концепция и архитектура курса (онбординг)');
-      specs.push(`Этап 3: ${selectedModules} ${selectedModules === 1 ? 'модуль' : (selectedModules < 5 ? 'модуля' : 'модулей')} под ключ (${selectedModules * 3} микроуроков с раздатками)`);
-      if (hasWorkbook) specs.push('Брендированная Рабочая тетрадь (Воркбук А4)');
-      if (hasCurators) specs.push('Регламент проверки ДЗ для кураторов');
-      if (hasShowcase) specs.push('Интерактивная демо-витрина курса (HTML)');
-
-      document.getElementById('sum-specs-list').innerHTML = specs.map(s => '<li>' + s + '</li>').join('');
-    }
+    function calcTripartiteFee() {}
 
     function openEstimateModal() {
       const priceKzt = document.getElementById('sum-total-kzt').innerText;
