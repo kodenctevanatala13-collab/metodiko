@@ -5,6 +5,24 @@
 
 ---
 
+## CHG-021 | 2026-11-10 20:25:00 +0500
+* **Цель:** Интеграция нового портрета Натальи Коденцевой, устранение избыточного вертикального зазора между шапкой и заголовком, удаление академического жаргона («Зеленые чернила», «Блум») из B2B-спецификации, исключение авторского сопровождения из пакетов и оптимизация карточки B2B на главной.
+* **Затронутые файлы:** `assets/natalia_kodentseva.jpg` (новый), `whitepaper-corporate-sales.html`, `whitepaper-goso-2026.html`, `index.html`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.
+* **Технические изменения:**
+  1. `assets/natalia_kodentseva.jpg`:
+     - Сохранен оригинальный портрет высокого качества.
+     - Установлен в `.expert-avatar-wrap` на 4-й странице в `whitepaper-corporate-sales.html` и `whitepaper-goso-2026.html` (`object-position: top`).
+  2. `whitepaper-corporate-sales.html` & `whitepaper-goso-2026.html`:
+     - Изменен `.page-content-wrapper`: удален `justify-content: space-between;`. Установлен `main { flex: 1 0 auto; }`, `.page-header { margin-bottom: 10px; }`, `.page-footer { margin-top: auto; }`. Это полностью ликвидировало пустой зазор между шапкой и заголовком.
+     - В `whitepaper-corporate-sales.html` заменен текст `p1_callout` в разметке и словарях RU/KZ на язык окупаемости и бизнес-рисков.
+     - Удален пункт `pkg3_f4` («1 месяц авторского сопровождения» / «Авторский надзор 1 семестр») из верстки и словарей обоих документов.
+  3. `index.html`:
+     - Удален блок аккордеона `aud-accordion-trigger` и `aud-accordion-content` в панели B2B.
+* **Результат:** Идеальная геометрия печатных страниц А4, фирменная персонализация с фото основателя, чистый деловой стиль B2B.
+* **Точка возврата / Откат:** `git checkout HEAD~1`.
+
+---
+
 ## CHG-020 | 2026-11-10 20:00:00 +0500
 * **Цель:** Разработка и интеграция Концепта 2: «Спецификация корпоративного стандарта: диалоговые ИИ-тренажеры и онбординг отдела продаж за 72 часа» (`whitepaper-corporate-sales.html`).
 * **Затронутые файлы:** `whitepaper-corporate-sales.html` (новый), `index.html`, `llms.txt`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`, `_ГЛАВНЫЙ_ДАШБОРД.md`, `ЖУРНАЛ_ОБНОВЛЕНИЙ_ВТОРОГО_МОЗГА.md`.

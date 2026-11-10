@@ -204,17 +204,17 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
 
     /* ВЕРХНИЙ КОЛОНТИТУЛ (LETTERHEAD) */
     .page-header {
       border-bottom: 2px solid var(--navy-dark);
-      padding-bottom: 10px;
-      margin-bottom: 14px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      flex-shrink: 0;
     }
     .header-branding {
       display: flex;
@@ -259,16 +259,21 @@
       margin-bottom: 3px;
     }
 
+    main {
+      flex: 1 0 auto;
+    }
+
     /* НИЖНИЙ КОЛОНТИТУЛ (FOOTER) */
     .page-footer {
       border-top: 1px solid var(--slate-border);
       padding-top: 8px;
-      margin-top: 14px;
+      margin-top: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 9.5px;
       color: var(--text-muted);
+      flex-shrink: 0;
     }
     .footer-left {
       display: flex;
@@ -966,7 +971,7 @@
 
           <div class="expert-passport-box">
             <div class="expert-avatar-wrap">
-              <img src="assets/photo_2023-12-13_18-24-06.jpg" alt="Наталья Коденцева">
+              <img src="assets/natalia_kodentseva.jpg" alt="Наталья Коденцева" style="width:100%;height:100%;object-fit:cover;object-position:top;">
             </div>
             <div>
               <div class="expert-name" data-i18n="exp_name">Наталья Коденцева</div>
@@ -1014,7 +1019,6 @@
                   <li data-i18n="pkg3_f1">Масштаб от 50+ дисциплин</li>
                   <li data-i18n="pkg3_f2">Подготовка к аккредитации IAAR/IQAA</li>
                   <li data-i18n="pkg3_f3">Институциональная концепция ИИ</li>
-                  <li data-i18n="pkg3_f4">Авторский надзор 1 семестр</li>
                 </ul>
               </div>
             </div>
@@ -1161,7 +1165,6 @@
         pkg3_f1: "Масштаб от 50+ дисциплин",
         pkg3_f2: "Подготовка к аккредитации IAAR/IQAA",
         pkg3_f3: "Институциональная концепция ИИ",
-        pkg3_f4: "Авторский надзор 1 семестр",
         p4_legal_note: "<strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР).",
         sign_title: "<strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong>",
         sign_person: "Подполковник запаса, магистр педагогики Н. Коденцева",
@@ -1275,7 +1278,6 @@
         pkg3_f1: "50+ пән көлемінде",
         pkg3_f2: "IAAR/IQAA аккредитациясына дайындық",
         pkg3_f3: "Институционалдық ЖИ тұжырымдамасы",
-        pkg3_f4: "1 семестр авторлық қадағалау",
         p4_legal_note: "<strong>Заңды деректемелер:</strong> «Метод и Ко» ЖШС, Алматы қ. ҚР Заңнамасына толық сәйкестікте шарттар жасасу. Қолма-қол ақшасыз есеп айырысу, жабу құжаттарының толық пакеті (ЭШФ, ОЖА).",
         sign_title: "<strong>«МЕТОДИКО» стандарттар бюросының жетекшісі:</strong>",
         sign_person: "Запастағы подполковник, педагогика магистрі Н. Коденцева",
