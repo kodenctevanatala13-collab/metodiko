@@ -1,7 +1,27 @@
 # ⚙️ ТЕХНИЧЕСКИЙ ЖУРНАЛ ИЗМЕНЕНИЙ (TECHNICAL LOG)
-> **Проект:** Портал Бюро стандартов «МЕТОДИКО» (`coursemaker.kz` / `metodiko`)  
+> **Проект:** Портал Бюро стандартов «МЕТОДИКО» (`metodico-kz.netlify.app`)  
 > **Стек:** HTML5, CSS3 Custom Properties, Vanilla JavaScript (ES6+), Git  
 > **Стандарт:** Практикум по вайбкодингу от 17 октября 2026 г.
+
+---
+
+## CHG-019 | 2026-11-10 19:25:00 +0500
+* **Цель:** Сквозное обновление боевого домена проекта на официальный адрес Netlify: `https://metodico-kz.netlify.app/` во всех производственных файлах сайта, метаданных Schema.org, печатном бланке КП, спецификации для вузов, Sitemap и реестрах Второго Мозга.
+* **Затронутые файлы:** `index.html`, `whitepaper-goso-2026.html`, `llms.txt`, `robots.txt`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.
+* **Технические изменения:**
+  1. `index.html`:
+     - Обновлены параметры `url` и `logo` в JSON-LD Schema.org на `https://metodico-kz.netlify.app/`.
+     - Обновлен блок контактов в подвале: `Официальный сайт: https://metodico-kz.netlify.app/`.
+     - Обновлен колонтитул официального листа КП: `г. Алматы • metodico-kz.netlify.app`.
+     - Обновлены двуязычные словари `i18n.ru` (`ft_site`) и `i18n.kz` (`ft_site`).
+  2. `whitepaper-goso-2026.html`:
+     - Обновлены колонтитулы всех 4 страниц А4: `г. Алматы • metodico-kz.netlify.app` / `Алматы қ. • metodico-kz.netlify.app`.
+     - Обновлен блок официальных реквизитов и подписи руководителя бюро: `Контакты: metodico-kz.netlify.app • +7 (708) 895-44-12`.
+     - Синхронизированы языковые словари `whitepaperDict` (RU/KZ).
+  3. `llms.txt` & `robots.txt`:
+     - Директивы Sitemap и Site URL переведены на `https://metodico-kz.netlify.app/`.
+* **Результат:** 100% единообразие ссылок и цифровой идентичности проекта под доменом Netlify.
+* **Точка возврата / Откат:** `git checkout HEAD~1`.
 
 ---
 
