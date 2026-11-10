@@ -18,8 +18,8 @@
     "@type": "EducationalOrganization",
     "name": "Бюро академических и корпоративных стандартов «МЕТОДИКО»",
     "alternateName": "ТОО «Метод и Ко»",
-    "url": "https://coursemaker.kz",
-    "logo": "https://coursemaker.kz/assets/Metodico_logo_gold.png",
+    "url": "https://kodenctevanatala13-collab.github.io/metodiko",
+    "logo": "https://kodenctevanatala13-collab.github.io/metodiko/assets/Metodico_logo_gold.png",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Алматы",
@@ -1971,8 +1971,8 @@
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть эталонный УМКД (Demo)</span>
               </a>
-              <a href="whitepaper-goso-2026.html" target="_blank" class="btn-aud-case" style="background: rgba(197, 168, 128, 0.15); border: 1px solid var(--gold-primary); color: var(--gold-primary);" title="Открыть академический White Paper для ректоратов">
-                <span>📄 Спецификация для Вузов (White Paper A4)</span>
+              <a href="whitepaper-goso-2026.html" target="_blank" class="btn-aud-case" style="background: rgba(197, 168, 128, 0.15); border: 1px solid var(--gold-primary); color: var(--gold-primary);" title="Открыть официальную спецификацию для ректоратов">
+                <span>📄 Спецификация для Вузов (ГОСО 2026)</span>
               </a>
               <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(0)" data-i18n="btn_calc_this">
                 Рассчитать смету кафедры →
@@ -2938,7 +2938,7 @@
           <div class="summary-form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
               <label for="lead-question-side" style="font-size: 11.5px; font-weight: 600; color: #475569;" data-i18n="lbl_question">Вопрос руководителю (по желанию):</label>
-              <button type="button" class="btn-voice-mini" id="btn-voice-rec-side" onclick="toggleVoiceInput('side')" title="Надиктовать голосом">
+              <button type="button" class="btn-voice-mini" id="btn-voice-rec-side" onclick="toggleVoiceInput()" title="Надиктовать голосом">
                 🎙️ <span id="voice-side-btn-text">Голосом</span>
               </button>
             </div>
@@ -2962,31 +2962,6 @@
 
       </div>
 
-      <!-- ВЫДЕЛЕННЫЙ БЛОК ДЛЯ ВОПРОСОВ КЛИЕНТА С МИКРОФОНОМ (СТРОГО ПОД КАЛЬКУЛЯТОРОМ) -->
-      <div class="calc-voice-under-block" id="calc-voice-block">
-        <div class="calc-voice-under-header">
-          <div class="calc-voice-icon-box">
-            <svg viewBox="0 0 24 24" class="voice-large-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-          </div>
-          <div class="calc-voice-header-text">
-            <div class="calc-voice-title" data-i18n="calc_voice_title">💬 Остались вопросы по ценам, договору или услугам?</div>
-            <div class="calc-voice-subtitle" data-i18n="calc_voice_sub">Напишите ваш вопрос или надиктуйте голосом с микрофона — руководитель Наталья Коденцева увидит его в заявке и заранее подготовит ответ к звонку:</div>
-          </div>
-        </div>
-
-        <textarea id="lead-question" class="calc-voice-textarea" rows="3" placeholder="Напишите ваш вопрос или нажмите кнопку с микрофоном ниже, чтобы надиктовать..."></textarea>
-
-        <div class="calc-voice-actions-row">
-          <button type="button" id="btn-voice-rec" class="btn-voice-rec-large" onclick="toggleVoiceInput('main')">
-            <svg viewBox="0 0 24 24" class="voice-btn-svg"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-            <span id="voice-btn-text">🎙️ Надиктовать вопрос голосом (микрофон)</span>
-          </button>
-          <div class="calc-voice-hint-badge" id="voice-hint">
-            Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)
-          </div>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -3000,8 +2975,8 @@
           <p class="footer-text" data-i18n="ft_desc">
             Академические и корпоративные стандарты, интерактивные симуляторы, разработка УМКД по ГОСО 2026 и нормоконтроль программ. Казахстан и страны СНГ.
           </p>
-          <p class="footer-text" style="margin-top: 10px; color: var(--gold-light);" data-i18n="ft_email">
-            Официальный канал связи: info@coursemaker.kz
+          <p class="footer-text" style="margin-top: 10px; color: var(--gold-light);" data-i18n="ft_site">
+            Официальный сайт: https://kodenctevanatala13-collab.github.io/metodiko
           </p>
         </div>
 
@@ -3011,7 +2986,7 @@
             <li><a href="#navigator" data-i18n="ft_n1">Направления и кейсы</a></li>
             <li><a href="#navigator" onclick="switchAudienceTab('tab-b2b', document.querySelectorAll('.pill-tab-btn')[1])" data-i18n="ft_n2">Диалоговый тренажер (B2B)</a></li>
             <li><a href="#calculator" data-i18n="ft_n3">Калькулятор сметы в ₸</a></li>
-            <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;">📄 White Paper: Вузы и ГОСО 2026 (A4 PDF)</a></li>
+            <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;">📄 Спецификация для Вузов (ГОСО 2026)</a></li>
             <li><a href="llms.txt" target="_blank">Паспорт для нейросетей (llms.txt)</a></li>
           </ul>
         </div>
@@ -3055,7 +3030,7 @@
               <div style="font-size: 11px; color: var(--gold-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
                 Бюро стандартов и симуляторов «МЕТОДИКО»
               </div>
-              <div style="font-size: 11px; color: #64748B;">г. Алматы, info@coursemaker.kz</div>
+              <div style="font-size: 11px; color: #64748B;">г. Алматы • kodenctevanatala13-collab.github.io/metodiko</div>
             </div>
           </div>
           <div class="sheet-meta-info">
@@ -3282,7 +3257,7 @@
         btn_gen_kp: "Сформировать КП",
         sum_disclaimer: "ℹ️ Примечание: смета формирует первичное КП. Окончательная стоимость и график внедрения утверждаются руководителем Бюро стандартов «МЕТОДИКО» после экспресс-опроса и согласования ТЗ.",
         ft_desc: "Академические и корпоративные стандарты, интерактивные симуляторы, разработка УМКД по ГОСО 2026 и нормоконтроль программ. Казахстан и страны СНГ.",
-        ft_email: "Официальный канал связи: info@coursemaker.kz",
+        ft_site: "Официальный сайт: https://kodenctevanatala13-collab.github.io/metodiko",
         ft_nav_head: "Навигация",
         ft_n1: "Направления и кейсы",
         ft_n2: "Диалоговый тренажер",
@@ -3444,7 +3419,7 @@
         btn_gen_kp: "Коммерциялық ұсынысты қалыптастыру (КП)",
         sum_disclaimer: "ℹ️ Ескертпе: смета бастапқы КП түзеді. Қорытынды бағасы мен енгізу кестесі сұхбаттан кейін «МЕТОДИКО» жетекшісімен бекітіледі.",
         ft_desc: "Академиялық және корпоративтік стандарттар, интерактивті симуляторлар, МЖМБС 2026 бойынша ПӘӘК әзірлеу. Қазақстан және ТМД елдері.",
-        ft_email: "Ресми байланыс арнасы: info@coursemaker.kz",
+        ft_site: "Ресми сайт: https://kodenctevanatala13-collab.github.io/metodiko",
         ft_nav_head: "Навигация",
         ft_n1: "Бағыттар мен кейстер",
         ft_n2: "Диалогтік жаттықтырушы",
@@ -3504,25 +3479,17 @@
         updateWidgetCalculation(rangeEl.value);
       }
 
-      // Обновление плейсхолдеров вопросов и подсказок к микрофону
-      const qMainEl = document.getElementById('lead-question');
+      // Обновление плейсхолдера вопроса и подсказок к микрофону
       const qSideEl = document.getElementById('lead-question-side');
-      if (qMainEl) {
-        qMainEl.placeholder = lang === 'ru' 
-          ? 'Напишите ваш вопрос или нажмите кнопку с микрофоном ниже, чтобы надиктовать...' 
-          : 'Сұрағыңызды жазыңыз немесе төмендегі микрофон түймесін басып дауыспен жазыңыз...';
-      }
       if (qSideEl) {
         qSideEl.placeholder = lang === 'ru'
           ? 'Вопрос по ценам, срокам или нормативам...'
           : 'Баға, мерзім немесе нормативтер бойынша сұрақ...';
       }
-      const voiceMainBtnText = document.getElementById('voice-btn-text');
-      if (voiceMainBtnText && !isRecordingSpeech) {
-        voiceMainBtnText.innerText = lang === 'ru' ? '🎙️ Надиктовать вопрос голосом (микрофон)' : '🎙️ Сұрақты дауыспен жазу (микрофон)';
-      }
       const voiceSideBtnText = document.getElementById('voice-side-btn-text');
       if (voiceSideBtnText && !isRecordingSpeech) {
+        voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
+      }
         voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
       }
       const voiceHintEl = document.getElementById('voice-hint');
@@ -3812,18 +3779,15 @@
       }
     }
 
-    // ГОЛОСОВОЙ ВВОД ВОПРОСА (WEB SPEECH API)
+    // ГОЛОСОВОЙ ВВОД ВОПРОСА ВНУТРИ ПАНЕЛИ КАЛЬКУЛЯТОРА (WEB SPEECH API)
     let speechRecognitionInstance = null;
     let isRecordingSpeech = false;
+    let voiceBaseText = '';
 
-    function toggleVoiceInput(source = 'main') {
-      const btnMain = document.getElementById('btn-voice-rec');
-      const btnMainText = document.getElementById('voice-btn-text');
+    function toggleVoiceInput() {
       const btnSide = document.getElementById('btn-voice-rec-side');
       const btnSideText = document.getElementById('voice-side-btn-text');
-      const qMain = document.getElementById('lead-question');
       const qSide = document.getElementById('lead-question-side');
-      const hint = document.getElementById('voice-hint');
       const isRu = currentLanguage === 'ru';
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -3842,48 +3806,32 @@
       try {
         speechRecognitionInstance = new SpeechRecognition();
         speechRecognitionInstance.lang = isRu ? 'ru-RU' : 'kk-KZ';
+        speechRecognitionInstance.continuous = false;
         speechRecognitionInstance.interimResults = false;
         speechRecognitionInstance.maxAlternatives = 1;
 
         speechRecognitionInstance.onstart = function() {
           isRecordingSpeech = true;
-          if (btnMain) {
-            btnMain.classList.add('recording');
-            if (btnMainText) btnMainText.innerText = isRu ? '🔴 Слушаю... говорите (нажмите для остановки)' : '🔴 Тыңдап тұрмын... сөйлеңіз (тоқтату үшін басыңыз)';
-          }
+          voiceBaseText = qSide ? qSide.value.trim() : '';
           if (btnSide) {
             btnSide.classList.add('recording');
-            if (btnSideText) btnSideText.innerText = isRu ? '🔴 Слушаю' : '🔴 Тыңдауда';
-          }
-          if (hint) {
-            hint.innerText = isRu ? 'Идет запись... Говорите в микрофон (до 45 сек)' : 'Жазылуда... Микрофонға сөйлеңіз (45 сек дейін)';
-            hint.style.color = '#DC2626';
-            hint.style.fontWeight = '700';
+            if (btnSideText) btnSideText.innerText = isRu ? '🔴 Слушаю...' : '🔴 Тыңдауда...';
           }
         };
 
         speechRecognitionInstance.onresult = function(event) {
-          const transcript = event.results[0][0].transcript;
-          const currentVal = ((qMain ? qMain.value : '') || (qSide ? qSide.value : '')).trim();
-          const newVal = currentVal ? currentVal + ' ' + transcript : transcript;
-          if (qMain) qMain.value = newVal;
-          if (qSide) qSide.value = newVal;
+          if (!event.results || !event.results[0] || !event.results[0][0]) return;
+          const transcript = event.results[0][0].transcript.trim();
+          if (transcript && qSide) {
+            qSide.value = voiceBaseText ? (voiceBaseText + ' ' + transcript) : transcript;
+          }
         };
 
         function resetVoiceUI() {
           isRecordingSpeech = false;
-          if (btnMain) {
-            btnMain.classList.remove('recording');
-            if (btnMainText) btnMainText.innerText = isRu ? '🎙️ Надиктовать вопрос голосом (микрофон)' : '🎙️ Сұрақты дауыспен жазу (микрофон)';
-          }
           if (btnSide) {
             btnSide.classList.remove('recording');
             if (btnSideText) btnSideText.innerText = isRu ? 'Голосом' : 'Дауыспен';
-          }
-          if (hint) {
-            hint.innerText = isRu ? 'Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)' : 'Түймені басып, микрофонға рұқсат беріңіз және сөйлеңіз (45 сек дейін)';
-            hint.style.color = '#64748B';
-            hint.style.fontWeight = 'normal';
           }
         }
 
@@ -3899,7 +3847,6 @@
       } catch (err) {
         console.warn('Speech error:', err);
         isRecordingSpeech = false;
-        if (btnMain) btnMain.classList.remove('recording');
         if (btnSide) btnSide.classList.remove('recording');
       }
     }
@@ -4091,14 +4038,6 @@
         if (catMap[catParam] !== undefined) {
           switchCalcAudience(catMap[catParam]);
         }
-      }
-
-      // Двусторонняя синхронизация полей вопросов (под калькулятором и в боковой панели)
-      const qMainInput = document.getElementById('lead-question');
-      const qSideInput = document.getElementById('lead-question-side');
-      if (qMainInput && qSideInput) {
-        qMainInput.addEventListener('input', () => { qSideInput.value = qMainInput.value; });
-        qSideInput.addEventListener('input', () => { qMainInput.value = qSideInput.value; });
       }
     });
   </script>

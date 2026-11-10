@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://coursemaker.kz/sitemap.xml
+Sitemap: https://kodenctevanatala13-collab.github.io/metodiko/sitemap.xml
