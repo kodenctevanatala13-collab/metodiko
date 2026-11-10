@@ -1763,7 +1763,7 @@
         <!-- ПЛИТКА 1: ФЛАГМАНСКИЙ ТЕЗИС (Bento Hero) -->
         <div class="bento-card bento-main-hero">
           <div>
-            <div class="hero-pre-badge" data-i18n="hero_badge">
+            <div class="hero-pre-badge">
               <svg class="gold-icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
               <span data-i18n="hero_badge_txt">Академический стандарт высшей школы</span>
             </div>
@@ -1972,7 +1972,7 @@
                 <span>Открыть эталонный УМКД (Demo)</span>
               </a>
               <a href="whitepaper-goso-2026.html" target="_blank" class="btn-aud-case" style="background: rgba(197, 168, 128, 0.15); border: 1px solid var(--gold-primary); color: var(--gold-primary);" title="Открыть официальную спецификацию для ректоратов">
-                <span>📄 Спецификация для Вузов (ГОСО 2026)</span>
+                <span data-i18n="btn_whitepaper_doc">📄 Спецификация для Вузов (ГОСО 2026)</span>
               </a>
               <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(0)" data-i18n="btn_calc_this">
                 Рассчитать смету кафедры →
@@ -2986,7 +2986,7 @@
             <li><a href="#navigator" data-i18n="ft_n1">Направления и кейсы</a></li>
             <li><a href="#navigator" onclick="switchAudienceTab('tab-b2b', document.querySelectorAll('.pill-tab-btn')[1])" data-i18n="ft_n2">Диалоговый тренажер (B2B)</a></li>
             <li><a href="#calculator" data-i18n="ft_n3">Калькулятор сметы в ₸</a></li>
-            <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;">📄 Спецификация для Вузов (ГОСО 2026)</a></li>
+            <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;" data-i18n="ft_whitepaper">📄 Спецификация для Вузов (ГОСО 2026)</a></li>
             <li><a href="llms.txt" target="_blank">Паспорт для нейросетей (llms.txt)</a></li>
           </ul>
         </div>
@@ -3262,6 +3262,8 @@
         ft_n1: "Направления и кейсы",
         ft_n2: "Диалоговый тренажер",
         ft_n3: "Калькулятор сметы в ₸",
+        ft_whitepaper: "📄 Спецификация для Вузов (ГОСО 2026)",
+        btn_whitepaper_doc: "📄 Спецификация для Вузов (ГОСО 2026)",
         ft_std_head: "Стандарты качества",
         ft_std_desc: "24 года стажа в высшей школе. 100% соблюдение нормативов МНВО РК, IAAR, IQAA, платформы «Ұстаз» и Закона об авторском праве РК.",
         kp_modal_title: "Коммерческое предложение (КП)",
@@ -3424,6 +3426,8 @@
         ft_n1: "Бағыттар мен кейстер",
         ft_n2: "Диалогтік жаттықтырушы",
         ft_n3: "₸ есептелген смета",
+        ft_whitepaper: "📄 ЖОО спецификациясы (МЖМБС 2026)",
+        btn_whitepaper_doc: "📄 ЖОО спецификациясы (МЖМБС 2026)",
         ft_std_head: "Сапа стандарттары",
         ft_std_desc: "Жоғары мектептегі 24 жылдық өтіл. ҚР ҒЖБМ, IAAR, IQAA, «Ұстаз» талаптары мен Авторлық құқық заңын 100% сақтау.",
         kp_modal_title: "Коммерциялық ұсыныс (КП)",
@@ -3467,8 +3471,8 @@
         }
       });
 
-      // Синхронизация ссылок на 4 кейса с языковым параметром
-      document.querySelectorAll('a[href^="case-"]').forEach(a => {
+      // Синхронизация ссылок на 4 кейса и спецификацию с языковым параметром
+      document.querySelectorAll('a[href^="case-"], a[href^="whitepaper-"]').forEach(a => {
         const base = a.getAttribute('href').split('?')[0];
         a.setAttribute('href', `${base}?lang=${lang}`);
       });
@@ -3488,8 +3492,6 @@
       }
       const voiceSideBtnText = document.getElementById('voice-side-btn-text');
       if (voiceSideBtnText && !isRecordingSpeech) {
-        voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
-      }
         voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
       }
       const voiceHintEl = document.getElementById('voice-hint');
