@@ -1,27 +1,17 @@
 /**
  * =========================================================================
  * ТОО «Метод и Ко» | Бюро стандартов «МЕТОДИКО»
- * АВТОМАТИЧЕСКИЙ МОСТ: САЙТ ➔ GOOGLE ТАБЛИЦА ➔ TELEGRAM БОТ
+ * АВТОМАТИЧЕСКИЙ МОСТ: САЙТ ➔ GOOGLE ТАБЛИЦА ➔ TELEGRAM БОТ (v2.0)
  * =========================================================================
- * 
- * Данный скрипт устанавливается в Google Таблицу (Расширения -> Apps Script).
- * Он принимает заявки с сайта, фиксирует 14 параметров в таблицу
- * и мгновенно отправляет вам в Telegram карточку заявки с кнопками.
- *
- * ИНСТРУКЦИЯ ПО НАСТРОЙКЕ (занимает 3 минуты):
- * 1. Создайте Telegram-бота у @BotFather в Telegram, скопируйте TELEGRAM_BOT_TOKEN.
- * 2. Узнайте свой Telegram Chat ID (напишите боту @userinfobot), скопируйте TELEGRAM_CHAT_ID.
- * 3. Вставьте их ниже в блок НАСТРОЙКИ.
- * 4. Нажмите «Развернуть» -> «Новое развертывание» -> Тип «Веб-приложение».
- *    - Доступ: «Все» (Anyone).
- * 5. Скопируйте полученный URL веб-приложения и вставьте в настройку на сайте!
+ * Встроен щит защиты от дублирования сообщений (Idempotency Cache)
+ * и мгновенное подтверждение кнопок (answerCallbackQuery).
  * =========================================================================
  */
 
-// ==================== НАСТРОЙКИ (ЗАПОЛНИТЕ ВАШИ ДАННЫЕ) ====================
+// ==================== НАСТРОЙКИ (ДАННЫЕ БОТА И ТАБЛИЦЫ) ====================
 const CONFIG = {
-  TELEGRAM_BOT_TOKEN: "ВАШ_ТОКЕН_БОТА_ОТ_BOTFATHER",  // например: "123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ"
-  TELEGRAM_CHAT_ID: "ВАШ_CHAT_ID",                   // например: "987654321" или ID группы
+  TELEGRAM_BOT_TOKEN: "ВАШ_ТОКЕН_БОТА_ОТ_BOTFATHER",
+  TELEGRAM_CHAT_ID: "ВАШ_CHAT_ID",
   SHEET_NAME: "Заявки МЕТОДИКО",
   COMPANY_NAME: "ТОО «Метод и Ко» | Бюро «МЕТОДИКО»"
 };
@@ -62,32 +52,45 @@ function setupSheetHeaders() {
 }
 
 /**
- * Обработка входящих запросов с сайта (POST)
+ * Обработка входящих запросов с сайта и от Telegram (POST)
  */
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "No data" })).setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput("OK");
     }
 
     const data = JSON.parse(e.postData.contents);
 
-    // Если это callback-запрос от Telegram (нажатие инлайн-кнопки в телефоне)
+    // 🛡️ ЩИТ ОТ ДУБЛИРОВАНИЯ (IDEMPOTENCY CACHE)
+    // Telegram повторяет доставку каждые несколько секунд, если ответ задержался.
+    // Запоминаем update_id в кэше Google Apps Script на 120 секунд.
+    if (data.update_id) {
+      const cache = CacheService.getScriptCache();
+      const cacheKey = "tg_upd_" + data.update_id;
+      if (cache.get(cacheKey)) {
+        // Повторный запрос: мгновенно возвращаем OK, чтобы Telegram успокоился
+        return ContentService.createTextOutput("OK");
+      }
+      cache.put(cacheKey, "processed", 120);
+    }
+
+    // 1. Если это нажатие кнопки в Telegram (callback)
     if (data.callback_query) {
       return handleTelegramCallback(data.callback_query);
     }
 
-    // Если это текстовое сообщение в Telegram-боте от Натальи (например, скорректированная цена)
+    // 2. Если это текстовый ответ в Telegram (например, скорректированная цена со свайпом)
     if (data.message && data.message.text && data.message.reply_to_message) {
       return handleTelegramPriceReply(data.message);
     }
 
-    // Иначе это новая заявка с сайта
-    const result = processNewWebsiteLead(data);
-    return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+    // 3. Иначе это новая заявка с сайта
+    processNewWebsiteLead(data);
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput("OK");
   }
 }
 
@@ -145,9 +148,7 @@ function processNewWebsiteLead(lead) {
  * Отправка сообщения с кнопками в Telegram
  */
 function sendTelegramCard(lead, waLink, tgLink, itemsSummary) {
-  if (!CONFIG.TELEGRAM_BOT_TOKEN || CONFIG.TELEGRAM_BOT_TOKEN.indexOf("ВАШ_ТОКЕН") !== -1) {
-    return; // Токен еще не настроен
-  }
+  if (!CONFIG.TELEGRAM_BOT_TOKEN) return;
 
   const urgentBadge = lead.isUrgent ? "⚡ <b>СРОЧНЫЙ ТАРИФ (+20%)</b>\n" : "";
 
@@ -194,19 +195,18 @@ function sendTelegramCard(lead, waLink, tgLink, itemsSummary) {
     reply_markup: { inline_keyboard: inlineKeyboard }
   };
 
-  const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-  UrlFetchApp.fetch(url, {
-    method: "post",
-    contentType: "application/json",
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  });
+  sendTelegramRequest("sendMessage", payload);
 }
 
 /**
  * Обработка нажатий кнопок в Telegram
  */
 function handleTelegramCallback(callbackQuery) {
+  // ⚡ 1. Мгновенный ответ Telegram, чтобы погасить часики и отменить повторные пересылки
+  sendTelegramRequest("answerCallbackQuery", {
+    callback_query_id: callbackQuery.id
+  });
+
   const data = callbackQuery.data;
   const chatId = callbackQuery.message.chat.id;
   const messageId = callbackQuery.message.message_id;
@@ -214,12 +214,6 @@ function handleTelegramCallback(callbackQuery) {
   if (data.startsWith("approve_")) {
     const kpNumber = data.replace("approve_", "");
     updateLeadStatus(kpNumber, "Утверждено Натальей", null);
-
-    const answerPayload = {
-      callback_query_id: callbackQuery.id,
-      text: `✅ КП ${kpNumber} официально утверждено!`
-    };
-    sendTelegramRequest("answerCallbackQuery", answerPayload);
 
     // Обновляем сообщение в чате
     const editPayload = {
@@ -229,7 +223,7 @@ function handleTelegramCallback(callbackQuery) {
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "📄 Открыть карточку в Google Таблице", url: SpreadsheetApp.getActiveSpreadsheet().getUrl() }]
+          [{ text: "📄 Открыть базу в Google Таблице", url: SpreadsheetApp.getActiveSpreadsheet().getUrl() }]
         ]
       }
     };
@@ -238,13 +232,12 @@ function handleTelegramCallback(callbackQuery) {
   } else if (data.startsWith("edit_")) {
     const kpNumber = data.replace("edit_", "");
     
-    const promptText = `✏️ <b>Корректировка сметы для ${kpNumber}</b>\n\nОтветьте на это сообщение (Reply) новой согласованной суммой и комментарием в формате:\n<code>450000 Убрали тесты, добавили 1 дисциплину</code>`;
+    const promptText = `✏️ <b>Корректировка сметы для ${kpNumber}</b>\n\nСделайте свайп влево (Reply/Ответить) на ЭТО сообщение и укажите новую сумму:\n<code>350000 Убрали модуль тестов, согласовали скидку</code>`;
     
     sendTelegramRequest("sendMessage", {
       chat_id: chatId,
       text: promptText,
-      parse_mode: "HTML",
-      reply_to_message_id: messageId
+      parse_mode: "HTML"
     });
   }
 
@@ -272,7 +265,7 @@ function handleTelegramPriceReply(msg) {
 
       sendTelegramRequest("sendMessage", {
         chat_id: msg.chat.id,
-        text: `✅ <b>КП ${kpNumber} обновлено!</b>\n\n💰 Новая согласованная смета: <b>${newPrice.toLocaleString("ru-RU")} ₸</b>\n📝 Комментарий: <i>${comment || "Без комментария"}</i>\n\nШтамп «Утверждено» обновлен в базе.`,
+        text: `✅ <b>КП ${kpNumber} обновлено!</b>\n\n💰 Новая согласованная смета: <b>${newPrice.toLocaleString("ru-RU")} ₸</b>\n📝 Комментарий: <i>${comment || "Без комментария"}</i>\n\nДанные внесены в Google Таблицу.`,
         parse_mode: "HTML"
       });
     }
