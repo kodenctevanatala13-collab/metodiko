@@ -3755,8 +3755,9 @@
         console.warn('LocalStorage error:', e);
       }
 
-      // 2. Отправка в Google Apps Script (если настроен webhook)
-      const webhookUrl = localStorage.getItem('metodiko_google_script_url');
+      // 2. Отправка в Google Apps Script (Google Таблица + Telegram-бот)
+      const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbyyi5CwPPRDl1IEZ0c9zCh6CnE8F4kAe3BcjmNERwX84j2QP51MgJNZFwnES7fQyFOz-w/exec';
+      const webhookUrl = localStorage.getItem('metodiko_google_script_url') || defaultWebhookUrl;
       if (webhookUrl) {
         try {
           fetch(webhookUrl, {

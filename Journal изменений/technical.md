@@ -5,6 +5,22 @@
 
 ---
 
+## CHG-012 | 2026-11-10 11:58:00 +0500
+* **Цель:** Подключение боевого Telegram-бота `@metodico_sait_zayavki_bot` (`8895441275:...`), регистрация Webhook на Google Apps Script, сквозная привязка формы на сайте, тестирование отправки лида и создание конфигурации `netlify.toml`.
+* **Затронутые файлы:** `index.html`, `netlify.toml`, `.env`, `.gitignore`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.
+* **Технические изменения:**
+  1. `index.html`:
+     - В функцию `generateCommercialProposal` добавлен боевой endpoint `defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbyyi5CwPPRDl1IEZ0c9zCh6CnE8F4kAe3BcjmNERwX84j2QP51MgJNZFwnES7fQyFOz-w/exec'` для автоматической отправки всех входящих заявок из калькулятора.
+  2. `netlify.toml`:
+     - Создан стандартный файл конфигурации Netlify для статического сайта (`publish = "."`) с заголовками безопасности (`X-Frame-Options`, `X-XSS-Protection`, `X-Content-Type-Options`, `Referrer-Policy`).
+  3. `Telegram Webhook`:
+     - Зарегистрирован Webhook `https://api.telegram.org/bot8895441275:.../setWebhook?url=https://script.google.com/.../exec`.
+     - Проведено сквозное тестирование методом POST: создана заявка `MK-2026-777`, зафиксирована в Google Таблице и отправлена в Telegram `chat_id: 5644168190`.
+* **Результат:** 100% готовность связки «Сайт ➔ Google Таблица ➔ Telegram-бот». Готовность к развертыванию на Netlify.
+* **Точка возврата / Откат:** Резервная копия `_backup_2026-11-10`.
+
+---
+
 ## CHG-011 | 2026-11-10 09:15:00 +0500
 * **Цель:** Устранение правок Натальи Коденцевой: удаление консультаций руководителя из обязательств сопровождения, исправление опечатки «ПОЎК» -> «УМКД», очистка подзаголовка калькулятора от технических деталей, перенос и масштабирование блока с микрофоном строго под калькулятор и в панель сметы.
 * **Затронутые файлы:** `index.html`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.
