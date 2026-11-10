@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Академический White Paper | ГОСО РК 2026 | Бюро «МЕТОДИКО»</title>
+  <meta name="description" content="Экспертный аналитический проспект для Вузов и Колледжей РК: нормоконтроль силлабусов, соответствие ГОСО РК 2026, аккредитация IAAR/IQAA и политика Генеративного ИИ.">
+  
+  <style>
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    :root {
+      --navy-dark: #0D1624;
+      --navy-primary: #152238;
+      --navy-light: #1E3A8A;
+      --gold-primary: #C5A880;
+      --gold-dark: #A38255;
+      --gold-light: #F4EAD8;
+      --slate-bg: #F8FAFC;
+      --slate-border: #E2E8F0;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0B111E;
+      color: var(--text-main);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      padding: 30px 15px 80px;
+    }
+
+    /* ПЛАВАЮЩАЯ ПАНЕЛЬ ДЕЙСТВИЙ НА ЭКРАНЕ */
+    .screen-toolbar {
+      position: sticky;
+      top: 15px;
+      max-width: 900px;
+      margin: 0 auto 25px auto;
+      background: rgba(21, 34, 56, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(197, 168, 128, 0.3);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 1000;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .toolbar-title {
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .toolbar-sub {
+      color: var(--gold-primary);
+      font-size: 11px;
+    }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-tb {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-tb-primary {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+    .btn-tb-primary:hover {
+      background: #D4AF37;
+      transform: translateY(-1px);
+    }
+    .btn-tb-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .btn-tb-secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .lang-switcher-pill {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(197, 168, 128, 0.4);
+      border-radius: 20px;
+      padding: 3px;
+      display: flex;
+      gap: 2px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .lang-btn.active {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+
+    /* КОНТЕЙНЕР ДОКУМЕНТА A4 */
+    .document-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* КАЖДАЯ СТРАНИЦА А4 */
+    .a4-page {
+      background: #FFFFFF;
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      margin: 0 auto;
+      padding: 16mm 18mm 16mm 18mm;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ЕЛЕ ВИДИМЫЙ ЗОЛОТОЙ ВОДЯНОЙ ЗНАК ПОДЛОЖКА НА ВСЮ СТРАНИЦУ */
+    .page-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      max-width: 85%;
+      opacity: 0.055;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-watermark img {
+      width: 100%;
+      height: auto;
+      display: block;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page-content-wrapper {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ВЕРХНИЙ КОЛОНТИТУЛ (LETTERHEAD) */
+    .page-header {
+      border-bottom: 2px solid var(--navy-dark);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .header-title-org {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      font-family: "Georgia", serif;
+      line-height: 1.15;
+    }
+    .header-sub-org {
+      font-size: 10px;
+      color: var(--gold-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .header-meta {
+      text-align: right;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .header-badge {
+      display: inline-block;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      font-size: 9.5px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    /* НИЖНИЙ КОЛОНТИТУЛ (FOOTER) */
+    .page-footer {
+      border-top: 1px solid var(--slate-border);
+      padding-top: 8px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      color: var(--text-muted);
+    }
+    .footer-left {
+      display: flex;
+      gap: 15px;
+    }
+    .page-number-pill {
+      font-weight: 700;
+      color: var(--navy-dark);
+      background: #F1F5F9;
+      padding: 1px 7px;
+      border-radius: 3px;
+    }
+
+    /* ТИПОГРАФИКА И БЛОКИ СТРАНИЦ */
+    .doc-headline {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .doc-lead {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .academic-callout {
+      background: #F8FAFC;
+      border-left: 3.5px solid var(--gold-primary);
+      border-top: 1px solid var(--slate-border);
+      border-right: 1px solid var(--slate-border);
+      border-bottom: 1px solid var(--slate-border);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 14px;
+      font-size: 11.5px;
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+    .academic-callout strong {
+      color: var(--navy-dark);
+    }
+
+    /* КАРТОЧКИ И ТАБЛИЦЫ */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .feature-card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .feature-badge-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      line-height: 1.25;
+    }
+    .feature-desc {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* АКАДЕМИЧЕСКАЯ ТАБЛИЦА НОРМОКОНТРОЛЯ */
+    .academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 10px 0 14px 0;
+    }
+    .academic-table th {
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      text-align: left;
+      padding: 8px 10px;
+      font-weight: 600;
+      font-size: 10.5px;
+      letter-spacing: 0.3px;
+    }
+    .academic-table td {
+      border: 1px solid var(--slate-border);
+      padding: 7px 10px;
+      vertical-align: top;
+      color: #334155;
+      line-height: 1.35;
+    }
+    .academic-table tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    /* ДОРОЖНАЯ КАРТА (ROADMAP) */
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+    .roadmap-step {
+      display: flex;
+      gap: 12px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .step-days-badge {
+      background: var(--gold-light);
+      border: 1px solid var(--gold-primary);
+      color: var(--navy-dark);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      align-self: flex-start;
+      white-space: nowrap;
+    }
+    .step-body-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .step-body-text {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* ПАСПОРТ ЭКСПЕРТА И СМЕТА */
+    .expert-passport-box {
+      display: flex;
+      gap: 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    .expert-avatar-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #E2E8F0;
+    }
+    .expert-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .expert-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--navy-dark);
+    }
+    .expert-rank {
+      font-size: 11px;
+      color: var(--gold-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .expert-credentials {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    .package-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .package-card {
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 10px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .package-card.highlight {
+      border-color: var(--gold-primary);
+      background: #FFFDF9;
+      box-shadow: 0 2px 8px rgba(197, 168, 128, 0.2);
+    }
+    .package-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 4px;
+    }
+    .package-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 6px;
+    }
+    .package-features {
+      list-style: none;
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.35;
+    }
+    .package-features li {
+      margin-bottom: 3px;
+      position: relative;
+      padding-left: 12px;
+    }
+    .package-features li::before {
+      content: "•";
+      color: var(--gold-primary);
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    /* ПОДПИСЬ И ПЕЧАТЬ */
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 10px;
+      border-top: 1px solid var(--slate-border);
+      margin-top: 10px;
+    }
+    .sign-officer {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .sign-seal {
+      text-align: right;
+      font-size: 9.5px;
+      color: var(--text-muted);
+    }
+    .sign-line {
+      width: 140px;
+      border-bottom: 1px solid #000;
+      margin-bottom: 3px;
+    }
+
+    /* =========================================================
+       СТРОГИЕ ПРАВИЛА ПЕЧАТИ @media print
+       ========================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .document-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        padding: 16mm 18mm 16mm 18mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
+      }
+      .a4-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .page-watermark {
+        opacity: 0.055 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ ДЛЯ УДОБСТВА НА ЭКРАНЕ (СКРЫВАЕТСЯ ПРИ ПЕЧАТИ) -->
+  <div class="screen-toolbar">
+    <div class="toolbar-left">
+      <div>
+        <div class="toolbar-title" data-i18n="tb_title">Бюро стандартов «МЕТОДИКО» | Академический White Paper</div>
+        <div class="toolbar-sub" data-i18n="tb_sub">Спецификация для ректоратов вузов и директоров колледжей РК (ГОСО 2026)</div>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <div class="lang-switcher-pill">
+        <button class="lang-btn active" onclick="setDocLang('ru')" id="lang-btn-ru">RU</button>
+        <button class="lang-btn" onclick="setDocLang('kz')" id="lang-btn-kz">KZ</button>
+      </div>
+      <button onclick="window.print()" class="btn-tb btn-tb-primary" data-i18n="btn_download_pdf">
+        📥 Скачать White Paper (PDF A4)
+      </button>
+      <a href="index.html" class="btn-tb btn-tb-secondary" data-i18n="btn_back_site">
+        ← На сайт МЕТОДИКО
+      </a>
+    </div>
+  </div>
+
+  <!-- ДОКУМЕНТ: РОВНО 4 СТРАНИЦЫ A4 -->
+  <div class="document-container">
+
+    <!-- ==================== СТРАНИЦА 1: АНАЛИТИКА И РИСКИ ГОСО 2026 ==================== -->
+    <div class="a4-page" id="page-1">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <div>
+          <div class="page-header">
+            <div class="header-branding">
+              <img src="assets/Metodico_logo_gold.png" alt="Логотип" class="header-logo-img">
+              <div>
+                <div class="header-title-org">ТОО «Метод и Ко»</div>
+                <div class="header-sub-org" data-i18n="org_sub">Бюро стандартов и симуляторов «МЕТОДИКО»</div>
+              </div>
+            </div>
+            <div class="header-meta">
+              <div class="header-badge" data-i18n="p1_badge">White Paper • Для служебного пользования</div>
+              <div><strong>Рег. №:</strong> WP-GOSO-2026-VUZ</div>
+              <div>г. Алматы, Республика Казахстан</div>
+            </div>
+          </div>
+
+          <h1 class="doc-headline" data-i18n="p1_h1">
+            ГОСО РК 2026: 5 критических рисков несоответствия образовательных программ при государственной аттестации
+          </h1>
+          <p class="doc-lead" data-i18n="p1_lead">
+            Аналитическая записка для ректоратов, деканатов, заведующих кафедрами и начальников УМУ/УМО вузов и колледжей Республики Казахстан.
+          </p>
+
+          <div class="academic-callout" data-i18n="p1_callout">
+            <strong>Основание и нормативный контекст:</strong> Приказы МНВО РК о переходе на обновленный ГОСО, директивы Комитета по обеспечению качества в сфере высшего образования (КОКСВО), требования аккредитационных агентств IAAR / IQAA и национальные дескрипторы компетенций.
+          </div>
+
+          <div class="grid-2col">
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">1</div>
+                <div class="feature-title" data-i18n="p1_r1_title">Разрыв РО и критериев оценивания</div>
+              </div>
+              <div class="feature-desc" data-i18n="p1_r1_desc">
+                Формальное декларирование результатов обучения (РО). В 78% силлабусов контрольные задания оценивают лишь механическое заучивание, нарушая требования декомпозиции по таксономии Блума.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">2</div>
+                <div class="feature-title" data-i18n="p1_r2_title">Хаос и отсутствие политики ИИ</div>
+              </div>
+              <div class="feature-desc" data-i18n="p1_r2_desc">
+                Студенты массово применяют ChatGPT без фактчекинга, а преподаватели выставляют оценки вслепую. Отсутствуют кафедренные матрицы допустимости ИИ и регламенты академической честности.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">3</div>
+                <div class="feature-title" data-i18n="p1_r3_title">Формализм в Platonus / Moodle</div>
+              </div>
+              <div class="feature-desc" data-i18n="p1_r3_desc">
+                Цифровые платформы наполнены неструктурированными файлами (PDF/DOC) без интерактивных тестов и критериальных рубрик СРОП. При внешней проверке фиксируется имитация цифровизации.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">4</div>
+                <div class="feature-title" data-i18n="p1_r4_title">Перегрузка ППС рутиной нормоконтроля</div>
+              </div>
+              <div class="feature-desc" data-i18n="p1_r4_desc">
+                Профессора и доценты тратят до 40% рабочего времени на переоформление бумаг под меняющиеся стандарты вместо фундаментальных исследований и качественной подготовки лекций.
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-card" style="margin-bottom: 0;">
+            <div class="feature-card-header">
+              <div class="feature-badge-num">5</div>
+              <div class="feature-title" data-i18n="p1_r5_title">Штрафные санкции и риск отзыва лицензии ОП</div>
+            </div>
+            <div class="feature-desc" data-i18n="p1_r5_desc">
+              Несоответствие силлабусов типовым учебным планам (ТУП) и ГОСО влечет предписания КОКСВО МНВО РК, снижение рейтинга образовательной программы и отказ в аккредитации IAAR/IQAA на 5 лет.
+            </div>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • Бюро стандартов «МЕТОДИКО»</span>
+            <span>г. Алматы • info@coursemaker.kz</span>
+          </div>
+          <div>
+            <span class="page-number-pill">Стр. 1 из 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 2: АТТЕСТАЦИОННЫЙ ЩИТ КАФЕДРЫ ==================== -->
+    <div class="a4-page" id="page-2">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <div>
+          <div class="page-header">
+            <div class="header-branding">
+              <img src="assets/Metodico_logo_gold.png" alt="Логотип" class="header-logo-img">
+              <div>
+                <div class="header-title-org">ТОО «Метод и Ко»</div>
+                <div class="header-sub-org" data-i18n="org_sub">Бюро стандартов и симуляторов «МЕТОДИКО»</div>
+              </div>
+            </div>
+            <div class="header-meta">
+              <div class="header-badge" data-i18n="p2_badge">Методологический стандарт</div>
+              <div>Модель: Backward Design & Bloom 2026</div>
+            </div>
+          </div>
+
+          <h2 class="doc-headline" data-i18n="p2_h2">
+            «Аттестационный щит кафедры»: технология сквозного нормоконтроля и политика ИИ
+          </h2>
+          <p class="doc-lead" data-i18n="p2_lead">
+            Сквозная инженерная методология приведения академических программ к эталону государственной и международной аккредитации.
+          </p>
+
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;" data-i18n="th_level">Уровень декомпозиции</th>
+                <th style="width: 45%;" data-i18n="th_standard">Требование ГОСО РК 2026 & Бюро «МЕТОДИКО»</th>
+                <th style="width: 30%;" data-i18n="th_artifact">Проверяемый артефакт</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Результаты обучения (РО)</strong></td>
+                <td>Формулировка через активные глаголы таксономии Блума с привязкой к дескрипторам Дублинских дескрипторов и НРК.</td>
+                <td>Матрица согласованности РО дисциплины и карты компетенций ОП.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Критериальный аппарат</strong></td>
+                <td>Рубрики критериального оценивания СРОП/СРО с четкими дескрипторами для баллов A, B, C, D (исключение субъективизма).</td>
+                <td>Таблицы балльно-рейтинговой оценки с описанием каждого балла.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Политика Генеративного ИИ</strong></td>
+                <td>3-уровневая матрица: <i>Уровень 1 (Запрещено)</i>, <i>Уровень 2 (Ассистент с обязательной ссылкой)</i>, <i>Уровень 3 (Обязательный анализ)</i>.</td>
+                <td>Положение об академической честности и маркировке ИИ-генераций.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Цифровой УМКД (LMS)</strong></td>
+                <td>Структурирование материалов по неделям 1–15, интерактивные задания, контрольные банки тестов с защитой от случайного списывания.</td>
+                <td>Готовый курс в Platonus / Moodle с автоматическим журналом.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="academic-callout" style="margin-top: 6px;" data-i18n="p2_callout">
+            <strong>Методологический канон (Обратный дизайн / Backward Design):</strong> Проектирование дисциплины начинается не с объема лекций («чему учить»), а с итоговой демонстрации квалификации («что выпускник обязан уметь делать на производстве»). Каждая тема и час СРОП служат измеримому результату.
+          </div>
+
+          <div class="grid-3col" style="margin-bottom: 0;">
+            <div class="feature-card">
+              <div class="feature-title" style="color: #166534;" data-i18n="p2_f1_title">Нормоконтроль 100%</div>
+              <div class="feature-desc" data-i18n="p2_f1_desc">
+                Проверка силлабуса по 18 формальным параметрам ТУП, фонда литературы и распределения часов лекций/семинаров/СРОП.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-title" style="color: var(--gold-dark);" data-i18n="p2_f2_title">Аттестационная защита</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_f2_desc">
+                Полное документальное покрытие программы отчетом эксперта с грифом ТОО «Метод и Ко» для предъявления госкомиссии.
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-title" style="color: var(--navy-light);" data-i18n="p2_f3_title">Цифровая интеграция</div>
+            </div>
+            <div class="feature-desc" data-i18n="p2_f3_desc">
+              Прямая заливка структуры и фонда оценочных средств (ФОС) в Platonus и Moodle без перегрузки системного администратора.
+            </div>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • Бюро стандартов «МЕТОДИКО»</span>
+            <span>г. Алматы • info@coursemaker.kz</span>
+          </div>
+          <div>
+            <span class="page-number-pill">Стр. 2 из 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 3: ДОРОЖНАЯ КАРТА ЗА 14 ДНЕЙ ==================== -->
+    <div class="a4-page" id="page-3">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <div>
+          <div class="page-header">
+            <div class="header-branding">
+              <img src="assets/Metodico_logo_gold.png" alt="Логотип" class="header-logo-img">
+              <div>
+                <div class="header-title-org">ТОО «Метод и Ко»</div>
+                <div class="header-sub-org" data-i18n="org_sub">Бюро стандартов и симуляторов «МЕТОДИКО»</div>
+              </div>
+            </div>
+            <div class="header-meta">
+              <div class="header-badge" data-i18n="p3_badge">Регламент внедрения</div>
+              <div>Срок: 14 рабочих дней • Под ключ</div>
+            </div>
+          </div>
+
+          <h2 class="doc-headline" data-i18n="p3_h2">
+            Дорожная карта аудита и оцифровки программ кафедры за 14 рабочих дней
+          </h2>
+          <p class="doc-lead" data-i18n="p3_lead">
+            Штабной регламент взаимодействия: от экспресс-аудита до аттестационной готовности 100% УМКД кафедры.
+          </p>
+
+          <div class="roadmap-list">
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_s1_badge">ДНИ 1–3</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_s1_title">Этап 1: Входной аудит и тепловая карта рисков кафедры</div>
+                <div class="step-body-text" data-i18n="p3_s1_desc">
+                  Сплошная выгрузка действующих силлабусов. Проверка на соответствие ГОСО РК 2026, актуальность списков литературы (не старше 5–10 лет) и формальные ошибки. Формирование закрытого аналитического отчета для заведующего кафедрой и декана.
+                </div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_s2_badge">ДНИ 4–8</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_s2_title">Этап 2: Методологическая стандартизация и рубрикаторы</div>
+                <div class="step-body-text" data-i18n="p3_s2_desc">
+                  Декомпозиция РО по таксономии Блума. Разработка однозначных критериев оценивания рубежного контроля, экзаменов и СРОП. Внедрение шаблона силлабуса с регламентом Генеративного ИИ.
+                </div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_s3_badge">ДНИ 9–11</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_s3_title">Этап 3: Оцифровка и бесшовная посадка в Platonus / Moodle</div>
+                <div class="step-body-text" data-i18n="p3_s3_desc">
+                  Структурирование цифровых кабинетов дисциплин. Загрузка тестовых баз, критериальных рубрик и методических рекомендаций по неделям учебного семестра.
+                </div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_s4_badge">ДНИ 12–14</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_s4_title">Этап 4: Инструкторско-методический семинар и сдача отчета</div>
+                <div class="step-body-text" data-i18n="p3_s4_desc">
+                  Практикум для преподавателей кафедры: обучение работе по новым стандартам, алгоритм проведения рубежного контроля. Подписание акта сдачи-приемки с полным пакетом экспертных заключений.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <table class="academic-table" style="margin-top: 4px; margin-bottom: 0;">
+            <thead>
+              <tr>
+                <th data-i18n="th_metric">Измеримый показатель (KPI)</th>
+                <th style="width: 25%; text-align: center;" data-i18n="th_before">До внедрения</th>
+                <th style="width: 25%; text-align: center;" data-i18n="th_after">После стандартизации</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="p3_m1">Замечания комиссий при плановой / внеплановой аттестации</td>
+                <td style="text-align: center; color: #DC2626; font-weight: 700;">от 12 до 35 предписаний</td>
+                <td style="text-align: center; color: #166534; font-weight: 700;">0 предписаний (100% допуск)</td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m2">Время преподавателя на подготовку бумажной отчетности</td>
+                <td style="text-align: center; color: #DC2626;">до 140 часов в семестр</td>
+                <td style="text-align: center; color: #166534; font-weight: 700;">сокращение на 65%</td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m3">Соответствие силлабусов реальному учебному процессу</td>
+                <td style="text-align: center; color: #DC2626;">30–45% (формальное)</td>
+                <td style="text-align: center; color: #166534; font-weight: 700;">100% соответствие стандарту</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • Бюро стандартов «МЕТОДИКО»</span>
+            <span>г. Алматы • info@coursemaker.kz</span>
+          </div>
+          <div>
+            <span class="page-number-pill">Стр. 3 из 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 4: ПАСПОРТ ЭКСПЕРТА, СМЕТА, РЕКВИЗИТЫ ==================== -->
+    <div class="a4-page" id="page-4">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <div>
+          <div class="page-header">
+            <div class="header-branding">
+              <img src="assets/Metodico_logo_gold.png" alt="Логотип" class="header-logo-img">
+              <div>
+                <div class="header-title-org">ТОО «Метод и Ко»</div>
+                <div class="header-sub-org" data-i18n="org_sub">Бюро стандартов и симуляторов «МЕТОДИКО»</div>
+              </div>
+            </div>
+            <div class="header-meta">
+              <div class="header-badge" data-i18n="p4_badge">Спецификация и оферта</div>
+              <div>БИН: 231140024765 • Договор с ТОО</div>
+            </div>
+          </div>
+
+          <h2 class="doc-headline" data-i18n="p4_h2">
+            Квалификационный профиль эксперта и варианты институционального сотрудничества
+          </h2>
+          <p class="doc-lead" data-i18n="p4_lead">
+            Официальное предложение для ректоратов вузов и руководства колледжей на 2026/2027 учебный год.
+          </p>
+
+          <div class="expert-passport-box">
+            <div class="expert-avatar-wrap">
+              <img src="assets/photo_2023-12-13_18-24-06.jpg" alt="Наталья Коденцева">
+            </div>
+            <div>
+              <div class="expert-name" data-i18n="exp_name">Наталья Коденцева</div>
+              <div class="expert-rank" data-i18n="exp_rank">Подполковник запаса • Магистр педагогики • Главный методолог</div>
+              <div class="expert-credentials" data-i18n="exp_desc">
+                24 года службы и научно-педагогической деятельности в системе высшего военного и гражданского образования. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: нормоконтроль образовательных программ, аккредитационный аудит ГОСО РК, симуляторы сложных компетенций.
+              </div>
+            </div>
+          </div>
+
+          <div class="package-grid">
+            <div class="package-card">
+              <div>
+                <div class="package-title" data-i18n="pkg1_title">Пакет «Аудит Кафедры»</div>
+                <div class="package-price">850 000 ₸</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg1_f1">До 10 силлабусов кафедры</li>
+                  <li data-i18n="pkg1_f2">Тепловая карта рисков ГОСО 2026</li>
+                  <li data-i18n="pkg1_f3">Регламент политики ИИ</li>
+                  <li data-i18n="pkg1_f4">Срок: 7 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card highlight">
+              <div>
+                <div style="font-size: 9.5px; color: var(--gold-dark); font-weight: 700; text-transform: uppercase;" data-i18n="pkg2_rec">РЕКОМЕНДУЕМЫЙ СТАНДАРТ</div>
+                <div class="package-title" data-i18n="pkg2_title">Пакет «Стандарт Кафедры под ключ»</div>
+                <div class="package-price">1 850 000 ₸</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg2_f1">До 25 силлабусов и УМКД</li>
+                  <li data-i18n="pkg2_f2">Полная пересборка РО по Блуму</li>
+                  <li data-i18n="pkg2_f3">Посадка курсов в Platonus/Moodle</li>
+                  <li data-i18n="pkg2_f4">Практикум для преподавателей</li>
+                  <li data-i18n="pkg2_f5">Срок: 14 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div>
+                <div class="package-title" data-i18n="pkg3_title">Пакет «Факультет / Вуз»</div>
+                <div class="package-price" data-i18n="pkg3_price">По спецификации</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg3_f1">Масштаб от 50+ дисциплин</li>
+                  <li data-i18n="pkg3_f2">Подготовка к аккредитации IAAR/IQAA</li>
+                  <li data-i18n="pkg3_f3">Институциональная концепция ИИ</li>
+                  <li data-i18n="pkg3_f4">Авторский надзор 1 семестр</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--slate-border); padding: 8px 12px; border-radius: 4px; font-size: 10px; color: #475569; margin-bottom: 8px;">
+            <strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК (портал Госзакупок, прямые договоры с вузами и НАО). Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР).
+          </div>
+
+          <div class="sign-row">
+            <div class="sign-officer">
+              <div><strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong></div>
+              <div>Подполковник запаса, магистр педагогики Н. Коденцева</div>
+              <div style="color: var(--text-muted); font-size: 9.5px;">Контакты: info@coursemaker.kz • +7 (708) 895-44-12</div>
+            </div>
+            <div class="sign-seal">
+              <div class="sign-line"></div>
+              <div>М.П. / Подпись руководителя</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • Бюро стандартов «МЕТОДИКО»</span>
+            <span>г. Алматы • info@coursemaker.kz</span>
+          </div>
+          <div>
+            <span class="page-number-pill">Стр. 4 из 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- СКРИПТ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА RU/KZ -->
+  <script>
+    const whitepaperDict = {
+      ru: {
+        tb_title: "Бюро стандартов «МЕТОДИКО» | Академический White Paper",
+        tb_sub: "Спецификация для ректоратов вузов и директоров колледжей РК (ГОСО 2026)",
+        btn_download_pdf: "📥 Скачать White Paper (PDF A4)",
+        btn_back_site: "← На сайт МЕТОДИКО",
+        org_sub: "Бюро стандартов и симуляторов «МЕТОДИКО»",
+        p1_badge: "White Paper • Для служебного пользования",
+        p1_h1: "ГОСО РК 2026: 5 критических рисков несоответствия образовательных программ при государственной аттестации",
+        p1_lead: "Аналитическая записка для ректоратов, деканатов, заведующих кафедрами и начальников УМУ/УМО вузов и колледжей Республики Казахстан.",
+        p1_callout: "<strong>Основание и нормативный контекст:</strong> Приказы МНВО РК о переходе на обновленный ГОСО, директивы Комитета по обеспечению качества в сфере высшего образования (КОКСВО), требования аккредитационных агентств IAAR / IQAA и национальные дескрипторы компетенций.",
+        p1_r1_title: "Разрыв РО и критериев оценивания",
+        p1_r1_desc: "Формальное декларирование результатов обучения (РО). В 78% силлабусов контрольные задания оценивают лишь механическое заучивание, нарушая требования декомпозиции по таксономии Блума.",
+        p1_r2_title: "Хаос и отсутствие политики ИИ",
+        p1_r2_desc: "Студенты массово применяют ChatGPT без фактчекинга, а преподаватели выставляют оценки вслепую. Отсутствуют кафедренные матрицы допустимости ИИ и регламенты академической честности.",
+        p1_r3_title: "Формализм в Platonus / Moodle",
+        p1_r3_desc: "Цифровые платформы наполнены неструктурированными файлами (PDF/DOC) без интерактивных тестов и критериальных рубрик СРОП. При внешней проверке фиксируется имитация цифровизации.",
+        p1_r4_title: "Перегрузка ППС рутиной нормоконтроля",
+        p1_r4_desc: "Профессора и доценты тратят до 40% рабочего времени на переоформление бумаг под меняющиеся стандарты вместо фундаментальных исследований и качественной подготовки лекций.",
+        p1_r5_title: "Штрафные санкции и риск отзыва лицензии ОП",
+        p1_r5_desc: "Несоответствие силлабусов типовым учебным планам (ТУП) и ГОСО влечет предписания КОКСВО МНВО РК, снижение рейтинга образовательной программы и отказ в аккредитации IAAR/IQAA на 5 лет.",
+        p2_badge: "Методологический стандарт",
+        p2_h2: "«Аттестационный щит кафедры»: технология сквозного нормоконтроля и политика ИИ",
+        p2_lead: "Сквозная инженерная методология приведения академических программ к эталону государственной и международной аккредитации.",
+        th_level: "Уровень декомпозиции",
+        th_standard: "Требование ГОСО РК 2026 & Бюро «МЕТОДИКО»",
+        th_artifact: "Проверяемый артефакт",
+        p2_callout: "<strong>Методологический канон (Обратный дизайн / Backward Design):</strong> Проектирование дисциплины начинается не с объема лекций («чему учить»), а с итоговой демонстрации квалификации («что выпускник обязан уметь делать на производстве»). Каждая тема и час СРОП служат измеримому результату.",
+        p2_f1_title: "Нормоконтроль 100%",
+        p2_f1_desc: "Проверка силлабуса по 18 формальным параметрам ТУП, фонда литературы и распределения часов лекций/семинаров/СРОП.",
+        p2_f2_title: "Аттестационная защита",
+        p2_f2_desc: "Полное документальное покрытие программы отчетом эксперта с грифом ТОО «Метод и Ко» для предъявления госкомиссии.",
+        p2_f3_title: "Цифровая интеграция",
+        p2_f3_desc: "Прямая заливка структуры и фонда оценочных средств (ФОС) в Platonus и Moodle без перегрузки системного администратора.",
+        p3_badge: "Регламент внедрения",
+        p3_h2: "Дорожная карта аудита и оцифровки программ кафедры за 14 рабочих дней",
+        p3_lead: "Штабной регламент взаимодействия: от экспресс-аудита до аттестационной готовности 100% УМКД кафедры.",
+        p3_s1_badge: "ДНИ 1–3",
+        p3_s1_title: "Этап 1: Входной аудит и тепловая карта рисков кафедры",
+        p3_s1_desc: "Сплошная выгрузка действующих силлабусов. Проверка на соответствие ГОСО РК 2026, актуальность списков литературы (не старше 5–10 лет) и формальные ошибки. Формирование закрытого аналитического отчета для заведующего кафедрой и декана.",
+        p3_s2_badge: "ДНИ 4–8",
+        p3_s2_title: "Этап 2: Методологическая стандартизация и рубрикаторы",
+        p3_s2_desc: "Декомпозиция РО по таксономии Блума. Разработка однозначных критериев оценивания рубежного контроля, экзаменов и СРОП. Внедрение шаблона силлабуса с регламентом Генеративного ИИ.",
+        p3_s3_badge: "ДНИ 9–11",
+        p3_s3_title: "Этап 3: Оцифровка и бесшовная посадка в Platonus / Moodle",
+        p3_s3_desc: "Структурирование цифровых кабинетов дисциплин. Загрузка тестовых баз, критериальных рубрик и методических рекомендаций по неделям учебного семестра.",
+        p3_s4_badge: "ДНИ 12–14",
+        p3_s4_title: "Этап 4: Инструкторско-методический семинар и сдача отчета",
+        p3_s4_desc: "Практикум для преподавателей кафедры: обучение работе по новым стандартам, алгоритм проведения рубежного контроля. Подписание акта сдачи-приемки с полным пакетом экспертных заключений.",
+        th_metric: "Измеримый показатель (KPI)",
+        th_before: "До внедрения",
+        th_after: "После стандартизации",
+        p3_m1: "Замечания комиссий при плановой / внеплановой аттестации",
+        p3_m2: "Время преподавателя на подготовку бумажной отчетности",
+        p3_m3: "Соответствие силлабусов реальному учебному процессу",
+        p4_badge: "Спецификация и оферта",
+        p4_h2: "Квалификационный профиль эксперта и варианты институционального сотрудничества",
+        p4_lead: "Официальное предложение для ректоратов вузов и руководства колледжей на 2026/2027 учебный год.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Подполковник запаса • Магистр педагогики • Главный методолог",
+        exp_desc: "24 года службы и научно-педагогической деятельности в системе высшего военного и гражданского образования. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: нормоконтроль образовательных программ, аккредитационный аудит ГОСО РК, симуляторы сложных компетенций.",
+        pkg1_title: "Пакет «Аудит Кафедры»",
+        pkg1_f1: "До 10 силлабусов кафедры",
+        pkg1_f2: "Тепловая карта рисков ГОСО 2026",
+        pkg1_f3: "Регламент политики ИИ",
+        pkg1_f4: "Срок: 7 рабочих дней",
+        pkg2_rec: "РЕКОМЕНДУЕМЫЙ СТАНДАРТ",
+        pkg2_title: "Пакет «Стандарт Кафедры под ключ»",
+        pkg2_f1: "До 25 силлабусов и УМКД",
+        pkg2_f2: "Полная пересборка РО по Блуму",
+        pkg2_f3: "Посадка курсов в Platonus/Moodle",
+        pkg2_f4: "Практикум для преподавателей",
+        pkg2_f5: "Срок: 14 рабочих дней",
+        pkg3_title: "Пакет «Факультет / Вуз»",
+        pkg3_price: "По спецификации",
+        pkg3_f1: "Масштаб от 50+ дисциплин",
+        pkg3_f2: "Подготовка к аккредитации IAAR/IQAA",
+        pkg3_f3: "Институциональная концепция ИИ",
+        pkg3_f4: "Авторский надзор 1 семестр"
+      },
+      kz: {
+        tb_title: "«МЕТОДИКО» стандарттар бюросы | Академиялық White Paper",
+        tb_sub: "ЖОО ректораттары мен колледж директорларына арналған спецификация (МЖМБС 2026)",
+        btn_download_pdf: "📥 White Paper жүктеу (PDF A4)",
+        btn_back_site: "← МЕТОДИКО сайтына",
+        org_sub: "«МЕТОДИКО» стандарттар және симуляторлар бюросы",
+        p1_badge: "White Paper • Қызметтік пайдалану үшін",
+        p1_h1: "ҚР МЖМБС 2026: Мемлекеттік аттестаттау кезіндегі білім беру бағдарламаларының 5 сыни сәйкессіздік қаупі",
+        p1_lead: "Қазақстан Республикасының жоғары оқу орындары мен колледждерінің ректораттары, деканаттары, кафедра меңгерушілері мен ОӘБ басшыларына арналған талдамалық жазба.",
+        p1_callout: "<strong>Негіздеме және нормативтік контекст:</strong> ҚР ҒЖБМ жаңартылған МЖМБС-қа көшу туралы бұйрықтары, Жоғары білім саласындағы сапаны қамтамасыз ету комитетінің директивалары, IAAR / IQAA аккредиттеу агенттіктерінің талаптары және Ұлттық біліктілік шеңбері.",
+        p1_r1_title: "ОН мен бағалау критерийлерінің алшақтығы",
+        p1_r1_desc: "Оқыту нәтижелерін (ОН) ресми түрде жариялау. Силлабустардың 78%-ында бақылау тапсырмалары Блум таксономиясы бойынша талаптарды бұза отырып, тек жаттанды есте сақтауды ғана тексереді.",
+        p1_r2_title: "ЖИ саясатының болмауы және ретсіздік",
+        p1_r2_desc: "Студенттер ChatGPT-ді фактчекингсіз жаппай қолданады, ал оқытушылар бағаны соқыр қояды. Кафедралық ЖИ қолдану матрицалары мен академиялық адалдық ережелері бекітілмеген.",
+        p1_r3_title: "Platonus / Moodle жүйесіндегі формализм",
+        p1_r3_desc: "Сандық платформалар интерактивті тесттерсіз және БОӨЖ критерийлерінсіз құрылымдалмаған файлдармен (PDF/DOC) толтырылған. Тексеру кезінде цифрландырудың имитациясы анықталады.",
+        p1_r4_title: "ПОҚ-ның нормабақылау қағазбастылығымен шамадан тыс жүктелуі",
+        p1_r4_desc: "Профессорлар мен доценттер іргелі зерттеулер мен дәрістерге сапалы дайындалудың орнына жұмыс уақытының 40%-ын өзгеретін стандарттар бойынша құжат толтыруға жұмсайды.",
+        p1_r5_title: "Айыппұл санкциялары және ББ лицензиясын қайтарып алу қаупі",
+        p1_r5_desc: "Силлабустардың Үлгілік оқу жоспарларына (ҮОЖ) және МЖМБС-қа сәйкес келмеуі ҒЖБМ Сапа комитетінің нұсқамаларына, бағдарлама рейтингінің төмендеуіне және IAAR/IQAA аккредитациясынан 5 жылға айырылуға әкеледі.",
+        p2_badge: "Әдістемелік стандарт",
+        p2_h2: "«Кафедраның аттестаттау қалқаны»: кешенді нормабақылау технологиясы және ЖИ саясаты",
+        p2_lead: "Академиялық бағдарламаларды мемлекеттік және халықаралық аккредиттеу эталонына жеткізудің кешенді инженерлік әдістемесі.",
+        th_level: "Декомпозиция деңгейі",
+        th_standard: "ҚР МЖМБС 2026 & «МЕТОДИКО» бюросының талабы",
+        th_artifact: "Тексерілетін артефакт",
+        p2_callout: "<strong>Әдістемелік қағида (Кері дизайн / Backward Design):</strong> Пәнді жобалау дәріс көлемінен емес («нені оқыту керек»), біліктіліктің түпкілікті демонстрациясынан («түлек өндірісте нені жасай алуы тиіс») басталады. Әрбір тақырып пен БОӨЖ сағаты нақты нәтижеге қызмет етеді.",
+        p2_f1_title: "Нормабақылау 100%",
+        p2_f1_desc: "Силлабусты ҮОЖ-ның 18 формалды параметрі, әдебиеттер қоры және дәріс/семинар/БОӨЖ сағаттарының бөлінісі бойынша тексеру.",
+        p2_f2_title: "Аттестаттау қорғанысы",
+        p2_f2_desc: "Мемлекеттік комиссияға ұсыну үшін «Метод и Ко» ЖШС мөрі бар сарапшының қорытынды есебімен бағдарламаны 100% құжаттамалық қамтамасыз ету.",
+        p2_f3_title: "Сандық интеграция",
+        p2_f3_desc: "Жүйелік әкімшіге салмақ салмай, Platonus және Moodle платформаларына құрылым мен бағалау құралдары қорын (БҚҚ) тікелей жүктеу.",
+        p3_badge: "Енгізу регламенті",
+        p3_h2: "Кафедра бағдарламаларын 14 жұмыс күні ішінде аудиттеу және цифрландыру жол картасы",
+        p3_lead: "Өзара іс-қимылдың штабтық регламенті: экспресс-аудиттен бастап кафедраның 100% ОӘКД аттестаттау дайындығына дейін.",
+        p3_s1_badge: "1–3 КҮН",
+        p3_s1_title: "1-кезең: Кіріс аудиті және кафедра тәуекелдерінің жылу картасы",
+        p3_s1_desc: "Қолданыстағы силлабустарды толық жүктеп тексеру. ҚР МЖМБС 2026 сәйкестігін, әдебиеттер тізімінің өзектілігін (5–10 жылдан ескі емес) және қателіктерді анықтау. Кафедра меңгерушісі мен деканға арналған жабық есеп дайындау.",
+        p3_s2_badge: "4–8 КҮН",
+        p3_s2_title: "2-кезең: Әдістемелік стандарттау және рубрикаторлар",
+        p3_s2_desc: "ОН-ды Блум таксономиясы бойынша декомпозициялау. Аралық бақылау, емтихандар және БОӨЖ үшін бірегей бағалау критерийлерін әзірлеу. Генеративті ЖИ регламенті бар силлабус шаблонын енгізу.",
+        p3_s3_badge: "9–11 КҮН",
+        p3_s3_title: "3-кезең: Цифрландыру және Platonus / Moodle жүйесіне қондыру",
+        p3_s3_desc: "Пәндердің сандық кабинеттерін жүйелеу. Семестр апталары бойынша тесттік базаларды, критериалды рубрикаларды және әдістемелік ұсынымдарды жүктеу.",
+        p3_s4_badge: "12–14 КҮН",
+        p3_s4_title: "4-кезең: Нұсқаулық-әдістемелік семинар және есепті тапсыру",
+        p3_s4_desc: "Кафедра оқытушыларына арналған шеберлік сыныбы: жаңа стандартпен жұмыс істеуге үйрету. Толық сараптамалық қорытындылар пакетімен қабылдау-өткізу актісіне қол қою.",
+        th_metric: "Өлшенетін көрсеткіш (KPI)",
+        th_before: "Енгізуге дейін",
+        th_after: "Стандарттаудан кейін",
+        p3_m1: "Жоспарлы / жоспардан тыс аттестаттау кезіндегі комиссия ескертулері",
+        p3_m2: "Оқытушының қағаз есептерін дайындауға жұмсайтын уақыты",
+        p3_m3: "Силлабустардың нақты оқу үдерісіне сәйкестігі",
+        p4_badge: "Спецификация және оферта",
+        p4_h2: "Сарапшының біліктілік бейіні және институционалдық ынтымақтастық нұсқалары",
+        p4_lead: "ЖОО ректораттары мен колледж басшылығына арналған 2026/2027 оқу жылындағы ресми ұсыныс.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Запастағы подполковник • Педагогика магистрі • Бас әдіскер",
+        exp_desc: "Жоғары әскери және азаматтық білім беру жүйесінде 24 жылдық қызмет және ғылыми-педагогикалық тәжірибе. «Jana Urpaq 365» жобасының бас әдіскері, «МЕТОДИКО» стандарттар бюросының негізін қалаушы. Мамандануы: білім беру бағдарламаларын нормабақылау, ҚР МЖМБС аккредитациялық аудиті, күрделі құзыреттер симуляторлары.",
+        pkg1_title: "«Кафедра аудиті» пакеті",
+        pkg1_f1: "Кафедраның 10 силлабусына дейін",
+        pkg1_f2: "МЖМБС 2026 тәуекелдерінің картасы",
+        pkg1_f3: "ЖИ саясатының регламенті",
+        pkg1_f4: "Мерзімі: 7 жұмыс күні",
+        pkg2_rec: "ҰСЫНЫЛАТЫН СТАНДАРТ",
+        pkg2_title: "«Кафедра стандарты кілтпен» пакеті",
+        pkg2_f1: "25 силлабус пен ОӘКД-ге дейін",
+        pkg2_f2: "ОН-ды Блум бойынша толық қайта жинау",
+        pkg2_f3: "Курстарды Platonus/Moodle-ге қондыру",
+        pkg2_f4: "Оқытушыларға арналған шеберлік сыныбы",
+        pkg2_f5: "Мерзімі: 14 жұмыс күні",
+        pkg3_title: "«Факультет / ЖОО» пакеті",
+        pkg3_price: "Спецификация бойынша",
+        pkg3_f1: "50+ пән көлемінде",
+        pkg3_f2: "IAAR/IQAA аккредитациясына дайындық",
+        pkg3_f3: "Институционалдық ЖИ тұжырымдамасы",
+        pkg3_f4: "1 семестр авторлық қадағалау"
+      }
+    };
+
+    function setDocLang(lang) {
+      const data = whitepaperDict[lang];
+      if (!data) return;
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) {
+          el.innerHTML = data[key];
+        }
+      });
+
+      document.getElementById('lang-btn-ru').classList.toggle('active', lang === 'ru');
+      document.getElementById('lang-btn-kz').classList.toggle('active', lang === 'kz');
+      document.documentElement.lang = lang;
+    }
+  </script>
+</body>
+</html>

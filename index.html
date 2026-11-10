@@ -1491,6 +1491,31 @@
       background: #FFFFFF;
       font-size: 13px;
       color: #1E293B;
+      position: relative;
+      overflow: hidden;
+    }
+    .sheet-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      max-width: 80%;
+      opacity: 0.055;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sheet-watermark img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .modal-body-sheet > *:not(.sheet-watermark) {
+      position: relative;
+      z-index: 1;
     }
     .sheet-letterhead {
       border-bottom: 2px solid var(--navy-header);
@@ -1578,47 +1603,109 @@
 
     /* ПЕЧАТЬ И ЭКСПОРТ В PDF ДЛЯ ОФИЦИАЛЬНОГО КП */
     @media print {
-      body * {
-        visibility: hidden !important;
+      @page {
+        size: A4 portrait;
+        margin: 10mm 14mm;
       }
-      #kp-modal, #kp-modal * {
-        visibility: visible !important;
-      }
-      #kp-modal {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #FFFFFF !important;
         width: 100% !important;
         height: auto !important;
-        background: #FFFFFF !important;
-        padding: 0 !important;
-        display: block !important;
-        z-index: 99999 !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
-      .modal-container {
-        max-width: 100% !important;
+      /* Исключаем из расчета высоты и печати все блоки сайта, кроме КП */
+      body > *:not(#kp-modal) {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      #kp-modal {
+        display: block !important;
+        position: static !important;
         width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
         box-shadow: none !important;
         border: none !important;
-        max-height: none !important;
         overflow: visible !important;
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-inside: avoid !important;
+      }
+      .modal-container {
+        display: block !important;
+        position: static !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        overflow: visible !important;
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-inside: avoid !important;
       }
       .modal-header-bar, .modal-close-btn, .sheet-actions {
         display: none !important;
       }
       .modal-body-sheet {
+        position: relative !important;
+        display: block !important;
         padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        overflow: visible !important;
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-inside: avoid !important;
+        font-size: 11pt !important;
+        line-height: 1.35 !important;
+      }
+      .sheet-watermark {
+        display: flex !important;
+        opacity: 0.065 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .sheet-watermark img {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .sheet-letterhead {
-        border-bottom: 2px solid #000 !important;
+        border-bottom: 2px solid #0D1624 !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 12px !important;
+      }
+      .sheet-table {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        font-size: 10.5pt !important;
+        margin: 12px 0 !important;
       }
       .sheet-table th {
         background: #F1F5F9 !important;
-        color: #000 !important;
+        color: #0D1624 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        padding: 6px 10px !important;
       }
-      @page {
-        size: A4 portrait;
-        margin: 15mm;
+      .sheet-table td {
+        padding: 6px 10px !important;
       }
     }
 
@@ -1883,6 +1970,9 @@
               <a href="case-2-umkd-goso.html" target="_blank" class="btn-aud-case" data-i18n="btn_view_case">
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть эталонный УМКД (Demo)</span>
+              </a>
+              <a href="whitepaper-goso-2026.html" target="_blank" class="btn-aud-case" style="background: rgba(197, 168, 128, 0.15); border: 1px solid var(--gold-primary); color: var(--gold-primary);" title="Открыть академический White Paper для ректоратов">
+                <span>📄 Спецификация для Вузов (White Paper A4)</span>
               </a>
               <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(0)" data-i18n="btn_calc_this">
                 Рассчитать смету кафедры →
@@ -2921,6 +3011,7 @@
             <li><a href="#navigator" data-i18n="ft_n1">Направления и кейсы</a></li>
             <li><a href="#navigator" onclick="switchAudienceTab('tab-b2b', document.querySelectorAll('.pill-tab-btn')[1])" data-i18n="ft_n2">Диалоговый тренажер (B2B)</a></li>
             <li><a href="#calculator" data-i18n="ft_n3">Калькулятор сметы в ₸</a></li>
+            <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;">📄 White Paper: Вузы и ГОСО 2026 (A4 PDF)</a></li>
             <li><a href="llms.txt" target="_blank">Паспорт для нейросетей (llms.txt)</a></li>
           </ul>
         </div>
@@ -2951,13 +3042,21 @@
 
       <div class="modal-body-sheet" id="printable-kp-sheet">
         
+        <!-- ЗОЛОТОЙ ВОДЯНОЙ ЗНАК (ПОДЛОЖКА НА ВСЮ СТРАНИЦУ) -->
+        <div class="sheet-watermark">
+          <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+        </div>
+
         <div class="sheet-letterhead">
-          <div>
-            <div class="sheet-logo-title">ТОО «Метод и Ко»</div>
-            <div style="font-size: 11px; color: var(--gold-primary); font-weight: 700; text-transform: uppercase;">
-              Бюро стандартов и симуляторов «МЕТОДИКО»
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0;">
+            <div>
+              <div class="sheet-logo-title">ТОО «Метод и Ко»</div>
+              <div style="font-size: 11px; color: var(--gold-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                Бюро стандартов и симуляторов «МЕТОДИКО»
+              </div>
+              <div style="font-size: 11px; color: #64748B;">г. Алматы, info@coursemaker.kz</div>
             </div>
-            <div style="font-size: 11px; color: #64748B;">г. Алматы, info@coursemaker.kz</div>
           </div>
           <div class="sheet-meta-info">
             <div><strong>КП №:</strong> <span id="kp-number">MK-2026-01</span></div>
