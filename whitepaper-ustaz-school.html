@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Спецификация стандарта «Ұстаз»: авторские программы и рабочие тетради | Бюро «МЕТОДИКО»</title>
+  <meta name="description" content="Экспертная спецификация и стандарт авторских программ, КТП и рабочих тетрадей нового поколения для частных школ, лицеев и педагогов-исследователей Казахстана. Подготовка к аттестации на платформе «Ұстаз».">
+  
+  <style>
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    :root {
+      --navy-dark: #0D1624;
+      --navy-primary: #152238;
+      --navy-light: #1E3A8A;
+      --gold-primary: #C5A880;
+      --gold-dark: #A38255;
+      --gold-light: #F4EAD8;
+      --slate-bg: #F8FAFC;
+      --slate-border: #E2E8F0;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0B111E;
+      color: var(--text-main);
+      line-height: 1.42;
+      -webkit-font-smoothing: antialiased;
+      padding: 30px 15px 80px;
+    }
+
+    /* ПЛАВАЮЩАЯ ПАНЕЛЬ ДЕЙСТВИЙ НА ЭКРАНЕ (СКРЫВАЕТСЯ ПРИ ПЕЧАТИ) */
+    .screen-toolbar {
+      position: sticky;
+      top: 15px;
+      max-width: 900px;
+      margin: 0 auto 25px auto;
+      background: rgba(21, 34, 56, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(197, 168, 128, 0.3);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 1000;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .toolbar-title {
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .toolbar-sub {
+      color: var(--gold-primary);
+      font-size: 11px;
+    }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-tb {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-tb-primary {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+    .btn-tb-primary:hover {
+      background: #D4AF37;
+      transform: translateY(-1px);
+    }
+    .btn-tb-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .btn-tb-secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .lang-switcher-pill {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(197, 168, 128, 0.4);
+      border-radius: 20px;
+      padding: 3px;
+      display: flex;
+      gap: 2px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .lang-btn.active {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+
+    /* КОНТЕЙНЕР ДОКУМЕНТА A4 */
+    .document-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* КАЖДАЯ СТРАНИЦА А4 */
+    .a4-page {
+      background: #FFFFFF;
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      margin: 0 auto;
+      padding: 15mm 18mm 14mm 18mm;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ЗОЛОТОЙ ВОДЯНОЙ ЗНАК ПОДЛОЖКА */
+    .page-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      max-width: 85%;
+      opacity: 0.055;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-watermark img {
+      width: 100%;
+      height: auto;
+      display: block;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page-content-wrapper {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ВЕРХНИЙ КОЛОНТИТУЛ (LETTERHEAD) */
+    .page-header {
+      border-bottom: 2px solid var(--navy-dark);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .header-title-org {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      font-family: "Georgia", serif;
+      line-height: 1.15;
+    }
+    .header-sub-org {
+      font-size: 10px;
+      color: var(--gold-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .header-meta {
+      text-align: right;
+      font-size: 9.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .header-badge {
+      display: inline-block;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      font-size: 9px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+
+    /* НИЖНИЙ КОЛОНТИТУЛ (FOOTER) */
+    .page-footer {
+      border-top: 1px solid var(--slate-border);
+      padding-top: 8px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .footer-left {
+      display: flex;
+      gap: 15px;
+    }
+    .page-number-pill {
+      font-weight: 700;
+      color: var(--navy-dark);
+      background: #F1F5F9;
+      padding: 1px 7px;
+      border-radius: 3px;
+    }
+
+    /* ТИПОГРАФИКА */
+    .doc-headline {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      line-height: 1.25;
+      margin-bottom: 5px;
+    }
+    .doc-lead {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 11px;
+      line-height: 1.38;
+    }
+    .school-callout {
+      background: #F8FAFC;
+      border-left: 3.5px solid var(--gold-primary);
+      border-top: 1px solid var(--slate-border);
+      border-right: 1px solid var(--slate-border);
+      border-bottom: 1px solid var(--slate-border);
+      padding: 9px 13px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 11px;
+      font-size: 11px;
+      color: var(--text-main);
+      line-height: 1.42;
+    }
+    .school-callout strong {
+      color: var(--navy-dark);
+    }
+
+    /* КАРТОЧКИ И ТАБЛИЦЫ */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 11px;
+    }
+    .feature-card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 9px 11px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .feature-badge-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      line-height: 1.25;
+    }
+    .feature-desc {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* ТАБЛИЦА СТАНДАРТА */
+    .school-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin: 8px 0 11px 0;
+    }
+    .school-table th {
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      text-align: left;
+      padding: 7px 9px;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.3px;
+    }
+    .school-table td {
+      border: 1px solid var(--slate-border);
+      padding: 6px 9px;
+      vertical-align: top;
+      color: #334155;
+      line-height: 1.35;
+    }
+    .school-table tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    /* ДОРОЖНАЯ КАРТА */
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 11px;
+    }
+    .roadmap-step {
+      display: flex;
+      gap: 11px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 7px 11px;
+    }
+    .step-days-badge {
+      background: var(--gold-light);
+      border: 1px solid var(--gold-primary);
+      color: var(--navy-dark);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      align-self: flex-start;
+      white-space: nowrap;
+    }
+    .step-body-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .step-body-text {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* БОЛИ ШКОЛ */
+    .pain-item {
+      background: #FFFFFF;
+      border: 1px solid #F1F5F9;
+      border-left: 3px solid #EF4444;
+      padding: 6px 9px;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 6px;
+    }
+    .pain-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #991B1B;
+      margin-bottom: 1px;
+    }
+    .pain-desc {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.32;
+    }
+
+    /* ПАСПОРТ ЭКСПЕРТА */
+    .expert-passport-box {
+      display: flex;
+      gap: 12px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 11px;
+      align-items: center;
+    }
+    .expert-avatar-wrap {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--navy-primary);
+    }
+    .expert-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+    .expert-bio-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .expert-bio-rank {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      margin-bottom: 3px;
+    }
+    .expert-bio-desc {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* ПАКЕТЫ */
+    .package-card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .package-card.recommended {
+      border: 1.5px solid var(--gold-primary);
+      background: #FFFDF9;
+    }
+    .package-tag {
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      background: var(--gold-primary);
+      color: #0D1624;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .package-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .package-price {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 5px;
+    }
+    .package-features {
+      list-style: none;
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+    .package-features li {
+      margin-bottom: 3px;
+      position: relative;
+      padding-left: 11px;
+    }
+    .package-features li::before {
+      content: "•";
+      color: var(--gold-primary);
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    /* ПОДПИСЬ И ПЕЧАТЬ */
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 8px;
+      border-top: 1px solid var(--slate-border);
+      margin-top: 8px;
+    }
+    .sign-officer {
+      font-size: 10px;
+      line-height: 1.3;
+    }
+    .sign-seal {
+      text-align: right;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+    .sign-line {
+      width: 140px;
+      border-bottom: 1px solid #000;
+      margin-bottom: 3px;
+    }
+
+    /* =========================================================
+       СТРОГИЕ ПРАВИЛА ПЕЧАТИ @media print
+       ========================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .document-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        padding: 15mm 18mm 14mm 18mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
+      }
+      .a4-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .page-watermark {
+        opacity: 0.055 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ ДЛЯ УДОБСТВА НА ЭКРАНЕ (СКРЫВАЕТСЯ ПРИ ПЕЧАТИ) -->
+  <div class="screen-toolbar">
+    <div class="toolbar-left">
+      <div>
+        <div class="toolbar-title" data-i18n="tb_title">Бюро стандартов «МЕТОДИКО» | Стандарт для Школ («Ұстаз»)</div>
+        <div class="toolbar-sub" data-i18n="tb_sub">Аналитическая записка и спецификация для директоров частных школ и учителей</div>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <div class="lang-switcher-pill">
+        <button class="lang-btn active" onclick="setDocLang('ru')" id="lang-btn-ru">RU</button>
+        <button class="lang-btn" onclick="setDocLang('kz')" id="lang-btn-kz">KZ</button>
+      </div>
+      <button onclick="window.print()" class="btn-tb btn-tb-primary" data-i18n="btn_download_pdf">
+        📥 Скачать спецификацию (PDF A4)
+      </button>
+      <a href="index.html" class="btn-tb btn-tb-secondary" data-i18n="btn_back_site">
+        ← На сайт МЕТОДИКО
+      </a>
+    </div>
+  </div>
+
+  <!-- ДОКУМЕНТ: РОВНО 4 СТРАНИЦЫ A4 -->
+  <div class="document-container">
+
+    <!-- ==================== СТРАНИЦА 1: АНАЛИТИКА ШКОЛ И РИСКИ АТТЕСТАЦИИ ==================== -->
+    <div class="a4-page" id="page-1">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 1 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • АВТОРСКИЕ ПРОГРАММЫ И СТАНДАРТ «ҰСТАЗ»</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p1_badge">Школьный стандарт РК</div>
+            <div data-i18n="p1_reg_no">Рег. №: СПЕЦ-МЕКТЕП-2026-ҰСТАЗ</div>
+            <div data-i18n="hdr_city_date">г. Алматы • Ноябрь 2026 г.</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 1 -->
+        <main>
+          <h1 class="doc-headline" data-i18n="p1_title">СПЕЦИФИКАЦИЯ СТАНДАРТА «ҰСТАЗ»: АВТОРСКИЕ ПРОГРАММЫ, КТП И ДИДАКТИЧЕСКИЕ ТЕТРАДИ НОВОГО ПОКОЛЕНИЯ</h1>
+          <p class="doc-lead" data-i18n="p1_lead">Аналитическая записка и стандарт разработки УМК для учредителей частных школ, директоров лицеев и педагогов-исследователей Республики Казахстан.</p>
+
+          <div class="school-callout" data-i18n="p1_callout">
+            <strong>Практическая ценность для частной школы и педагога:</strong><br>
+            Родители выбирают частную школу за качественное отличие от государственной системы. Использование серых черно-белых распечаток обесценивает чек обучения. Авторский дидактический комплекс (программа, КТП и дизайнерская рабочая тетрадь-комикс) формирует высокий академический статус школы, обеспечивает 100% вовлечение детей на уроках и дает твердый аттестационный щит педагогу на платформе «Ұстаз».
+          </div>
+
+          <div style="font-weight: 700; font-size: 11.5px; color: var(--navy-dark); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.4px;" data-i18n="p1_risks_head">
+            5 ключевых проблем школьного образования и рисков аттестации:
+          </div>
+
+          <div class="pain-item">
+            <div class="pain-title" data-i18n="p1_r1_title">1. Обесценивание стоимости обучения в глазах родителей</div>
+            <div class="pain-desc" data-i18n="p1_r1_desc">При ежемесячной оплате 150 000 – 400 000 ₸ родители требуют осязаемого продукта развития ребенка. Отсутствие фирменных учебных пособий вызывает регулярные претензии к администрации школы.</div>
+          </div>
+
+          <div class="pain-item">
+            <div class="pain-title" data-i18n="p1_r2_title">2. Катастрофическая потеря учебной мотивации школьников</div>
+            <div class="pain-desc" data-i18n="p1_r2_desc">Поколение «цифровых детей» не воспринимает монотонные простыни текста. Без сюжета, сквозных героев и игровых механик внимание учеников рассеивается уже на 10-й минуте урока.</div>
+          </div>
+
+          <div class="pain-item">
+            <div class="pain-title" data-i18n="p1_r3_title">3. Бюрократические отказы экспертных советов по авторским курсам</div>
+            <div class="pain-desc" data-i18n="p1_r3_desc">Попытки педагогов самостоятельно оформить авторский курс отклоняются комиссиями из-за нарушений нормоконтроля ГОСО 2026, отсутствия критериального аппарата и нестыковки целей с дескрипторами.</div>
+          </div>
+
+          <div class="pain-item">
+            <div class="pain-title" data-i18n="p1_r4_title">4. Хроническое выгорание и перегрузка сильных учителей</div>
+            <div class="pain-desc" data-i18n="p1_r4_desc">Преподаватели тратят до 15 часов в неделю на ночные поиски заданий в интернете и верстку раздаточных листов вместо качественной подготовки к живому общению с детьми.</div>
+          </div>
+
+          <div class="pain-item">
+            <div class="pain-title" data-i18n="p1_r5_title">5. Риск срыва аттестации на категорию («Ұстаз»)</div>
+            <div class="pain-desc" data-i18n="p1_r5_desc">Для присвоения категорий «педагог-исследователь» и «педагог-мастер» (+30–50% к окладу) требуется твердый опубликованный методический продукт. Без эталонного пакета защита откладывается на годы.</div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 1 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • БИН: 231140024765</span>
+            <span data-i18n="ftr_doc_id">СПЕЦ-МЕКТЕП-2026-ҰСТАЗ</span>
+          </div>
+          <div><span class="page-number-pill">1 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 2: АРХИТЕКТУРА УМК И РАБОЧЕЙ ТЕТРАДИ ==================== -->
+    <div class="a4-page" id="page-2">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 2 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • АВТОРСКИЕ ПРОГРАММЫ И СТАНДАРТ «ҰСТАЗ»</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p2_badge">Дидактическая архитектура</div>
+            <div data-i18n="p2_meta">Стандарт авторского УМК 2026</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 2 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p2_title">АРХИТЕКТУРА СТАНДАРТА «ҰСТАЗ»: 4 УРОВНЯ ДИДАКТИЧЕСКОГО КОМПЛЕКСА</h2>
+          <p class="doc-lead" data-i18n="p2_lead">Системная декомпозиция авторского продукта: от нормативной программы до дизайнерской тетради.</p>
+
+          <table class="school-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;" data-i18n="p2_th1">Элемент стандарта</th>
+                <th style="width: 40%;" data-i18n="p2_th2">Методологическое наполнение</th>
+                <th style="width: 35%;" data-i18n="p2_th3">Практический результат для школы</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong data-i18n="p2_lvl1_name">1. Авторская программа (34 / 68 ч)</strong></td>
+                <td data-i18n="p2_lvl1_desc">Пояснительная записка, научная новизна, соответствие ГОСО РК 2026, цели и ожидаемые результаты с поурочной разбивкой.</td>
+                <td data-i18n="p2_lvl1_crit"><strong>100% одобрение комиссией:</strong> твердый документ для экспертного совета и аттестации.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl2_name">2. Календарно-тематический план (КТП)</strong></td>
+                <td data-i18n="p2_lvl2_desc">Поурочная сетка с критериями оценивания (СОР/СОЧ), метапредметными связями и дифференциацией заданий по уровням сложности.</td>
+                <td data-i18n="p2_lvl2_crit"><strong>Экономия времени педагога:</strong> поурочная навигация готова на весь учебный год.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl3_name">3. Рабочая тетрадь нового поколения</strong></td>
+                <td data-i18n="p2_lvl3_desc">Сюжетная линия, авторские рисованные персонажи, квесты, трекинг микропобед ученика и практические задания.</td>
+                <td data-i18n="p2_lvl3_crit"><strong>Вовлечение детей 90%+:</strong> дети ждут урока и гордятся своими рабочими тетрадями.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl4_name">4. Аттестационный паспорт («Ұстаз»)</strong></td>
+                <td data-i18n="p2_lvl4_desc">Комплект внешних рецензий, обоснование практической апробации и презентация для публичной защиты опыта.</td>
+                <td data-i18n="p2_lvl4_crit"><strong>Защита категории:</strong> основание для надбавки к зарплате («педагог-исследователь»).</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="grid-3col">
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">1</div>
+                <div class="feature-title" data-i18n="p2_c1_title">Комикс-формат и геймификация</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c1_desc">
+                Материал подается через визуальные образы и задачи-квесты. Дети легко усваивают сложные темы без скучной зубрежки.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">2</div>
+                <div class="feature-title" data-i18n="p2_c2_title">100% дистанционный формат</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c2_desc">
+                Разработка ведется удаленно. Школа получает готовые электронные макеты в типографском качестве для печати или планшетов.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">3</div>
+                <div class="feature-title" data-i18n="p2_c3_title">Защита авторских прав</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c3_desc">
+                Оформление интеллектуальной собственности на школу или педагога в строгом соответствии с Законодательством РК.
+              </div>
+            </div>
+          </div>
+
+          <div class="school-callout" style="margin-bottom: 0;" data-i18n="p2_bottom_callout">
+            <strong>Маркетинговое преимущество частной школы:</strong> Наличие собственных брендированных рабочих тетрадей с логотипом школы и авторских программ является сильнейшим аргументом для родителей при наборе учеников на новый учебный год.
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 2 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • г. Алматы</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">2 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 3: ДОРОЖНАЯ КАРТА 14 ДНЕЙ И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ ==================== -->
+    <div class="a4-page" id="page-3">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 3 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • АВТОРСКИЕ ПРОГРАММЫ И СТАНДАРТ «ҰСТАЗ»</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p3_badge">Регламент и эффект</div>
+            <div data-i18n="p3_meta">Дорожная карта на 14 дней</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 3 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p3_title">РЕГЛАМЕНТ РАЗРАБОТКИ ЗА 14 ДНЕЙ И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ ДЛЯ ШКОЛЫ</h2>
+          <p class="doc-lead" data-i18n="p3_lead">Четкий 4-этапный производственный цикл создания авторского УМК «под ключ».</p>
+
+          <div class="roadmap-list">
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step1_badge">ЭТАП 1 (ДНИ 1–3)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step1_title">Дистанционная распаковка и концепция курса</div>
+                <div class="step-body-text" data-i18n="p3_step1_desc">Согласование предмета, класса и целей школы. Определение сквозной сюжетной линии, выбор персонажей для тетради и утверждение карты ожидаемых результатов обучения.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step2_badge">ЭТАП 2 (ДНИ 4–7)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step2_title">Проектирование программы и поурочного КТП</div>
+                <div class="step-body-text" data-i18n="p3_step2_desc">Нормоконтроль по ГОСО РК 2026. Формирование поурочной сетки на 34 или 68 часов, прописывание критериев оценивания (СОР/СОЧ) и дескрипторов для каждого практического занятия.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step3_badge">ЭТАП 3 (ДНИ 8–11)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step3_title">Дизайн и верстка рабочей тетради-комикса</div>
+                <div class="step-body-text" data-i18n="p3_step3_desc">Создание иллюстративного ряда, отрисовка сюжетных квестов, верстка заданий с трекингом личных побед ученика. Подготовка предпечатного PDF-макета высокого разрешения.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step4_badge">ЭТАП 4 (ДНИ 12–14)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step4_title">Аттестационный пакет и передача файлов</div>
+                <div class="step-body-text" data-i18n="p3_step4_desc">Оформление пояснительной записки, рецензирование, формирование паспорта для платформы «Ұстаз». Передача школе полного цифрового пакета, готового к печати и использованию.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-weight: 700; font-size: 11px; color: var(--navy-dark); margin: 6px 0 4px 0; text-transform: uppercase;" data-i18n="p3_table_title">
+            Сравнительный анализ: Обычные школьные материалы vs Стандарт «Ұстаз»:
+          </div>
+
+          <table class="school-table" style="margin-top: 4px;">
+            <thead>
+              <tr>
+                <th style="width: 38%;" data-i18n="p3_th_metric">Параметр оценки</th>
+                <th style="width: 31%;" data-i18n="p3_th_old">Обычный подход (как у всех)</th>
+                <th style="width: 31%;" data-i18n="p3_th_new">Стандарт «МЕТОДИКО»</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="p3_m1">Формат раздаточных материалов</td>
+                <td style="color: #991B1B;" data-i18n="p3_v1_old">Черно-белые распечатки / ксерокопии</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v1_new">Дизайнерская тетрадь-комикс А4</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m2">Вовлеченность школьников на уроках</td>
+                <td style="color: #991B1B;" data-i18n="p3_v2_old">35–45% (скука, отвлечение на гаджеты)</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v2_new">90%+ (активное участие в квесте)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m3">Время педагога на подготовку уроков</td>
+                <td style="color: #991B1B;" data-i18n="p3_v3_old">10–12 часов в неделю (ночами)</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v3_new">0 часов (готовый УМК на год)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m4">Отношение родителей к оплате школы</td>
+                <td style="color: #991B1B;" data-i18n="p3_v4_old">Сомнения в уникальности обучения</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v4_new">Гордость за результаты ребенка</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m5">Защита авторской категории («Ұстаз»)</td>
+                <td style="color: #991B1B;" data-i18n="p3_v5_old">Риск отклонения программы комиссией</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v5_new">100% соответствие ГОСО 2026</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </main>
+
+        <!-- FOOTER СТР. 3 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • Стандарт «Ұстаз» 2026</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">3 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 4: ПАСПОРТ ЭКСПЕРТА И ПАКЕТЫ ==================== -->
+    <div class="a4-page" id="page-4">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 4 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • АВТОРСКИЕ ПРОГРАММЫ И СТАНДАРТ «ҰСТАЗ»</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p4_badge">Спецификация и оферта</div>
+            <div data-i18n="p4_meta">БИН: 231140024765 • Договор с ТОО</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 4 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p4_title">КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ</h2>
+          <p class="doc-lead" data-i18n="p4_lead">Официальное институциональное предложение для директоров частных школ и педагогов Казахстана.</p>
+
+          <div class="expert-passport-box">
+            <div class="expert-avatar-wrap">
+              <img src="assets/natalia_kodentseva.jpg" alt="Наталья Коденцева">
+            </div>
+            <div>
+              <div class="expert-bio-title" data-i18n="exp_name">Наталья Коденцева</div>
+              <div class="expert-bio-rank" data-i18n="exp_rank">Подполковник в отставке • Магистр педагогики • Главный методолог</div>
+              <div class="expert-bio-desc" data-i18n="exp_desc">24 года службы и научно-педагогической практики. Главный методолог образовательного проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: нормоконтроль образовательных программ по ГОСО РК, разработка авторских дидактических комплексов нового поколения, экспертиза материалов для аттестации педагогических кадров («Ұстаз»).</div>
+            </div>
+          </div>
+
+          <div class="grid-3col">
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg1_title">Пакет «Аттестационный паспорт»</div>
+                <div class="package-price" data-i18n="pkg1_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg1_f1">Авторская программа (34ч)</li>
+                  <li data-i18n="pkg1_f2">Поурочное КТП с дескрипторами</li>
+                  <li data-i18n="pkg1_f3">Пакет документов для «Ұстаз»</li>
+                  <li data-i18n="pkg1_f4">Срок разработки: 7 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card recommended">
+              <span class="package-tag" data-i18n="pkg2_tag">РЕКОМЕНДУЕМЫЙ ВЫБОР</span>
+              <div>
+                <div class="package-name" data-i18n="pkg2_title">Пакет «Предметный УМК под ключ»</div>
+                <div class="package-price" data-i18n="pkg2_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg2_f1">Программа + КТП по ГОСО 2026</li>
+                  <li data-i18n="pkg2_f2">Макет тетради-комикса (34/68 ч)</li>
+                  <li data-i18n="pkg2_f3">Предпечатная подготовка (PDF A4)</li>
+                  <li data-i18n="pkg2_f4">Методическое руководство учителю</li>
+                  <li data-i18n="pkg2_f5">Срок разработки: 14 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg3_title">Пакет «Стандарт Кафедры Школы»</div>
+                <div class="package-price" data-i18n="pkg3_price">Индивидуальный расчет</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg3_f1">Линейка УМК для цикла предметов</li>
+                  <li data-i18n="pkg3_f2">Фирменный брендинг школы</li>
+                  <li data-i18n="pkg3_f3">Электронный комплект для печати</li>
+                  <li data-i18n="pkg3_f4">100% дистанционная передача</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="school-callout" style="margin-top: 8px; margin-bottom: 6px; font-size: 10px;" data-i18n="p4_legal_note">
+            <strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ). Дистанционное оказание услуг.
+          </div>
+
+          <div class="sign-row">
+            <div class="sign-officer">
+              <div data-i18n="sign_title"><strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong></div>
+              <div data-i18n="sign_person">Подполковник в отставке, магистр педагогики Н. Коденцева</div>
+              <div style="color: var(--text-muted); font-size: 9px;" data-i18n="sign_contacts">Связь: metodico-kz.netlify.app • +7 (708) 895-44-12</div>
+            </div>
+            <div class="sign-seal">
+              <div class="sign-line"></div>
+              <div data-i18n="sign_seal">М.П. / Подпись руководителя</div>
+            </div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 4 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • г. Алматы • Рег. № СПЕЦ-МЕКТЕП-2026-ҰСТАЗ</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">4 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ДВУЯЗЫЧНЫЙ СЛОВАРЬ (RU / KZ) И СКРИПТ ПЕРЕКЛЮЧЕНИЯ -->
+  <script>
+    const ustazDict = {
+      ru: {
+        tb_title: "Бюро стандартов «МЕТОДИКО» | Стандарт для Школ («Ұстаз»)",
+        tb_sub: "Аналитическая записка и спецификация для директоров частных школ и учителей",
+        btn_download_pdf: "📥 Скачать спецификацию (PDF A4)",
+        btn_back_site: "← На сайт МЕТОДИКО",
+        hdr_org_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО»",
+        hdr_org_sub: "ТОО «МЕТОД И КО» • АВТОРСКИЕ ПРОГРАММЫ И СТАНДАРТ «ҰСТАЗ»",
+        p1_badge: "Школьный стандарт РК",
+        p1_reg_no: "Рег. №: СПЕЦ-МЕКТЕП-2026-ҰСТАЗ",
+        hdr_city_date: "г. Алматы • Ноябрь 2026 г.",
+        p1_title: "СПЕЦИФИКАЦИЯ СТАНДАРТА «ҰСТАЗ»: АВТОРСКИЕ ПРОГРАММЫ, КТП И ДИДАКТИЧЕСКИЕ ТЕТРАДИ НОВОГО ПОКОЛЕНИЯ",
+        p1_lead: "Аналитическая записка и стандарт разработки УМК для учредителей частных школ, директоров лицеев и педагогов-исследователей Республики Казахстан.",
+        p1_callout: "<strong>Практическая ценность для частной школы и педагога:</strong><br>Родители выбирают частную школу за качественное отличие от государственной системы. Использование серых черно-белых распечаток обесценивает чек обучения. Авторский дидактический комплекс (программа, КТП и дизайнерская рабочая тетрадь-комикс) формирует высокий академический статус школы, обеспечивает 100% вовлечение детей на уроках и дает твердый аттестационный щит педагогу на платформе «Ұстаз».",
+        p1_risks_head: "5 ключевых проблем школьного образования и рисков аттестации:",
+        p1_r1_title: "1. Обесценивание стоимости обучения в глазах родителей",
+        p1_r1_desc: "При ежемесячной оплате 150 000 – 400 000 ₸ родители требуют осязаемого продукта развития ребенка. Отсутствие фирменных учебных пособий вызывает регулярные претензии к администрации школы.",
+        p1_r2_title: "2. Катастрофическая потеря учебной мотивации школьников",
+        p1_r2_desc: "Поколение «цифровых детей» не воспринимает монотонные простыни текста. Без сюжета, сквозных героев и игровых механик внимание учеников рассеивается уже на 10-й минуте урока.",
+        p1_r3_title: "3. Бюрократические отказы экспертных советов по авторским курсам",
+        p1_r3_desc: "Попытки педагогов самостоятельно оформить авторский курс отклоняются комиссиями из-за нарушений нормоконтроля ГОСО 2026, отсутствия критериального аппарата и нестыковки целей с дескрипторами.",
+        p1_r4_title: "4. Хроническое выгорание и перегрузка сильных учителей",
+        p1_r4_desc: "Преподаватели тратят до 15 часов в неделю на ночные поиски заданий в интернете и верстку раздаточных листов вместо качественной подготовки к живому общению с детьми.",
+        p1_r5_title: "5. Риск срыва аттестации на категорию («Ұстаз»)",
+        p1_r5_desc: "Для присвоения категорий «педагог-исследователь» и «педагог-мастер» (+30–50% к окладу) требуется твердый опубликованный методический продукт. Без эталонного пакета защита откладывается на годы.",
+        ftr_doc_id: "СПЕЦ-МЕКТЕП-2026-ҰСТАЗ",
+        p2_badge: "Дидактическая архитектура",
+        p2_meta: "Стандарт авторского УМК 2026",
+        p2_title: "АРХИТЕКТУРА СТАНДАРТА «ҰСТАЗ»: 4 УРОВНЯ ДИДАКТИЧЕСКОГО КОМПЛЕКСА",
+        p2_lead: "Системная декомпозиция авторского продукта: от нормативной программы до дизайнерской тетради.",
+        p2_th1: "Элемент стандарта",
+        p2_th2: "Методологическое наполнение",
+        p2_th3: "Практический результат для школы",
+        p2_lvl1_name: "1. Авторская программа (34 / 68 ч)",
+        p2_lvl1_desc: "Пояснительная записка, научная новизна, соответствие ГОСО РК 2026, цели и ожидаемые результаты с поурочной разбивкой.",
+        p2_lvl1_crit: "<strong>100% одобрение комиссией:</strong> твердый документ для экспертного совета и аттестации.",
+        p2_lvl2_name: "2. Календарно-тематический план (КТП)",
+        p2_lvl2_desc: "Поурочная сетка с критериями оценивания (СОР/СОЧ), метапредметными связями и дифференциацией заданий по уровням сложности.",
+        p2_lvl2_crit: "<strong>Экономия времени педагога:</strong> поурочная навигация готова на весь учебный год.",
+        p2_lvl3_name: "3. Рабочая тетрадь нового поколения",
+        p2_lvl3_desc: "Сюжетная линия, авторские рисованные персонажи, квесты, трекинг микропобед ученика и практические задания.",
+        p2_lvl3_crit: "<strong>Вовлечение детей 90%+:</strong> дети ждут урока и гордятся своими рабочими тетрадями.",
+        p2_lvl4_name: "4. Аттестационный паспорт («Ұстаз»)",
+        p2_lvl4_desc: "Комплект внешних рецензий, обоснование практической апробации и презентация для публичной защиты опыта.",
+        p2_lvl4_crit: "<strong>Защита категории:</strong> основание для надбавки к зарплате («педагог-исследователь»).",
+        p2_c1_title: "Комикс-формат и геймификация",
+        p2_c1_desc: "Материал подается через визуальные образы и задачи-квесты. Дети легко усваивают сложные темы без скучной зубрежки.",
+        p2_c2_title: "100% дистанционный формат",
+        p2_c2_desc: "Разработка ведется удаленно. Школа получает готовые электронные макеты в типографском качестве для печати или планшетов.",
+        p2_c3_title: "Защита авторских прав",
+        p2_c3_desc: "Оформление интеллектуальной собственности на школу или педагога в строгом соответствии с Законодательством РК.",
+        p2_bottom_callout: "<strong>Маркетинговое преимущество частной школы:</strong> Наличие собственных брендированных рабочих тетрадей с логотипом школы и авторских программ является сильнейшим аргументом для родителей при наборе учеников на новый учебный год.",
+        p3_badge: "Регламент и эффект",
+        p3_meta: "Дорожная карта на 14 дней",
+        p3_title: "РЕГЛАМЕНТ РАЗРАБОТКИ ЗА 14 ДНЕЙ И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ ДЛЯ ШКОЛЫ",
+        p3_lead: "Четкий 4-этапный производственный цикл создания авторского УМК «под ключ».",
+        p3_step1_badge: "ЭТАП 1 (ДНИ 1–3)",
+        p3_step1_title: "Дистанционная распаковка и концепция курса",
+        p3_step1_desc: "Согласование предмета, класса и целей школы. Определение сквозной сюжетной линии, выбор персонажей для тетради и утверждение карты ожидаемых результатов обучения.",
+        p3_step2_badge: "ЭТАП 2 (ДНИ 4–7)",
+        p3_step2_title: "Проектирование программы и поурочного КТП",
+        p3_step2_desc: "Нормоконтроль по ГОСО РК 2026. Формирование поурочной сетки на 34 или 68 часов, прописывание критериев оценивания (СОР/СОЧ) и дескрипторов для каждого практического занятия.",
+        p3_step3_badge: "ЭТАП 3 (ДНИ 8–11)",
+        p3_step3_title: "Дизайн и верстка рабочей тетради-комикса",
+        p3_step3_desc: "Создание иллюстративного ряда, отрисовка сюжетных квестов, верстка заданий с трекингом личных побед ученика. Подготовка предпечатного PDF-макета высокого разрешения.",
+        p3_step4_badge: "ЭТАП 4 (ДНИ 12–14)",
+        p3_step4_title: "Аттестационный пакет и передача файлов",
+        p3_step4_desc: "Оформление пояснительной записки, рецензирование, формирование паспорта для платформы «Ұстаз». Передача школе полного цифрового пакета, готового к печати и использованию.",
+        p3_table_title: "Сравнительный анализ: Обычные школьные материалы vs Стандарт «Ұстаз»:",
+        p3_th_metric: "Параметр оценки",
+        p3_th_old: "Обычный подход (как у всех)",
+        p3_th_new: "Стандарт «МЕТОДИКО»",
+        p3_m1: "Формат раздаточных материалов",
+        p3_v1_old: "Черно-белые распечатки / ксерокопии",
+        p3_v1_new: "Дизайнерская тетрадь-комикс А4",
+        p3_m2: "Вовлеченность школьников на уроках",
+        p3_v2_old: "35–45% (скука, отвлечение на гаджеты)",
+        p3_v2_new: "90%+ (активное участие в квесте)",
+        p3_m3: "Время педагога на подготовку уроков",
+        p3_v3_old: "10–12 часов в неделю (ночами)",
+        p3_v3_new: "0 часов (готовый УМК на год)",
+        p3_m4: "Отношение родителей к оплате школы",
+        p3_v4_old: "Сомнения в уникальности обучения",
+        p3_v4_new: "Гордость за результаты ребенка",
+        p3_m5: "Защита авторской категории («Ұстаз»)",
+        p3_v5_old: "Риск отклонения программы комиссией",
+        p3_v5_new: "100% соответствие ГОСО 2026",
+        p4_badge: "Спецификация и оферта",
+        p4_meta: "БИН: 231140024765 • Договор с ТОО",
+        p4_title: "КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ",
+        p4_lead: "Официальное институциональное предложение для директоров частных школ и педагогов Казахстана.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Подполковник в отставке • Магистр педагогики • Главный методолог",
+        exp_desc: "24 года службы и научно-педагогической практики. Главный методолог образовательного проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: нормоконтроль образовательных программ по ГОСО РК, разработка авторских дидактических комплексов нового поколения, экспертиза материалов для аттестации педагогических кадров («Ұстаз»).",
+        pkg1_title: "Пакет «Аттестационный паспорт»",
+        pkg1_price: "По смете калькулятора",
+        pkg1_f1: "Авторская программа (34ч)",
+        pkg1_f2: "Поурочное КТП с дескрипторами",
+        pkg1_f3: "Пакет документов для «Ұстаз»",
+        pkg1_f4: "Срок разработки: 7 рабочих дней",
+        pkg2_tag: "РЕКОМЕНДУЕМЫЙ ВЫБОР",
+        pkg2_title: "Пакет «Предметный УМК под ключ»",
+        pkg2_price: "По смете калькулятора",
+        pkg2_f1: "Программа + КТП по ГОСО 2026",
+        pkg2_f2: "Макет тетради-комикса (34/68 ч)",
+        pkg2_f3: "Предпечатная подготовка (PDF A4)",
+        pkg2_f4: "Методическое руководство учителю",
+        pkg2_f5: "Срок разработки: 14 рабочих дней",
+        pkg3_title: "Пакет «Стандарт Кафедры Школы»",
+        pkg3_price: "Индивидуальный расчет",
+        pkg3_f1: "Линейка УМК для цикла предметов",
+        pkg3_f2: "Фирменный брендинг школы",
+        pkg3_f3: "Электронный комплект для печати",
+        pkg3_f4: "100% дистанционная передача",
+        p4_legal_note: "<strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ). Дистанционное оказание услуг.",
+        sign_title: "<strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong>",
+        sign_person: "Подполковник в отставке, магистр педагогики Н. Коденцева",
+        sign_contacts: "Связь: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.П. / Подпись руководителя"
+      },
+      kz: {
+        tb_title: "«МЕТОДИКО» стандарттар бюросы | Мектептерге арналған стандарт («Ұстаз»)",
+        tb_sub: "Жекеменшік мектеп директорлары мен мұғалімдерге арналған сараптамалық жазба",
+        btn_download_pdf: "📥 Спецификацияны жүктеу (PDF A4)",
+        btn_back_site: "← МЕТОДИКО сайтына қайту",
+        hdr_org_title: "«МЕТОДИКО» СТАНДАРТТАР БЮРОСЫ",
+        hdr_org_sub: "«МЕТОД И КО» ЖШС • АВТОРЛЫҚ БАҒДАРЛАМАЛАР МЕН «ҰСТАЗ» СТАНДАРТЫ",
+        p1_badge: "ҚР мектеп стандарты",
+        p1_reg_no: "Тіркеу №: СПЕЦ-МЕКТЕП-2026-ҰСТАЗ",
+        hdr_city_date: "Алматы қ. • Қараша 2026 ж.",
+        p1_title: "«ҰСТАЗ» СТАНДАРТЫНЫҢ СПЕЦИФИКАЦИЯСЫ: АВТОРЛЫҚ БАҒДАРЛАМАЛАР, КТЖ ЖӘНЕ ЖАҢА БУЫН ДИДАКТИКАЛЫҚ ДӘПТЕРЛЕРІ",
+        p1_lead: "Қазақстан Республикасы жекеменшік мектеп құрылтайшылары, лицей директорлары және педагог-зерттеушілеріне арналған сараптамалық жазба.",
+        p1_callout: "<strong>Жекеменшік мектеп пен педагог үшін практикалық құндылық:</strong><br>Ата-аналар жекеменшік мектепті мемлекеттік жүйеден сапалы артықшылығы үшін таңдайды. Сұр парақтар мен көшірмелерді пайдалану оқу құнын құнсыздандырады. Авторлық дидактикалық кешен (бағдарлама, КТЖ және комикс-дәптер) мектептің жоғары мәртебесін қалыптастырады, сабақта балалардың 100% қатысуын қамтамасыз етеді және «Ұстаз» платформасында мұғалімге берік аттестациялық қорған береді.",
+        p1_risks_head: "Мектеп біліміндегі 5 негізгі мәселе және аттестация тәуекелдері:",
+        p1_r1_title: "1. Ата-аналар алдында оқу құнының құнсыздануы",
+        p1_r1_desc: "Айына 150 000 – 400 000 ₸ төлейтін ата-аналар бала дамуының нақты нәтижесін талап етеді. Мектептің төл оқу құралдарының болмауы әкімшілікке үнемі наразылық туғызады.",
+        p1_r2_title: "2. Оқушылардың оқуға деген ынтасының күрт төмендеуі",
+        p1_r2_desc: "«Сандық балалар» буыны бірсарынды қара-ақ мәтіндерді қабылдамайды. Сюжетсіз, кейіпкерлерсіз және ойынсыз оқушының зейіні сабақтың 10-минутында-ақ жоғалады.",
+        p1_r3_title: "3. Авторлық курстар бойынша сараптамалық кеңестердің бас тартуы",
+        p1_r3_desc: "Мұғалімдердің авторлық бағдарламаны өз бетінше жасау әрекеттері МЖМБС 2026 нормабақылауы бұзылғандықтан және мақсаттар мен дескрипторлар сәйкес келмегендіктен қабылданбайды.",
+        p1_r4_title: "4. Үздік мұғалімдердің созылмалы күйзелісі мен жүктемесі",
+        p1_r4_desc: "Мұғалімдер аптасына 15 сағатқа дейін түнгі уақытта интернеттен тапсырма іздеуге және қағаз қиюға жұмсайды, ал баламен тірі қарым-қатынасқа күш қалмайды.",
+        p1_r5_title: "5. «Ұстаз» платформасында санат қорғаудың бұзылу қаупі",
+        p1_r5_desc: "«Педагог-зерттеуші» және «педагог-шебер» санаттарын алу үшін (+30–50% жалақыға) ресми жарияланған әдістемелік өнім қажет. Онсыз санат қорғау жылдарға созылады.",
+        ftr_doc_id: "СПЕЦ-МЕКТЕП-2026-ҰСТАЗ",
+        p2_badge: "Дидактикалық архитектура",
+        p2_meta: "Авторлық ОӘК 2026 стандарты",
+        p2_title: "«ҰСТАЗ» СТАНДАРТЫНЫҢ АРХИТЕКТУРАСЫ: ДИДАКТИКАЛЫҚ КЕШЕННІҢ 4 ДЕҢГЕЙІ",
+        p2_lead: "Авторлық өнімді жүйелі декомпозициялау: нормативтік бағдарламадан дизайнерлік дәптерге дейін.",
+        p2_th1: "Стандарт элементі",
+        p2_th2: "Әдіснамалық мазмұны",
+        p2_th3: "Мектеп үшін практикалық нәтиже",
+        p2_lvl1_name: "1. Авторлық бағдарлама (34 / 68 сағ)",
+        p2_lvl1_desc: "Түсініктеме хат, ғылыми жаңалығы, ҚР МЖМБС 2026 сәйкестігі, сабақ бойынша бөлінген оқыту мақсаттары мен нәтижелері.",
+        p2_lvl1_crit: "<strong>Комиссияның 100% мақұлдауы:</strong> Сараптамалық кеңес пен аттестация үшін мінсіз құжат.",
+        p2_lvl2_name: "2. Күнтізбелік-тақырыптық жоспар (КТЖ)",
+        p2_lvl2_desc: "Бағалау критерийлері (БЖБ/ТЖБ), пәнаралық байланыстар және күрделілік деңгейлері бар сабақтар кестесі.",
+        p2_lvl2_crit: "<strong>Мұғалім уақытын үнемдеу:</strong> Бүкіл оқу жылына дайын навигация.",
+        p2_lvl3_name: "3. Жаңа буын жұмыс дәптері",
+        p2_lvl3_desc: "Сюжеттік желі, авторлық салынған кейіпкерлер, квесттер, оқушының жетістік трекингі және практикалық тапсырмалар.",
+        p2_lvl3_crit: "<strong>Оқушыларды 90%+ тарту:</strong> Балалар сабақты асыға күтіп, өз дәптерлерін мақтан тұтады.",
+        p2_lvl4_name: "4. Аттестациялық паспорт («Ұстаз»)",
+        p2_lvl4_desc: "Сыртқы рецензиялар жиынтығы, практикалық сынақтан өту негіздемесі және тәжірибені көпшілік алдында қорғау презентациясы.",
+        p2_lvl4_crit: "<strong>Санатты қорғау:</strong> Жалақыға үстемеақы алу негізі («педагог-зерттеуші»).",
+        p2_c1_title: "Комикс-формат және геймификация",
+        p2_c1_desc: "Материал визуалды образдар мен квест-тапсырмалар арқылы беріледі. Балалар күрделі тақырыптарды оңай меңгереді.",
+        p2_c2_title: "100% қашықтан әзірлеу",
+        p2_c2_desc: "Әзірлеу қашықтан жүргізіледі. Мектеп баспаханаға немесе планшетке арналған дайын электронды макеттер алады.",
+        p2_c3_title: "Авторлық құқықты қорғау",
+        p2_c3_desc: "Зияткерлік меншікті мектепке немесе мұғалімге ҚР Заңнамасына толық сәйкестікте ресімдеу.",
+        p2_bottom_callout: "<strong>Жекеменшік мектептің маркетингтік артықшылығы:</strong> Мектеп логотипі бар төл жұмыс дәптерлері мен авторлық бағдарламалар — жаңа оқу жылына оқушыларды қабылдау кезінде ата-аналар үшін ең күшті дәлел.",
+        p3_badge: "Регламент және нәтиже",
+        p3_meta: "14 күндік жол картасы",
+        p3_title: "14 КҮНДЕ ӘЗІРЛЕУ РЕГЛАМЕНТІ ЖӘНЕ МЕКТЕП ҮШІН ТИІМДІЛІК",
+        p3_lead: "Авторлық ОӘК-ті дайын күйінде жасаудың нақты 4 кезеңді өндірістік циклі.",
+        p3_step1_badge: "1-КЕЗЕҢ (1–3 КҮН)",
+        p3_step1_title: "Қашықтан концепция жасау және распаковка",
+        p3_step1_desc: "Пәнді, сыныпты және мектеп мақсаттарын келісу. Сюжеттік желіні анықтау, дәптер кейіпкерлерін таңдау және оқыту нәтижелерін бекіту.",
+        p3_step2_badge: "2-КЕЗЕҢ (4–7 КҮН)",
+        p3_step2_title: "Бағдарлама мен сабақ бойынша КТЖ жобалау",
+        p3_step2_desc: "ҚР МЖМБС 2026 бойынша нормабақылау. 34 немесе 68 сағаттық сабақ кестесін қалыптастыру, БЖБ/ТЖБ критерийлері мен дескрипторларын жазу.",
+        p3_step3_badge: "3-КЕЗЕҢ (8–11 КҮН)",
+        p3_step3_title: "Комикс-дәптер дизайны және беттеу",
+        p3_step3_desc: "Иллюстрацияларды салу, сюжеттік квесттерді жинау, оқушының жеке жеңістер трекингімен тапсырмаларды беттеу. Баспаға арналған жоғары сапалы PDF дайындау.",
+        p3_step4_badge: "4-КЕЗЕҢ (12–14 КҮН)",
+        p3_step4_title: "Аттестациялық пакет және файлдарды тапсыру",
+        p3_step4_desc: "Түсініктеме хатты рәсімдеу, рецензиялау, «Ұстаз» платформасына паспорт жасау. Басуға және қолдануға толық дайын цифрлық пакетті беру.",
+        p3_table_title: "Салыстырмалы талдау: Дәстүрлі мектеп материалдары vs «Ұстаз» стандарты:",
+        p3_th_metric: "Бағалау параметрі",
+        p3_th_old: "Дәстүрлі тәсіл (барлығындағыдай)",
+        p3_th_new: "«МЕТОДИКО» стандарты",
+        p3_m1: "Таратылатын оқу материалдарының форматы",
+        p3_v1_old: "Қара-ақ көшірмелер мен парақтар",
+        p3_v1_new: "Дизайнерлік А4 комикс-дәптер",
+        p3_m2: "Сабақтағы оқушылардың қызығушылығы",
+        p3_v2_old: "35–45% (зерігу, телефонға алаңдау)",
+        p3_v2_new: "90%+ (квестке белсенді қатысу)",
+        p3_m3: "Мұғалімнің сабаққа дайындалу уақыты",
+        p3_v3_old: "Аптасына 10–12 сағат (түнде)",
+        p3_v3_new: "0 сағат (жылға дайын ОӘК)",
+        p3_m4: "Ата-аналардың мектеп төлеміне көзқарасы",
+        p3_v4_old: "Оқытудың ерекшелігіне күмән келтіру",
+        p3_v4_new: "Баласының нәтижесіне мақтану",
+        p3_m5: "Авторлық санатты қорғау («Ұстаз»)",
+        p3_v5_old: "Комиссияның бағдарламаны қайтару қаупі",
+        p3_v5_new: "МЖМБС 2026-ға 100% сәйкестік",
+        p4_badge: "Спецификация және оферта",
+        p4_meta: "БСН: 231140024765 • ЖШС-мен шарт",
+        p4_title: "САРАПШЫНЫҢ БІЛІКТІЛІК БЕЙІНІ ЖӘНЕ ЕНГІЗУ ПАКЕТТЕРІ",
+        p4_lead: "Қазақстан жекеменшік мектеп директорлары мен мұғалімдеріне арналған ресми институционалдық ұсыныс.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Запастағы подполковник • Педагогика магистрі • Бас әдіскер",
+        exp_desc: "24 жылдық қызмет және ғылыми-педагогикалық тәжірибе. «Jana Urpaq 365» жобасының бас әдіскері, «МЕТОДИКО» стандарттар бюросының негізін қалаушы. Мамандануы: ҚР МЖМБС білім беру бағдарламаларын нормабақылау, жаңа буын авторлық дидактикалық кешендерін әзірлеу, «Ұстаз» бойынша сараптама.",
+        pkg1_title: "«Аттестациялық паспорт» пакеті",
+        pkg1_price: "Смета калькуляторы бойынша",
+        pkg1_f1: "Авторлық бағдарлама (34 сағ)",
+        pkg1_f2: "Дескрипторлары бар КТЖ",
+        pkg1_f3: "«Ұстаз» платформасына құжаттар",
+        pkg1_f4: "Әзірлеу мерзімі: 7 жұмыс күні",
+        pkg2_tag: "ҰСЫНЫЛАТЫН СТАНДАРТ",
+        pkg2_title: "«Пәндік ОӘК кілтпен» пакеті",
+        pkg2_price: "Смета калькуляторы бойынша",
+        pkg2_f1: "МЖМБС 2026 бойынша бағдарлама + КТЖ",
+        pkg2_f2: "Комикс-дәптер макеті (34/68 сағ)",
+        pkg2_f3: "Баспаға дейінгі дайындық (PDF A4)",
+        pkg2_f4: "Мұғалімге әдістемелік нұсқаулық",
+        pkg2_f5: "Әзірлеу мерзімі: 14 жұмыс күні",
+        pkg3_title: "«Мектеп кафедрасының стандарты»",
+        pkg3_price: "Жеке есептеу бойынша",
+        pkg3_f1: "Пәндер топтамасына ОӘК желісі",
+        pkg3_f2: "Мектептің брендіне бейімдеу",
+        pkg3_f3: "Баспаға дайын электронды жинақ",
+        pkg3_f4: "100% қашықтан тапсыру",
+        p4_legal_note: "<strong>Заңды деректемелер:</strong> «Метод и Ко» ЖШС, Алматы қ. ҚР Заңнамасына толық сәйкестікте шарттар жасасу. Қолма-қол ақшасыз есеп айырысу, жабу құжаттарының толық пакеті (ЭШФ, ОЖА). Қызметтер қашықтан көрсетіледі.",
+        sign_title: "<strong>«МЕТОДИКО» стандарттар бюросының жетекшісі:</strong>",
+        sign_person: "Запастағы подполковник, педагогика магистрі Н. Коденцева",
+        sign_contacts: "Байланыс: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.О. / Жетекшінің қолы"
+      }
+    };
+
+    function setDocLang(lang) {
+      const data = ustazDict[lang];
+      if (!data) return;
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) {
+          el.innerHTML = data[key];
+        }
+      });
+
+      const btnRu = document.getElementById('lang-btn-ru');
+      const btnKz = document.getElementById('lang-btn-kz');
+      if (btnRu) btnRu.classList.toggle('active', lang === 'ru');
+      if (btnKz) btnKz.classList.toggle('active', lang === 'kz');
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
+    }
+
+    // Автоматическая синхронизация языка из URL (?lang=kz) или сохраненного выбора на сайте
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialLang = urlParams.get('lang');
+      if (!initialLang) {
+        try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      if (initialLang === 'kz') {
+        setDocLang('kz');
+      }
+    });
+  </script>
+</body>
+</html>

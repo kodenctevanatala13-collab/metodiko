@@ -1946,15 +1946,6 @@
                 <span data-i18n="c2_b3">Автономная интерактивная HTML-панель запуска дисциплины для кафедры.</span>
               </li>
             </ul>
-
-            <!-- РАСКРЫВАЮЩИЙСЯ СПОЙЛЕР ДЕТАЛЕЙ -->
-            <div class="aud-accordion-trigger" onclick="toggleAudienceAccordion(this)">
-              <span data-i18n="acc_open">Развернуть детальный состав пакета кафедры</span>
-              <span class="aud-acc-icon">▼</span>
-            </div>
-            <div class="aud-accordion-content" data-i18n="c2_acc_txt">
-              В состав решения входит: матрица декомпозиции компетенций (РО), карта распределения аудиторных часов и СРОП, верификация актуальной литературы за последние 3 года, адаптация тестовых спецификаций под автоматический импорт в АИС Вуза.
-            </div>
           </div>
 
           <div class="aud-right-panel">
@@ -2123,14 +2114,6 @@
                 <span data-i18n="c3_b3">Интерактивный тренажер с аудио-откликом для интерактивной доски в классе.</span>
               </li>
             </ul>
-
-            <div class="aud-accordion-trigger" onclick="toggleAudienceAccordion(this)">
-              <span data-i18n="acc_open_sch">Развернуть состав аттестационного пакета</span>
-              <span class="aud-acc-icon">▼</span>
-            </div>
-            <div class="aud-accordion-content" data-i18n="c3_acc_txt">
-              Включает: диагностический аппарат (входное/выходное тестирование), критериальные рубрикаторы оценивания по таксономии Блума, рецензию эксперта высшей категории и готовую презентацию 16:9 для защиты перед комиссией.
-            </div>
           </div>
 
           <div class="aud-right-panel">
@@ -2146,6 +2129,9 @@
               <a href="case-3-ustaz-school.html" target="_blank" class="btn-aud-case" data-i18n="btn_view_sch_demo">
                 <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>Открыть тетрадь-комикс (Demo)</span>
+              </a>
+              <a href="whitepaper-ustaz-school.html" target="_blank" class="btn-aud-case" style="background: rgba(197, 168, 128, 0.15); border: 1px solid var(--gold-primary); color: var(--gold-primary);" title="Открыть официальную спецификацию для школ">
+                <span data-i18n="btn_whitepaper_sch_doc">📄 Спецификация для Школ («Ұстаз»)</span>
               </a>
               <a href="#calculator" class="btn-aud-calc" onclick="switchCalcAudience(2)" data-i18n="btn_calc_this">
                 Рассчитать смету школы →
@@ -2186,14 +2172,6 @@
                 <span data-i18n="c4_b3">Сценарии практических уроков, домашние задания и рабочие тетради студента.</span>
               </li>
             </ul>
-
-            <div class="aud-accordion-trigger" onclick="toggleAudienceAccordion(this)">
-              <span data-i18n="acc_open_edt">Развернуть этапы реанимации курса</span>
-              <span class="aud-acc-icon">▼</span>
-            </div>
-            <div class="aud-accordion-content" data-i18n="c4_acc_txt">
-              Включает: аудит COR (Completion Rate), перепроектирование образовательного трека по таксономии Блума, внедрение промежуточных побед (микро-достижений) и пересборку тестов для удержания внимания.
-            </div>
           </div>
 
           <div class="aud-right-panel">
@@ -2983,6 +2961,7 @@
             <li><a href="#calculator" data-i18n="ft_n3">Калькулятор сметы в ₸</a></li>
             <li><a href="whitepaper-goso-2026.html" target="_blank" style="color: var(--gold-light); font-weight: 600;" data-i18n="ft_whitepaper">📄 Спецификация для Вузов (ГОСО 2026)</a></li>
             <li><a href="whitepaper-corporate-sales.html" target="_blank" style="color: var(--gold-light); font-weight: 600;" data-i18n="ft_whitepaper_b2b">📄 Спецификация для Бизнеса (72 часа)</a></li>
+            <li><a href="whitepaper-ustaz-school.html" target="_blank" style="color: var(--gold-light); font-weight: 600;" data-i18n="ft_whitepaper_sch">📄 Спецификация для Школ («Ұстаз»)</a></li>
             <li><a href="llms.txt" target="_blank">Паспорт для нейросетей (llms.txt)</a></li>
           </ul>
         </div>
@@ -3262,6 +3241,8 @@
         btn_whitepaper_doc: "📄 Спецификация для Вузов (ГОСО 2026)",
         ft_whitepaper_b2b: "📄 Спецификация для Бизнеса (72 часа)",
         btn_whitepaper_b2b_doc: "📄 Спецификация для Бизнеса (72 часа)",
+        ft_whitepaper_sch: "📄 Спецификация для Школ («Ұстаз»)",
+        btn_whitepaper_sch_doc: "📄 Спецификация для Школ («Ұстаз»)",
         ft_std_head: "Стандарты качества",
         ft_std_desc: "24 года стажа в высшей школе. 100% соблюдение нормативов МНВО РК, IAAR, IQAA, платформы «Ұстаз» и Закона об авторском праве РК.",
         kp_modal_title: "Коммерческое предложение (КП)",
@@ -3428,6 +3409,8 @@
         btn_whitepaper_doc: "📄 ЖОО спецификациясы (МЖМБС 2026)",
         ft_whitepaper_b2b: "📄 Бизнес спецификациясы (72 сағат)",
         btn_whitepaper_b2b_doc: "📄 Бизнес спецификациясы (72 сағат)",
+        ft_whitepaper_sch: "📄 Мектептер спецификациясы («Ұстаз»)",
+        btn_whitepaper_sch_doc: "📄 Мектептер спецификациясы («Ұстаз»)",
         ft_std_head: "Сапа стандарттары",
         ft_std_desc: "Жоғары мектептегі 24 жылдық өтіл. ҚР ҒЖБМ, IAAR, IQAA, «Ұстаз» талаптары мен Авторлық құқық заңын 100% сақтау.",
         kp_modal_title: "Коммерциялық ұсыныс (КП)",
