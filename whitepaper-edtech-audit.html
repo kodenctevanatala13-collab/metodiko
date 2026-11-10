@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="doc_page_title">Бюро стандартов «МЕТОДИКО» | Спецификация стандарта EdTech & Корпоративного обучения (L&D)</title>
+  <link rel="icon" type="image/png" href="assets/Metodico_logo_gold.png">
+  <style>
+    /* ПАЛИТРА И ТИПОГРАФИКА: АКАДЕМИЧЕСКИЙ СТАНДАРТ МЕТОДИКО */
+    :root {
+      --navy-dark: #0D1726;
+      --navy-deep: #152238;
+      --navy-mid: #2A3B53;
+      --gold-primary: #C5A880;
+      --gold-dark: #9E7D3B;
+      --gold-light: #F6F1E5;
+      --cream-bg: #FDFBF7;
+      --card-bg: #FFFFFF;
+      --border-color: #E2D9CC;
+      --border-dark: #2A3B53;
+      --text-main: #1F2937;
+      --text-muted: #5A6A80;
+      --red-accent: #991B1B;
+      --red-bg: #FEF2F2;
+      --green-accent: #166534;
+      --green-bg: #F0FDF4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #525659;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-main);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ЭКРАННЫЙ ТУЛБАР УПРАВЛЕНИЯ */
+    .screen-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--navy-dark);
+      border-bottom: 2px solid var(--gold-primary);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toolbar-logo {
+      height: 38px;
+      width: 38px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 1px solid var(--gold-primary);
+      background: #FFF;
+      padding: 2px;
+    }
+
+    .toolbar-title {
+      color: #FFF;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .toolbar-sub {
+      color: var(--gold-primary);
+      font-size: 11px;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-switcher-pill {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--gold-primary);
+      border-radius: 20px;
+      padding: 2px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #E2E8F0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background: var(--gold-primary);
+      color: var(--navy-dark);
+    }
+
+    .btn-tb {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-tb-primary {
+      background: var(--gold-primary);
+      color: var(--navy-dark);
+      border: 1px solid var(--gold-primary);
+    }
+    .btn-tb-primary:hover {
+      background: #D4B992;
+      color: #000;
+    }
+
+    .btn-tb-secondary {
+      background: transparent;
+      color: #FFF;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn-tb-secondary:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+
+    /* КОНТЕЙНЕР А4 СТРАНИЦ */
+    .document-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+      gap: 30px;
+    }
+
+    /* ЛИСТ А4 */
+    .a4-page {
+      width: 210mm;
+      height: 297mm;
+      background: #FFFFFF;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+      box-sizing: border-box;
+      padding: 16mm 18mm 14mm 18mm;
+      overflow: hidden;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ВОДЯНОЙ ЗНАК */
+    .page-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140mm;
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .page-watermark img {
+      width: 100%;
+      height: auto;
+    }
+
+    /* ОБОЛОЧКА КОНТЕНТА ЛИСТА */
+    .page-content-wrapper {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-content-wrapper main {
+      flex: 1 0 auto;
+    }
+
+    /* ШАПКА СТРАНИЦЫ (ОФИЦИАЛЬНЫЙ БЛАНК) */
+    .page-header {
+      border-bottom: 2px solid var(--gold-primary);
+      padding-bottom: 7px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .header-title-org {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .header-sub-org {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-meta {
+      text-align: right;
+      font-size: 9px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: var(--navy-dark);
+      color: var(--gold-primary);
+      font-size: 8.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+
+    /* ПОДВАЛ СТРАНИЦЫ */
+    .page-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 6px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5px;
+      color: var(--text-muted);
+    }
+
+    .footer-left {
+      display: flex;
+      gap: 15px;
+    }
+
+    .page-number-pill {
+      font-weight: 700;
+      color: var(--navy-dark);
+      background: var(--gold-light);
+      padding: 1px 7px;
+      border-radius: 10px;
+      border: 1px solid var(--gold-primary);
+    }
+
+    /* ЗАГОЛОВКИ И ЛИД */
+    .doc-headline {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1.25;
+      margin-bottom: 5px;
+    }
+
+    .doc-lead {
+      font-size: 10.5px;
+      color: var(--text-main);
+      line-height: 1.45;
+      margin-bottom: 9px;
+      text-align: justify;
+    }
+
+    /* ВЫДЕЛЕННЫЙ БЛОК ПРИНЦИПА / ЦИТАТЫ */
+    .corporate-callout {
+      background: var(--gold-light);
+      border-left: 3px solid var(--gold-primary);
+      padding: 8px 11px;
+      border-radius: 0 5px 5px 0;
+      font-size: 9.5px;
+      line-height: 1.4;
+      margin-bottom: 9px;
+      color: var(--navy-dark);
+    }
+
+    /* СПИСОК 5 РИСКОВ */
+    .risk-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .risk-card-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--red-accent);
+      border-radius: 4px;
+      padding: 6.5px 10px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+    }
+
+    .risk-number-badge {
+      background: var(--red-bg);
+      color: var(--red-accent);
+      font-weight: 800;
+      font-size: 10.5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(153, 27, 27, 0.2);
+    }
+
+    .risk-body-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 1px;
+    }
+
+    .risk-body-text {
+      font-size: 8.8px;
+      color: var(--text-main);
+      line-height: 1.35;
+      text-align: justify;
+    }
+
+    /* ТАБЛИЦЫ СТАНДАРТА */
+    .corporate-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+      margin-bottom: 8px;
+    }
+
+    .corporate-table th {
+      background: var(--navy-dark);
+      color: #FFFFFF;
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 9px;
+      border: 1px solid var(--navy-dark);
+      letter-spacing: 0.02em;
+    }
+
+    .corporate-table td {
+      padding: 5.5px 8px;
+      border: 1px solid var(--border-color);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    .corporate-table tr:nth-child(even) td {
+      background: #FAFAF8;
+    }
+
+    /* КАРТОЧКИ ФИЧЕЙ 3-КОЛОНКИ */
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    .feature-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 7px 9px;
+    }
+
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .feature-badge-num {
+      background: var(--navy-dark);
+      color: var(--gold-primary);
+      width: 17px;
+      height: 17px;
+      border-radius: 3px;
+      font-size: 9.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      line-height: 1.2;
+    }
+
+    .feature-desc {
+      font-size: 8.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* ДОРОЖНАЯ КАРТА (ROADMAP) */
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5.5px;
+      margin-bottom: 8px;
+    }
+
+    .roadmap-step {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--gold-primary);
+      border-radius: 4px;
+      padding: 6px 9px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .step-days-badge {
+      background: var(--navy-dark);
+      color: #FFFFFF;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 2.5px 6px;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .step-body-title {
+      font-size: 9.8px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 1.5px;
+    }
+
+    .step-body-text {
+      font-size: 8.7px;
+      color: var(--text-main);
+      line-height: 1.35;
+    }
+
+    /* ПАСПОРТ ЭКСПЕРТА */
+    .expert-passport-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--gold-primary);
+      border-radius: 5px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .expert-avatar-wrap {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .expert-bio-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+    }
+
+    .expert-bio-rank {
+      font-size: 9px;
+      color: var(--gold-dark);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .expert-bio-desc {
+      font-size: 8.5px;
+      color: var(--text-main);
+      line-height: 1.35;
+    }
+
+    /* ПАКЕТЫ ВНЕДРЕНИЯ */
+    .package-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .package-card.recommended {
+      border: 1.5px solid var(--gold-primary);
+      background: #FFFCF7;
+    }
+
+    .package-tag {
+      position: absolute;
+      top: -8px;
+      right: 7px;
+      background: var(--gold-primary);
+      color: var(--navy-dark);
+      font-size: 7.5px;
+      font-weight: 800;
+      padding: 1.5px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .package-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+
+    .package-price {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-dark);
+      margin-bottom: 5px;
+    }
+
+    .package-features {
+      list-style: none;
+      font-size: 8.4px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .package-features li {
+      margin-bottom: 2.5px;
+      padding-left: 10px;
+      position: relative;
+      line-height: 1.3;
+    }
+
+    .package-features li::before {
+      content: "•";
+      color: var(--gold-primary);
+      position: absolute;
+      left: 0;
+      font-weight: 800;
+    }
+
+    /* ПОДПИСЬ И ПЕЧАТЬ */
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .sign-officer {
+      font-size: 9px;
+      color: var(--navy-dark);
+      line-height: 1.35;
+    }
+
+    .sign-seal {
+      text-align: right;
+      font-size: 8.5px;
+      color: var(--text-muted);
+    }
+
+    .sign-line {
+      width: 140px;
+      border-bottom: 1px solid var(--navy-dark);
+      margin-bottom: 3px;
+      margin-left: auto;
+    }
+
+    /* ПЕЧАТНЫЙ СТИЛЬ @media print ДЛЯ А4 БЕЗ ПОЛЕЙ */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .document-container {
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ -->
+  <div class="screen-toolbar">
+    <div class="toolbar-left">
+      <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="toolbar-logo">
+      <div>
+        <div class="toolbar-title" data-i18n="tb_title">БЮРО СТАНДАРТОВ «МЕТОДИКО» | СТАНДАРТ EDTECH & КОРПОРАТИВНОГО ОБУЧЕНИЯ (L&D)</div>
+        <div class="toolbar-sub" data-i18n="tb_sub">Экспертная спецификация для основателей онлайн-школ, экспертов и руководителей L&D</div>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <div class="lang-switcher-pill">
+        <button class="lang-btn active" onclick="setDocLang('ru')" id="lang-btn-ru">RU</button>
+        <button class="lang-btn" onclick="setDocLang('kz')" id="lang-btn-kz">KZ</button>
+      </div>
+      <button onclick="window.print()" class="btn-tb btn-tb-primary" data-i18n="btn_download_pdf">
+        📥 Скачать спецификацию (PDF A4)
+      </button>
+      <a href="index.html" class="btn-tb btn-tb-secondary" data-i18n="btn_back_site">
+        ← На сайт МЕТОДИКО
+      </a>
+    </div>
+  </div>
+
+  <!-- ДОКУМЕНТ: РОВНО 4 СТРАНИЦЫ A4 -->
+  <div class="document-container">
+
+    <!-- ==================== СТРАНИЦА 1: ЭКОНОМИКА ПОТЕРЬ И РИСКИ В EDTECH & L&D ==================== -->
+    <div class="a4-page" id="page-1">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 1 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • СТАНДАРТЫ EDTECH И КОРПОРАТИВНЫХ АКАДЕМИЙ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p1_badge">Стандарт EdTech & L&D</div>
+            <div data-i18n="p1_reg_no">Рег. №: СПЕЦ-EDTECH-2026-COR</div>
+            <div data-i18n="hdr_city_date">г. Алматы • Ноябрь 2026 г.</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 1 -->
+        <main>
+          <h1 class="doc-headline" data-i18n="p1_title">СПЕЦИФИКАЦИЯ СТАНДАРТА EDTECH & КОРПОРАТИВНОГО ОБУЧЕНИЯ: МЕТОДОЛОГИЧЕСКИЙ АУДИТ, УПРАВЛЕНИЕ ДОХОДИМОСТЬЮ (COR 85%+) И ТЕХНОЛОГИЯ VOICE-TO-COURSE</h1>
+          <p class="doc-lead" data-i18n="p1_lead">Аналитическая записка и стандарт разработки для фаундеров EdTech-проектов, продюсеров онлайн-школ, авторов экспертных курсов и директоров корпоративных академий (HRD / L&D) Республики Казахстан.</p>
+
+          <div class="corporate-callout" data-i18n="p1_callout">
+            <strong>Главный экономический закон онлайн-образования и корпоративного L&D:</strong><br>
+            Обучение без практических микро-побед и оцифрованного воркбука обречено на отвал студентов на 2–3 модуле. Доходимость типовых курсов составляет всего <strong>10–18%</strong>, порождая волну возвратов и выгорание кураторов. Методологический стандарт «МЕТОДИКО» пересобирает архитектуру программы по циклу Колба, дробит материал на микро-дозы (до 15 минут) и упаковывает опыт эксперта через голосовую технологию <strong>Voice-to-Course</strong> с гарантией доходимости <strong>85%+</strong>.
+          </div>
+
+          <div class="risk-cards-list">
+            <div class="risk-card-item">
+              <div class="risk-number-badge">1</div>
+              <div>
+                <div class="risk-body-title" data-i18n="p1_r1_title">1. Катастрофический отвал студентов и сотрудников (COR 10–18%)</div>
+                <div class="risk-body-text" data-i18n="p1_r1_desc">Студенты коммерческих курсов и сотрудники компаний забрасывают просмотр лекций из-за академического перегруза «водой» и отсутствия быстрых прикладных побед. Низкий COR прямо разрушает экономику проекта и L&D-бюджеты.</div>
+              </div>
+            </div>
+
+            <div class="risk-card-item">
+              <div class="risk-number-badge">2</div>
+              <div>
+                <div class="risk-body-title" data-i18n="p1_r2_title">2. Волна претензий и кассовые разрывы из-за возвратов средств</div>
+                <div class="risk-body-text" data-i18n="p1_r2_desc">До 15% выручки онлайн-школы теряется на возвратах недовольным ученикам («не оправдались ожидания», «слишком сложно/бесполезно»). Это влечет судебные риски, блокировку эквайринга и штрафы контролирующих органов.</div>
+              </div>
+            </div>
+
+            <div class="risk-card-item">
+              <div class="risk-number-badge">3</div>
+              <div>
+                <div class="risk-body-title" data-i18n="p1_r3_title">3. Выгорание и дефицит времени топ-экспертов и ключевых руководителей</div>
+                <div class="risk-body-text" data-i18n="p1_r3_desc">Эксперты и руководители направлений месяцами не могут сесть за написание программы и сценариев. Запуски курсов и ввод стажеров срываются из-за нехватки сотен часов на текстовую рутину.</div>
+              </div>
+            </div>
+
+            <div class="risk-card-item">
+              <div class="risk-number-badge">4</div>
+              <div>
+                <div class="risk-body-title" data-i18n="p1_r4_title">4. «Кладбище корпоративных знаний» в L&D-отделах</div>
+                <div class="risk-body-text" data-i18n="p1_r4_desc">Корпоративные регламенты и видеозаписи лежат мертвым грузом в LMS. Сотрудники слушают уроки «фоном», не меняя рабочих результатов, а наставники вынуждены отвечать на одни и те же вопросы.</div>
+              </div>
+            </div>
+
+            <div class="risk-card-item">
+              <div class="risk-number-badge">5</div>
+              <div>
+                <div class="risk-body-title" data-i18n="p1_r5_title">5. Обрушение повторных продаж (LTV) и потеря репутации</div>
+                <div class="risk-body-text" data-i18n="p1_r5_desc">Без измеримого результата ученики не идут на старшие ступени, не покупают продление клубных подписок и оставляют негативные отзывы. В корпоративном обучении это ведет к признанию L&D неэффективным.</div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 1 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • БИН: 231140024765</span>
+            <span data-i18n="ftr_doc_id">СПЕЦ-EDTECH-2026-COR</span>
+          </div>
+          <div><span class="page-number-pill" data-i18n="page_1_num">1 / 4 стр.</span></div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 2: АРХИТЕКТУРА И МЕТОДОЛОГИЯ 4 УРОВНЕЙ ==================== -->
+    <div class="a4-page" id="page-2">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 2 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • СТАНДАРТЫ EDTECH И КОРПОРАТИВНЫХ АКАДЕМИЙ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p2_badge">Архитектура курса</div>
+            <div data-i18n="p2_meta">Стандарт сборки COR 85%+</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 2 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p2_title">АРХИТЕКТУРА ОБРАЗОВАТЕЛЬНОГО СТАНДАРТА: 4 УРОВНЯ СБОРКИ КУРСА</h2>
+          <p class="doc-lead" data-i18n="p2_lead">Системная декомпозиция: от выявления критических точек отвала до голосовой распаковки и выпуска фирменного воркбука.</p>
+
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th style="width: 26%;" data-i18n="p2_th1">Уровень архитектуры</th>
+                <th style="width: 37%;" data-i18n="p2_th2">Методологическое наполнение</th>
+                <th style="width: 37%;" data-i18n="p2_th3">Практический результат для проекта</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong data-i18n="p2_lvl1_name">1. Экспресс-аудит и тепловая карта отвала</strong></td>
+                <td data-i18n="p2_lvl1_desc">Поурочный аудит действующей программы, выявление «провалов внимания», перегруженной теории и демотивирующих домашних заданий.</td>
+                <td data-i18n="p2_lvl1_crit"><strong>Карта отвала (Drop-off Map):</strong> оцифровка причин ухода учеников с 1-го по 4-й модули и план экстренной пересборки.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl2_name">2. Технология Voice-to-Course</strong></td>
+                <td data-i18n="p2_lvl2_desc">Голосовая распаковка автора: эксперт наговаривает свои кейсы и алгоритмы в Telegram. Бюро транскрибирует и упаковывает их в структуру по циклу Колба.</td>
+                <td data-i18n="p2_lvl2_crit"><strong>Экономия 80% времени:</strong> эксперт тратит всего 4–6 часов вместо 80 часов написания сценариев и лонгридов.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl3_name">3. Рабочая тетрадь-воркбук (PDF A4)</strong></td>
+                <td data-i18n="p2_lvl3_desc">Практический воркбук с готовыми шаблонами, скриптами, чек-листами и трекерами внедрения для каждого видеоурока.</td>
+                <td data-i18n="p2_lvl3_crit"><strong>Отказ от «просто лекций»:</strong> каждый урок завершается конкретным осязаемым артефактом в рабочей тетради.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl4_name">4. Удержание внимания и аттестация</strong></td>
+                <td data-i18n="p2_lvl4_desc">Микро-дозирование уроков (8–15 минут), система промежуточных побед, рубрикаторы для кураторов и защита итоговых проектов.</td>
+                <td data-i18n="p2_lvl4_crit"><strong>Доходимость COR 85%+:</strong> вовлечение до финала программы, рост NPS до 80%+ и нулевой процент возвратов.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="grid-3col">
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">1</div>
+                <div class="feature-title" data-i18n="p2_c1_title">Voice-to-Course распаковка</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c1_desc">
+                Эксперт наговаривает мысли за рулем или за чашкой чая. Профессиональный методолог собирает из них готовую программу курса без мучений автора.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">2</div>
+                <div class="feature-title" data-i18n="p2_c2_title">Воркбук внедрения (A4)</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c2_desc">
+                Дизайнерская рабочая тетрадь студента или сотрудника. Превращает абстрактную теорию в набор готовых шаблонов и прикладных документов.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">3</div>
+                <div class="feature-title" data-i18n="p2_c3_title">Двуязычная адаптация (KZ/RU)</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c3_desc">
+                Программы и воркбуки разрабатываются на казахском и русском языках с учетом академической терминологии и специфики рынка РК.
+              </div>
+            </div>
+          </div>
+
+          <div class="corporate-callout" style="margin-bottom: 0;" data-i18n="p2_bottom_callout">
+            <strong>Защита репутации и рост LTV:</strong> Курс или корпоративная программа, собранная по стандарту «МЕТОДИКО», дает ученику осязаемый результат уже в первой трети обучения. Это полностью исключает претензии на возврат средств и создает естественную основу для повторных покупок старших продуктов.
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 2 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • г. Алматы</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill" data-i18n="page_2_num">2 / 4 стр.</span></div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 3: ДОРОЖНАЯ КАРТА 14 ДНЕЙ И ROI ==================== -->
+    <div class="a4-page" id="page-3">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 3 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • СТАНДАРТЫ EDTECH И КОРПОРАТИВНЫХ АКАДЕМИЙ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p3_badge">Регламент внедрения и ROI</div>
+            <div data-i18n="p3_meta">Измеримые результаты (KPI)</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 3 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p3_title">РЕГЛАМЕНТ РАЗРАБОТКИ ЗА 14 ДНЕЙ И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ (ROI)</h2>
+          <p class="doc-lead" data-i18n="p3_lead">Поэтапный график создания образовательного трека (100% дистанционный формат) и сравнительная таблица окупаемости.</p>
+
+          <div class="roadmap-list">
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step1_badge">ЭТАП 1 (1–3 ДЕНЬ)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step1_title">Методологический аудит программы и оцифровка карты отвала</div>
+                <div class="step-body-text" data-i18n="p3_step1_desc">Анализ существующих лекций, домашних заданий и метрик COR/NPS. Выявление «бутылочных горлышек», перегруженных слайдов и невнятных критериев оценки. Подготовка карты устранения отвала.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step2_badge">ЭТАП 2 (4–7 ДЕНЬ)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step2_title">Голосовая распаковка Voice-to-Course и архитектура модулей</div>
+                <div class="step-body-text" data-i18n="p3_step2_desc">Серия структурированных аудио-наговоров эксперта по нашему чек-листу. Методолог транскрибирует материал, очищает от «воды» и выстраивает драматургию курса по 4-тактному циклу Колба.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step3_badge">ЭТАП 3 (8–11 ДЕНЬ)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step3_title">Верстка практического воркбука, чек-листов и критериев проверки</div>
+                <div class="step-body-text" data-i18n="p3_step3_desc">Создание фирменной рабочей тетради (Workbook A4 в PDF), шаблонов практических заданий, трекеров прогресса и объективных рубрикаторов оценки для кураторов программы.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step4_badge">ЭТАП 4 (12–14 ДЕНЬ)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step4_title">Передача цифрового пакета курса и регламентов для кураторов</div>
+                <div class="step-body-text" data-i18n="p3_step4_desc">Передача полного электронного комплекта для загрузки на платформу (LMS, Telegram или сайт школы), видеоинструкция и памятка для кураторов. 100% дистанционная сдача проекта.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-weight: 700; font-size: 11px; color: var(--navy-dark); margin: 6px 0 4px 0; text-transform: uppercase;" data-i18n="p3_table_title">
+            Сравнительный анализ: Обычный курс vs Стандарт «МЕТОДИКО»:
+          </div>
+
+          <table class="corporate-table" style="margin-top: 4px;">
+            <thead>
+              <tr>
+                <th style="width: 38%;" data-i18n="p3_th_metric">Параметр оценки курса / академии</th>
+                <th style="width: 31%;" data-i18n="p3_th_old">Обычный подход (как у всех)</th>
+                <th style="width: 31%;" data-i18n="p3_th_new">Стандарт «МЕТОДИКО»</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="p3_m1">Доходимость до финала программы (COR)</td>
+                <td style="color: #991B1B;" data-i18n="p3_v1_old">10–18% (массовый отвал)</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v1_new">85%+ (вовлечение и победы)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m2">Доля возвратов средств ученикам</td>
+                <td style="color: #991B1B;" data-i18n="p3_v2_old">До 12–15% выручки</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v2_new">0% (защита через воркбук)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m3">Личное время эксперта на подготовку</td>
+                <td style="color: #991B1B;" data-i18n="p3_v3_old">60–80 часов рутины и стресса</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v3_new">4–6 часов (Voice-to-Course)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m4">Повторные покупки следующих ступеней (LTV)</td>
+                <td style="color: #991B1B;" data-i18n="p3_v4_old">Менее 5–8% учеников</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v4_new">Рост LTV на 35–50%</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m5">Формат оказания услуг и передачи</td>
+                <td style="color: #991B1B;" data-i18n="p3_v5_old">Затянутые офлайн-совещания</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v5_new">100% дистанционно (электронно)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </main>
+
+        <!-- FOOTER СТР. 3 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • г. Алматы</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill" data-i18n="page_3_num">3 / 4 стр.</span></div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 4: ПАСПОРТ ЭКСПЕРТА, ПАКЕТЫ И РЕКВИЗИТЫ ==================== -->
+    <div class="a4-page" id="page-4">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 4 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • СТАНДАРТЫ EDTECH И КОРПОРАТИВНЫХ АКАДЕМИЙ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p4_badge">Спецификация и оферта</div>
+            <div data-i18n="p4_meta">БИН: 231140024765 • Договор с ТОО</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 4 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p4_title">КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ</h2>
+          <p class="doc-lead" data-i18n="p4_lead">Официальное институциональное предложение для онлайн-школ, авторов экспертных курсов и корпоративных L&D-департаментов.</p>
+
+          <div class="expert-passport-box">
+            <div class="expert-avatar-wrap">
+              <img src="assets/natalia_kodentseva.jpg" alt="Наталья Коденцева" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+            </div>
+            <div>
+              <div class="expert-bio-title" data-i18n="exp_name">Наталья Коденцева</div>
+              <div class="expert-bio-rank" data-i18n="exp_rank">Подполковник в отставке • Магистр педагогики • Главный методолог</div>
+              <div class="expert-bio-desc" data-i18n="exp_desc">24 года службы и научно-педагогической практики. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: трансформация сложного экспертного опыта в системные образовательные треки, разработка прикладных воркбуков, технология голосовой распаковки Voice-to-Course и обеспечение доходимости (COR 85%+).</div>
+            </div>
+          </div>
+
+          <div class="grid-3col">
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg1_title">Пакет «Экспресс-аудит курса»</div>
+                <div class="package-price" data-i18n="pkg1_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg1_f1">Аудит текущей программы курса</li>
+                  <li data-i18n="pkg1_f2">Карта отвала студентов (Drop-off)</li>
+                  <li data-i18n="pkg1_f3">План устранения возвратов средств</li>
+                  <li data-i18n="pkg1_f4">Срок разработки: 5 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card recommended">
+              <span class="package-tag" data-i18n="pkg2_tag">РЕКОМЕНДУЕМЫЙ ВЫБОР</span>
+              <div>
+                <div class="package-name" data-i18n="pkg2_title">Пакет «Курс под ключ (Voice-to-Course)»</div>
+                <div class="package-price" data-i18n="pkg2_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg2_f1">Голосовая распаковка эксперта</li>
+                  <li data-i18n="pkg2_f2">Архитектура по циклу Колба</li>
+                  <li data-i18n="pkg2_f3">Макет воркбука студента (PDF A4)</li>
+                  <li data-i18n="pkg2_f4">Регламент проверки для кураторов</li>
+                  <li data-i18n="pkg2_f5">Срок разработки: 14 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg3_title">Пакет «Корпоративная академия L&D»</div>
+                <div class="package-price" data-i18n="pkg3_price">Индивидуальный расчет</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg3_f1">Линейка программ онбординга</li>
+                  <li data-i18n="pkg3_f2">Оцифровка знаний топ-менеджеров</li>
+                  <li data-i18n="pkg3_f3">Электронный комплект для платформы</li>
+                  <li data-i18n="pkg3_f4">100% дистанционная передача</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="corporate-callout" style="margin-top: 8px; margin-bottom: 6px; font-size: 10px;" data-i18n="p4_legal_note">
+            <strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ). Дистанционное оказание услуг.
+          </div>
+
+          <div class="sign-row">
+            <div class="sign-officer">
+              <div data-i18n="sign_title"><strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong></div>
+              <div data-i18n="sign_person">Подполковник в отставке, магистр педагогики Н. Коденцева</div>
+              <div style="color: var(--text-muted); font-size: 9px;" data-i18n="sign_contacts">Связь: metodico-kz.netlify.app • +7 (708) 895-44-12</div>
+            </div>
+            <div class="sign-seal">
+              <div class="sign-line"></div>
+              <div data-i18n="sign_seal">М.П. / Подпись руководителя</div>
+            </div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 4 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • г. Алматы • Рег. № СПЕЦ-EDTECH-2026-COR</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill" data-i18n="page_4_num">4 / 4 стр.</span></div>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- СКРИПТ ЛОКАЛИЗАЦИИ И СИНХРОНИЗАЦИИ ЯЗЫКА -->
+  <script>
+    const edtechDict = {
+      ru: {
+        doc_page_title: "Бюро стандартов «МЕТОДИКО» | Спецификация стандарта EdTech & Корпоративного обучения (L&D)",
+        tb_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО» | СТАНДАРТ EDTECH & КОРПОРАТИВНОГО ОБУЧЕНИЯ (L&D)",
+        tb_sub: "Экспертная спецификация для основателей онлайн-школ, экспертов и руководителей L&D",
+        btn_download_pdf: "📥 Скачать спецификацию (PDF A4)",
+        btn_back_site: "← На сайт МЕТОДИКО",
+        hdr_org_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО»",
+        hdr_org_sub: "ТОО «МЕТОД И КО» • СТАНДАРТЫ EDTECH И КОРПОРАТИВНЫХ АКАДЕМИЙ",
+        p1_badge: "Стандарт EdTech & L&D",
+        p1_reg_no: "Рег. №: СПЕЦ-EDTECH-2026-COR",
+        hdr_city_date: "г. Алматы • Ноябрь 2026 г.",
+        p1_title: "СПЕЦИФИКАЦИЯ СТАНДАРТА EDTECH & КОРПОРАТИВНОГО ОБУЧЕНИЯ: МЕТОДОЛОГИЧЕСКИЙ АУДИТ, УПРАВЛЕНИЕ ДОХОДИМОСТЬЮ (COR 85%+) И ТЕХНОЛОГИЯ VOICE-TO-COURSE",
+        p1_lead: "Аналитическая записка и стандарт разработки для фаундеров EdTech-проектов, продюсеров онлайн-школ, авторов экспертных курсов и директоров корпоративных академий (HRD / L&D) Республики Казахстан.",
+        p1_callout: "<strong>Главный экономический закон онлайн-образования и корпоративного L&D:</strong><br>Обучение без практических микро-побед и оцифрованного воркбука обречено на отвал студентов на 2–3 модуле. Доходимость типовых курсов составляет всего <strong>10–18%</strong>, порождая волну возвратов и выгорание кураторов. Методологический стандарт «МЕТОДИКО» пересобирает архитектуру программы по циклу Колба, дробит материал на микро-дозы (до 15 минут) и упаковывает опыт эксперта через голосовую технологию <strong>Voice-to-Course</strong> с гарантией доходимости <strong>85%+</strong>.",
+        p1_r1_title: "1. Катастрофический отвал студентов и сотрудников (COR 10–18%)",
+        p1_r1_desc: "Студенты коммерческих курсов и сотрудники компаний забрасывают просмотр лекций из-за академического перегруза «водой» и отсутствия быстрых прикладных побед. Низкий COR прямо разрушает экономику проекта и L&D-бюджеты.",
+        p1_r2_title: "2. Волна претензий и кассовые разрывы из-за возвратов средств",
+        p1_r2_desc: "До 15% выручки онлайн-школы теряется на возвратах недовольным ученикам («не оправдались ожидания», «слишком сложно/бесполезно»). Это влечет судебные риски, блокировку эквайринга и штрафы контролирующих органов.",
+        p1_r3_title: "3. Выгорание и дефицит времени топ-экспертов и ключевых руководителей",
+        p1_r3_desc: "Эксперты и руководители направлений месяцами не могут сесть за написание программы и сценариев. Запуски курсов и ввод стажеров срываются из-за нехватки сотен часов на текстовую рутину.",
+        p1_r4_title: "4. «Кладбище корпоративных знаний» в L&D-отделах",
+        p1_r4_desc: "Корпоративные регламенты и видеозаписи лежат мертвым грузом в LMS. Сотрудники слушают уроки «фоном», не меняя рабочих результатов, а наставники вынуждены отвечать на одни и те же вопросы.",
+        p1_r5_title: "5. Обрушение повторных продаж (LTV) и потеря репутации",
+        p1_r5_desc: "Без измеримого результата ученики не идут на старшие ступени, не покупают продление клубных подписок и оставляют негативные отзывы. В корпоративном обучении это ведет к признанию L&D неэффективным.",
+        ftr_doc_id: "СПЕЦ-EDTECH-2026-COR",
+        p2_badge: "Архитектура курса",
+        p2_meta: "Стандарт сборки COR 85%+",
+        p2_title: "АРХИТЕКТУРА ОБРАЗОВАТЕЛЬНОГО СТАНДАРТА: 4 УРОВНЯ СБОРКИ КУРСА",
+        p2_lead: "Системная декомпозиция: от выявления критических точек отвала до голосовой распаковки и выпуска фирменного воркбука.",
+        p2_th1: "Уровень архитектуры",
+        p2_th2: "Методологическое наполнение",
+        p2_th3: "Практический результат для проекта",
+        p2_lvl1_name: "1. Экспресс-аудит и тепловая карта отвала",
+        p2_lvl1_desc: "Поурочный аудит действующей программы, выявление «провалов внимания», перегруженной теории и демотивирующих домашних заданий.",
+        p2_lvl1_crit: "<strong>Карта отвала (Drop-off Map):</strong> оцифровка причин ухода учеников с 1-го по 4-й модули и план экстренной пересборки.",
+        p2_lvl2_name: "2. Технология Voice-to-Course",
+        p2_lvl2_desc: "Голосовая распаковка автора: эксперт наговаривает свои кейсы и алгоритмы в Telegram. Бюро транскрибирует и упаковывает их в структуру по циклу Колба.",
+        p2_lvl2_crit: "<strong>Экономия 80% времени:</strong> эксперт тратит всего 4–6 часов вместо 80 часов написания сценариев и лонгридов.",
+        p2_lvl3_name: "3. Рабочая тетрадь-воркбук (PDF A4)",
+        p2_lvl3_desc: "Практический воркбук с готовыми шаблонами, скриптами, чек-листами и трекерами внедрения для каждого видеоурока.",
+        p2_lvl3_crit: "<strong>Отказ от «просто лекций»:</strong> каждый урок завершается конкретным осязаемым артефактом в рабочей тетради.",
+        p2_lvl4_name: "4. Удержание внимания и аттестация",
+        p2_lvl4_desc: "Микро-дозирование уроков (8–15 минут), система промежуточных побед, рубрикаторы для кураторов и защита итоговых проектов.",
+        p2_lvl4_crit: "<strong>Доходимость COR 85%+:</strong> вовлечение до финала программы, рост NPS до 80%+ и нулевой процент возвратов.",
+        p2_c1_title: "Voice-to-Course распаковка",
+        p2_c1_desc: "Эксперт наговаривает мысли за рулем или за чашкой чая. Профессиональный методолог собирает из них готовую программу курса без мучений автора.",
+        p2_c2_title: "Воркбук внедрения (A4)",
+        p2_c2_desc: "Дизайнерская рабочая тетрадь студента или сотрудника. Превращает абстрактную теорию в набор готовых шаблонов и прикладных документов.",
+        p2_c3_title: "Двуязычная адаптация (KZ/RU)",
+        p2_c3_desc: "Программы и воркбуки разрабатываются на казахском и русском языках с учетом академической терминологии и специфики рынка РК.",
+        p2_bottom_callout: "<strong>Защита репутации и рост LTV:</strong> Курс или корпоративная программа, собранная по стандарту «МЕТОДИКО», дает ученику осязаемый результат уже в первой трети обучения. Это полностью исключает претензии на возврат средств и создает естественную основу для повторных покупок старших продуктов.",
+        p3_badge: "Регламент внедрения и ROI",
+        p3_meta: "Измеримые результаты (KPI)",
+        p3_title: "РЕГЛАМЕНТ РАЗРАБОТКИ ЗА 14 ДНЕЙ И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ (ROI)",
+        p3_lead: "Поэтапный график создания образовательного трека (100% дистанционный формат) и сравнительная таблица окупаемости.",
+        p3_step1_badge: "ЭТАП 1 (1–3 ДЕНЬ)",
+        p3_step1_title: "Методологический аудит программы и оцифровка карты отвала",
+        p3_step1_desc: "Анализ существующих лекций, домашних заданий и метрик COR/NPS. Выявление «бутылочных горлышек», перегруженных слайдов и невнятных критериев оценки. Подготовка карты устранения отвала.",
+        p3_step2_badge: "ЭТАП 2 (4–7 ДЕНЬ)",
+        p3_step2_title: "Голосовая распаковка Voice-to-Course и архитектура модулей",
+        p3_step2_desc: "Серия структурированных аудио-наговоров эксперта по нашему чек-листу. Методолог транскрибирует материал, очищает от «воды» и выстраивает драматургию курса по 4-тактному циклу Колба.",
+        p3_step3_badge: "ЭТАП 3 (8–11 ДЕНЬ)",
+        p3_step3_title: "Верстка практического воркбука, чек-листов и критериев проверки",
+        p3_step3_desc: "Создание фирменной рабочей тетради (Workbook A4 в PDF), шаблонов практических заданий, трекеров прогресса и объективных рубрикаторов оценки для кураторов программы.",
+        p3_step4_badge: "ЭТАП 4 (12–14 ДЕНЬ)",
+        p3_step4_title: "Передача цифрового пакета курса и регламентов для кураторов",
+        p3_step4_desc: "Передача полного электронного комплекта для загрузки на платформу (LMS, Telegram или сайт школы), видеоинструкция и памятка для кураторов. 100% дистанционная сдача проекта.",
+        p3_table_title: "Сравнительный анализ: Обычный курс vs Стандарт «МЕТОДИКО»:",
+        p3_th_metric: "Параметр оценки курса / академии",
+        p3_th_old: "Обычный подход (как у всех)",
+        p3_th_new: "Стандарт «МЕТОДИКО»",
+        p3_m1: "Доходимость до финала программы (COR)",
+        p3_v1_old: "10–18% (массовый отвал)",
+        p3_v1_new: "85%+ (вовлечение и победы)",
+        p3_m2: "Доля возвратов средств ученикам",
+        p3_v2_old: "До 12–15% выручки",
+        p3_v2_new: "0% (защита через воркбук)",
+        p3_m3: "Личное время эксперта на подготовку",
+        p3_v3_old: "60–80 часов рутины и стресса",
+        p3_v3_new: "4–6 часов (Voice-to-Course)",
+        p3_m4: "Повторные покупки следующих ступеней (LTV)",
+        p3_v4_old: "Менее 5–8% учеников",
+        p3_v4_new: "Рост LTV на 35–50%",
+        p3_m5: "Формат оказания услуг и передачи",
+        p3_v5_old: "Затянутые офлайн-совещания",
+        p3_v5_new: "100% дистанционно (электронно)",
+        p4_badge: "Спецификация и оферта",
+        p4_meta: "БИН: 231140024765 • Договор с ТОО",
+        p4_title: "КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ",
+        p4_lead: "Официальное институциональное предложение для онлайн-школ, авторов экспертных курсов и корпоративных L&D-департаментов.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Подполковник в отставке • Магистр педагогики • Главный методолог",
+        exp_desc: "24 года службы и научно-педагогической практики. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: трансформация сложного экспертного опыта в системные образовательные треки, разработка прикладных воркбуков, технология голосовой распаковки Voice-to-Course и обеспечение доходимости (COR 85%+).",
+        pkg1_title: "Пакет «Экспресс-аудит курса»",
+        pkg1_price: "По смете калькулятора",
+        pkg1_f1: "Аудит текущей программы курса",
+        pkg1_f2: "Карта отвала студентов (Drop-off)",
+        pkg1_f3: "План устранения возвратов средств",
+        pkg1_f4: "Срок разработки: 5 рабочих дней",
+        pkg2_tag: "РЕКОМЕНДУЕМЫЙ ВЫБОР",
+        pkg2_title: "Пакет «Курс под ключ (Voice-to-Course)»",
+        pkg2_price: "По смете калькулятора",
+        pkg2_f1: "Голосовая распаковка эксперта",
+        pkg2_f2: "Архитектура по циклу Колба",
+        pkg2_f3: "Макет воркбука студента (PDF A4)",
+        pkg2_f4: "Регламент проверки для кураторов",
+        pkg2_f5: "Срок разработки: 14 рабочих дней",
+        pkg3_title: "Пакет «Корпоративная академия L&D»",
+        pkg3_price: "Индивидуальный расчет",
+        pkg3_f1: "Линейка программ онбординга",
+        pkg3_f2: "Оцифровка знаний топ-менеджеров",
+        pkg3_f3: "Электронный комплект для платформы",
+        pkg3_f4: "100% дистанционная передача",
+        p4_legal_note: "<strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ). Дистанционное оказание услуг.",
+        sign_title: "<strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong>",
+        sign_person: "Подполковник в отставке, магистр педагогики Н. Коденцева",
+        sign_contacts: "Связь: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.П. / Подпись руководителя",
+        page_1_num: "1 / 4 стр.",
+        page_2_num: "2 / 4 стр.",
+        page_3_num: "3 / 4 стр.",
+        page_4_num: "4 / 4 стр."
+      },
+      kz: {
+        doc_page_title: "«МЕТОДИКО» стандарттар бюросы | EdTech және Корпоративтік оқыту (L&D) стандартының спецификациясы",
+        tb_title: "«МЕТОДИКО» СТАНДАРТТАР БЮРОСЫ | EDTECH ЖӘНЕ КОРПОРАТИВТІК ОҚЫТУ (L&D) СТАНДАРТЫ",
+        tb_sub: "Онлайн-мектеп негізін қалаушылар, сарапшылар мен L&D жетекшілеріне арналған сараптамалық спецификация",
+        btn_download_pdf: "📥 Спецификацияны жүктеу (PDF A4)",
+        btn_back_site: "← МЕТОДИКО сайтына қайту",
+        hdr_org_title: "«МЕТОДИКО» СТАНДАРТТАР БЮРОСЫ",
+        hdr_org_sub: "«МЕТОД И КО» ЖШС • EDTECH ЖӘНЕ КОРПОРАТИВТІК АКАДЕМИЯЛАР СТАНДАРТТАРЫ",
+        p1_badge: "EdTech & L&D стандарты",
+        p1_reg_no: "Тіркеу №: СПЕЦ-EDTECH-2026-COR",
+        hdr_city_date: "Алматы қ. • Қараша 2026 ж.",
+        p1_title: "EDTECH ЖӘНЕ КОРПОРАТИВТІК ОҚЫТУ СТАНДАРТЫНЫҢ СПЕЦИФИКАЦИЯСЫ: ӘДІСНАМАЛЫҚ АУДИТ, АЯҚТАУ КӨРСЕТКІШІ (COR 85%+) ЖӘНЕ VOICE-TO-COURSE ТЕХНОЛОГИЯСЫ",
+        p1_lead: "Қазақстан Республикасы EdTech-жобаларының құрылтайшылары, онлайн-мектеп продюсерлері, сарапшылары және корпоративтік академияларының (HRD / L&D) жетекшілеріне арналған сараптамалық жазба және әзірлеу стандарты.",
+        p1_callout: "<strong>Онлайн-білім беру мен корпоративтік L&D-дің басты экономикалық заңы:</strong><br>Тәжірибелік шағын жеңістерсіз және цифрланған жұмыс дәптерінсіз оқыту студенттердің 2–3 модульде оқуды тастап кетуіне әкеледі. Қалыпты курстарды аяқтау үлесі небәрі <strong>10–18%</strong> құрайды, бұл ақшаны қайтару толқынын және кураторлардың күйзелісін тудырады. «МЕТОДИКО» әдіснамалық стандарты бағдарлама архитектурасын Колб циклі бойынша қайта жинайды, материалды шағын бөліктерге (15 минутқа дейін) бөледі және сарапшы тәжірибесін <strong>Voice-to-Course</strong> дауыстық технологиясы арқылы <strong>85%+</strong> аяқтау кепілдігімен қалыптайды.",
+        p1_r1_title: "1. Студенттер мен қызметкерлердің жаппай оқуды тастауы (COR 10–18%)",
+        p1_r1_desc: "Коммерциялық курстардың студенттері мен компания қызметкерлері артық мәтін мен қолданбалы жеңістердің болмауынан дәрістерді қарауды тоқтатады. Төмен COR жоба экономикасы мен L&D бюджетін тікелей күйретеді.",
+        p1_r2_title: "2. Ақшаны қайтару салдарынан кассалық алшақтық пен шағымдар",
+        p1_r2_desc: "Онлайн-мектеп түсімінің 15%-ға дейіні риза емес оқушыларға ақшаны қайтаруға кетеді («күткен нәтиже болмады», «тым қиын/пайдасыз»). Бұл сот қатерлеріне және эквайрингтің бұғатталуына әкеледі.",
+        p1_r3_title: "3. Жетекші сарапшылар мен басшылардың күйзелісі және уақыт тапшылығы",
+        p1_r3_desc: "Сарапшылар мен бағыт жетекшілері бағдарлама мен сценарийлерді жазуға айлап отыра алмайды. Курстардың іске қосылуы мен қызметкерлерді бейімдеу жүздеген сағаттық рутиналық жазудың кесірінен кешіктіріледі.",
+        p1_r4_title: "4. L&D бөлімдеріндегі «корпоративтік білімнің зираты»",
+        p1_r4_desc: "Корпоративтік регламенттер мен бейнежазбалар LMS жүйесінде өлі жүк болып қалады. Қызметкерлер сабақтарды жұмыс нәтижесін өзгертпестен тыңдайды, ал тәлімгерлер бірдей сұрақтарға қайта жауап беруге мәжбүр болады.",
+        p1_r5_title: "5. Қайта сатудың (LTV) төмендеуі және беделдің жоғалуы",
+        p1_r5_desc: "Өлшенетін нәтижесіз оқушылар жоғары сатыларға өтпейді, клубтық жазылымдарды ұзартпайды және теріс пікір қалдырады. Корпоративтік оқытуда бұл L&D тиімсіз деп танылуына әкеледі.",
+        ftr_doc_id: "СПЕЦ-EDTECH-2026-COR",
+        p2_badge: "Курс архитектурасы",
+        p2_meta: "COR 85%+ жинақтау стандарты",
+        p2_title: "БІЛІМ БЕРУ СТАНДАРТЫНЫҢ АРХИТЕКТУРАСЫ: КУРСТЫ ҚҰРАСТЫРУДЫҢ 4 ДЕҢГЕЙІ",
+        p2_lead: "Жүйелі декомпозиция: сыни үзіліс нүктелерін анықтаудан дауыспен ашуға және фирмалық воркбук шығаруға дейін.",
+        p2_th1: "Архитектура деңгейі",
+        p2_th2: "Әдіснамалық мазмұны",
+        p2_th3: "Жоба үшін практикалық нәтиже",
+        p2_lvl1_name: "1. Экспресс-аудит және үзілістердің жылу картасы",
+        p2_lvl1_desc: "Қолданыстағы бағдарламаны сабақ сайын аудиттеу, «зейіннің төмендеуін», артық теорияны және оқушыны жалықтыратын тапсырмаларды анықтау.",
+        p2_lvl1_crit: "<strong>Үзіліс картасы (Drop-off Map):</strong> оқушылардың 1–4 модульден кету себептерін цифрлау және жедел қайта жинау жоспары.",
+        p2_lvl2_name: "2. Voice-to-Course технологиясы",
+        p2_lvl2_desc: "Авторды дауыспен ашу: сарапшы өз кейстері мен алгоритмдерін Telegram-ға айтады. Бюро оларды транскрипциялап, Колб цикліне жинайды.",
+        p2_lvl2_crit: "<strong>Уақытты 80%-ға үнемдеу:</strong> сарапшы сценарий мен мәтін жазуға 80 сағат жұмсаудың орнына небәрі 4–6 сағат дауыс жазады.",
+        p2_lvl3_name: "3. Практикалық жұмыс дәптері-воркбук (PDF A4)",
+        p2_lvl3_desc: "Әрбір бейнесабақ үшін дайын үлгілері, скрипттері, чек-парақтары және енгізу трекерлері бар тәжірибелік воркбук.",
+        p2_lvl3_crit: "<strong>«Тек дәріс тыңдаудан» бас тарту:</strong> әрбір сабақ жұмыс дәптеріндегі нақты, қолмен ұсталатын нәтижемен аяқталады.",
+        p2_lvl4_name: "4. Зейінді ұстау және бағалау жүйесі",
+        p2_lvl4_desc: "Сабақтарды шағын дозалау (8–15 минут), аралық жеңістер жүйесі, кураторларға арналған айдарлар және қорытынды жобаны қорғау.",
+        p2_lvl4_crit: "<strong>COR 85%+ аяқтау көрсеткіші:</strong> бағдарлама соңына дейін тарту, NPS-ті 80%+-ға дейін арттыру және 0% қайтару.",
+        p2_c1_title: "Voice-to-Course дауыспен ашу",
+        p2_c1_desc: "Сарапшы ойларын көлікте немесе шай үстінде айтады. Кәсіби әдіскер авторды қиналдырмай дайын курс бағдарламасын жинайды.",
+        p2_c2_title: "Енгізу воркбугі (A4)",
+        p2_c2_desc: "Студенттің немесе қызметкердің дизайнерлік жұмыс дәптері. Дерексіз теорияны дайын үлгілер мен құжаттар жиынтығына айналдырады.",
+        p2_c3_title: "Қос тілді бейімдеу (KZ/RU)",
+        p2_c3_desc: "Бағдарламалар мен воркбуктер академиялық терминологияны және ҚР нарығының ерекшелігін ескере отырып, қазақ және орыс тілдерінде жасалады.",
+        p2_bottom_callout: "<strong>Беделді қорғау және LTV өсімі:</strong> «МЕТОДИКО» стандарты бойынша жиналған курс немесе корпоративтік бағдарлама оқушыға оқудың алғашқы үштен бір бөлігінде-ақ нақты нәтиже береді. Бұл ақшаны қайтару шағымдарын толығымен жояды және жоғары деңгейлі өнімдерді қайта сатып алуға негіз қалайды.",
+        p3_badge: "Енгізу регламенті және ROI",
+        p3_meta: "Өлшенетін нәтижелер (KPI)",
+        p3_title: "14 КҮНДЕ ӘЗІРЛЕУ РЕГЛАМЕНТІ ЖӘНЕ САЛЫСТЫРМАЛЫ ТИІМДІЛІК (ROI)",
+        p3_lead: "Білім беру трегін құрудың кезең-кезеңімен кестесі (100% қашықтан орындау) және өзін-өзі ақтау кестесі.",
+        p3_step1_badge: "1-КЕЗЕҢ (1–3 КҮН)",
+        p3_step1_title: "Бағдарламаның әдіснамалық аудиті және үзіліс картасын цифрлау",
+        p3_step1_desc: "Қолданыстағы дәрістерді, үй тапсырмаларын және COR/NPS көрсеткіштерін талдау. «Тар жерлерді», ауыр слайдтарды және түсініксіз бағалау критерийлерін анықтау. Үзілістерді жою картасын әзірлеу.",
+        p3_step2_badge: "2-КЕЗЕҢ (4–7 КҮН)",
+        p3_step2_title: "Voice-to-Course дауыспен ашу және модульдер архитектурасы",
+        p3_step2_desc: "Сарапшының біздің чек-парақ бойынша құрылымдалған аудиожазбалары. Әдіскер материалды мәтінге түсіреді, артық сөздерден тазартады және 4 тактілі Колб цикліне жинайды.",
+        p3_step3_badge: "3-КЕЗЕҢ (8–11 КҮН)",
+        p3_step3_title: "Практикалық воркбук, чек-парақтар және тексеру критерийлерін беттеу",
+        p3_step3_desc: "Фирмалық жұмыс дәптерін (PDF форматындағы Workbook A4), практикалық тапсырма үлгілерін, прогресс трекерлерін және кураторлар үшін бағалау критерийлерін жасау.",
+        p3_step4_badge: "4-КЕЗЕҢ (12–14 КҮН)",
+        p3_step4_title: "Курстың цифрлық пакетін және кураторлар регламентін тапсыру",
+        p3_step4_desc: "Платформаға (LMS, Telegram немесе мектеп сайты) жүктеуге дайын толық электрондық жинақты тапсыру, кураторларға арналған бейненұсқаулық. Жобаны 100% қашықтан тапсыру.",
+        p3_table_title: "Салыстырмалы талдау: Қарапайым курс vs «МЕТОДИКО» стандарты:",
+        p3_th_metric: "Курсты / академияны бағалау параметрі",
+        p3_th_old: "Қалыпты тәсіл (барлығы сияқты)",
+        p3_th_new: "«МЕТОДИКО» стандарты",
+        p3_m1: "Бағдарламаны соңына дейін аяқтау (COR)",
+        p3_v1_old: "10–18% (жаппай оқуды тастау)",
+        p3_v1_new: "85%+ (қызығушылық пен жеңістер)",
+        p3_m2: "Оқушыларға ақшаны қайтару үлесі",
+        p3_v2_old: "Түсімнің 12–15%-на дейін",
+        p3_v2_new: "0% (воркбук арқылы қорғау)",
+        p3_m3: "Сарапшының жеке дайындық уақыты",
+        p3_v3_old: "60–80 сағат рутина мен күйзеліс",
+        p3_v3_new: "4–6 сағат (Voice-to-Course)",
+        p3_m4: "Келесі сатыларды қайта сатып алу (LTV)",
+        p3_v4_old: "Оқушылардың 5–8%-нан азы",
+        p3_v4_new: "LTV-дің 35–50%-ға өсуі",
+        p3_m5: "Қызмет көрсету және тапсыру форматы",
+        p3_v5_old: "Ұзаққа созылған офлайн-жиналыстар",
+        p3_v5_new: "100% қашықтан (электронды түрде)",
+        p4_badge: "Спецификация және оферта",
+        p4_meta: "БСН: 231140024765 • ЖШС-мен шарт",
+        p4_title: "САРАПШЫНЫҢ БІЛІКТІЛІК БЕЙНЕСІ ЖӘНЕ ЕНГІЗУ ПАКЕТТЕРІ",
+        p4_lead: "Онлайн-мектептерге, сараптамалық курстар авторларына және корпоративтік L&D департаменттеріне арналған ресми институционалдық ұсыныс.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Запастағы подполковник • Педагогика магистрі • Бас әдіскер",
+        exp_desc: "24 жылдық қызмет және ғылыми-педагогикалық тәжірибе. «Jana Urpaq 365» жобасының бас әдіскері, «МЕТОДИКО» стандарттар бюросының негізін қалаушы. Мамандануы: күрделі сараптамалық тәжірибені жүйелі білім беру тректеріне айналдыру, қолданбалы воркбуктер жасау, Voice-to-Course дауыстық технологиясы және жоғары аяқтау көрсеткішін (COR 85%+) қамтамасыз ету.",
+        pkg1_title: "«Курсқа экспресс-аудит» пакеті",
+        pkg1_price: "Смета калькуляторы бойынша",
+        pkg1_f1: "Курстың қолданыстағы бағдарламасын аудиттеу",
+        pkg1_f2: "Студенттердің үзіліс картасы (Drop-off)",
+        pkg1_f3: "Ақшаны қайтаруды жою жоспары",
+        pkg1_f4: "Әзірлеу мерзімі: 5 жұмыс күні",
+        pkg2_tag: "ҰСЫНЫЛАТЫН ТАҢДАУ",
+        pkg2_title: "«Курс кілтпен (Voice-to-Course)» пакеті",
+        pkg2_price: "Смета калькуляторы бойынша",
+        pkg2_f1: "Сарапшыны дауыспен ашу",
+        pkg2_f2: "Колб циклі бойынша архитектура",
+        pkg2_f3: "Студенттің жұмыс дәптері (PDF A4)",
+        pkg2_f4: "Кураторларға тексеру регламенті",
+        pkg2_f5: "Әзірлеу мерзімі: 14 жұмыс күні",
+        pkg3_title: "«Корпоративтік L&D академиясы» пакеті",
+        pkg3_price: "Жеке есептеу бойынша",
+        pkg3_f1: "Бейімдеу бағдарламаларының желісі",
+        pkg3_f2: "Басшылардың білімін цифрландыру",
+        pkg3_f3: "Платформаға дайын электрондық жинақ",
+        pkg3_f4: "100% қашықтан тапсыру",
+        p4_legal_note: "<strong>Заңды деректемелер:</strong> «Метод и Ко» ЖШС, Алматы қ. ҚР Заңнамасына толық сәйкестікте шарттар жасасу. Қолма-қол ақшасыз есеп айырысу, жабу құжаттарының толық пакеті (ЭШФ, ОЖА). Қызметтер қашықтан көрсетіледі.",
+        sign_title: "<strong>«МЕТОДИКО» стандарттар бюросының жетекшісі:</strong>",
+        sign_person: "Запастағы подполковник, педагогика магистрі Н. Коденцева",
+        sign_contacts: "Байланыс: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.О. / Жетекшінің қолы",
+        page_1_num: "1 / 4 бет",
+        page_2_num: "2 / 4 бет",
+        page_3_num: "3 / 4 бет",
+        page_4_num: "4 / 4 бет"
+      }
+    };
+
+    function setDocLang(lang) {
+      const data = edtechDict[lang];
+      if (!data) return;
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) {
+          el.innerHTML = data[key];
+        }
+      });
+
+      const btnRu = document.getElementById('lang-btn-ru');
+      const btnKz = document.getElementById('lang-btn-kz');
+      if (btnRu) btnRu.classList.toggle('active', lang === 'ru');
+      if (btnKz) btnKz.classList.toggle('active', lang === 'kz');
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
+    }
+
+    // Автоматическая синхронизация языка из URL (?lang=kz) или сохраненного выбора на сайте
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialLang = urlParams.get('lang');
+      if (!initialLang) {
+        try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      if (initialLang === 'kz') {
+        setDocLang('kz');
+      } else {
+        setDocLang('ru');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -36,6 +36,7 @@
 - **Спецификация для Вузов и Колледжей (ГОСО РК 2026):** https://metodico-kz.netlify.app/whitepaper-goso-2026.html
 - **Спецификация для Корпораций и Бизнеса (B2B онбординг за 72 часа):** https://metodico-kz.netlify.app/whitepaper-corporate-sales.html
 - **Спецификация для Частных школ и педагогов («Ұстаз»):** https://metodico-kz.netlify.app/whitepaper-ustaz-school.html
+- **Спецификация для EdTech и Корпоративного обучения (L&D / COR 85%+):** https://metodico-kz.netlify.app/whitepaper-edtech-audit.html
 
 ## Юридическая база и гарантии
 - Официальный договор с ТОО «Метод и Ко» (г. Алматы).
