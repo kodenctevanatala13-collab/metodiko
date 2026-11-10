@@ -85,6 +85,11 @@ function doPost(e) {
       return handleTelegramPriceReply(data.message);
     }
 
+    // 🛡️ ЩИТ ОТ СПАМ-БОТОВ (HONEYPOT FILTER)
+    if (data.hp || data.company_fax_code) {
+      return ContentService.createTextOutput(JSON.stringify({ status: "ignored_bot" })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 3. Иначе это новая заявка с сайта
     processNewWebsiteLead(data);
     return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);

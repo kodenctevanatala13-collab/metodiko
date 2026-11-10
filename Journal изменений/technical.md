@@ -5,6 +5,28 @@
 
 ---
 
+## CHG-014 | 2026-11-10 17:15:00 +0500
+* **Цель:** Реализация Варианта 1: печать и выгрузка коммерческого предложения в чистый PDF A4 (`@media print`), внедрение Honeypot-антиспам фильтрации на клиенте и вебхуке Google Apps Script, расширение интерактивного тренажера продаж до 3 полнофункциональных двуязычных (RU/KZ) B2B-сценариев.
+* **Затронутые файлы:** `index.html`, `google_sheets_telegram_bridge.js`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.
+* **Технические изменения:**
+  1. `index.html` (Стили печати PDF A4):
+     - Добавлен CSS-блок `@media print` с принудительной изоляцией `#printable-kp-sheet` (`display: block !important`).
+     - Сокрытие элементов веб-интерфейса (`nav`, `footer`, `#calc-container`, `.sim-wrapper`, `.feedback-modal`, кнопки действий).
+     - Форматирование листа под стандарт печати A4: поля 12 мм, `page-break-inside: avoid`, четкая контрастная типографика без градиентных фонов.
+     - Добавлена кнопка `📥 Скачать официальное КП (PDF A4)` с вызовом `window.print()`.
+  2. `index.html` & `google_sheets_telegram_bridge.js` (Honeypot-фильтрация):
+     - В форму расчета добавлен скрытый инпут: `<input type="text" id="lead-hp-check" name="company_fax_code" style="display:none !important; position:absolute; left:-9999px;" tabindex="-1" autocomplete="off">`.
+     - В функции `generateCommercialProposal` на клиенте внедрена проверка: при заполнении ловушки ботом отправка прерывается локально, симулируя успех без сетевых запросов.
+     - В `google_sheets_telegram_bridge.js` в обработчик `doPost(e)` добавлена валидация: `if (data.hp || data.company_fax_code) return ignored_bot`.
+  3. `index.html` (3-сценарный симулятор продаж):
+     - Объект `simScenarios` расширен 3 сценариями: «Қымбат / Дорого, работаем с другими», «У нас узкая специфика, вы в ней не разберетесь», «Скиньте КП на почту, мы подумаем».
+     - Полная двуязычная поддержка (RU/KZ) ролей, описания контекста, вариантов реплик менеджера, скоринга и методологического фидбека.
+     - Добавлен интерактивный селектор сценариев с функцией `loadSimScenario(index)`.
+* **Результат:** Задачи Варианта 1 полностью реализованы и протестированы.
+* **Точка возврата / Откат:** `git checkout HEAD~1`.
+
+---
+
 ## CHG-013 | 2026-11-10 16:30:00 +0500
 * **Цель:** Реорганизация кодовой базы проекта по стандартам Практикума от 17 октября 2026 г., ликвидация 117 файлов дубликатов ресурсов (35.75 МБ), перенос устаревших кириллических HTML в `_archive_drafts`, консолидация аналитических скриптов в `docs/research/`, обновление `.gitignore`, `docs/architecture.md` и `README.md`.
 * **Затронутые файлы:** `docs/architecture.md`, `README.md`, `.gitignore`, `docs/research/*`, `_archive_drafts/*`, `Journal изменений/for-me.md`, `Journal изменений/technical.md`.

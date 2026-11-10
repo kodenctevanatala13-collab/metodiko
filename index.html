@@ -1544,6 +1544,84 @@
       border-top: 1px solid var(--border-soft);
     }
 
+    /* КНОПКИ ВЫБОРА СЦЕНАРИЕВ СИМУЛЯТОРА */
+    .sim-scenario-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .sim-scen-btn {
+      background: #F8FAFC;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy-header);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sim-scen-btn:hover {
+      background: var(--gold-subtle);
+      border-color: var(--gold-primary);
+    }
+    .sim-scen-btn.active {
+      background: var(--navy-header);
+      color: var(--gold-light);
+      border-color: var(--gold-primary);
+      box-shadow: 0 2px 8px rgba(21, 34, 56, 0.2);
+    }
+
+    /* ПЕЧАТЬ И ЭКСПОРТ В PDF ДЛЯ ОФИЦИАЛЬНОГО КП */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #kp-modal, #kp-modal * {
+        visibility: visible !important;
+      }
+      #kp-modal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        display: block !important;
+        z-index: 99999 !important;
+      }
+      .modal-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .modal-header-bar, .modal-close-btn, .sheet-actions {
+        display: none !important;
+      }
+      .modal-body-sheet {
+        padding: 0 !important;
+      }
+      .sheet-letterhead {
+        border-bottom: 2px solid #000 !important;
+      }
+      .sheet-table th {
+        background: #F1F5F9 !important;
+        color: #000 !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+    }
+
     /* АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ */
     @media (max-width: 992px) {
       .bento-hero-grid { grid-template-columns: 1fr; }
@@ -1881,12 +1959,25 @@
           <div class="sim-top-bar">
             <div class="sim-header-text">
               <div class="section-pill-badge" data-i18n="sim_badge">Интерактивный тренажер B2B</div>
-              <h3 class="serif-title" data-i18n="sim_title">Отработка сложного возражения клиента: «Дорого»</h3>
+              <h3 class="serif-title" id="sim-main-title">Отработка сложного возражения клиента: «Дорого»</h3>
             </div>
             <div class="sim-score-badge">
               <div class="sim-score-num" id="user-score">0 / 100</div>
               <div class="sim-score-label" data-i18n="sim_score_label">Балл допуска к сделке</div>
             </div>
+          </div>
+
+          <!-- ПЕРЕКЛЮЧАТЕЛЬ 3-Х БОЕВЫХ СЦЕНАРИЕВ -->
+          <div class="sim-scenario-selector">
+            <button type="button" class="sim-scen-btn active" onclick="loadSimScenario(0)" id="scen-btn-0">
+              🎯 <span id="scen-btn-0-txt">Сценарий 1: «Қымбат / Дорого»</span>
+            </button>
+            <button type="button" class="sim-scen-btn" onclick="loadSimScenario(1)" id="scen-btn-1">
+              ⚙️ <span id="scen-btn-1-txt">Сценарий 2: «У нас узкая специфика»</span>
+            </button>
+            <button type="button" class="sim-scen-btn" onclick="loadSimScenario(2)" id="scen-btn-2">
+              📬 <span id="scen-btn-2-txt">Сценарий 3: «Скиньте КП на почту»</span>
+            </button>
           </div>
 
           <div class="sim-dialog-wrapper">
@@ -1895,39 +1986,17 @@
                 <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               </div>
               <div class="client-speech-content">
-                <div class="client-speech-role" data-i18n="sim_client_role">Корпоративный заказчик (г. Астана):</div>
-                <div class="client-speech-text" data-i18n="sim_prompt">
+                <div class="client-speech-role" id="sim-client-role">Корпоративный заказчик (г. Астана):</div>
+                <div class="client-speech-text" id="sim-prompt">
                   «Здравствуйте. Мы посмотрели ваше коммерческое предложение. Честно говоря, для нас это қымбат (слишком дорого), и мы уже 3 года работаем с другим подрядчиком. Зачем нам что-то менять?»
                 </div>
               </div>
             </div>
 
-            <div class="sim-options-title" data-i18n="sim_opt_title">Выберите реплику менеджера для ответа:</div>
+            <div class="sim-options-title" id="sim-opt-title" data-i18n="sim_opt_title">Выберите реплику менеджера для ответа:</div>
 
-            <div class="sim-options-list">
-              <label class="sim-option-card" onclick="selectSimOption(0, false)">
-                <input type="radio" name="sim-opt" class="sim-option-radio">
-                <div>
-                  <strong data-i18n="sim_o1_tag">Вариант 1 (Скидка в лоб):</strong>
-                  <span data-i18n="sim_o1_txt">«Мы понимаем, бюджет важен. Давайте мы сделаем вам специальную скидку 25%, только соглашайтесь прямо сегодня?»</span>
-                </div>
-              </label>
-
-              <label class="sim-option-card" onclick="selectSimOption(1, true)">
-                <input type="radio" name="sim-opt" class="sim-option-radio">
-                <div>
-                  <strong data-i18n="sim_o2_tag">Вариант 2 (Академический стандарт):</strong>
-                  <span data-i18n="sim_o2_txt">«Мы уважаем долгосрочные отношения с партнерами. Наша цель — не заменить текущего подрядчика, а провести экспресс-тест: дать вашему отделу проверить регламент на реальном симуляторе. Если вы увидите сокращение ошибок менеджеров с 40% до нуля за 3 дня — сравните цифры. Давайте покажем 1 демо-модуль без обязательств?»</span>
-                </div>
-              </label>
-
-              <label class="sim-option-card" onclick="selectSimOption(2, false)">
-                <input type="radio" name="sim-opt" class="sim-option-radio">
-                <div>
-                  <strong data-i18n="sim_o3_tag">Вариант 3 (Спор с клиентом):</strong>
-                  <span data-i18n="sim_o3_txt">«Зря вы так думаете. У нас 24 года стажа, а ваш старый подрядчик наверняка делает вам шаблонные бумажки без нормоконтроля».</span>
-                </div>
-              </label>
+            <div class="sim-options-list" id="sim-options-container">
+              <!-- Опции генерируются динамически через loadSimScenario() -->
             </div>
 
             <div class="sim-feedback-box" id="sim-feedback">
@@ -2786,6 +2855,11 @@
             <textarea id="lead-question-side" class="summary-textarea" rows="2" placeholder="Вопрос по ценам, срокам или нормативам..."></textarea>
           </div>
 
+          <!-- ЩИТ БЕЗОПАСНОСТИ HONEYPOT (СКРЫТАЯ ЛОВУШКА ДЛЯ СПАМ-БОТОВ) -->
+          <div style="display:none !important; visibility:hidden; position:absolute; left:-9999px; width:0; height:0; overflow:hidden;" aria-hidden="true">
+            <input type="text" id="lead-hp-check" name="company_fax_code" tabindex="-1" autocomplete="off" value="">
+          </div>
+
           <button type="button" onclick="generateCommercialProposal()" class="btn-generate-kp">
             <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             <span>Получить предварительное КП и отправить на утверждение</span>
@@ -2947,10 +3021,10 @@
         </div>
 
         <div class="sheet-actions">
-          <button onclick="window.print()" class="btn-main btn-primary-gold" style="padding: 8px 16px; font-size: 12px;" data-i18n="btn_print_kp">
-            🖨️ Распечатать / Сохранить в PDF
+          <button onclick="window.print()" class="btn-main btn-primary-gold" style="padding: 10px 20px; font-size: 13px; font-weight: 700;" data-i18n="btn_print_kp">
+            📥 Скачать официальное КП (PDF A4)
           </button>
-          <button onclick="closeKpModal()" class="btn-main btn-secondary-navy" style="padding: 8px 16px; font-size: 12px;" data-i18n="btn_close_modal">
+          <button onclick="closeKpModal()" class="btn-main btn-secondary-navy" style="padding: 10px 18px; font-size: 13px;" data-i18n="btn_close_modal">
             Закрыть
           </button>
         </div>
@@ -3361,6 +3435,11 @@
 
       // Пересчет сметы
       recalculateEstimate();
+
+      // Обновление сценария симулятора на выбранном языке
+      if (typeof loadSimScenario === 'function') {
+        loadSimScenario(currentScenarioIndex);
+      }
     }
 
     // ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ ДИАГНОСТИКИ (ИЗ ВАРИАНТА 2)
@@ -3424,43 +3503,151 @@
       }
     }
 
-    // СИМУЛЯТОР: ОТРАБОТКА ВОЗРАЖЕНИЙ
-    function selectSimOption(index, isCorrect) {
+    // СИМУЛЯТОР: БАЗА 3-Х БОЕВЫХ СЦЕНАРИЕВ B2B
+    let currentScenarioIndex = 0;
+    const simScenarios = [
+      {
+        id: 'price',
+        btnTextRu: 'Сценарий 1: «Қымбат / Дорого»',
+        btnTextKz: '1-сценарий: «Қымбат / Басқалар бар»',
+        titleRu: 'Отработка сложного возражения клиента: «Дорого / Работаем с другими»',
+        titleKz: 'Клиенттің күрделі «Қымбат / Басқалармен жұмыс істейміз» қарсылығы',
+        roleRu: 'Корпоративный заказчик (г. Астана):',
+        roleKz: 'Корпоративтік тапсырыс беруші (Астана қ.):',
+        promptRu: '«Здравствуйте. Мы посмотрели ваше коммерческое предложение. Честно говоря, для нас это қымбат (слишком дорого), и мы уже 3 года работаем с другим подрядчиком. Зачем нам что-то менять?»',
+        promptKz: '«Сәлеметсіз бе. Біз сіздердің коммерциялық ұсыныстарыңызды көрдік. Шынымды айтсам, бұл біз үшін қымбат, және біз 3 жылдан бері басқа мердігермен жұмыс істеп келеміз. Бізге бірдеңені өзгертудің не қажеті бар?»',
+        optionsRu: [
+          { tag: 'Вариант 1 (Скидка в лоб):', text: '«Мы понимаем, бюджет важен. Давайте мы сделаем вам специальную скидку 25%, только соглашайтесь прямо сегодня?»', isCorrect: false, score: '30 / 100', title: '❌ МЕТОДИЧЕСКАЯ ОШИБКА (РИСК СЛИВА СДЕЛКИ)', feedback: 'Скидка в лоб обесценивает продукт и вызывает подозрение в завышенной цене. Клиент понимает, что вы не уверены в ценности своего стандарта.' },
+          { tag: 'Вариант 2 (Академический стандарт «МЕТОДИКО»):', text: '«Мы уважаем долгосрочные отношения с партнерами. Наша цель — не заменить текущего подрядчика, а провести экспресс-тест: дать вашему отделу проверить регламент на реальном симуляторе. Если вы увидите сокращение ошибок менеджеров с 40% до нуля за 3 дня — сравните цифры. Давайте покажем 1 демо-модуль без обязательств?»', isCorrect: true, score: '98 / 100', title: '✅ ОТЛИЧНЫЙ МЕТОДИЧЕСКИЙ ОТВЕТ (КВАЛИФИКАЦИЯ ПОДТВЕРЖДЕНА)', feedback: 'Менеджер не стал обесценивать цену скидками и не вступил в спор. Применен прием «тест-драйв технологии»: клиенту предложено проверить результаты на 1 демо-модуле без риска. Вероятность выхода на сделку: 88%.' },
+          { tag: 'Вариант 3 (Спор с клиентом):', text: '«Зря вы так думаете. У нас 24 года стажа, а ваш старый подрядчик наверняка делает вам шаблонные бумажки без нормоконтроля».', isCorrect: false, score: '10 / 100', title: '❌ ГРУБАЯ ОШИБКА (РАЗРЫВ ДИАЛОГА)', feedback: 'Критика старого подрядчика и спор с клиентом вызывают сопротивление и закрывают диалог. Профессиональный стандарт запрещает обесценивание конкурентов.' }
+        ],
+        optionsKz: [
+          { tag: '1-нұсқа (Бірден жеңілдік беру):', text: '«Бюджеттің маңызды екенін түсінеміз. Егер дәл бүгін келіссеңіз, сізге арнайы 25% жеңілдік жасап берейік?»', isCorrect: false, score: '30 / 100', title: '❌ ӘДІСТЕМЕЛІК ҚАТЕ (МӘМІЛЕНІ ЖОҒАЛТУ ҚАУПІ)', feedback: 'Бірден жеңілдік беру өнімнің құнын түсіреді. Клиент сіздің өз стандартыңыздың сапасына сенімді емес екеніңізді сезеді.' },
+          { tag: '2-нұсқа (Академиялық стандарт «МЕТОДИКО»):', text: '«Серіктестермен ұзақ мерзімді қарым-қатынасты құрметтейміз. Біздің мақсат — мердігерді ауыстыру емес, жедел тест өткізу: бөліміңізге регламентті нақты симуляторда тексертіп көру. Егер 3 күнде менеджер қателерінің 40%-дан нөлге дейін азайғанын көрсеңіз — сандарды салыстырыңыз. Міндеттемесіз 1 демо-модульді көрсетуге қалай қарайсыз?»', isCorrect: true, score: '98 / 100', title: '✅ КЕРЕМЕТ ӘДІСТЕМЕЛІК ЖАУАП (БІЛІКТІЛІК РАСТАЛДЫ)', feedback: 'Менеджер жеңілдікпен өз бағасын түсірмеді және клиентпен дауласпады. «Технологияның тест-драйвы» әдісі қолданылды: клиентке қауіп-қатерсіз 1 демо-модульді тексеру ұсынылды. Мәмілеге шығу ықтималдығы: 88%.' },
+          { tag: '3-нұсқа (Клиентпен дауласу):', text: '«Сіз босқа олай ойлайсыз. Біздің 24 жылдық өтіліміз бар, ал сіздің ескі мердігеріңіз нормабақылаусыз дайын қағаздарды беретіні анық».', isCorrect: false, score: '10 / 100', title: '❌ ДӨРЕКІ ҚАТЕ (ДИАЛОГТЫ ЖАБУ)', feedback: 'Бұрынғы мердігерді сынау және клиентпен дауласу қарсылық тудырады және диалогты жабады. Кәсіби стандарт бәсекелестерді төмендетуге тыйым салады.' }
+        ]
+      },
+      {
+        id: 'specific',
+        btnTextRu: 'Сценарий 2: «У нас узкая специфика»',
+        btnTextKz: '2-сценарий: «Бізде күрделі сала»',
+        titleRu: 'Отработка возражения экспертности: «У нас узкая специфика, вы в ней не разберетесь»',
+        titleKz: 'Салалық ерекшелік қарсылығы: «Бізде күрделі сала, сіз оны түсінбейсіз»',
+        roleRu: 'Директор производственно-финансовой компании (г. Алматы):',
+        roleKz: 'Өндірістік-қаржылық компания директоры (Алматы қ.):',
+        promptRu: '«У нас сложный технический B2B-продукт со специфической терминологией и закрытыми регламентами. Ваш внешний методист ничего в этом не поймет и только отвлечет наших топ-инженеров от работы».',
+        promptKz: '«Бізде күрделі техникалық B2B-өнім, арнайы терминология және жабық регламенттер бар. Сіздің сырттан келген әдіскеріңіз мұны түсінбейді және біздің инженерлердің уақытын босқа алады».',
+        optionsRu: [
+          { tag: 'Вариант 1 (Оправдания и сомнения):', text: '«Мы быстро учимся! Скиньте нам все ваши инструкции на 300 страниц, мы за пару недель всё внимательно прочитаем и разберемся».', isCorrect: false, score: '25 / 100', title: '❌ МЕТОДИЧЕСКАЯ ОШИБКА (ПОТЕРЯ АВТОРИТЕТА)', feedback: 'Попытка заставить клиента обучать методиста. Заказчик справедливо не хочет платить деньги за то, чтобы стажировать внешнего подрядчика.' },
+          { tag: 'Вариант 2 (Академический стандарт «МЕТОДИКО»):', text: '«Вы абсолютно правы: никто в Казахстане не знает ваш продукт глубже ваших ведущих инженеров. Наша задача — не учить вас вашей профессии, а распаковать экспертный опыт ваших топов через короткое 2-часовое аудиоинтервью и перевести его в боевой симулятор с нормоконтролем. Ваши инженеры тратят ровно 2 часа, а всю черновую работу по оцифровке делаем мы. Давайте покажем пример такой распаковки сложной технической ниши?»', isCorrect: true, score: '99 / 100', title: '✅ ВЫСШИЙ ПИЛОТАЖ (СНЯТИЕ БОЛИ ЛПР)', feedback: 'Блестящее признание экспертности заказчика + четкое позиционирование методолога как архитектора, экономящего драгоценное время топ-инженеров.' },
+          { tag: 'Вариант 3 (Агрессивный спор):', text: '«Методологические законы везде одинаковы: что в нефтянке, что в IT. Вы просто сами усложняете процессы, а мы наведем армейский порядок».', isCorrect: false, score: '0 / 100', title: '❌ ГРУБАЯ ОШИБКА (АГРЕССИЯ)', feedback: 'Обесценивание сложности бизнеса заказчика. Вызывает раздражение и немедленный отказ от переговоров.' }
+        ],
+        optionsKz: [
+          { tag: '1-нұсқа (Ақталу):', text: '«Біз тез үйренеміз! Барлық 300 беттік нұсқаулықтарыңызды беріңіз, біз екі аптада оқып, өзіміз түсініп аламыз».', isCorrect: false, score: '25 / 100', title: '❌ ӘДІСТЕМЕЛІК ҚАТЕ (БЕДЕЛДІ ЖОҒАЛТУ)', feedback: 'Клиенттің есебінен оқуға тырысу. Тапсырыс беруші өз ақшасына сыртқы маманды оқытқысы келмейді.' },
+          { tag: '2-нұсқа (Академиялық стандарт «МЕТОДИКО»):', text: '«Өте орынды ескерту: сіздің өнімді өз практиктеріңізден артық ешкім білмейді. Біздің міндет — сізді үйрету емес, жетекші мамандарыңыздың тәжірибесін 2 сағаттық сұхбатта жинап, оны нақты симуляторға айналдыру. Мамандарыңыз бар болғаны 2 сағат қана бөледі, қалған жүйелеуді біз жасаймыз. Осындай күрделі техникалық кейстің үлгісін көресіз бе?»', isCorrect: true, score: '99 / 100', title: '✅ ЖОҒАРЫ ШЕБЕРЛІК (БАСШЫНЫҢ УАҚЫТЫН ҮНЕМДЕУ)', feedback: 'Тапсырыс берушінің беделін құрметтеу және уақытын үнемдейтін нақты шешім ұсыну.' },
+          { tag: '3-нұсқа (Дөрекі дауласу):', text: '«Әдіснама заңдары барлық жерде бірдей: мұнай саласы болсын, IT болсын. Сіздер өздеріңіз процесті күрделендіріп алғансыздар».', isCorrect: false, score: '0 / 100', title: '❌ ДӨРЕКІ ҚАТЕ (МӘМІЛЕНІ ЖОҒАЛТУ)', feedback: 'Клиенттің бизнесін төмендету. Келіссөзді дереу бұзуға алып келеді.' }
+        ]
+      },
+      {
+        id: 'email',
+        btnTextRu: 'Сценарий 3: «Скиньте КП на почту»',
+        btnTextKz: '3-сценарий: «Поштаға жіберіңіз»',
+        titleRu: 'Отработка вежливого отказа: «Отправьте КП на почту, мы сами подумаем»',
+        titleKz: 'Сыпайы бас тартуды пысықтау: «Ұсынысты поштаға жіберіңіз, ойланамыз»',
+        roleRu: 'Руководитель департамента развития (г. Шымкент):',
+        roleKz: 'Даму департаментінің басшысы (Шымкент қ.):',
+        promptRu: '«Спасибо за информацию. Сейчас мы очень заняты квартальными отчетами. Скиньте ваше предложение с ценами на info@... на почту, мы посмотрим и, если понадобится, сами перезвоним».',
+        promptKz: '«Ақпаратыңызға рақмет. Қазір есеп беру кезеңі, уақытымыз тығыз. Ұсынысыңызды бағасымен поштаға жіберіңіз, өзіміз қарап, қажет болса хабарласамыз».',
+        optionsRu: [
+          { tag: 'Вариант 1 (Пассивный слив):', text: '«Хорошо, отправил на почту. Пожалуйста, посмотрите обязательно, я перезвоню вам через недельку!»', isCorrect: false, score: '15 / 100', title: '❌ ПАССИВНЫЙ СЛИВ (КЛАДБИЩЕ КП)', feedback: 'Классическое кладбище КП. На почте info@ письмо затеряется среди сотен других, а повторный звонок через неделю сочтут навязчивым спамом.' },
+          { tag: 'Вариант 2 (Академический стандарт «МЕТОДИКО»):', text: '«КП отправляю вам в WhatsApp и на почту прямо сейчас. Но чтобы руководство не тратило время на чтение 20 страниц текста, я прикрепил ссылку на 60-секундный интерактивный симулятор с расчетом сметы. Скажите, какой один ключевой вопрос сейчас важнее всего решить: сократить ошибки стажеров в WhatsApp или разгрузить наставников?»', isCorrect: true, score: '96 / 100', title: '✅ ТОЧНОЕ ПОПАДАНИЕ (УДЕРЖАНИЕ КОНТАКТА)', feedback: 'Менеджер не спорит, но сужает воронку до одного простого выбора и предлагает интерактивный тест вместо скучного документа.' },
+          { tag: 'Вариант 3 (Агрессивное давление):', text: '«Да на почте вы его даже не откроете! Давайте лучше прямо сейчас назначим Zoom на 40 минут с вашим генеральным директором!»', isCorrect: false, score: '20 / 100', title: '❌ ГРУБОЕ ДАВЛЕНИЕ (НЕГАТИВ)', feedback: 'Грубое нарушение личных границ занятого руководителя, вызывает резкий негатив.' }
+        ],
+        optionsKz: [
+          { tag: '1-нұсқа (Пассивті жоғалту):', text: '«Жақсы, поштаға жібердім. Міндетті түрде қарап шығыңыз, бір аптадан кейін өзім қайта хабарласамын!»', isCorrect: false, score: '15 / 100', title: '❌ ПАССИВТІ ЖОҒАЛТУ (ҚАТЕ)', feedback: 'КП-ның жоғалуы. Жалпы поштаға түскен хат оқылмай қалады.' },
+          { tag: '2-нұсқа (Академиялық стандарт «МЕТОДИКО»):', text: '«Ұсынысты WhatsApp-қа және поштаңызға дәл қазір жіберемін. Бірақ басшылық 20 беттік мәтінді оқып уақыт жоғалтпас үшін, сметасы бар 60 секундтық интерактивті симулятордың сілтемесін қосамын. Сіздер үшін қазір қайсысы өзектірек: жаңадан келгендердің қателерін азайту ма, әлде тәлімгерлердің жүктемесін жеңілдету ме?»', isCorrect: true, score: '96 / 100', title: '✅ ДӘЛ ТАҢДАУ (БАЙЛАНЫСТЫ САҚТАУ)', feedback: 'Уақытты құрметтеу және нақты бір өзекті мәселеге назар аудару.' },
+          { tag: '3-нұсқа (Қысым көрсету):', text: '«Поштадан бәрібір оқымайсыз ғой! Одан да дәл қазір бас директормен 40 минуттық Zoom кездесу өткізейік!»', isCorrect: false, score: '20 / 100', title: '❌ АРТЫҚ ҚЫСЫМ (НАРАЗЫЛЫҚ)', feedback: 'Басшыға шектен тыс қысым көрсету, клиенттің наразылығын тудырады.' }
+        ]
+      }
+    ];
+
+    function loadSimScenario(scenIdx) {
+      currentScenarioIndex = scenIdx;
+      const isRu = currentLanguage === 'ru';
+      const scen = simScenarios[scenIdx];
+      if (!scen) return;
+
+      // Обновление кнопок табов
+      document.querySelectorAll('.sim-scen-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === scenIdx);
+      });
+      simScenarios.forEach((s, idx) => {
+        const txtEl = document.getElementById(`scen-btn-${idx}-txt`);
+        if (txtEl) txtEl.innerText = isRu ? s.btnTextRu : s.btnTextKz;
+      });
+
+      // Тексты сценария
+      const titleEl = document.getElementById('sim-main-title');
+      const roleEl = document.getElementById('sim-client-role');
+      const promptEl = document.getElementById('sim-prompt');
+      const scoreEl = document.getElementById('user-score');
+      const feedbackBox = document.getElementById('sim-feedback');
+
+      if (titleEl) titleEl.innerText = isRu ? scen.titleRu : scen.titleKz;
+      if (roleEl) roleEl.innerText = isRu ? scen.roleRu : scen.roleKz;
+      if (promptEl) promptEl.innerText = isRu ? scen.promptRu : scen.promptKz;
+      if (scoreEl) {
+        scoreEl.innerText = '0 / 100';
+        scoreEl.style.color = 'var(--gold-light)';
+      }
+      if (feedbackBox) feedbackBox.style.display = 'none';
+
+      // Опции ответов
+      const container = document.getElementById('sim-options-container');
+      if (container) {
+        const optionsList = isRu ? scen.optionsRu : scen.optionsKz;
+        container.innerHTML = optionsList.map((opt, optIdx) => `
+          <label class="sim-option-card" onclick="selectSimOption(${optIdx})">
+            <input type="radio" name="sim-opt" class="sim-option-radio">
+            <div>
+              <strong>${opt.tag}</strong>
+              <span>${opt.text}</span>
+            </div>
+          </label>
+        `).join('');
+      }
+    }
+
+    function selectSimOption(optIdx) {
+      const isRu = currentLanguage === 'ru';
+      const scen = simScenarios[currentScenarioIndex];
+      if (!scen) return;
+      const optionsList = isRu ? scen.optionsRu : scen.optionsKz;
+      const opt = optionsList[optIdx];
+      if (!opt) return;
+
       const scoreEl = document.getElementById('user-score');
       const feedbackBox = document.getElementById('sim-feedback');
       const titleEl = document.getElementById('sim-feedback-title');
       const descEl = document.getElementById('sim-feedback-desc');
-      const isRu = currentLanguage === 'ru';
 
-      const options = document.querySelectorAll('.sim-option-card');
-      options.forEach(opt => {
-        opt.classList.remove('correct', 'incorrect');
-      });
+      const cards = document.querySelectorAll('.sim-option-card');
+      cards.forEach(c => c.classList.remove('correct', 'incorrect'));
 
       feedbackBox.style.display = 'block';
 
-      if (isCorrect) {
-        options[index].classList.add('correct');
-        scoreEl.innerText = '95 / 100';
+      if (opt.isCorrect) {
+        if (cards[optIdx]) cards[optIdx].classList.add('correct');
+        scoreEl.innerText = opt.score;
         scoreEl.style.color = '#10B981';
-        titleEl.innerText = isRu ? '✅ ОТЛИЧНЫЙ МЕТОДИЧЕСКИЙ ОТВЕТ (КВАЛИФИКАЦИЯ ПОДТВЕРЖДЕНА)' : '✅ КЕРЕМЕТ ӘДІСТЕМЕЛІК ЖАУАП (БІЛІКТІЛІК РАСТАЛДЫ)';
-        descEl.innerText = isRu 
-          ? 'Менеджер не стал обесценивать цену скидками и не вступил в спор. Применен прием «тест-драйв технологии»: клиенту предложено проверить результаты на 1 демо-модуле без риска. Вероятность выхода на сделку: 88%.'
-          : 'Менеджер жеңілдікпен өз бағасын түсірмеді және клиентпен дауласпады. «Технологияның тест-драйвы» әдісі қолданылды: клиентке қауіп-қатерсіз 1 демо-модульді тексеру ұсынылды. Мәмілеге шығу ықтималдығы: 88%.';
+        titleEl.innerText = opt.title;
+        descEl.innerText = opt.feedback;
       } else {
-        options[index].classList.add('incorrect');
-        scoreEl.innerText = '30 / 100';
+        if (cards[optIdx]) cards[optIdx].classList.add('incorrect');
+        scoreEl.innerText = opt.score;
         scoreEl.style.color = '#EF4444';
-        titleEl.innerText = isRu ? '❌ МЕТОДИЧЕСКАЯ ОШИБКА (РИСК СЛИВА СДЕЛКИ)' : '❌ ӘДІСТЕМЕЛІК ҚАТЕ (МӘМІЛЕНІ ЖОҒАЛТУ ҚАУПІ)';
-        if (index === 0) {
-          descEl.innerText = isRu
-            ? 'Скидка в лоб обесценивает продукт и вызывает подозрение в завышенной цене. Клиент понимает, что вы не уверены в ценности своего стандарта.'
-            : 'Бірден жеңілдік беру өнімнің құнын түсіреді. Клиент сіздің өз стандартыңыздың сапасына сенімді емес екеніңізді сезеді.';
-        } else {
-          descEl.innerText = isRu
-            ? 'Критика старого подрядчика и спор с клиентом вызывают сопротивление и закрывают диалог. Профессиональный стандарт запрещает обесценивание конкурентов.'
-            : 'Бұрынғы мердігерді сынау және клиентпен дауласу қарсылық тудырады және диалогты жабады. Кәсіби стандарт бәсекелестерді төмендетуге тыйым салады.';
-        }
+        titleEl.innerText = opt.title;
+        descEl.innerText = opt.feedback;
       }
     }
 
@@ -3652,6 +3839,14 @@
         return;
       }
 
+      // 🛡️ ЩИТ ЦИФРОВОЙ БЕЗОПАСНОСТИ: HONEYPOT ПРОВЕРКА ДЛЯ СПАМ-БОТОВ
+      const hpCheck = document.getElementById('lead-hp-check') ? document.getElementById('lead-hp-check').value.trim() : '';
+      if (hpCheck) {
+        console.warn('Honeypot protection: Automated bot submission blocked.');
+        document.getElementById('kp-modal').classList.add('active');
+        return;
+      }
+
       // Проверка срочности
       let isUrgent = false;
       const urgentRadio = activeBlock ? activeBlock.querySelector('input[type="radio"].calc-speed-radio:checked') : null;
@@ -3743,6 +3938,7 @@
         totalPrice: totalPrice,
         totalDays: totalDays,
         clientQuestion: clientQuestion || 'Вопрос не указан',
+        company_fax_code: hpCheck,
         status: 'Новая заявка (на утверждении)'
       };
 
@@ -3787,6 +3983,7 @@
         try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
       }
       setLanguage(initialLang || 'ru');
+      loadSimScenario(0);
 
       // Переключение на нужную категорию из URL
       const catParam = urlParams.get('cat');
