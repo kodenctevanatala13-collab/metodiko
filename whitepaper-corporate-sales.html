@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Спецификация корпоративного стандарта: ИИ-тренажеры продаж и онбординг за 72 часа | Бюро «МЕТОДИКО»</title>
+  <meta name="description" content="Корпоративная спецификация и регламент внедрения для коммерческих директоров (CCO), HRD и собственников бизнеса Казахстана: диалоговые ИИ-тренажеры переговоров, сокращение адаптации менеджеров с 4 недель до 72 часов, защита клиентской базы и рост конверсии.">
+  
+  <style>
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Jost';
+      src: url('assets/static/Jost-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    :root {
+      --navy-dark: #0D1624;
+      --navy-primary: #152238;
+      --navy-light: #1E3A8A;
+      --gold-primary: #C5A880;
+      --gold-dark: #A38255;
+      --gold-light: #F4EAD8;
+      --slate-bg: #F8FAFC;
+      --slate-border: #E2E8F0;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Jost', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0B111E;
+      color: var(--text-main);
+      line-height: 1.42;
+      -webkit-font-smoothing: antialiased;
+      padding: 30px 15px 80px;
+    }
+
+    /* ПЛАВАЮЩАЯ ПАНЕЛЬ ДЕЙСТВИЙ НА ЭКРАНЕ (СКРЫВАЕТСЯ ПРИ ПЕЧАТИ) */
+    .screen-toolbar {
+      position: sticky;
+      top: 15px;
+      max-width: 900px;
+      margin: 0 auto 25px auto;
+      background: rgba(21, 34, 56, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(197, 168, 128, 0.3);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 1000;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .toolbar-title {
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .toolbar-sub {
+      color: var(--gold-primary);
+      font-size: 11px;
+    }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-tb {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-tb-primary {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+    .btn-tb-primary:hover {
+      background: #D4AF37;
+      transform: translateY(-1px);
+    }
+    .btn-tb-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .btn-tb-secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .lang-switcher-pill {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(197, 168, 128, 0.4);
+      border-radius: 20px;
+      padding: 3px;
+      display: flex;
+      gap: 2px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .lang-btn.active {
+      background: var(--gold-primary);
+      color: #0D1624;
+    }
+
+    /* КОНТЕЙНЕР ДОКУМЕНТА A4 */
+    .document-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* КАЖДАЯ СТРАНИЦА А4 */
+    .a4-page {
+      background: #FFFFFF;
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      margin: 0 auto;
+      padding: 15mm 18mm 14mm 18mm;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ЕЛЕ ВИДИМЫЙ ЗОЛОТОЙ ВОДЯНОЙ ЗНАК ПОДЛОЖКА НА ВСЮ СТРАНИЦУ */
+    .page-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      max-width: 85%;
+      opacity: 0.055;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-watermark img {
+      width: 100%;
+      height: auto;
+      display: block;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .page-content-wrapper {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ВЕРХНИЙ КОЛОНТИТУЛ (LETTERHEAD) */
+    .page-header {
+      border-bottom: 2px solid var(--navy-dark);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .header-title-org {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      font-family: "Georgia", serif;
+      line-height: 1.15;
+    }
+    .header-sub-org {
+      font-size: 10px;
+      color: var(--gold-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .header-meta {
+      text-align: right;
+      font-size: 9.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .header-badge {
+      display: inline-block;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      font-size: 9px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    /* НИЖНИЙ КОЛОНТИТУЛ (FOOTER) */
+    .page-footer {
+      border-top: 1px solid var(--slate-border);
+      padding-top: 8px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+    .footer-left {
+      display: flex;
+      gap: 15px;
+    }
+    .page-number-pill {
+      font-weight: 700;
+      color: var(--navy-dark);
+      background: #F1F5F9;
+      padding: 1px 7px;
+      border-radius: 3px;
+    }
+
+    /* ТИПОГРАФИКА И БЛОКИ СТРАНИЦ */
+    .doc-headline {
+      font-size: 18.5px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      line-height: 1.25;
+      margin-bottom: 5px;
+    }
+    .doc-lead {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.38;
+    }
+    .corporate-callout {
+      background: #F8FAFC;
+      border-left: 3.5px solid var(--gold-primary);
+      border-top: 1px solid var(--slate-border);
+      border-right: 1px solid var(--slate-border);
+      border-bottom: 1px solid var(--slate-border);
+      padding: 9px 13px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 12px;
+      font-size: 11px;
+      color: var(--text-main);
+      line-height: 1.42;
+    }
+    .corporate-callout strong {
+      color: var(--navy-dark);
+    }
+
+    /* КАРТОЧКИ И ТАБЛИЦЫ */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+    .feature-card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 9px 11px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .feature-badge-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      line-height: 1.25;
+    }
+    .feature-desc {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* КОРПОРАТИВНАЯ ТАБЛИЦА СТАНДАРТА */
+    .corporate-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin: 8px 0 12px 0;
+    }
+    .corporate-table th {
+      background: var(--navy-primary);
+      color: #FFFFFF;
+      text-align: left;
+      padding: 7px 9px;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.3px;
+    }
+    .corporate-table td {
+      border: 1px solid var(--slate-border);
+      padding: 6px 9px;
+      vertical-align: top;
+      color: #334155;
+      line-height: 1.35;
+    }
+    .corporate-table tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    /* ДОРОЖНАЯ КАРТА (ROADMAP) */
+    .roadmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .roadmap-step {
+      display: flex;
+      gap: 11px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 8px 11px;
+    }
+    .step-days-badge {
+      background: var(--gold-light);
+      border: 1px solid var(--gold-primary);
+      color: var(--navy-dark);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      align-self: flex-start;
+      white-space: nowrap;
+    }
+    .step-body-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .step-body-text {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* ПАСПОРТ ЭКСПЕРТА И СМЕТА */
+    .expert-passport-box {
+      display: flex;
+      gap: 12px;
+      background: #F8FAFC;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .expert-avatar-wrap {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--navy-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-primary);
+      font-weight: 800;
+      font-size: 20px;
+      font-family: "Georgia", serif;
+    }
+    .expert-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .expert-bio-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .expert-bio-rank {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      margin-bottom: 3px;
+    }
+    .expert-bio-desc {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* ПАКЕТЫ ВНЕДРЕНИЯ */
+    .package-card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .package-card.recommended {
+      border: 1.5px solid var(--gold-primary);
+      background: #FFFDF9;
+    }
+    .package-tag {
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      background: var(--gold-primary);
+      color: #0D1624;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .package-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 2px;
+    }
+    .package-price {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 5px;
+    }
+    .package-features {
+      list-style: none;
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.35;
+    }
+    .package-features li {
+      margin-bottom: 3px;
+      position: relative;
+      padding-left: 11px;
+    }
+    .package-features li::before {
+      content: "•";
+      color: var(--gold-primary);
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    /* ПОДПИСЬ И ПЕЧАТЬ */
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 8px;
+      border-top: 1px solid var(--slate-border);
+      margin-top: 8px;
+    }
+    .sign-officer {
+      font-size: 10px;
+      line-height: 1.3;
+    }
+    .sign-seal {
+      text-align: right;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+    .sign-line {
+      width: 140px;
+      border-bottom: 1px solid #000;
+      margin-bottom: 3px;
+    }
+
+    /* СПИСОК РИСКОВ БИЗНЕСА */
+    .risk-item {
+      background: #FFFFFF;
+      border: 1px solid #F1F5F9;
+      border-left: 3px solid #EF4444;
+      padding: 6px 9px;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 6px;
+    }
+    .risk-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #991B1B;
+      margin-bottom: 1px;
+    }
+    .risk-desc {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.32;
+    }
+
+    /* =========================================================
+       СТРОГИЕ ПРАВИЛА ПЕЧАТИ @media print
+       ========================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .document-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        padding: 15mm 18mm 14mm 18mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
+      }
+      .a4-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .page-watermark {
+        opacity: 0.055 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ ДЛЯ УДОБСТВА НА ЭКРАНЕ (СКРЫВАЕТСЯ ПРИ ПЕЧАТИ) -->
+  <div class="screen-toolbar">
+    <div class="toolbar-left">
+      <div>
+        <div class="toolbar-title" data-i18n="tb_title">Бюро стандартов «МЕТОДИКО» | Корпоративный стандарт (B2B тренажеры)</div>
+        <div class="toolbar-sub" data-i18n="tb_sub">Аналитическая записка и спецификация для генеральных директоров и HRD</div>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <div class="lang-switcher-pill">
+        <button class="lang-btn active" onclick="setDocLang('ru')" id="lang-btn-ru">RU</button>
+        <button class="lang-btn" onclick="setDocLang('kz')" id="lang-btn-kz">KZ</button>
+      </div>
+      <button onclick="window.print()" class="btn-tb btn-tb-primary" data-i18n="btn_download_pdf">
+        📥 Скачать спецификацию (PDF A4)
+      </button>
+      <a href="index.html" class="btn-tb btn-tb-secondary" data-i18n="btn_back_site">
+        ← На сайт МЕТОДИКО
+      </a>
+    </div>
+  </div>
+
+  <!-- ДОКУМЕНТ: РОВНО 4 СТРАНИЦЫ A4 -->
+  <div class="document-container">
+
+    <!-- ==================== СТРАНИЦА 1: ЭКОНОМИКА ПОТЕРЬ И РИСКИ B2B ==================== -->
+    <div class="a4-page" id="page-1">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+      
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 1 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • КОРПОРАТИВНЫЕ РЕГЛАМЕНТЫ И ИИ-СИМУЛЯТОРЫ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p1_badge">Корпоративный регламент B2B</div>
+            <div data-i18n="p1_reg_no">Рег. №: СПЕЦ-КОРП-2026-B2B</div>
+            <div data-i18n="hdr_city_date">г. Алматы • Ноябрь 2026 г.</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 1 -->
+        <main>
+          <h1 class="doc-headline" data-i18n="p1_title">СПЕЦИФИКАЦИЯ КОРПОРАТИВНОГО СТАНДАРТА: ДИАЛОГОВЫЕ ИИ-ТРЕНАЖЕРЫ И ОНБОРДИНГ ОТДЕЛА ПРОДАЖ ЗА 72 ЧАСА</h1>
+          <p class="doc-lead" data-i18n="p1_lead">Аналитическая записка и стандарт внедрения для Генеральных директоров (CEO), Коммерческих директоров (CCO) и HRD компаний Республики Казахстан.</p>
+
+          <div class="corporate-callout" data-i18n="p1_callout">
+            <strong>Методологический канон (Принцип «Зеленых чернил» и таксономия Блума в бизнесе):</strong><br>
+            Традиционный ввод менеджера в строй длится <strong>от 3 до 6 недель</strong>, требует более 40 часов личного времени РОПа и сопровождается потерей до 50% входящих лидов. Стажер обязан совершить свои первые 50 ошибок в <strong>безопасном ИИ-симуляторе</strong>, а не на живых клиентах. Допуск к клиентской базе выдается строго при подтвержденном навыке перехвата инициативы (порог 85+ баллов).
+          </div>
+
+          <div style="font-weight: 700; font-size: 11.5px; color: var(--navy-dark); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.4px;" data-i18n="p1_risks_head">
+            5 критических уязвимостей классического онбординга отдела продаж:
+          </div>
+
+          <div class="risk-item">
+            <div class="risk-title" data-i18n="p1_r1_title">1. Слив платного входящего трафика и рекламного бюджета</div>
+            <div class="risk-desc" data-i18n="p1_r1_desc">Стоимость целевого B2B-лида в Казахстане составляет от 5 000 до 25 000 ₸. Необученный новичок теряется при первом возражении («Қымбат / Дорого»), сливая горячих клиентов на этапе первичной квалификации.</div>
+          </div>
+
+          <div class="risk-item">
+            <div class="risk-title" data-i18n="p1_r2_title">2. «Синдром незаменимого РОПа» и перегрузка руководства</div>
+            <div class="risk-desc" data-i18n="p1_r2_desc">Руководитель отдела продаж вынужден ежедневно тратить 2–3 часа на рутинное прослушивание звонков и повторение базовых скриптов, вместо работы с ключевыми сделками и разработки стратегии масштабирования.</div>
+          </div>
+
+          <div class="risk-item">
+            <div class="risk-title" data-i18n="p1_r3_title">3. Высокая текучка стажеров на первой-второй неделе</div>
+            <div class="risk-desc" data-i18n="p1_r3_desc">Новичок, брошенный без подготовки на живую базу, сталкивается с жесткими отказами, испытывает стресс и увольняется до первой сделки. Компания теряет затраты на рекрутинг и начинает цикл заново.</div>
+          </div>
+
+          <div class="risk-item">
+            <div class="risk-title" data-i18n="p1_r4_title">4. Субъективность оценки и отсутствие критериального допуска</div>
+            <div class="risk-desc" data-i18n="p1_r4_desc">Решение о выходе стажера на звонки принимается «на глаз» (интуитивно), без проверки конкретных навыков аргументации, знания маржинальности продуктов и регламента отработки возражений.</div>
+          </div>
+
+          <div class="risk-item">
+            <div class="risk-title" data-i18n="p1_r5_title">5. Языковой барьер в двуязычной бизнес-среде Казахстана</div>
+            <div class="risk-desc" data-i18n="p1_r5_desc">Потеря до 35% платежеспособных корпоративных клиентов из-за неспособности менеджеров свободно и аргументированно вести жесткие деловые переговоры на государственном (казахском) языке.</div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 1 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • БИН: 231140024765</span>
+            <span data-i18n="ftr_doc_id">СПЕЦ-КОРП-2026-B2B</span>
+          </div>
+          <div><span class="page-number-pill">1 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 2: АРХИТЕКТУРА И МЕХАНИКА СИМУЛЯТОРА ==================== -->
+    <div class="a4-page" id="page-2">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 2 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • КОРПОРАТИВНЫЕ РЕГЛАМЕНТЫ И ИИ-СИМУЛЯТОРЫ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p2_badge">Методологическая архитектура</div>
+            <div data-i18n="p2_meta">Стандарт онбординга 72 часа</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 2 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p2_title">АРХИТЕКТУРА КОРПОРАТИВНОГО СТАНДАРТА: 4 УРОВНЯ ВВОДА В СТРОЙ</h2>
+          <p class="doc-lead" data-i18n="p2_lead">Системная декомпозиция: от Книги новичка до автоматизированной аттестации в интерактивном симуляторе.</p>
+
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th style="width: 24%;" data-i18n="p2_th1">Уровень стандарта</th>
+                <th style="width: 38%;" data-i18n="p2_th2">Методологическое наполнение</th>
+                <th style="width: 38%;" data-i18n="p2_th3">Критерий допуска к следующему этапу</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong data-i18n="p2_lvl1_name">1. Продуктовый базис (Книга новичка)</strong></td>
+                <td data-i18n="p2_lvl1_desc">Структура компании, продуктовая матрица, вилка цен, правила CRM и регламент рабочего дня. Компактный формат (изучение за 60 минут).</td>
+                <td data-i18n="p2_lvl1_crit"><strong>Тест допуска №1:</strong> 15 контрольных вопросов на знание продукта. Порог успешной сдачи — не менее 90%.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl2_name">2. Диалоговый ИИ-симулятор</strong></td>
+                <td data-i18n="p2_lvl2_desc">Интерактивная отработка 3–5 ключевых сценариев: «Қымбат / Дорого», «У нас свои поставщики», «Отправьте КП на почту, мы подумаем».</td>
+                <td data-i18n="p2_lvl2_crit"><strong>30 симуляций переговоров:</strong> отработка алгоритма перехвата инициативы и удержания цели диалога.</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl3_name">3. Методологическая рефлексия</strong></td>
+                <td data-i18n="p2_lvl3_desc">После каждого ответа тренажер мгновенно разбирает психологию клиента: <i>почему фраза завела в тупик и какую технику применить</i>.</td>
+                <td data-i18n="p2_lvl3_crit"><strong>Осознание ошибок:</strong> ликвидация типовых речевых штампов («вас беспокоит», «хотел уточнить»).</td>
+              </tr>
+              <tr>
+                <td><strong data-i18n="p2_lvl4_name">4. Критериальная аттестация</strong></td>
+                <td data-i18n="p2_lvl4_desc">Объективный автоматический подсчет баллов по 100-балльной шкале + контрольный 15-минутный звонок-симуляция с РОПом.</td>
+                <td data-i18n="p2_lvl4_crit"><strong>Акт допуска к звонкам:</strong> при результате 85+ баллов выдаются первые 20 контактов из реальной базы.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="grid-3col">
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">1</div>
+                <div class="feature-title" data-i18n="p2_c1_title">Мгновенный разбор ошибок</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c1_desc">
+                Тренажер обучает на методических подсказках: новичок сразу видит потерю инициативы и правильную альтернативную формулировку.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">2</div>
+                <div class="feature-title" data-i18n="p2_c2_title">Двуязычная среда (KZ / RU)</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c2_desc">
+                Сценарии разработаны на государственном и русском языках с учетом специфики казахстанского делового этикета и менталитета.
+              </div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-card-header">
+                <div class="feature-badge-num">3</div>
+                <div class="feature-title" data-i18n="p2_c3_title">Без абонентской платы</div>
+              </div>
+              <div class="feature-desc" data-i18n="p2_c3_desc">
+                Код симулятора и сценарии передаются компании «под ключ». Никаких ежемесячных подписок за каждого менеджера.
+              </div>
+            </div>
+          </div>
+
+          <div class="corporate-callout" style="margin-bottom: 0;" data-i18n="p2_bottom_callout">
+            <strong>Защита клиентской базы:</strong> До момента получения 85+ баллов в тренажере сотрудник технически не допускается к CRM-системе и распределению входящих лидов. Это исключает финансовые потери бизнеса на этапе стажировки.
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 2 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • г. Алматы</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">2 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 3: ДОРОЖНАЯ КАРТА 72 ЧАСА И ЭКОНОМИЧЕСКИЙ ЭФФЕКТ ==================== -->
+    <div class="a4-page" id="page-3">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 3 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • КОРПОРАТИВНЫЕ РЕГЛАМЕНТЫ И ИИ-СИМУЛЯТОРЫ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p3_badge">Регламент внедрения и ROI</div>
+            <div data-i18n="p3_meta">Измеримые результаты (KPI)</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 3 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p3_title">РЕГЛАМЕНТ АДАПТАЦИИ ЗА 72 ЧАСА И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ (ROI)</h2>
+          <p class="doc-lead" data-i18n="p3_lead">Пошаговое расписание 3 дней онбординга стажера и сравнительная таблица окупаемости.</p>
+
+          <div class="roadmap-list">
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step1_badge">ДЕНЬ 1 (4 ЧАСА)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step1_title">Продуктовый базис и входной фильтр новичка</div>
+                <div class="step-body-text" data-i18n="p3_step1_desc">Изучение Книги новичка (1 час), разбор продуктовой матрицы и тарифной сетки (2 часа). Прохождение микротеста допуска №1 на знание продукта (порог сдачи — не менее 90%). Не сдавшие тест ко второму дню не допускаются.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step2_badge">ДЕНЬ 2 (4 ЧАСА)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step2_title">Интенсивная тренировка в диалоговом ИИ-симуляторе</div>
+                <div class="step-body-text" data-i18n="p3_step2_desc">Менеджер отрабатывает не менее 30 диалогов в тренажере. Освоение 3 типовых возражений, калибровка техник встречных вопросов, изучение методологических подсказок после ошибок. Закрепление алгоритма закрытия на следующий шаг.</div>
+              </div>
+            </div>
+
+            <div class="roadmap-step">
+              <div class="step-days-badge" data-i18n="p3_step3_badge">ДЕНЬ 3 (3 ЧАСА)</div>
+              <div>
+                <div class="step-body-title" data-i18n="p3_step3_title">Критериальная аттестация и допуск к клиентской базе</div>
+                <div class="step-body-text" data-i18n="p3_step3_desc">Контрольная серия симуляций в тренажере (результат от 85 баллов). Финальная 15-минутная ролевая игра с РОПом по чек-листу для оценки уверенности голоса и темпа речи. Подписание официального Листа допуска к звонкам.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-weight: 700; font-size: 11px; color: var(--navy-dark); margin: 6px 0 4px 0; text-transform: uppercase;" data-i18n="p3_table_title">
+            Сравнительный анализ: Классический метод vs Стандарт «МЕТОДИКО»:
+          </div>
+
+          <table class="corporate-table" style="margin-top: 4px;">
+            <thead>
+              <tr>
+                <th style="width: 38%;" data-i18n="p3_th_metric">Параметр оценки</th>
+                <th style="width: 31%;" data-i18n="p3_th_old">Обычный подход (как у всех)</th>
+                <th style="width: 31%;" data-i18n="p3_th_new">Стандарт «МЕТОДИКО»</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="p3_m1">Срок вывода новичка в первые боевые звонки</td>
+                <td style="color: #991B1B;" data-i18n="p3_v1_old">21–30 дней (долго, дорого)</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v1_new">Ровно 72 часа (на 4-й день)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m2">Личное время РОПа на обучение 1 стажера</td>
+                <td style="color: #991B1B;" data-i18n="p3_v2_old">35–45 часов рутины</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v2_new">Не более 3 часов (контроль)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m3">Доля слитых входящих лидов из-за ошибок</td>
+                <td style="color: #991B1B;" data-i18n="p3_v3_old">До 45–50% заявок</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v3_new">0% (не сдал 85 б. — не допущен)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m4">Конверсия новичка в первый месяц работы</td>
+                <td style="color: #991B1B;" data-i18n="p3_v4_old">6–9% (неуверенность)</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v4_new">20–28% (навык натренирован)</strong></td>
+              </tr>
+              <tr>
+                <td data-i18n="p3_m5">Зависимость от сторонних тренеров и подписок</td>
+                <td style="color: #991B1B;" data-i18n="p3_v5_old">Постоянные абонплаты / курсы</td>
+                <td><strong style="color: #15803D;" data-i18n="p3_v5_new">0 ₸ (код и права навсегда у вас)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </main>
+
+        <!-- FOOTER СТР. 3 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>Бюро стандартов «МЕТОДИКО» • Регламент онбординга 72 часа</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">3 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==================== СТРАНИЦА 4: ПАСПОРТ ЭКСПЕРТА И ПАКЕТЫ ==================== -->
+    <div class="a4-page" id="page-4">
+      <div class="page-watermark">
+        <img src="assets/Metodico_logo_gold.png" alt="Водяной знак МЕТОДИКО">
+      </div>
+
+      <div class="page-content-wrapper">
+        <!-- HEADER СТР. 4 -->
+        <header class="page-header">
+          <div class="header-branding">
+            <img src="assets/Metodico_logo_gold.png" alt="Логотип МЕТОДИКО" class="header-logo-img">
+            <div>
+              <div class="header-title-org" data-i18n="hdr_org_title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
+              <div class="header-sub-org" data-i18n="hdr_org_sub">ТОО «МЕТОД И КО» • КОРПОРАТИВНЫЕ РЕГЛАМЕНТЫ И ИИ-СИМУЛЯТОРЫ</div>
+            </div>
+          </div>
+          <div class="header-meta">
+            <div class="header-badge" data-i18n="p4_badge">Спецификация и оферта</div>
+            <div data-i18n="p4_meta">БИН: 231140024765 • Договор с ТОО</div>
+          </div>
+        </header>
+
+        <!-- ТЕЛО СТР. 4 -->
+        <main>
+          <h2 class="doc-headline" data-i18n="p4_title">КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ</h2>
+          <p class="doc-lead" data-i18n="p4_lead">Официальное институциональное предложение для коммерческих департаментов компаний Казахстана.</p>
+
+          <div class="expert-passport-box">
+            <div class="expert-avatar-wrap">
+              <span>НК</span>
+            </div>
+            <div>
+              <div class="expert-bio-title" data-i18n="exp_name">Наталья Коденцева</div>
+              <div class="expert-bio-rank" data-i18n="exp_rank">Подполковник в отставке • Магистр педагогики • Главный методолог</div>
+              <div class="expert-bio-desc" data-i18n="exp_desc">24 года службы и научно-педагогической практики в высшей военной школе управления. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: армейская четкость регламентов, разработка диалоговых тренажеров сложных переговоров, критериальный нормоконтроль и оцифровка компетенций.</div>
+            </div>
+          </div>
+
+          <div class="grid-3col">
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg1_title">Пакет «Экспресс-Тренажер»</div>
+                <div class="package-price" data-i18n="pkg1_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg1_f1">1 ключевой сценарий диалога</li>
+                  <li data-i18n="pkg1_f2">Оцифровка главного возражения</li>
+                  <li data-i18n="pkg1_f3">Шкала оценки до 100 баллов</li>
+                  <li data-i18n="pkg1_f4">Срок разработки: 5 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card recommended">
+              <span class="package-tag" data-i18n="pkg2_tag">РЕКОМЕНДУЕМЫЙ ВЫБОР</span>
+              <div>
+                <div class="package-name" data-i18n="pkg2_title">Пакет «Стандарт отдела продаж»</div>
+                <div class="package-price" data-i18n="pkg2_price">По смете калькулятора</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg2_f1">3–5 боевых сценариев компании</li>
+                  <li data-i18n="pkg2_f2">Двуязычие (казахский и русский)</li>
+                  <li data-i18n="pkg2_f3">СОП регламента на 72 часа</li>
+                  <li data-i18n="pkg2_f4">Чек-лист аттестации для РОПа</li>
+                  <li data-i18n="pkg2_f5">Срок разработки: 10 рабочих дней</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div>
+                <div class="package-name" data-i18n="pkg3_title">Пакет «Корпоративная академия»</div>
+                <div class="package-price" data-i18n="pkg3_price">Индивидуальный расчет</div>
+                <ul class="package-features">
+                  <li data-i18n="pkg3_f1">Комплекс симуляторов для отделов</li>
+                  <li data-i18n="pkg3_f2">Каскадная система аттестации</li>
+                  <li data-i18n="pkg3_f3">Интеграция в LMS компании</li>
+                  <li data-i18n="pkg3_f4">1 месяц авторского сопровождения</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="corporate-callout" style="margin-top: 8px; margin-bottom: 6px; font-size: 10px;" data-i18n="p4_legal_note">
+            <strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ).
+          </div>
+
+          <div class="sign-row">
+            <div class="sign-officer">
+              <div data-i18n="sign_title"><strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong></div>
+              <div data-i18n="sign_person">Подполковник в отставке, магистр педагогики Н. Коденцева</div>
+              <div style="color: var(--text-muted); font-size: 9px;" data-i18n="sign_contacts">Связь: metodico-kz.netlify.app • +7 (708) 895-44-12</div>
+            </div>
+            <div class="sign-seal">
+              <div class="sign-line"></div>
+              <div data-i18n="sign_seal">М.П. / Подпись руководителя</div>
+            </div>
+          </div>
+        </main>
+
+        <!-- FOOTER СТР. 4 -->
+        <footer class="page-footer">
+          <div class="footer-left">
+            <span>ТОО «Метод и Ко» • г. Алматы • Рег. № СПЕЦ-КОРП-2026-B2B</span>
+            <span>metodico-kz.netlify.app</span>
+          </div>
+          <div><span class="page-number-pill">4 / 4 бет</span></div>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ДВУЯЗЫЧНЫЙ СЛОВАРЬ (RU / KZ) И СКРИПТ ПЕРЕКЛЮЧЕНИЯ -->
+  <script>
+    const corporateDict = {
+      ru: {
+        tb_title: "Бюро стандартов «МЕТОДИКО» | Корпоративный стандарт (B2B тренажеры)",
+        tb_sub: "Аналитическая записка и спецификация для генеральных директоров и HRD",
+        btn_download_pdf: "📥 Скачать спецификацию (PDF A4)",
+        btn_back_site: "← На сайт МЕТОДИКО",
+        hdr_org_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО»",
+        hdr_org_sub: "ТОО «МЕТОД И КО» • КОРПОРАТИВНЫЕ РЕГЛАМЕНТЫ И ИИ-СИМУЛЯТОРЫ",
+        p1_badge: "Корпоративный регламент B2B",
+        p1_reg_no: "Рег. №: СПЕЦ-КОРП-2026-B2B",
+        hdr_city_date: "г. Алматы • Ноябрь 2026 г.",
+        p1_title: "СПЕЦИФИКАЦИЯ КОРПОРАТИВНОГО СТАНДАРТА: ДИАЛОГОВЫЕ ИИ-ТРЕНАЖЕРЫ И ОНБОРДИНГ ОТДЕЛА ПРОДАЖ ЗА 72 ЧАСА",
+        p1_lead: "Аналитическая записка и стандарт внедрения для Генеральных директоров (CEO), Коммерческих директоров (CCO) и HRD компаний Республики Казахстан.",
+        p1_callout: "<strong>Методологический канон (Принцип «Зеленых чернил» и таксономия Блума в бизнесе):</strong><br>Традиционный ввод менеджера в строй длится <strong>от 3 до 6 недель</strong>, требует более 40 часов личного времени РОПа и сопровождается потерей до 50% входящих лидов. Стажер обязан совершить свои первые 50 ошибок в <strong>безопасном ИИ-симуляторе</strong>, а не на живых клиентах. Допуск к клиентской базе выдается строго при подтвержденном навыке перехвата инициативы (порог 85+ баллов).",
+        p1_risks_head: "5 критических уязвимостей классического онбординга отдела продаж:",
+        p1_r1_title: "1. Слив платного входящего трафика и рекламного бюджета",
+        p1_r1_desc: "Стоимость целевого B2B-лида в Казахстане составляет от 5 000 до 25 000 ₸. Необученный новичок теряется при первом возражении («Қымбат / Дорого»), сливая горячих клиентов на этапе первичной квалификации.",
+        p1_r2_title: "2. «Синдром незаменимого РОПа» и перегрузка руководства",
+        p1_r2_desc: "Руководитель отдела продаж вынужден ежедневно тратить 2–3 часа на рутинное прослушивание звонков и повторение базовых скриптов, вместо работы с ключевыми сделками и разработки стратегии масштабирования.",
+        p1_r3_title: "3. Высокая текучка стажеров на первой-второй неделе",
+        p1_r3_desc: "Новичок, брошенный без подготовки на живую базу, сталкивается с жесткими отказами, испытывает стресс и увольняется до первой сделки. Компания теряет затраты на рекрутинг и начинает цикл заново.",
+        p1_r4_title: "4. Субъективность оценки и отсутствие критериального допуска",
+        p1_r4_desc: "Решение о выходе стажера на звонки принимается «на глаз» (интуитивно), без проверки конкретных навыков аргументации, знания маржинальности продуктов и регламента отработки возражений.",
+        p1_r5_title: "5. Языковой барьер в двуязычной бизнес-среде Казахстана",
+        p1_r5_desc: "Потеря до 35% платежеспособных корпоративных клиентов из-за неспособности менеджеров свободно и аргументированно вести жесткие деловые переговоры на государственном (казахском) языке.",
+        ftr_doc_id: "СПЕЦ-КОРП-2026-B2B",
+        p2_badge: "Методологическая архитектура",
+        p2_meta: "Стандарт онбординга 72 часа",
+        p2_title: "АРХИТЕКТУРА КОРПОРАТИВНОГО СТАНДАРТА: 4 УРОВНЯ ВВОДА В СТРОЙ",
+        p2_lead: "Системная декомпозиция: от Книги новичка до автоматизированной аттестации в интерактивном симуляторе.",
+        p2_th1: "Уровень стандарта",
+        p2_th2: "Методологическое наполнение",
+        p2_th3: "Критерий допуска к следующему этапу",
+        p2_lvl1_name: "1. Продуктовый базис (Книга новичка)",
+        p2_lvl1_desc: "Структура компании, продуктовая матрица, вилка цен, правила CRM и регламент рабочего дня. Компактный формат (изучение за 60 минут).",
+        p2_lvl1_crit: "<strong>Тест допуска №1:</strong> 15 контрольных вопросов на знание продукта. Порог успешной сдачи — не менее 90%.",
+        p2_lvl2_name: "2. Диалоговый ИИ-симулятор",
+        p2_lvl2_desc: "Интерактивная отработка 3–5 ключевых сценариев: «Қымбат / Дорого», «У нас свои поставщики», «Отправьте КП на почту, мы подумаем».",
+        p2_lvl2_crit: "<strong>30 симуляций переговоров:</strong> отработка алгоритма перехвата инициативы и удержания цели диалога.",
+        p2_lvl3_name: "3. Методологическая рефлексия",
+        p2_lvl3_desc: "После каждого ответа тренажер мгновенно разбирает психологию клиента: <i>почему фраза завела в тупик и какую технику применить</i>.",
+        p2_lvl3_crit: "<strong>Осознание ошибок:</strong> ликвидация типовых речевых штампов («вас беспокоит», «хотел уточнить»).",
+        p2_lvl4_name: "4. Критериальная аттестация",
+        p2_lvl4_desc: "Объективный автоматический подсчет баллов по 100-балльной шкале + контрольный 15-минутный звонок-симуляция с РОПом.",
+        p2_lvl4_crit: "<strong>Акт допуска к звонкам:</strong> при результате 85+ баллов выдаются первые 20 контактов из реальной базы.",
+        p2_c1_title: "Мгновенный разбор ошибок",
+        p2_c1_desc: "Тренажер обучает на методических подсказках: новичок сразу видит потерю инициативы и правильную альтернативную формулировку.",
+        p2_c2_title: "Двуязычная среда (KZ / RU)",
+        p2_c2_desc: "Сценарии разработаны на государственном и русском языках с учетом специфики казахстанского делового этикета и менталитета.",
+        p2_c3_title: "Без абонентской платы",
+        p2_c3_desc: "Код симулятора и сценарии передаются компании «под ключ». Никаких ежемесячных подписок за каждого менеджера.",
+        p2_bottom_callout: "<strong>Защита клиентской базы:</strong> До момента получения 85+ баллов в тренажере сотрудник технически не допускается к CRM-системе и распределению входящих лидов. Это исключает финансовые потери бизнеса на этапе стажировки.",
+        p3_badge: "Регламент внедрения и ROI",
+        p3_meta: "Измеримые результаты (KPI)",
+        p3_title: "РЕГЛАМЕНТ АДАПТАЦИИ ЗА 72 ЧАСА И СРАВНИТЕЛЬНЫЙ ЭФФЕКТ (ROI)",
+        p3_lead: "Пошаговое расписание 3 дней онбординга стажера и сравнительная таблица окупаемости.",
+        p3_step1_badge: "ДЕНЬ 1 (4 ЧАСА)",
+        p3_step1_title: "Продуктовый базис и входной фильтр новичка",
+        p3_step1_desc: "Изучение Книги новичка (1 час), разбор продуктовой матрицы и тарифной сетки (2 часа). Прохождение микротеста допуска №1 на знание продукта (порог сдачи — не менее 90%). Не сдавшие тест ко второму дню не допускаются.",
+        p3_step2_badge: "ДЕНЬ 2 (4 ЧАСА)",
+        p3_step2_title: "Интенсивная тренировка в диалоговом ИИ-симуляторе",
+        p3_step2_desc: "Менеджер отрабатывает не менее 30 диалогов в тренажере. Освоение 3 типовых возражений, калибровка техник встречных вопросов, изучение методологических подсказок после ошибок. Закрепление алгоритма закрытия на следующий шаг.",
+        p3_step3_badge: "ДЕНЬ 3 (3 ЧАСА)",
+        p3_step3_title: "Критериальная аттестация и допуск к клиентской базе",
+        p3_step3_desc: "Контрольная серия симуляций в тренажере (результат от 85 баллов). Финальная 15-минутная ролевая игра с РОПом по чек-листу для оценки уверенности голоса и темпа речи. Подписание официального Листа допуска к звонкам.",
+        p3_table_title: "Сравнительный анализ: Классический метод vs Стандарт «МЕТОДИКО»:",
+        p3_th_metric: "Параметр оценки",
+        p3_th_old: "Обычный подход (как у всех)",
+        p3_th_new: "Стандарт «МЕТОДИКО»",
+        p3_m1: "Срок вывода новичка в первые боевые звонки",
+        p3_v1_old: "21–30 дней (долго, дорого)",
+        p3_v1_new: "Ровно 72 часа (на 4-й день)",
+        p3_m2: "Личное время РОПа на обучение 1 стажера",
+        p3_v2_old: "35–45 часов рутины",
+        p3_v2_new: "Не более 3 часов (контроль)",
+        p3_m3: "Доля слитых входящих лидов из-за ошибок",
+        p3_v3_old: "До 45–50% заявок",
+        p3_v3_new: "0% (не сдал 85 б. — не допущен)",
+        p3_m4: "Конверсия новичка в первый месяц работы",
+        p3_v4_old: "6–9% (неуверенность)",
+        p3_v4_new: "20–28% (навык натренирован)",
+        p3_m5: "Зависимость от сторонних тренеров и подписок",
+        p3_v5_old: "Постоянные абонплаты / курсы",
+        p3_v5_new: "0 ₸ (код и права навсегда у вас)",
+        p4_badge: "Спецификация и оферта",
+        p4_meta: "БИН: 231140024765 • Договор с ТОО",
+        p4_title: "КВАЛИФИКАЦИОННЫЙ ПРОФИЛЬ ЭКСПЕРТА И ПАКЕТЫ ВНЕДРЕНИЯ",
+        p4_lead: "Официальное институциональное предложение для коммерческих департаментов компаний Казахстана.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Подполковник в отставке • Магистр педагогики • Главный методолог",
+        exp_desc: "24 года службы и научно-педагогической практики в высшей военной школе управления. Главный методолог проекта «Jana Urpaq 365», основатель Бюро стандартов «МЕТОДИКО». Специализация: армейская четкость регламентов, разработка диалоговых тренажеров сложных переговоров, критериальный нормоконтроль и оцифровка компетенций.",
+        pkg1_title: "Пакет «Экспресс-Тренажер»",
+        pkg1_price: "По смете калькулятора",
+        pkg1_f1: "1 ключевой сценарий диалога",
+        pkg1_f2: "Оцифровка главного возражения",
+        pkg1_f3: "Шкала оценки до 100 баллов",
+        pkg1_f4: "Срок разработки: 5 рабочих дней",
+        pkg2_tag: "РЕКОМЕНДУЕМЫЙ ВЫБОР",
+        pkg2_title: "Пакет «Стандарт отдела продаж»",
+        pkg2_price: "По смете калькулятора",
+        pkg2_f1: "3–5 боевых сценариев компании",
+        pkg2_f2: "Двуязычие (казахский и русский)",
+        pkg2_f3: "СОП регламента на 72 часа",
+        pkg2_f4: "Чек-лист аттестации для РОПа",
+        pkg2_f5: "Срок разработки: 10 рабочих дней",
+        pkg3_title: "Пакет «Корпоративная академия»",
+        pkg3_price: "Индивидуальный расчет",
+        pkg3_f1: "Комплекс симуляторов для отделов",
+        pkg3_f2: "Каскадная система аттестации",
+        pkg3_f3: "Интеграция в LMS компании",
+        pkg3_f4: "1 месяц авторского сопровождения",
+        p4_legal_note: "<strong>Юридические реквизиты:</strong> ТОО «Метод и Ко», г. Алматы. Заключение договоров в строгом соответствии с Законодательством РК. Безналичный расчет, полный пакет закрывающих документов (ЭСФ, АВР через ИС ЭСФ).",
+        sign_title: "<strong>Руководитель Бюро стандартов «МЕТОДИКО»:</strong>",
+        sign_person: "Подполковник в отставке, магистр педагогики Н. Коденцева",
+        sign_contacts: "Связь: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.П. / Подпись руководителя"
+      },
+      kz: {
+        tb_title: "«МЕТОДИКО» стандарттар бюросы | Корпоративтік стандарт (B2B тренажерлері)",
+        tb_sub: "Бас директорлар мен HR-директорларға арналған сараптамалық жазба",
+        btn_download_pdf: "📥 Спецификацияны жүктеу (PDF A4)",
+        btn_back_site: "← МЕТОДИКО сайтына қайту",
+        hdr_org_title: "«МЕТОДИКО» СТАНДАРТТАР БЮРОСЫ",
+        hdr_org_sub: "«МЕТОД И КО» ЖШС • КОРПОРАТИВТІК РЕГЛАМЕНТТЕР МЕН ЖИ-СИМУЛЯТОРЛАРЫ",
+        p1_badge: "B2B корпоративтік регламенті",
+        p1_reg_no: "Тіркеу №: СПЕЦ-КОРП-2026-B2B",
+        hdr_city_date: "Алматы қ. • Қараша 2026 ж.",
+        p1_title: "КОРПОРАТИВТІК СТАНДАРТ СПЕЦИФИКАЦИЯСЫ: ДИАЛОГТІК ЖИ-ТРЕНАЖЕРЛЕР ЖӘНЕ САТУ БӨЛІМІН 72 САҒАТТА ҚАТАРҒА ҚОСУ",
+        p1_lead: "Қазақстан Республикасы компанияларының Бас директорлары (CEO), Коммерциялық директорлары (CCO) және HR-директорларына арналған сараптамалық жазба.",
+        p1_callout: "<strong>Әдіснамалық қағида («Жасыл сия» қағидаты және бизнестегі Блум таксономиясы):</strong><br>Менеджерді қызметке бейімдеудің дәстүрлі мерзімі <strong>3-тен 6 аптаға дейін</strong> созылады, РОП-тың 40 сағаттан астам уақытын алады және кіріс лидтердің 50%-на дейін жоғалтумен қатар жүреді. Тәжірибеден өтуші өзінің алғашқы 50 қателігін тірі клиенттерде емес, <strong>қауіпсіз ЖИ-симуляторында</strong> жасауға міндетті. Клиенттік базаға рұқсат тек бастаманы ұстап қалу дағдысы дәлелденгенде ғана беріледі (85+ балл шегі).",
+        p1_risks_head: "Сату бөлімін бейімдеудің классикалық тәсіліндегі 5 қауіпті осалдық:",
+        p1_r1_title: "1. Ақылы кіріс трафик пен жарнама бюджетін босқа жағу",
+        p1_r1_desc: "Қазақстанда мақсатты B2B-лидтің құны 5 000-нан 25 000 ₸-ге дейін жетеді. Дайындықсыз жаңа қызметкер алғашқы қарсылықта («Қымбат») сасып қалып, ыстық клиенттерді жоғалтады.",
+        p1_r2_title: "2. «Алмастырылмайтын РОП синдромы» және басшының шамадан тыс жүктелуі",
+        p1_r2_desc: "Сату бөлімінің жетекшісі күн сайын қоңырауларды тыңдауға және қарапайым скрипттерді қайталауға 2–3 сағат жұмсайды, ал ауқымдану мен ірі мәмілелерге уақыт қалмайды.",
+        p1_r3_title: "3. Алғашқы апталардағы тағылымдамашылардың тұрақсыздығы",
+        p1_r3_desc: "Дайындықсыз тірі базаға жіберілген жаңа қызметкер қатаң қарсылықтарға тап болып, күйзеліске ұшырайды және алғашқы сатылымға жетпей жұмыстан кетеді.",
+        p1_r4_title: "4. Бағалаудың субъективтілігі және нақты критерийлердің болмауы",
+        p1_r4_desc: "Қызметкерді қоңырауларға жіберу шешімі нақты дәлелдеу және өнім маржасын түсіну дағдыларын тексермей, тек көз мөлшерімен қабылданады.",
+        p1_r5_title: "5. Қазақстанның қос тілді бизнес-ортасындағы тілдік кедергі",
+        p1_r5_desc: "Менеджерлердің мемлекеттік (қазақ) тілінде іскерлік келіссөздерді сенімді және сауатты жүргізе алмауы салдарынан төлемге қабілетті клиенттердің 35%-на дейін жоғалту.",
+        ftr_doc_id: "СПЕЦ-КОРП-2026-B2B",
+        p2_badge: "Әдіснамалық архитектура",
+        p2_meta: "72 сағатта бейімдеу стандарты",
+        p2_title: "КОРПОРАТИВТІК СТАНДАРТ АРХИТЕКТУРАСЫ: ҚАТАРҒА ҚОСУДЫҢ 4 ДЕҢГЕЙІ",
+        p2_lead: "Жүйелі декомпозиция: Жаңа қызметкер кітабынан бастап интерактивті симулятордағы автоматтандырылған аттестаттауға дейін.",
+        p2_th1: "Стандарт деңгейі",
+        p2_th2: "Әдіснамалық мазмұны",
+        p2_th3: "Келесі кезеңге өту критерийі",
+        p2_lvl1_name: "1. Өнімдік негіз (Жаңа қызметкер кітабы)",
+        p2_lvl1_desc: "Компания құрылымы, өнім матрицасы, баға кестесі, CRM ережелері мен жұмыс күнінің регламенті. Ықшам формат (60 минутта меңгеру).",
+        p2_lvl1_crit: "<strong>№1 рұқсат тесті:</strong> Өнімді білуге арналған 15 бақылау сұрағы. Тапсыру шегі — кемінде 90%.",
+        p2_lvl2_name: "2. Диалогтік ЖИ-симулятор",
+        p2_lvl2_desc: "3–5 негізгі сценарийді интерактивті жаттықтыру: «Қымбат, басқалармен жұмыс істейміз», «Біздің сала ерекше», «КП-ны поштаға жіберіңіз».",
+        p2_lvl2_crit: "<strong>30 келіссөз симуляциясы:</strong> Бастаманы ұстап қалу және диалог мақсатына жету алгоритмін автоматтандыру.",
+        p2_lvl3_name: "3. Әдіснамалық рефлексия",
+        p2_lvl3_desc: "Әр жауаптан кейін тренажер клиент психологиясын лезде талдайды: <i>неліктен бұл сөз тұйыққа тіреді және қандай әдісті қолдану керек</i>.",
+        p2_lvl3_crit: "<strong>Қателіктерді түсіну:</strong> Тұрмыстық қалыптасқан сөздерден арылу («мазалап тұрмын», «білейін деп едім»).",
+        p2_lvl4_name: "4. Критериалды аттестаттау",
+        p2_lvl4_desc: "100 балдық жүйе бойынша автоматты балл есептеу + РОП-пен бірге 15 минуттық бақылау қоңырауының ролдік ойыны.",
+        p2_lvl4_crit: "<strong>Қоңырауларға рұқсат беру актісі:</strong> 85+ балл жинағанда нақты базадан алғашқы 20 контакт беріледі.",
+        p2_c1_title: "Қателерді лезде талдау",
+        p2_c1_desc: "Тренажер әдістемелік нұсқаулармен оқытады: қызметкер бастаманың қай жерде жоғалғанын және дұрыс сөз үлгісін көреді.",
+        p2_c2_title: "Қос тілді орта (KZ / RU)",
+        p2_c2_desc: "Сценарийлер қазақстандық іскерлік этикет пен менталитетті ескере отырып мемлекеттік және орыс тілдерінде дайындалған.",
+        p2_c3_title: "Абоненттік төлемсіз",
+        p2_c3_desc: "Симулятор коды мен сценарийлері компанияға толық меншікке беріледі. Әр менеджер үшін ай сайынғы жазылым жоқ.",
+        p2_bottom_callout: "<strong>Клиенттік базаны қорғау:</strong> Тренажерде 85+ балл жинағанға дейін қызметкер CRM жүйесіне және кіріс лидтерге техникалық тұрғыдан жіберілмейді. Бұл бизнесті стажировка кезіндегі шығындардан сақтайды.",
+        p3_badge: "Енгізу регламенті және ROI",
+        p3_meta: "Өлшенетін нәтижелер (KPI)",
+        p3_title: "72 САҒАТТА БЕЙІМДЕУ РЕГЛАМЕНТІ ЖӘНЕ САЛЫСТЫРМАЛЫ ТИІМДІЛІК (ROI)",
+        p3_lead: "Тағылымдамашыны қатарға қосудың 3 күндік нақты кестесі және өзін-өзі ақтау кестесі.",
+        p3_step1_badge: "1-КҮН (4 САҒАТ)",
+        p3_step1_title: "Өнімдік негіз және қызметкердің кіру сүзгісі",
+        p3_step1_desc: "Жаңа қызметкер кітабын меңгеру (1 сағат), өнім матрицасы мен баға кестесін талдау (2 сағат). №1 рұқсат тестін тапсыру (шегі — кемінде 90%). Тесттен өтпегендер келесі күнге жіберілмейді.",
+        p3_step2_badge: "2-КҮН (4 САҒАТ)",
+        p3_step2_title: "Диалогтік ЖИ-симуляторда қарқынды жаттығу",
+        p3_step2_desc: "Менеджер тренажерде кемінде 30 диалогты өткереді. 3 негізгі қарсылықты өңдеу, қарсы сұрақ қою әдістерін қалыптастыру, қателерден кейінгі нұсқауларды оқу. Келесі қадамға жабу алгоритмін бекіту.",
+        p3_step3_badge: "3-КҮН (3 САҒАТ)",
+        p3_step3_title: "Критериалды аттестаттау және клиенттік базаға рұқсат",
+        p3_step3_desc: "Тренажердегі қорытынды симуляциялар сериясы (85-тен жоғары балл). Дауыс сенімділігі мен ырғағын бағалау үшін РОП-пен чек-лист бойынша 15 минуттық ойын. Қоңырауларға рұқсат беру парағына қол қою.",
+        p3_table_title: "Салыстырмалы талдау: Дәстүрлі тәсіл vs «МЕТОДИКО» стандарты:",
+        p3_th_metric: "Бағалау параметрі",
+        p3_th_old: "Дәстүрлі тәсіл (барлығындағыдай)",
+        p3_th_new: "«МЕТОДИКО» стандарты",
+        p3_m1: "Қызметкерді алғашқы нақты қоңырауларға шығару мерзімі",
+        p3_v1_old: "21–30 күн (ұзақ, қымбат)",
+        p3_v1_new: "Дәл 72 сағат (4-күні базада)",
+        p3_m2: "РОП-тың 1 тағылымдамашыны оқытуға жеке уақыты",
+        p3_v2_old: "35–45 сағаттық рутина",
+        p3_v2_new: "3 сағаттан аспайды (бақылау)",
+        p3_m3: "Қателіктерден жоғалған кіріс лидтер үлесі",
+        p3_v3_old: "Өтінімдердің 45–50%-на дейін",
+        p3_v3_new: "0% (85 балл жинамаса жіберілмейді)",
+        p3_m4: "Алғашқы айдағы жаңа қызметкердің конверсиясы",
+        p3_v4_old: "6–9% (сенімсіздік салдарынан)",
+        p3_v4_new: "20–28% (дағды бекітілген)",
+        p3_m5: "Сыртқы жаттықтырушылар мен жазылымдарға тәуелділік",
+        p3_v5_old: "Тұрақты ай сайынғы төлемдер",
+        p3_v5_new: "0 ₸ (код пен құқық өздеріңізде)",
+        p4_badge: "Спецификация және оферта",
+        p4_meta: "БСН: 231140024765 • ЖШС-мен шарт",
+        p4_title: "САРАПШЫНЫҢ БІЛІКТІЛІК БЕЙІНІ ЖӘНЕ ЕНГІЗУ ПАКЕТТЕРІ",
+        p4_lead: "Қазақстан компанияларының коммерциялық департаменттеріне арналған ресми институционалдық ұсыныс.",
+        exp_name: "Наталья Коденцева",
+        exp_rank: "Запастағы подполковник • Педагогика магистрі • Бас әдіскер",
+        exp_desc: "Жоғары әскери басқару мектебінде 24 жылдық қызмет және ғылыми-педагогикалық тәжірибе. «Jana Urpaq 365» жобасының бас әдіскері, «МЕТОДИКО» стандарттар бюросының негізін қалаушы. Мамандануы: регламенттердің армиялық дәлдігі, күрделі келіссөздер тренажерлері, критериалды нормабақылау және құзыреттерді оцифровкалау.",
+        pkg1_title: "«Экспресс-Тренажер» пакеті",
+        pkg1_price: "Смета калькуляторы бойынша",
+        pkg1_f1: "1 негізгі диалог сценарийі",
+        pkg1_f2: "Басты қарсылықты оцифровкалау",
+        pkg1_f3: "100 балға дейінгі бағалау шкаласы",
+        pkg1_f4: "Әзірлеу мерзімі: 5 жұмыс күні",
+        pkg2_tag: "ҰСЫНЫЛАТЫН СТАНДАРТ",
+        pkg2_title: "«Сату бөлімінің стандарты» пакеті",
+        pkg2_price: "Смета калькуляторы бойынша",
+        pkg2_f1: "Компанияның 3–5 нақты сценарийі",
+        pkg2_f2: "Қос тілділік (қазақ және орыс)",
+        pkg2_f3: "72 сағаттық бейімдеу регламенті (СОП)",
+        pkg2_f4: "РОП үшін аттестаттау чек-листі",
+        pkg2_f5: "Әзірлеу мерзімі: 10 жұмыс күні",
+        pkg3_title: "«Корпоративтік академия» пакеті",
+        pkg3_price: "Жеке есептеу бойынша",
+        pkg3_f1: "Бөлімдерге арналған симуляторлар кешені",
+        pkg3_f2: "Каскадты аттестаттау жүйесі",
+        pkg3_f3: "Компанияның LMS-іне интеграция",
+        pkg3_f4: "1 ай авторлық сүйемелдеу",
+        p4_legal_note: "<strong>Заңды деректемелер:</strong> «Метод и Ко» ЖШС, Алматы қ. ҚР Заңнамасына толық сәйкестікте шарттар жасасу. Қолма-қол ақшасыз есеп айырысу, жабу құжаттарының толық пакеті (ЭШФ, ОЖА).",
+        sign_title: "<strong>«МЕТОДИКО» стандарттар бюросының жетекшісі:</strong>",
+        sign_person: "Запастағы подполковник, педагогика магистрі Н. Коденцева",
+        sign_contacts: "Байланыс: metodico-kz.netlify.app • +7 (708) 895-44-12",
+        sign_seal: "М.О. / Жетекшінің қолы"
+      }
+    };
+
+    function setDocLang(lang) {
+      const data = corporateDict[lang];
+      if (!data) return;
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key]) {
+          el.innerHTML = data[key];
+        }
+      });
+
+      const btnRu = document.getElementById('lang-btn-ru');
+      const btnKz = document.getElementById('lang-btn-kz');
+      if (btnRu) btnRu.classList.toggle('active', lang === 'ru');
+      if (btnKz) btnKz.classList.toggle('active', lang === 'kz');
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
+    }
+
+    // Автоматическая синхронизация языка из URL (?lang=kz) или сохраненного выбора на сайте
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialLang = urlParams.get('lang');
+      if (!initialLang) {
+        try { initialLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
+      }
+      if (initialLang === 'kz') {
+        setDocLang('kz');
+      }
+    });
+  </script>
+</body>
+</html>
