@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивный диалоговый тренажер B2B | Бюро «МЕТОДИКО»</title>
-    <!-- Google Fonts -->
+    <title>Интерактивный 4D Стресс-Симулятор «МЕТОДИКО PRO» | Бюро стандартов «МЕТОДИКО»</title>
+    <meta name="description" content="Многораундовый интерактивный диалоговый симулятор переговоров и нормоконтроля Бюро стандартов МЕТОДИКО (ТОО Метод и Ко): B2B продажи, ГОСО РК 2026, школы Ұстаз, EdTech COR 85%+.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8fafc;
+            --bg: #0b1120;
             --surface: #ffffff;
-            --surface-sub: #f1f5f9;
+            --surface-sub: #f8fafc;
             --border: #e2e8f0;
-            --border-hover: #cbd5e1;
             --navy: #0f172a;
-            --accent: #2563eb;
-            --gold: #b45309;
+            --navy-light: #1e293b;
+            --gold: #c5a880;
+            --gold-dark: #9a7b4f;
             --gold-bg: #fef3c7;
             --green: #15803d;
             --green-bg: #dcfce7;
             --red: #b91c1c;
             --red-bg: #fee2e2;
+            --amber: #b45309;
+            --amber-bg: #fef3c7;
             --text-main: #0f172a;
             --text-body: #334155;
             --text-muted: #64748b;
@@ -38,166 +40,320 @@
         }
 
         body {
-            background-color: var(--bg);
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 24px 24px;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0b1120 100%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px 20px;
+            padding: 24px 16px;
         }
 
         .trainer-wrapper {
-            max-width: 860px;
+            max-width: 980px;
             width: 100%;
             background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            border: 1px solid rgba(197, 168, 128, 0.4);
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Header */
+        /* Top Executive Header */
         .trainer-header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            padding: 20px 28px;
+            background: var(--navy);
+            color: #ffffff;
+            border-bottom: 2px solid var(--gold);
+            padding: 18px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 14px;
         }
 
         .brand-box {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .brand-icon {
-            font-size: 26px;
+        .brand-logo-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(197, 168, 128, 0.15);
+            border: 1px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gold);
+            font-weight: 900;
         }
 
         .brand-title {
             font-size: 15px;
             font-weight: 800;
-            letter-spacing: -0.3px;
-            color: var(--navy);
+            letter-spacing: 0.4px;
+            color: #ffffff;
+            text-transform: uppercase;
         }
 
         .brand-sub {
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--gold);
             font-weight: 500;
-            margin-top: 1px;
+            margin-top: 2px;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .lang-switch-box {
             display: flex;
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(197, 168, 128, 0.35);
+            border-radius: 8px;
             overflow: hidden;
         }
 
         .lang-btn {
             background: none;
             border: none;
-            padding: 6px 12px;
+            padding: 7px 12px;
             font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
+            font-weight: 800;
+            color: #cbd5e1;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .lang-btn.active {
-            background: var(--navy);
-            color: #ffffff;
+            background: var(--gold);
+            color: var(--navy);
         }
 
         .btn-sop-link {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--surface-sub);
-            border: 1px solid var(--border);
-            color: var(--navy);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             padding: 8px 14px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s ease;
         }
 
         .btn-sop-link:hover {
-            border-color: var(--navy);
-            background: #ffffff;
+            border-color: var(--gold);
+            color: var(--gold);
         }
 
-        .score-pill {
-            background: var(--green-bg);
-            border: 1px solid #bbf7d0;
-            padding: 6px 14px;
-            border-radius: 20px;
+        /* 4 Sector Tabs */
+        .sector-tabs-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+            padding: 8px;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .sector-tabs-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .sector-tab-btn {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .sector-tab-btn:hover {
+            border-color: var(--navy);
+            transform: translateY(-1px);
+        }
+
+        .sector-tab-btn.active {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+        }
+
+        .sector-tab-top {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--gold-dark);
+        }
+
+        .sector-tab-btn.active .sector-tab-top {
+            color: var(--gold);
+        }
+
+        .sector-tab-name {
             font-size: 13px;
             font-weight: 700;
-            color: var(--green);
+            color: var(--navy);
+        }
+
+        .sector-tab-btn.active .sector-tab-name {
+            color: #ffffff;
+        }
+
+        /* Live Telemetry Bar (Money + Trust + Round) */
+        .telemetry-bar {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr 1.2fr;
+            gap: 12px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .telemetry-bar {
+                grid-template-columns: 1fr;
+                padding: 12px 18px;
+            }
+        }
+
+        .telemetry-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 10px;
         }
 
-        /* Progress Bar */
-        .progress-bar-container {
+        .telemetry-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .telemetry-val {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-top: 2px;
+        }
+
+        .telemetry-val.positive { color: var(--green); }
+        .telemetry-val.negative { color: var(--red); }
+
+        .trust-meter-wrap {
+            flex: 1;
+        }
+
+        .trust-bar-bg {
             width: 100%;
-            height: 4px;
-            background: var(--surface-sub);
+            height: 7px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 5px;
         }
 
-        .progress-bar-fill {
+        .trust-bar-fill {
             height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #16a34a);
+            width: 60%;
+            transition: width 0.4s ease, background 0.3s ease;
+        }
+
+        /* Progress Steps */
+        .round-steps-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .round-dot {
+            width: 28px;
+            height: 7px;
+            border-radius: 4px;
+            background: #cbd5e1;
+            transition: all 0.3s;
+        }
+
+        .round-dot.active {
+            background: var(--navy);
+            width: 42px;
+        }
+
+        .round-dot.done-ok {
             background: var(--green);
-            width: 40%;
-            transition: width 0.3s ease;
+        }
+
+        .round-dot.done-bad {
+            background: var(--red);
         }
 
         /* Body Area */
         .trainer-body {
-            padding: 32px 36px;
+            padding: 28px 32px;
+        }
+
+        @media (max-width: 640px) {
+            .trainer-body {
+                padding: 20px 16px;
+            }
         }
 
         /* Client Banner */
         .client-banner {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             gap: 16px;
             background: var(--surface-sub);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
+            padding: 14px 20px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .client-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .client-avatar {
             width: 48px;
             height: 48px;
-            border-radius: 10px;
-            background: #ffffff;
-            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--navy);
+            color: var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -207,7 +363,7 @@
 
         .client-info h4 {
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--navy);
             margin-bottom: 2px;
         }
@@ -215,43 +371,74 @@
         .client-info p {
             font-size: 12px;
             color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .btn-voice-speak {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ffffff;
+            border: 1px solid var(--navy);
+            color: var(--navy);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-voice-speak:hover, .btn-voice-speak.speaking {
+            background: var(--navy);
+            color: var(--gold);
         }
 
         /* Speech Box */
         .speech-box {
             background: #ffffff;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--red);
-            border-radius: 10px;
+            border-left: 5px solid var(--red);
+            border-radius: 12px;
             padding: 20px 24px;
-            margin-bottom: 26px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            margin-bottom: 22px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
         }
 
         .speech-speaker {
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             color: var(--red);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .speech-context-tag {
+            background: #fee2e2;
+            color: var(--red);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
         }
 
         .speech-text {
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             line-height: 1.6;
             color: var(--navy);
-            font-style: italic;
         }
 
         .prompt-title {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             color: var(--text-muted);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         /* Options */
@@ -259,18 +446,18 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .option-btn {
             background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
             padding: 16px 20px;
             text-align: left;
             color: var(--text-body);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.55;
             cursor: pointer;
             display: flex;
             align-items: flex-start;
@@ -282,12 +469,13 @@
             background: var(--surface-sub);
             border-color: var(--navy);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
         }
 
         .option-letter {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             background: var(--surface-sub);
             border: 1px solid var(--border);
             display: flex;
@@ -303,7 +491,7 @@
         .option-btn.selected-correct {
             border-color: var(--green);
             background: var(--green-bg);
-            color: var(--green);
+            color: #064e3b;
             font-weight: 600;
         }
 
@@ -316,7 +504,7 @@
         .option-btn.selected-wrong {
             border-color: var(--red);
             background: var(--red-bg);
-            color: var(--red);
+            color: #7f1d1d;
         }
 
         .option-btn.selected-wrong .option-letter {
@@ -329,11 +517,11 @@
         .feedback-box {
             display: none;
             background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
+            border: 1.5px solid #fcd34d;
+            border-radius: 12px;
             padding: 20px 24px;
-            margin-top: 20px;
-            animation: fadeIn 0.3s ease;
+            margin-top: 16px;
+            animation: fadeIn 0.25s ease;
         }
 
         @keyframes fadeIn {
@@ -349,11 +537,30 @@
             margin-bottom: 8px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 8px;
         }
 
         .feedback-header.success { color: var(--green); }
         .feedback-header.failure { color: var(--red); }
+
+        .feedback-delta-pill {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-weight: 800;
+        }
+
+        .feedback-delta-pill.plus {
+            background: #dcfce7;
+            color: var(--green);
+        }
+
+        .feedback-delta-pill.minus {
+            background: #fee2e2;
+            color: var(--red);
+        }
 
         .feedback-text {
             font-size: 14px;
@@ -365,33 +572,149 @@
             display: flex;
             justify-content: flex-end;
             margin-top: 16px;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn-feedback-action {
             background: var(--navy);
             color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            border: 1px solid var(--navy);
+            padding: 11px 22px;
+            border-radius: 8px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-feedback-action:hover {
-            background: #1e293b;
+            background: var(--navy-light);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-feedback-secondary {
+            background: #ffffff;
+            color: var(--navy);
+            border: 1px solid var(--border);
+        }
+
+        /* Final Certificate Verdict Card */
+        .verdict-screen {
+            display: none;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .verdict-badge {
+            display: inline-block;
+            background: rgba(197, 168, 128, 0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 14px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+
+        .verdict-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .verdict-sub {
+            font-size: 14px;
+            color: #cbd5e1;
+            max-width: 680px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+
+        .verdict-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        @media (max-width: 640px) {
+            .verdict-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .verdict-kpi-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(197, 168, 128, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .verdict-kpi-num {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 4px;
+        }
+
+        .verdict-kpi-label {
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+        .verdict-cta-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-gold-cta {
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 14px 26px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-gold-cta:hover {
+            background: #d4b892;
+            transform: translateY(-1px);
         }
 
         /* Footer */
         .trainer-footer {
             background: var(--surface-sub);
             border-top: 1px solid var(--border);
-            padding: 16px 28px;
+            padding: 14px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
             font-size: 12px;
             color: var(--text-muted);
         }
@@ -404,10 +727,12 @@
         <!-- Header -->
         <div class="trainer-header">
             <div class="brand-box">
-                <span class="brand-icon">⚡</span>
+                <a href="index.html" style="display:inline-flex; align-items:center; text-decoration:none;">
+                    <img src="assets/Metodico_logo_gold.png" alt="МЕТОДИКО" class="brand-logo-img" style="height:42px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));">
+                </a>
                 <div>
-                    <div class="brand-title" id="txt-brand-title">БЮРО СТАНДАРТОВ «МЕТОДИКО»</div>
-                    <div class="brand-sub" id="txt-brand-sub">Интерактивный диалоговый тренажер переговоров • B2B Onboarding</div>
+                    <div class="brand-title" id="txt-brand-title">БЮРО СТАНДАРТОВ «МЕТОДИКО» • СТРЕСС-СИМУЛЯТОР 4D</div>
+                    <div class="brand-sub" id="txt-brand-sub">Многораундовый тренажер принятия решений, переговоров и нормоконтроля</div>
                 </div>
             </div>
             <div class="header-actions">
@@ -415,72 +740,136 @@
                     <button class="lang-btn active" id="btn-lang-ru" onclick="setSimLang('ru')">🇷🇺 RU</button>
                     <button class="lang-btn" id="btn-lang-kz" onclick="setSimLang('kz')">🇰🇿 KZ</button>
                 </div>
+                <a href="index.html#calculator" class="btn-sop-link" id="txt-calc-top-link">
+                    🧮 В калькулятор КП
+                </a>
                 <a href="index.html" class="btn-sop-link" id="txt-back-link">
                     ← На главную
                 </a>
-                <div class="score-pill">
-                    <span>✓</span>
-                    <span id="score-val">Результат: 85 баллов</span>
-                </div>
             </div>
         </div>
 
-        <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progress-bar"></div>
+        <!-- 4 Industry Sector Switcher -->
+        <div class="sector-tabs-bar">
+            <button class="sector-tab-btn active" id="sec-btn-0" onclick="selectSector(0)">
+                <span class="sector-tab-top" id="sec-top-0">Сектор 1 • B2B</span>
+                <span class="sector-tab-name" id="sec-name-0">💼 Переговоры и РОПы</span>
+            </button>
+            <button class="sector-tab-btn" id="sec-btn-1" onclick="selectSector(1)">
+                <span class="sector-tab-top" id="sec-top-1">Сектор 2 • ВУЗы</span>
+                <span class="sector-tab-name" id="sec-name-1">🏛️ ГОСО 2026 & AI-Sana</span>
+            </button>
+            <button class="sector-tab-btn" id="sec-btn-2" onclick="selectSector(2)">
+                <span class="sector-tab-top" id="sec-top-2">Сектор 3 • Школы</span>
+                <span class="sector-tab-name" id="sec-name-2">🏫 Лицеи и «Ұстаз»</span>
+            </button>
+            <button class="sector-tab-btn" id="sec-btn-3" onclick="selectSector(3)">
+                <span class="sector-tab-top" id="sec-top-3">Сектор 4 • EdTech</span>
+                <span class="sector-tab-name" id="sec-name-3">🚀 Курсы и COR 85%+</span>
+            </button>
+        </div>
+
+        <!-- Telemetry Dashboard -->
+        <div class="telemetry-bar">
+            <div class="telemetry-item">
+                <div>
+                    <div class="telemetry-label" id="lbl-round">Раунд дуэли</div>
+                    <div class="telemetry-val" id="val-round">Раунд 1 из 3</div>
+                    <div class="round-steps-row">
+                        <div class="round-dot active" id="dot-0"></div>
+                        <div class="round-dot" id="dot-1"></div>
+                        <div class="round-dot" id="dot-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="telemetry-item">
+                <div>
+                    <div class="telemetry-label" id="lbl-money">Финансовый эффект решения</div>
+                    <div class="telemetry-val positive" id="val-money">0 ₸ (Старт)</div>
+                </div>
+            </div>
+            <div class="telemetry-item">
+                <div class="trust-meter-wrap">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="telemetry-label" id="lbl-trust">Индекс доверия и нормоконтроля</span>
+                        <span class="telemetry-val" id="val-trust" style="font-size:13px; margin-top:0;">60 / 100</span>
+                    </div>
+                    <div class="trust-bar-bg">
+                        <div class="trust-bar-fill" id="bar-trust"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Body -->
         <div class="trainer-body">
             
-            <div class="client-banner">
-                <div class="client-avatar">👔</div>
-                <div class="client-info">
-                    <h4 id="txt-resp-name">Респондент: Азамат Серикович</h4>
-                    <p id="txt-resp-role">Директор сети учебных центров • Принимает решение об оплате регламентов</p>
-                </div>
-            </div>
-
-            <div class="speech-box">
-                <div class="speech-speaker" id="txt-speech-speaker">● Клиент озвучивает возражение:</div>
-                <div class="speech-text" id="txt-speech-text">
-                    «У вас слишком дорого. Нам прислали коммерческое предложение от другой студии, где обещают сделать полный пакет документации и базу знаний в два раза дешевле вашей цены».
-                </div>
-            </div>
-
-            <div class="prompt-title" id="txt-prompt-title">Выберите наиболее профессиональный ответ менеджера:</div>
-
-            <div class="options-grid" id="options-grid">
-                
-                <div class="option-btn" onclick="submitChoice(this, 'wrong_1')">
-                    <div class="option-letter">A</div>
-                    <div id="txt-opt-a">
-                        <strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? В принципе, если вы оплатите сегодня, мы можем сделать скидку 30% от нашего прайса».
+            <!-- Active Round Area -->
+            <div id="round-play-area">
+                <div class="client-banner">
+                    <div class="client-left">
+                        <div class="client-avatar" id="txt-avatar">👔</div>
+                        <div class="client-info">
+                            <h4 id="txt-resp-name">Респондент: Азамат Серикович</h4>
+                            <p id="txt-resp-role">Генеральный директор B2B-холдинга • Контролирует бюджет и ROI</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="option-btn" onclick="submitChoice(this, 'wrong_2')">
-                    <div class="option-letter">B</div>
-                    <div id="txt-opt-b">
-                        <strong>Спор о качестве:</strong> «Ну вы же понимаете, что дешево хорошим не бывает? У них наверняка студенты пишут, а у нас профессиональные методологи с 20-летним опытом».
+                <div class="speech-box">
+                    <div class="speech-speaker">
+                        <span id="txt-speech-speaker">● Острая ситуация (Раунд 1):</span>
+                        <span class="speech-context-tag" id="txt-speech-tag">Проверка на демпинг</span>
                     </div>
+                    <div class="speech-text" id="txt-speech-text"></div>
                 </div>
 
-                <div class="option-btn" onclick="submitChoice(this, 'correct')">
-                    <div class="option-letter">C</div>
-                    <div id="txt-opt-c">
-                        <strong>Методологический перехват:</strong> «Понимаю ваше желание оптимизировать бюджет. Скажите, когда вы сравниваете предложения, вы смотрите только на цену или на то, сколько часов времени руководителя уйдет на доработку сырых документов и сколько реальных звонков сделает новичок уже на 4-й день?»
+                <div class="prompt-title" id="txt-prompt-title">Выберите действие по стандарту «МЕТОДИКО»:</div>
+
+                <div class="options-grid" id="options-grid"></div>
+
+                <!-- Feedback Card -->
+                <div class="feedback-box" id="feedback-box">
+                    <div class="feedback-header" id="feedback-header">
+                        <span id="feedback-title-span"></span>
+                        <span class="feedback-delta-pill" id="feedback-delta-span"></span>
+                    </div>
+                    <div class="feedback-text" id="feedback-text"></div>
+                    <div class="feedback-actions">
+                        <button type="button" class="btn-feedback-action btn-feedback-secondary" id="btn-retry-round" onclick="retryCurrentRound()">↺ Переиграть раунд</button>
+                        <button type="button" class="btn-feedback-action" id="btn-next-round" onclick="nextRound()">Следующий раунд →</button>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Feedback Card -->
-            <div class="feedback-box" id="feedback-box">
-                <div class="feedback-header" id="feedback-header"></div>
-                <div class="feedback-text" id="feedback-text"></div>
-                <div class="feedback-actions">
-                    <button class="btn-feedback-action" id="btn-retry" onclick="resetDialogue()">Попробовать снова</button>
-                    <a href="index.html" class="btn-feedback-action" id="btn-back-home" style="text-decoration: none; display: inline-block;">На главную витрину</a>
+            <!-- Final Verdict Screen -->
+            <div class="verdict-screen" id="verdict-screen">
+                <div class="verdict-badge" id="v-badge">АТТЕСТАЦИОННЫЙ ВЕРДИКТ БЮРО «МЕТОДИКО»</div>
+                <div class="verdict-title" id="v-title">Стресс-испытание завершено!</div>
+                <p class="verdict-sub" id="v-sub"></p>
+
+                <div class="verdict-kpi-grid">
+                    <div class="verdict-kpi-card">
+                        <div class="verdict-kpi-num" id="v-score">98 / 100</div>
+                        <div class="verdict-kpi-label" id="v-score-lbl">Итоговый балл допуска</div>
+                    </div>
+                    <div class="verdict-kpi-card">
+                        <div class="verdict-kpi-num" id="v-money">+1 450 000 ₸</div>
+                        <div class="verdict-kpi-label" id="v-money-lbl">Сохраненный бюджет организации</div>
+                    </div>
+                    <div class="verdict-kpi-card">
+                        <div class="verdict-kpi-num" id="v-hours">38 ч.</div>
+                        <div class="verdict-kpi-label" id="v-hours-lbl">Сэкономлено времени руководителя</div>
+                    </div>
+                </div>
+
+                <div class="verdict-cta-row">
+                    <a href="index.html?cat=corp#calculator" class="btn-gold-cta" id="v-btn-calc">
+                        🧮 Рассчитать смету такого решения под ключ →
+                    </a>
+                    <button type="button" class="btn-feedback-action" onclick="restartSector()" id="v-btn-restart">
+                        ↻ Пройти заново или выбрать другой сектор
+                    </button>
                 </div>
             </div>
 
@@ -488,149 +877,789 @@
 
         <!-- Footer -->
         <div class="trainer-footer">
-            <span id="txt-ft-blume">Методология: Таксономия Блума (уровень «Применение» и «Оценка»)</span>
-            <span id="txt-ft-standard">Стандарт аттестации: 85+ баллов для допуска к базе лидов</span>
+            <span id="txt-ft-blume">Методология: Обратный дизайн, Таксономия Блума и критериальный нормоконтроль (экспертная проверка соответствия стандартам)</span>
+            <span id="txt-ft-standard">Стандарт ТОО «Метод и Ко» • Норматив допуска: 85+ баллов</span>
         </div>
 
     </div>
 
     <script>
-        let answered = false;
-        let simCurrentLang = 'ru';
+        let simLang = 'ru';
+        let currentSector = 0;
+        let currentRound = 0;
+        let roundAnswered = false;
+        let trustScore = 60;
+        let moneyImpact = 0;
+        let roundResults = [null, null, null];
 
-        const simI18n = {
+        const uiLabels = {
             ru: {
-                brand_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО»",
-                brand_sub: "Интерактивный диалоговый тренажер переговоров • B2B Onboarding",
+                brand_title: "БЮРО СТАНДАРТОВ «МЕТОДИКО» • СТРЕСС-СИМУЛЯТОР 4D",
+                brand_sub: "Многораундовый тренажер принятия решений, переговоров и нормоконтроля",
+                calc_top: "🧮 В калькулятор КП",
                 back_link: "← На главную",
-                score_base: "Результат: 85 баллов",
-                score_correct: "Результат: 100 баллов (Аттестован)",
-                score_w1: "Результат: 50 баллов (Не аттестован)",
-                score_w2: "Результат: 65 баллов (Повторная сдача)",
-                resp_name: "Респондент: Азамат Серикович",
-                resp_role: "Директор сети учебных центров • Принимает решение об оплате регламентов",
-                speaker: "● Клиент озвучивает возражение:",
-                speech: "«У вас слишком дорого. Нам прислали коммерческое предложение от другой студии, где обещают сделать полный пакет документации и базу знаний в два раза дешевле вашей цены».",
-                prompt: "Выберите наиболее профессиональный ответ менеджера:",
-                opt_a: "<strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? В принципе, если вы оплатите сегодня, мы можем сделать скидку 30% от нашего прайса».",
-                opt_b: "<strong>Спор о качестве:</strong> «Ну вы же понимаете, что дешево хорошим не бывает? У них наверняка студенты пишут, а у нас профессиональные методологи с 20-летним опытом».",
-                opt_c: "<strong>Методологический перехват:</strong> «Понимаю ваше желание оптимизировать бюджет. Скажите, когда вы сравниваете предложения, вы смотрите только на цену или на то, сколько часов времени руководителя уйдет на доработку сырых документов и сколько реальных звонков сделает новичок уже на 4-й день?»",
-                btn_retry: "Попробовать снова",
-                btn_home: "На главную витрину",
-                ft_blume: "Методология: Таксономия Блума (уровень «Применение» и «Оценка»)",
-                ft_standard: "Стандарт аттестации: 85+ баллов для допуска к базе лидов",
-                fb_h_success: "✓ ЭТАЛОННЫЙ ОТВЕТ (+35 БАЛЛОВ). АТТЕСТАЦИЯ ПРОЙДЕНА!",
-                fb_t_success: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Вы применили золотую связку <em>«Присоединение + Перевод фокуса с цены на ценность времени руководителя»</em>.<br>Клиент понимает, что дешевый документ за 50 000 ₸ заставит его самого сидеть ночами и переписывать инструкции. Вы сохранили статус эксперта, не ушли в унизительный торг и вывели диалог на критерии реальной окупаемости.",
-                fb_h_w1: "✕ ГРУБАЯ ОШИБКА: ОБЕСЦЕНИВАНИЕ ПРОДУКТА (-35 БАЛЛОВ)",
-                fb_t_w1: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Моментальное предложение скидки показывает клиенту, что ваша изначальная цена была «дутой» и необоснованной. Клиент теряет доверие к экспертности бюро и продолжит продавливать вас по цене до минимума.",
-                fb_h_w2: "✕ ОШИБКА: ПРЯМАЯ КОНФРОНТАЦИЯ И ХВАЛИЧЕСТВО (-20 БАЛЛОВ)",
-                fb_t_w2: "<strong>Разбор методолога «МЕТОДИКО»:</strong><br>Фраза «дешево хорошим не бывает» ставит под сомнение адекватность клиента, а критика конкурентов без доказательств выглядит непрофессионально. Клиент закрывается в оборону."
+                lbl_round: "Раунд дуэли",
+                lbl_money: "Финансовый эффект решения",
+                lbl_trust: "Индекс доверия и нормоконтроля",
+                speak_btn: "Озвучить голосом",
+                speaking_btn: "Звучит речь...",
+                prompt_title: "Выберите профессиональное решение (3 раунда подряд):",
+                retry_round: "↺ Переиграть этот ход",
+                next_round: "Перейти к следующему раунду →",
+                finish_btn: "Получить аттестационный вердикт 🏆",
+                ft_blume: "Методология: Обратный дизайн, Таксономия Блума и критериальный нормоконтроль (экспертная проверка соответствия стандартам)",
+                ft_standard: "Стандарт ТОО «Метод и Ко» • Норматив допуска: 85+ баллов",
+                v_badge: "ОФИЦИАЛЬНЫЙ ВЕРДИКТ СИМУЛЯТОРА «МЕТОДИКО»",
+                v_score_lbl: "Итоговый балл аттестации",
+                v_money_lbl: "Финансовый баланс решений",
+                v_hours_lbl: "Высвобождено времени ЛПР",
+                v_btn_restart: "↻ Пройти другой отраслевой сценарий"
             },
             kz: {
-                brand_title: "СТАНДАРТТАР БЮРОСЫ «МЕТОДИКО»",
-                brand_sub: "Келіссөздердің интерактивті диалогтік тренажері • B2B Onboarding",
+                brand_title: "«МЕТОДИКО» СТАНДАРТТАР БЮРОСЫ • 4D СТРЕСС-СИМУЛЯТОР",
+                brand_sub: "Келіссөздер мен нормобақылаудың көпдеңгейлі интерактивті тренажері",
+                calc_top: "🧮 КП калькуляторы",
                 back_link: "← Басты бетке",
-                score_base: "Нәтиже: 85 балл",
-                score_correct: "Нәтиже: 100 балл (Аттестатталды)",
-                score_w1: "Нәтиже: 50 балл (Аттестатталмады)",
-                score_w2: "Нәтиже: 65 балл (Қайта тапсыру)",
-                resp_name: "Респондент: Азамат Серікұлы",
-                resp_role: "Оқу орталықтары желісінің директоры • Регламенттерге төлем жасау шешімін қабылдайды",
-                speaker: "● Клиент қарсылық білдіруде:",
-                speech: "«Сіздерде тым қымбат. Бізге басқа студиядан коммерциялық ұсыныс келді, олар құжаттама мен білім базасының толық пакетін сіздердің бағаларыңыздан екі есе арзанға жасап беруге уәде етіп отыр».",
-                prompt: "Менеджердің барынша кәсіби жауабын таңдаңыз:",
-                opt_a: "<strong>Демпинг жасау (бағаны түсіру):</strong> «Ал сіз қанша төлеуге дайынсыз? Негізі, егер бүгін келісімшарт жасап төлесеңіз, біз бағамыздан 30% жеңілдік жасай аламыз».",
-                opt_b: "<strong>Сапа туралы дауласу:</strong> «Арзан заттың жақсы болмайтынын өзіңіз де білесіз ғой? Оларда студенттер жазатын болар, ал бізде 20 жылдық тәжірибесі бар кәсіби әдіскерлер».",
-                opt_c: "<strong>Әдіснамалық тосқауыл:</strong> «Бюджетті оңтайландыру ниетіңізді түсінемін. Айтыңызшы, ұсыныстарды салыстырғанда тек бағаға қарайсыз ба, әлде шикі құжаттарды түзетуге басшының қанша сағаты кететініне және жаңа қызметкер 4-күні нақты қанша нәтижелі қоңырау шалатынына мән бересіз бе?»",
-                btn_retry: "Қайтадан сынап көру",
-                btn_home: "Басты бетке оралу",
-                ft_blume: "Әдіснама: Блум таксономиясы («Қолдану» және «Бағалау» деңгейі)",
-                ft_standard: "Аттестаттау стандарты: Лидтер базасына рұқсат алу үшін 85+ балл",
-                fb_h_success: "✓ ЭТАЛОНДЫҚ ЖАУАП (+35 БАЛЛ). АТТЕСТАЦИЯДАН СӘТТІ ӨТТІҢІЗ!",
-                fb_t_success: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>Сіз «Жанасу + Назарды бағадан басшы уақытының құндылығына аудару» алтын байламын қолдандыңыз.<br>Клиент 50 000 ₸ тұратын арзан құжат оны түнімен нұсқаулықтарды қайта жазуға мәжбүр ететінін түсінді. Сіз сарапшылық мәртебені сақтап, нақты өзін-өзі ақтау критерийлеріне шықтыңыз.",
-                fb_h_w1: "✕ ӨРЕШКЕЛ ҚАТЕ: ӨНІМ ҚҰНДЫЛЫҒЫН ТҮСІРУ (-35 БАЛЛ)",
-                fb_t_w1: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>Лезде жеңілдік ұсыну клиентке бастапқы бағаңыздың негізсіз болғанын көрсетеді. Клиент бюроның сараптамасына сенімді жоғалтып, бағаны барынша төмен түсіре бастайды.",
-                fb_h_w2: "✕ ҚАТЕ: АШЫҚ ДАУЛАСУ ЖӘНЕ ӨЗІН-ӨЗІ МАҚТАУ (-20 БАЛЛ)",
-                fb_t_w2: "<strong>«МЕТОДИКО» әдіскерінің талдауы:</strong><br>«Арзан зат жақсы болмайды» деген сөз клиенттің талғамына күмән келтіреді, ал бәсекелестерді дәлелсіз сынау бейкәсіби көрінеді. Клиент қорғанысқа көшеді."
+                lbl_round: "Кезең (Раунд)",
+                lbl_money: "Шешімнің қаржылық әсері",
+                lbl_trust: "Сенім және нормобақылау индексі",
+                speak_btn: "Дауыспен тыңдау",
+                speaking_btn: "Оқылуда...",
+                prompt_title: "«МЕТОДИКО» стандарты бойынша шешімді таңдаңыз:",
+                retry_round: "↺ Осы жүрісті қайталау",
+                next_round: "Келесі раундқа өту →",
+                finish_btn: "Аттестациялық қорытындыны алу 🏆",
+                ft_blume: "Әдіснама: Кері дизайн, Блум таксономиясы және критериалды нормобақылау (стандарттарға сәйкестікті сараптамалық тексеру)",
+                ft_standard: "«Метод и Ко» ЖШС стандарты • Рұқсат нормативі: 85+ балл",
+                v_badge: "«МЕТОДИКО» СИМУЛЯТОРЫНЫҢ РЕСМИ ҚОРЫТЫНДЫСЫ",
+                v_score_lbl: "Қорытынды аттестация балы",
+                v_money_lbl: "Шешімдердің қаржылық балансы",
+                v_hours_lbl: "Үнемделген басшы уақыты",
+                v_btn_restart: "↻ Басқа салалық сценарийді таңдау"
             }
         };
 
+        const sectorsData = [
+            // СЕКТОР 0: B2B ПРОДАЖИ И ОНБОРДИНГ
+            {
+                calcCat: 'corp',
+                avatar: '👔',
+                topRu: 'Сектор 1 • B2B Продажи', nameRu: '💼 РОПы и Переговоры',
+                topKz: '1-сектор • B2B Сатылым', nameKz: '💼 Сату бөлімі және РОП',
+                respNameRu: 'Респондент: Азамат Серикович (г. Астана)',
+                respRoleRu: 'Генеральный директор B2B-компании • Выбирает подрядчика на обучение отдела продаж',
+                respNameKz: 'Респондент: Азамат Серікұлы (Астана қ.)',
+                respRoleKz: 'B2B-компанияның бас директоры • Сату бөлімін оқыту бойынша шешім қабылдайды',
+                ctaRu: '🧮 Рассчитать смету корпоративного тренажера (от 650 000 ₸) →',
+                ctaKz: '🧮 Корпоративтік тренажер сметасын есептеу (650 000 ₸ бастап) →',
+                rounds: [
+                    {
+                        tagRu: 'Раунд 1: Возражение «Қымбат / Дорого»',
+                        tagKz: '1-раунд: «Қымбат» қарсылығы',
+                        speechRu: '«Мы посмотрели ваше предложение. Честно говоря, қымбат (слишком дорого). Нам вчера прислали КП фрилансеры, которые обещают написать скрипты и базу знаний в два раза дешевле вашей сметы».',
+                        speechKz: '«Ұсыныстарыңызды қарап шықтық. Шынын айтсақ, тым қымбат. Кеше фрилансерлер скрипттер мен білім базасын сіздерден екі есе арзанға жасап беруге уәде берді».',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -350000, trustDelta: -25,
+                                textRu: '<strong>Попытка демпинга:</strong> «А сколько вы готовы заплатить? Если подпишем договор сегодня, мы согласны дать скидку 30% от нашего прайса!»',
+                                textKz: '<strong>Демпинг жасау:</strong> «Ал қанша төлеуге дайынсыз? Бүгін келісімшартқа отырсақ, бағамыздан 30% жеңілдік береміз!»',
+                                fbTitleRu: '✕ ОШИБКА: ОБЕСЦЕНИВАНИЕ ЭКСПЕРТНОСТИ',
+                                fbTitleKz: '✕ ҚАТЕ: САРАПТАМА ҚҰНЫН ТҮСІРУ',
+                                fbTextRu: 'Мгновенная скидка в 30% доказывает директору, что ваша смета была взята с потолка. Вы потеряли маржу и уважение ЛПР.',
+                                fbTextKz: 'Лезде 30% жеңілдік беру бастапқы бағаның негізсіз екенін көрсетеді. Басшының сенімі жоғалады.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +450000, trustDelta: +15,
+                                textRu: '<strong>Методологический перехват по ROI:</strong> «Понимаю задачу оптимизировать бюджет. Скажите, Азамат Серикович, при сравнении смет вы оцениваете только цену документа или считаете, сколько часов вашего РОПа уйдет на переделку сырых текстов и сколько лидов сожгут стажеры за месяц без интерактивного тренажера?»',
+                                textKz: '<strong>ROI бойынша әдіснамалық тосқауыл:</strong> «Бюджетті оңтайландыру ниетіңізді түсінемін. Айтыңызшы, Азамат Серікұлы, сметаларды салыстырғанда тек құжат бағасына қарайсыз ба, әлде шикі мәтіндерді түзетуге РОП-тың қанша сағаты кететінін және тренажерсіз стажерлер қанша лидті жоғалтатынын есептейсіз бе?»',
+                                fbTitleRu: '✓ ВЫСШИЙ ПИЛОТАЖ: ПЕРЕВОД С ЦЕНЫ НА СТОИМОСТЬ ОШИБКИ',
+                                fbTitleKz: '✓ ЖОҒАРЫ ШЕБЕРЛІК: НАЗАРДЫ БАҒАДАН ҚҰНДЫЛЫҚҚА АУДАРУ',
+                                fbTextRu: 'Вы не спорите и не оправдываетесь. Вы перевели разговор на язык собственника: 1 слитый крупный B2B-клиент стоит дороже всего тренажера.',
+                                fbTextKz: 'Сіз дауласпай, меншік иесінің тілінде сөйледіңіз: жоғалған 1 ірі клиент тренажер құнынан әлдеқайда қымбат.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -15,
+                                textRu: '<strong>Спор и критика конкурентов:</strong> «Дешево хорошим не бывает! Фрилансеры скачают вам шаблон из интернета, а у нас 24 года опыта!»',
+                                textKz: '<strong>Бәсекелестерді сынау:</strong> «Арзан зат жақсы болмайды! Фрилансерлер интернеттен дайын үлгіні көшіріп береді, ал бізде 24 жылдық тәжірибе бар!»',
+                                fbTitleRu: '✕ ОШИБКА: ПРЯМАЯ КОНФРОНТАЦИЯ',
+                                fbTitleKz: '✕ ҚАТЕ: АШЫҚ ДАУЛАСУ',
+                                fbTextRu: 'Штамп «дешево хорошим не бывает» раздражает руководителей и заставляет их защищать свой выбор.',
+                                fbTextKz: 'Клиентпен дауласу оны қорғаныс позициясына көшіреді.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 2: Возражение «У нас сложная специфика»',
+                        tagKz: '2-раунд: «Саламыз тым күрделі»',
+                        speechRu: '«Допустим, по деньгам понятно. Но у нас сложные технические B2B-контракты и закрытые регламенты. Внешний методолог в этом не разберется и только отвлечет моих ведущих инженеров от работы!»',
+                        speechKz: '«Жарайды, есеп қисынды делік. Бірақ бізде күрделі техникалық B2B-келісімшарттар. Сырттан келген әдіскер оны түсінбейді және бас инженерлерімнің уақытын босқа алады!»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -250000, trustDelta: -20,
+                                textRu: '<strong>Перекладывание труда на клиента:</strong> «Тогда пришлите нам все ваши папки, ГОСТы и инструкции на 400 страниц, мы пару недель почитаем и попробуем разобраться».',
+                                textKz: '<strong>Жұмысты клиентке арту:</strong> «Онда бізге барлық 400 беттік нұсқаулықтарыңызды жіберіңіз, екі апта оқып, түсініп көрейік».',
+                                fbTitleRu: '✕ ОШИБКА: ПОТЕРЯ АВТОРИТЕТА',
+                                fbTitleKz: '✕ ҚАТЕ: БЕДЕЛДІ ЖОҒАЛТУ',
+                                fbTextRu: 'Собственник не хочет платить за то, чтобы вы неделями читали его архивы без гарантии результата.',
+                                fbTextKz: 'Меншік иесі сіздің оқуыңызға ақша төлегісі келмейді.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +500000, trustDelta: +15,
+                                textRu: '<strong>Стандарт Voice-to-Course:</strong> «Вы абсолютно правы: никто не знает ваш продукт лучше ваших инженеров. Поэтому мы не заставляем их писать тексты: мы проводим ровно одно 2-часовое глубинное интервью по матрице Дилтса, записываем аудио и сами оцифровываем его в диалоговый симулятор и SOP-регламент. От ваших топов — 2 часа голосом, от нас — готовая система за 14 дней».',
+                                textKz: '<strong>Voice-to-Course стандарты:</strong> «Толықтай келісемін: өнімді өз инженерлеріңізден артық ешкім білмейді. Сондықтан біз оларға мәтін жаздырмаймыз: тек 2 сағаттық аудио-сұхбат алып, оны өзіміз интерактивті симулятор мен регламентке айналдырамыз. Мамандарыңыздан — 2 сағат дауыс, бізден — 14 күнде дайын жүйе».',
+                                fbTitleRu: '✓ ТОЧНОЕ ПОПАДАНИЕ В БОЛЬ ВРЕМЕНИ ТОПОВ',
+                                fbTitleKz: '✓ БАСШЫ УАҚЫТЫН ҮНЕМДЕУДІҢ НАҚТЫ ШЕШІМІ',
+                                fbTextRu: 'Снятие главного страха любого CEO: ключевые специалисты не будут оторваны от производства.',
+                                fbTextKz: 'Директордың басты қорқынышы сейілді: негізгі мамандар жұмыстан қол үзбейді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -300000, trustDelta: -25,
+                                textRu: '<strong>Обесценивание специфики:</strong> «Да продажи везде одинаковые! Хоть станки продавать, хоть семечки — мы просто дадим вашим менеджерам универсальный скрипт».',
+                                textKz: '<strong>Саланы менсінбеу:</strong> «Сатылым барлық жерде бірдей ғой! Біз менеджерлеріңізге әмбебап скрипт бере саламыз».',
+                                fbTitleRu: '✕ ФАТАЛЬНАЯ ОШИБКА: СРЫВ СДЕЛКИ',
+                                fbTitleKz: '✕ ӨРЕСКЕЛ ҚАТЕ: МӘМІЛЕНІҢ БҰЗЫЛУЫ',
+                                fbTextRu: 'Ни один B2B-директор не купит «универсальный скрипт» после обесценивания его индустрии.',
+                                fbTextKz: 'Өндірістік компания басшысы мұндай жауаптан кейін әңгімені бірден тоқтатады.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 3: Финальный дожим («Скиньте на почту, подумаем»)',
+                        tagKz: '3-раунд: Шешуші кезең («Поштаға жіберіңіз, ойланамыз»)',
+                        speechRu: '«Звучит интересно. Но сейчас конец квартала, все в мыле. Скиньте презентацию и договор на общую почту info@..., мы в следующем месяце обсудим на совете директоров».',
+                        speechKz: '«Қызық екен. Бірақ қазір тоқсанның соңы, уақыт тығыз. Презентация мен шартты info@... поштасына жіберіңіз, келесі айда талқылаймыз».',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -400000, trustDelta: -20,
+                                textRu: '<strong>Пассивное согласие:</strong> «Хорошо, отправил на info@! Буду ждать вашего звонка в следующем месяце!»',
+                                textKz: '<strong>Пассивті келісу:</strong> «Жақсы, поштаға жібердім! Келесі айда қоңырауыңызды күтемін!»',
+                                fbTitleRu: '✕ СЛИВ СДЕЛКИ В «КЛАДБИЩЕ КП»',
+                                fbTitleKz: '✕ ҰСЫНЫСТЫҢ ОҚЫЛМАЙ ҚАЛУЫ',
+                                fbTextRu: 'На общей почте секретаря ваше письмо никто не откроет, а через месяц о разговоре забудут.',
+                                fbTextKz: 'Жалпы поштада хат жоғалып кетеді.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +500000, trustDelta: +10,
+                                textRu: '<strong>Фиксация через микро-шаг и бронебойный договор:</strong> «Официальную 4-страничную спецификацию с расчетом ROI и проект договора с ТОО "Метод и Ко" отправляю вам лично в WhatsApp прямо сейчас. Чтобы к совету директоров у вас на руках была точная цифра под ваш штат, скажите: мы рассчитываем смету только на 3 базовых сценария возражений или сразу включаем регламент онбординга за 72 часа?»',
+                                textKz: '<strong>Нақты қадам арқылы бекіту:</strong> «ROI есебі бар 4 беттік ресми спецификация мен "Метод и Ко" ЖШС шарт жобасын дәл қазір жеке WhatsApp-ыңызға жіберемін. Директорлар кеңесіне нақты цифрмен кіруіңіз үшін айтыңызшы: сметаны тек 3 базалық сценарийге есептейік пе, әлде 72 сағаттық онбординг регламентін бірге қосайық па?»',
+                                fbTitleRu: '✓ БЛЕСТЯЩЕЕ ЗАКРЫТИЕ НА ВЫБОР ПАКЕТА!',
+                                fbTitleKz: '✓ ПАКЕТ ТАҢДАУҒА КЕРЕМЕТ ШЫҒАРУ!',
+                                fbTextRu: 'Вы ушли с мертвой почты info@ в личный WhatsApp ЛПР и зафиксировали конфигурацию КП по правилу «Выбор без выбора».',
+                                fbTextKz: 'Сіз жалпы поштадан басшының жеке WhatsApp-ына өтіп, нақты смета нұсқасын бекіттіңіз.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -250000, trustDelta: -20,
+                                textRu: '<strong>Манипуляция дедлайном:</strong> «В следующем месяце цена вырастет в два раза! Оплачивайте счет сегодня до 18:00!»',
+                                textKz: '<strong>Манипуляция:</strong> «Келесі айда баға екі есе өседі! Бүгін 18:00-ге дейін төлеңіз!»',
+                                fbTitleRu: '✕ ОШИБКА: ДЕШЕВЫЙ ИНФОБИЗОВЫЙ ТРЮК',
+                                fbTitleKz: '✕ ҚАТЕ: АРЗАН МАНИПУЛЯЦИЯ',
+                                fbTextRu: 'Искусственный шантаж сроками в серьезном B2B разрушает статус экспертного бюро.',
+                                fbTextKz: 'Корпоративтік секторда мұндай қысым сенімді бірден жояды.'
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // СЕКТОР 1: ВУЗЫ И КОЛЛЕДЖИ (ГОСО 2026 & AI-SANA)
+            {
+                calcCat: 'vuz',
+                avatar: '🏛️',
+                topRu: 'Сектор 2 • ВУЗы и ТиПО', nameRu: '🏛️ ГОСО 2026 & AI-Sana',
+                topKz: '2-сектор • ЖОО мен Колледж', nameKz: '🏛️ МЖМБС 2026 & AI-Sana',
+                respNameRu: 'Респондент: Проректор по академическим вопросам и комиссия IAAR',
+                respRoleRu: 'Национальный университет РК • Проверка готовности УМКД к аккредитации 2026',
+                respNameKz: 'Респондент: Академиялық мәселелер жөніндегі проректор және IAAR комиссиясы',
+                respRoleKz: 'ҚР Ұлттық университеті • ПОӘК пен силлабустарды 2026 аккредитациясына тексеру',
+                ctaRu: '🧮 Рассчитать смету УМКД и силлабусов по ГОСО 2026 (от 180 000 ₸) →',
+                ctaKz: '🧮 МЖМБС 2026 бойынша ПОӘК сметасын есептеу (180 000 ₸ бастап) →',
+                rounds: [
+                    {
+                        tagRu: 'Раунд 1: Возврат силлабуса на нормоконтроле',
+                        tagKz: '1-раунд: Нормобақылауда силлабустың қайтарылуы',
+                        speechRu: '«Коллеги, аудиторы IAAR забраковали 60% силлабусов кафедры! В графе "Результаты обучения" у преподавателей написано: "Студент должен знать теорию и понимать важность предмета". Это прямое нарушение ГОСО 2026 и Дублинских дескрипторов!»',
+                        speechKz: '«Әріптестер, IAAR аудиторлары кафедра силлабустарының 60%-ын кері қайтарды! Оқыту нәтижелерінде "Студент теорияны білуі және түсінуі тиіс" деп жазылған. Бұл МЖМБС 2026 және Дублин дескрипторларын тікелей бұзу!»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -180000, trustDelta: -20,
+                                textRu: '<strong>Косметическая отписка:</strong> «Давайте просто заменим слово "знать" на "хорошо изучить", комиссия не заметит».',
+                                textKz: '<strong>Жүстірт түзету:</strong> «"Білу" деген сөзді "жақсы меңгеру" деп ауыстыра салайық, комиссия байқамайды».',
+                                fbTitleRu: '✕ ПРОВАЛ АККРЕДИТАЦИИ: НЕИЗМЕРИМЫЙ ГЛАГОЛ',
+                                fbTitleKz: '✕ АККРЕДИТАЦИЯ ҚАТЕСІ: ӨЛШЕНБЕЙТІН ЕТІСТІК',
+                                fbTextRu: 'Глагол «изучить» также не поддается критериальному измерению. Документ снова вернут с предписанием.',
+                                fbTextKz: '«Меңгеру» етістігі де өлшенбейді. Комиссия құжатты қайтадан жарамсыз деп таниды.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +350000, trustDelta: +15,
+                                textRu: '<strong>Реконструкция по таксономии Блума и Обратному дизайну:</strong> «Мы переводим все результаты обучения (РО) на верхние уровни Блума (Применение, Анализ, Оценка, Создание) через проверяемые глаголы действия: "спроектировать", "валидировать", "рассчитать", "составить протокол", и жестко связываем каждый РО с рубрикатором РК-1, РК-2 и финального экзамена».',
+                                textKz: '<strong>Блум таксономиясы бойынша қайта құру:</strong> «Барлық оқыту нәтижелерін (ОН) Блумның жоғары деңгейлеріне ("жобалау", "валидациялау", "есептеу", "хаттама құрастыру" белсенді етістіктері арқылы) көшіріп, әрбір ОН-ды АБ-1, АБ-2 және емтихан рубрикаторларымен тікелей байланыстырамыз».',
+                                fbTitleRu: '✓ 100% СООТВЕТСТВИЕ СТАНДАРТУ IAAR / IQAA',
+                                fbTitleKz: '✓ IAAR / IQAA СТАНДАРТЫНА 100% САЙ',
+                                fbTextRu: 'Именно такой связки «Активный глагол Блума ➔ Измеримый дескриптор ➔ Оценочное средство» требует нормоконтроль МНВО РК 2026.',
+                                fbTextKz: 'ҚР ҒЖБМ 2026 нормобақылауы дәл осындай критериалды сәйкестікті талап етеді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -150000, trustDelta: -15,
+                                textRu: '<strong>Перекладывание на преподавателей:</strong> «Раздадим замечания обратно уставшим преподавателям, пусть за выходные сами перепишут как умеют».',
+                                textKz: '<strong>Оқытушыларға ысыра салу:</strong> «Ескертулерді оқытушылардың өздеріне таратып берейік, демалыста қалай білсе солай жазып шықсын».',
+                                fbTitleRu: '✕ ОШИБКА: РАЗНОБОЙ И СРЫВ СРОКОВ',
+                                fbTitleKz: '✕ ҚАТЕ: ЖҮЙЕСІЗДІК ПЕН МЕРЗІМНІҢ БҰЗЫЛУЫ',
+                                fbTextRu: 'Без единого методологического лекала каждый преподаватель напишет вразнобой, и кафедра потеряет еще 2 недели.',
+                                fbTextKz: 'Бірыңғай стандартсыз әр оқытушы әртүрлі жазып, кафедра уақыт жоғалтады.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 2: Регламент «AI-Sana» и «AI Policy 2026»',
+                        tagKz: '2-раунд: «AI-Sana» және ЖИ қолдану регламенті',
+                        speechRu: '«Второй вопрос ректората: по директиве МНВО РК и национальной программе "AI-Sana" в каждом силлабусе 2026 года должен быть регламент работы с генеративным ИИ. Сейчас студенты просто копируют СРС из ChatGPT! Что вы предлагаете?»',
+                        speechKz: '«Ректораттың екінші сұрағы: ҚР ҒЖБМ директивасы және "AI-Sana" бағдарламасы бойынша 2026 жылғы әр силлабуста ЖИ қолдану регламенті болуы шарт. Қазір студенттер СӨЖ-ді ChatGPT-ден көшіре салады! Не ұсынасыз?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -20,
+                                textRu: '<strong>Тотальный запрет:</strong> «Напишем в силлабусе одной строкой: "Использование ИИ строго запрещено, штраф 0 баллов"».',
+                                textKz: '<strong>Толық тыйым салу:</strong> «Силлабусқа бір жолмен "ЖИ қолдануға қатаң тыйым салынады, 0 балл" деп жазамыз».',
+                                fbTitleRu: '✕ ПРОТИВОРЕЧИЕ ПРОГРАММЕ «AI-SANA» И МОДЕЛИ «AI + X»',
+                                fbTitleKz: '✕ «AI-SANA» БАҒДАРЛАМАСЫНА ҚАЙШЫЛЫҚ',
+                                fbTextRu: 'Государственный курс РК 2026 требует не запрещать ИИ вслепую, а внедрять компетенции «AI + X» с прозрачной верификацией.',
+                                fbTextKz: '2026 мемлекеттік стандарты ЖИ-ге соқыр тыйым салуды емес, оны сауатты қолдану мен тексеруді талап етеді.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +400000, trustDelta: +15,
+                                textRu: '<strong>Внедрение матрицы «AI Policy 2026» по 3 коридорам:</strong> «Вшиваем в силлабус официальный раздел AI Policy: 1) Зеленый коридор (разрешен сбор аналитики и брейншторм с обязательным указанием лога промптов); 2) Желтый коридор (критическая верификация галлюцинаций ИИ студентом); 3) Красный коридор (устная защита кейса без экранов). Задания СРС переводим из рефератов в прикладные кейсы, которые нельзя списать без понимания».',
+                                textKz: '<strong>3 дәлізді «AI Policy 2026» матрицасын енгізу:</strong> «Силлабусқа ресми AI Policy бөлімін енгіземіз: 1) Жасыл дәліз (промпт логтарын көрсете отырып дерек жинау); 2) Сары дәліз (ЖИ қателерін сыни верификациялау); 3) Қызыл дәліз (кейсті ауызша қорғау). СӨЖ тапсырмаларын рефераттан нақты қолданбалы кейстерге ауыстырамыз».',
+                                fbTitleRu: '✓ ЭТАЛОННЫЙ СТАНДАРТ «AI + X» ДЛЯ ВУЗОВ РК',
+                                fbTitleKz: '✓ ЖОО ҮШІН «AI + X» ЭТАЛОНДЫҚ СТАНДАРТЫ',
+                                fbTextRu: 'Комиссия МНВО РК ставит максимальный балл за такую архитектуру академической честности.',
+                                fbTextKz: 'Комиссия академиялық адалдықтың мұндай жүйесіне ең жоғары баға береді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -150000, trustDelta: -15,
+                                textRu: '<strong>Отмена письменных работ:</strong> «Вообще уберем все СРС и оставим только устные зачеты по билетам 1990-х годов».',
+                                textKz: '<strong>Жазбаша жұмыстарды алып тастау:</strong> «Барлық СӨЖ-ді алып тастап, тек ескі билеттермен ауызша сынақ қалдырамыз».',
+                                fbTitleRu: '✕ НАРУШЕНИЕ КРЕДИТНОЙ ТЕХНОЛОГИИ ОБУЧЕНИЯ',
+                                fbTitleKz: '✕ КРЕДИТТІК ОҚЫТУ ТЕХНОЛОГИЯСЫН БҰЗУ',
+                                fbTextRu: 'По ГОСО РК доля СРС/СРСП обязательна для начисления академических кредитов ECTS.',
+                                fbTextKz: 'ECTS академиялық кредиттерін есептеу үшін СӨЖ міндетті болып табылады.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 3: Импорт фонда оценочных средств (100 тестов) в Platonus',
+                        tagKz: '3-раунд: Platonus жүйесіне 100 тестті импорттау',
+                        speechRu: '«И последняя боль деканата: через 3 дня старт экзаменационной сессии, а тестовые базы в Word кривые — при загрузке в Platonus и Moodle слетает разметка, нет дистракторов, а казахский шрифт превращается в знаки вопроса!»',
+                        speechKz: '«Деканаттың соңғы мәселесі: 3 күннен кейін емтихан сессиясы басталады, ал Word-тағы тест базалары Platonus пен Moodle-ға жүктегенде бұзылып кетеді, қазақша әріптер сұрақ белгісіне айналып жатыр!»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -20,
+                                textRu: '<strong>Ручной ввод:</strong> «Посадим лаборантов кафедры вручную копировать по одному вопросу в окошко Platonus всю ночь».',
+                                textKz: '<strong>Қолмен енгізу:</strong> «Кафедра лаборанттарын түні бойы әр сұрақты Platonus-қа қолмен көшіріп отыруға міндеттейміз».',
+                                fbTitleRu: '✕ ПОТЕРЯ ВРЕМЕНИ И ЧЕЛОВЕЧЕСКИЕ ОШИБКИ',
+                                fbTitleKz: '✕ УАҚЫТ ШЫҒЫНЫ ЖӘНЕ АДАМИ ҚАТЕЛЕР',
+                                fbTextRu: 'При ручном переносе 500 вопросов по 5 дисциплинам неизбежно перепутаются правильные ключи ответов.',
+                                fbTextKz: '500 сұрақты қолмен көшіргенде дұрыс жауап кілттері шатасып кетеді.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +200000, trustDelta: +10,
+                                textRu: '<strong>Автоматизированный пакет ФОС в кодировке UTF-8 (GIFT / Aiken):</strong> «Бюро "МЕТОДИКО" сдает банк из 100 валидированных тестовых заданий (3 уровня сложности, выверенные дистракторы без подсказок) сразу в чистых файлах GIFT и Aiken (UTF-8 без BOM). Ваш IT-отдел загружает всю базу в Platonus или Moodle за 3 секунды без единого сбоя казахских символов».',
+                                textKz: '<strong>UTF-8 (GIFT / Aiken) форматындағы дайын БҚҚ пакеті:</strong> «"МЕТОДИКО" бюросы 100 валидацияланған тест тапсырмасын (3 қиындық деңгейімен) бірден таза GIFT және Aiken (UTF-8) файлдарында тапсырады. IT-бөлім бүкіл базаны Platonus немесе Moodle жүйесіне қазақ әріптерін жоғалтпай 3 секундта жүктейді».',
+                                fbTitleRu: '✓ БЕЗУПРЕЧНЫЙ ИНЖЕНЕРНО-МЕТОДИЧЕСКИЙ СТАНДАРТ!',
+                                fbTitleKz: '✓ МІНСІЗ ИНЖЕНЕРЛІК-ӘДІСТЕМЕЛІК СТАНДАРТ!',
+                                fbTextRu: 'Кафедра полностью защищена перед проверкой и сессией без ночных авралов.',
+                                fbTextKz: 'Кафедра сессия мен тексеріске түнгі қарбалассыз 100% дайын.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -150000, trustDelta: -15,
+                                textRu: '<strong>Сокращение базы:</strong> «Давайте загрузим всего 15 легких вопросов, чтобы не мучиться с кодировкой».',
+                                textKz: '<strong>Базаны қысқарту:</strong> «Қиналмас үшін бар болғаны 15 жеңіл сұрақ жүктей салайық».',
+                                fbTitleRu: '✕ НАРУШЕНИЕ НОРМАТИВА ФОС',
+                                fbTitleKz: '✕ БАҒАЛАУ ҚҰРАЛДАРЫ ҚОРЫНЫҢ НОРМАТИВІН БҰЗУ',
+                                fbTextRu: 'База менее 100 вопросов на дисциплину не проходит минимальный порог валидности при компьютерном тестировании.',
+                                fbTextKz: '100 сұрақтан аз база компьютерлік тестілеу талабынан өтпейді.'
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // СЕКТОР 2: ЧАСТНЫЕ ШКОЛЫ И «ҰСТАЗ»
+            {
+                calcCat: 'school',
+                avatar: '🏫',
+                topRu: 'Сектор 3 • Школы РК', nameRu: '🏫 Лицеи и «Ұстаз»',
+                topKz: '3-сектор • Мектептер', nameKz: '🏫 Лицейлер мен «Ұстаз»',
+                respNameRu: 'Респондент: Учредитель частного лицея и Попечительский совет родителей',
+                respRoleRu: 'Премиальная частная школа (г. Алматы) • Защита ценности обучения и категории педагогов',
+                respNameKz: 'Респондент: Жекеменшік лицей құрылтайшысы және Ата-аналар комитеті',
+                respRoleKz: 'Премиум жекеменшік мектеп (Алматы қ.) • Оқу құндылығы мен педагог санаттарын қорғау',
+                ctaRu: '🧮 Рассчитать смету УМК, тетради-комикса и паспорта «Ұстаз» (от 180 000 ₸) →',
+                ctaKz: '🧮 ОӘК, комикс-дәптер және «Ұстаз» паспортының сметасын есептеу →',
+                rounds: [
+                    {
+                        tagRu: 'Раунд 1: Претензия родителей к ценности частной школы',
+                        tagKz: '1-раунд: Ата-аналардың жеке мектеп құндылығына шағымы',
+                        speechRu: '«На родительском собрании скандал! Родители говорят: "Мы платим по 350 000 ₸ в месяц за частную школу, а детям на спецкурсах раздают мятые черно-белые распечатки из интернета! За что мы переплачиваем?"»',
+                        speechKz: '«Ата-аналар жиналысында дау шықты! Ата-аналар: "Біз жеке мектепке айына 350 000 ₸ төлейміз, ал балаларға интернеттен шығарылған сұрғылт қағаздар таратылады! Артық ақшаны не үшін төлеп отырмыз?" дейді».',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -400000, trustDelta: -25,
+                                textRu: '<strong>Оправдания на собрании:</strong> «Скажем родителям, что главное — это душа учителя, а на цветную полиграфию у школы нет времени».',
+                                textKz: '<strong>Жиналыста ақталу:</strong> «Ата-аналарға ең бастысы мұғалімнің ниеті, ал түрлі-түсті құралдарға уақыт жоқ деп айтайық».',
+                                fbTitleRu: '✕ ОТТОК УЧЕНИКОВ И ПОТЕРЯ КОНТРАКТОВ',
+                                fbTitleKz: '✕ ОҚУШЫЛАРДЫҢ КЕТУІ ЖӘНЕ КЕЛІСІМШАРТТАРДЫ ЖОҒАЛТУ',
+                                fbTextRu: 'Уход всего 2 учеников из частной школы лишает бюджет 6 000 000 ₸ годовой выручки.',
+                                fbTextKz: 'Жеке мектептен 2 оқушының кетуі бюджетті жылына 6 000 000 ₸ табыстан айырады.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +450000, trustDelta: +15,
+                                textRu: '<strong>Внедрение фирменной Рабочей тетради-комикса (Pre-press PDF CMYK):</strong> «Мы разрабатываем для школы эксклюзивный иллюстрированный воркбук/комикс с героями лицея, геймификацией и логотипом школы на обложке (готовый к типографии файл CMYK, 300 DPI). Ребенок приносит домой книгу премиум-класса, которую родители с гордостью показывают друзьям».',
+                                textKz: '<strong>Фирмалық Комикс-жұмыс дәптерін енгізу (Pre-press PDF CMYK):</strong> «Мектеп үшін мұқабасында лицей логотипі бар, геймификацияланған эксклюзивті комикс-дәптер әзірлейміз (баспаханаға дайын CMYK, 300 DPI файлы). Бала үйіне премиум кітап алып барады, ал ата-аналар оны мақтанышпен достарына көрсетеді».',
+                                fbTitleRu: '✓ МАРКЕТИНГОВЫЙ КОЗЫРЬ ЧАСТНОЙ ШКОЛЫ!',
+                                fbTitleKz: '✓ ЖЕКЕМЕНШІК МЕКТЕПТІҢ МАРКЕТИНГТІК КӨЗІРІ!',
+                                fbTextRu: 'Осязаемый брендированный учебный продукт мгновенно обосновывает высокую стоимость обучения в глазах семьи.',
+                                fbTextKz: 'Сапалы брендтелген оқу құралы оқу ақысының жоғары құнын бірден дәлелдейді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -15,
+                                textRu: '<strong>Скидка на обучение:</strong> «Сделаем всем недовольным родителям скидку 15% на следующий семестр».',
+                                textKz: '<strong>Оқу ақысына жеңілдік беру:</strong> «Наразы ата-аналардың бәріне келесі семестрге 15% жеңілдік берейік».',
+                                fbTitleRu: '✕ ПРЯМОЙ УБЫТОК КАССЫ ШКОЛЫ',
+                                fbTitleKz: '✕ МЕКТЕП КАССАСЫНЫҢ ТІКЕЛЕЙ ШЫҒЫНЫ',
+                                fbTextRu: 'Скидка съедает чистую прибыль учредителя, но не решает проблему отсутствия методической базы.',
+                                fbTextKz: 'Жеңілдік таза пайданы жейді, бірақ әдістемелік база мәселесін шешпейді.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 2: Цифровая аттестация педагогов на платформе «Ұстаз»',
+                        tagKz: '2-раунд: «Ұстаз» платформасында педагогтерді аттестаттау',
+                        speechRu: '«Вторая проблема: 8 наших лучших учителей подают документы на категории "педагог-сарапшы", "педагог-зерттеуші" и "педагог-шебер" через платформу "Ұстаз". В 2026 году правила обновились — учителя в панике, как доказать системность методики и динамику качества знаний?»',
+                        speechKz: '«Екінші мәселе: 8 үздік мұғаліміміз "Ұстаз" платформасы арқылы "педагог-сарапшы", "зерттеуші" және "шебер" санаттарына құжат тапсыруда. 2026 жылы талаптар жаңарды — әдістеменің жүйелілігі мен білім сапасының динамикасын қалай дәлелдейміз?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -250000, trustDelta: -20,
+                                textRu: '<strong>Стихийная подача:</strong> «Пусть каждый учитель сам загружает в профиль любые грамоты подряд, авось проскочат».',
+                                textKz: '<strong>Жүйесіз тапсыру:</strong> «Әр мұғалім профильге қолында бар грамоталарын өзі жүктей берсін».',
+                                fbTitleRu: '✕ ОТКАЗ ЭКСПЕРТНОГО СОВЕТА',
+                                fbTitleKz: '✕ САРАПТАМАЛЫҚ КЕҢЕСТІҢ БАС ТАРТУЫ',
+                                fbTextRu: 'Платформа «Ұстаз» отсеивает разрозненные грамоты без доказанной методической системы и критериальных замеров.',
+                                fbTextKz: '«Ұстаз» платформасы жүйелі дәлелсіз жиналған құжаттарды қабылдамайды.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +300000, trustDelta: +15,
+                                textRu: '<strong>Аттестационный щит «МЕТОДИКО»:</strong> «Мы упаковываем для каждого претендента эталонный учебно-методический комплекс вариативного курса (34/68 ч) по ГОСО РК, поурочное КТП со смарт-дескрипторами ФО/СОР/СОЧ, листы наблюдения за уроками и официальный Аттестационный паспорт с рецензией магистра педагогики для защиты на экспертном совете».',
+                                textKz: '<strong>«МЕТОДИКО» аттестациялық қалқаны:</strong> «Әр үміткер үшін МЖМБС бойынша вариативтік курстың (34/68 сағ.) эталондық ОӘК-ін, ҚБ/БЖБ/ТЖБ смарт-дескрипторлары бар ҚМЖ мен КТЖ-ны, сабақты бақылау парақтарын және педагогика магистрінің рецензиясы бар ресми Аттестациялық паспортты толық жинақтап береміз».',
+                                fbTitleRu: '✓ 100% ЗАЩИТА КАТЕГОРИИ И СТАТУСА ЛИЦЕЯ',
+                                fbTitleKz: '✓ САНАТ ПЕН ЛИЦЕЙ МӘРТЕБЕСІН 100% ҚОРҒАУ',
+                                fbTextRu: 'Школа повышает долю педагогов высших категорий (главный показатель при лицензировании и в рейтингах родителей).',
+                                fbTextKz: 'Мектеп жоғары санатты педагогтер үлесін арттырып, лицензиялау мен рейтингте көш бастайды.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -15,
+                                textRu: '<strong>Скачивание чужих программ:</strong> «Купим на складчине прошлогодние чужие программы из интернета и поменяем фамилию на титульном листе».',
+                                textKz: '<strong>Бөтен бағдарламаны көшіру:</strong> «Интернеттен дайын ескі бағдарламаны сатып алып, мұқабасындағы аты-жөнін ғана ауыстыра салайық».',
+                                fbTitleRu: '✕ ДИСКВАЛИФИКАЦИЯ НА АНТИПЛАГИАТЕ',
+                                fbTitleKz: '✕ АНТИПЛАГИАТТАН ӨТПЕУ ЖӘНЕ БҰҒАТТАУ',
+                                fbTextRu: 'Цифровая проверка «Ұстаз» мгновенно выявляет плагиат, что грозит аннулированием заявки.',
+                                fbTextKz: 'Цифрлық тексеріс плагиатты бірден анықтап, өтінімді жояды.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 3: Снятие методического выгорания учителей',
+                        tagKz: '3-раунд: Мұғалімдердің қағазбастылықтан шаршауын жою',
+                        speechRu: '«И третий вопрос директора: мои сильные учителя предметники сидят до полуночи над КТП и рубрикаторами оценивания. Если мы заказываем разработку у вас — сколько времени это отнимет у самих учителей?»',
+                        speechKz: '«Директордың үшінші сұрағы: мықты пән мұғалімдерім түн ортасына дейін КТЖ мен бағалау рубрикаторларын жазып шаршап жүр. Егер сіздерге тапсырыс берсек — мұғалімдердің өздерінен қанша уақыт кетеді?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -150000, trustDelta: -15,
+                                textRu: '<strong>Долгие совещания:</strong> «Будем собирать ваших учителей каждый вечер в Zoom по 2 часа в течение месяца».',
+                                textKz: '<strong>Ұзақ жиналыстар:</strong> «Мұғалімдеріңізді бір ай бойы күнде кешке 2 сағаттан Zoom-ға жинаймыз».',
+                                fbTitleRu: '✕ САБОТАЖ ПЕДКОЛЛЕКТИВА',
+                                fbTitleKz: '✕ ПЕДАГОГИКАЛЫҚ ҰЖЫМНЫҢ ҚАРСЫЛЫҒЫ',
+                                fbTextRu: 'Перегруженные педагоги воспримут ежедневные созвоны как дополнительное наказание.',
+                                fbTextKz: 'Шаршаған мұғалімдер күнделікті жиналыстарға қарсы болады.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +250000, trustDelta: +10,
+                                textRu: '<strong>Формат «Под ключ за 14 дней без отрыва от уроков»:</strong> «Учитель тратит 0 часов на бумажную верстку! Достаточно одного 45-минутного брифа с завучем или педагогом. Через 14 дней мы передаем полностью сверстанный комплект (Программа + КТП + Рубрикаторы + Тетрадь-комикс в PDF и DOCX), готовый к печати и загрузке».',
+                                textKz: '<strong>«Сабақтан қол үзбей 14 күнде толық дайындау» форматы:</strong> «Мұғалім қағаз толтыруға 0 сағат жұмсайды! Оқу ісінің меңгерушісімен немесе педагогпен бір реттік 45 минуттық бриф жеткілікті. 14 күннен кейін баспаға және жүктеуге 100% дайын толық жинақты (Бағдарлама + КТЖ + Рубрикаторлар + Комикс-дәптер) тапсырамыз».',
+                                fbTitleRu: '✓ ИДЕАЛЬНОЕ УПРАВЛЕНЧЕСКОЕ РЕШЕНИЕ!',
+                                fbTitleKz: '✓ МІНСІЗ БАСҚАРУШЫЛЫҚ ШЕШІМ!',
+                                fbTextRu: 'Учителя сохраняют энергию для детей по принципу гуманной педагогики, а администрация получает безупречный нормоконтроль.',
+                                fbTextKz: 'Мұғалімдер бар күш-жігерін балаларға арнайды, ал мектеп әкімшілігі мінсіз құжаттама алады.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -100000, trustDelta: -10,
+                                textRu: '<strong>Пустой шаблон:</strong> «Мы пришлем учителям пустые таблицы, пусть сами заполняют все 68 часов».',
+                                textKz: '<strong>Бос үлгі беру:</strong> «Мұғалімдерге бос кестелерді жібереміз, 68 сағатты өздері толтырсын».',
+                                fbTitleRu: '✕ НУЛЕВАЯ ЦЕННОСТЬ УСЛУГИ',
+                                fbTitleKz: '✕ ҚЫЗМЕТ ҚҰНДЫЛЫҒЫНЫҢ ЖОҚТЫҒЫ',
+                                fbTextRu: 'Школа платит бюро «МЕТОДИКО» именно за готовый интеллектуальный результат, а не за пустые графы.',
+                                fbTextKz: 'Мектеп бос кесте үшін емес, дайын зияткерлік өнім үшін төлейді.'
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // СЕКТОР 3: EDTECH И ОНЛАЙН-ШКОЛЫ (COR 85%+)
+            {
+                calcCat: 'edtech',
+                avatar: '🚀',
+                topRu: 'Сектор 4 • EdTech СНГ', nameRu: '🚀 Курсы и COR 85%+',
+                topKz: '4-сектор • EdTech ТМД', nameKz: '🚀 Курстар және COR 85%+',
+                respNameRu: 'Респондент: Владелец онлайн-академии и Продюсер запуска',
+                respRoleRu: 'EdTech-проект (Казахстан / СНГ) • Борьба с возвратами и сборка флагманского курса',
+                respNameKz: 'Респондент: Онлайн-академия негізін қалаушы және Продюсер',
+                respRoleKz: 'EdTech-жоба (Қазақстан / ТМД) • Қайтарымдарды жою және флагмандық курс құрастыру',
+                ctaRu: '🧮 Рассчитать смету аудита или Voice-to-Course (от 250 000 ₸) →',
+                ctaKz: '🧮 Аудит немесе Voice-to-Course сметасын есептеу (250 000 ₸ бастап) →',
+                rounds: [
+                    {
+                        tagRu: 'Раунд 1: Лавина возвратов на 3-й неделе курса',
+                        tagKz: '1-раунд: Курстың 3-аптасындағы ақша қайтару дағдарысы',
+                        speechRu: '«У нас ЧП на флагманском потоке! Доходимость (COR) упала до 14%, а 12 студентов VIP-тарифа написали заявления на возврат по 450 000 ₸! Пишут: "Уроки по полтора часа, слишком сложно, мы отстали и потеряли мотивацию". Как остановить отвал?»',
+                        speechKz: '«Флагмандық ағында төтенше жағдай! Курсты соңына дейін аяқтау (COR) 14%-ға түсіп кетті, ал VIP-тарифтегі 12 студент 450 000 ₸-ден ақша қайтаруды талап етуде! "Сабақтар тым ұзақ, үлгермей жатырмыз" дейді. Не істейміз?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -600000, trustDelta: -25,
+                                textRu: '<strong>Жесткий отказ и давление:</strong> «Пригрозим студентам юристами и будем слать в чат гневные напоминания о дедлайнах каждый день!»',
+                                textKz: '<strong>Қысым көрсету:</strong> «Студенттерді заңгермен қорқытып, чатқа күнде қатаң ескерту жазайық!»',
+                                fbTitleRu: '✕ РЕПУТАЦИОННЫЙ КРАХ И СУДЕБНЫЕ ИСКИ',
+                                fbTitleKz: '✕ БЕДЕЛДІҢ ТҮСУІ ЖӘНЕ СОТ ДАУЛАРЫ',
+                                fbTextRu: 'Давление вызывает волну негативных отзывов в соцсетях и коллективные досудебные претензии.',
+                                fbTextKz: 'Қысым көрсету әлеуметтік желідегі шу мен сотқа дейінгі шағымдарға әкеледі.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +650000, trustDelta: +15,
+                                textRu: '<strong>Карта оттока (Drop-off Map) и снятие когнитивной нагрузки по Свеллеру:</strong> «Мы проводим экспресс-аудит курса: дробим тяжелые лекции на прикладные спринты по 10–12 минут (1 урок = 1 осязаемый навык), внедряем маршрутную Рабочую тетрадь студента с быстрыми победами на первых 72 часах и переводим кураторов на регламент развивающей обратной связи с фиксацией прогресса (SLA 15 минут)».',
+                                textKz: '<strong>Drop-off Map аудиті және Свеллер бойынша когнитивтік жүктемені азайту:</strong> «Курсқа жедел аудит жүргіземіз: ауыр дәрістерді 10–12 минуттық қолданбалы спринттерге бөлеміз (1 сабақ = 1 нақты дағды), алғашқы 72 сағатта жылдам нәтиже беретін Студенттің жұмыс дәптерін енгіземіз және кураторларды SLA 15 минуттық критериалды кері байланыс стандартына көшіреміз».',
+                                fbTitleRu: '✓ СПАСЕНИЕ ВЫРУЧКИ И РОСТ ДОХОДИМОСТИ (COR) ДО 85%+',
+                                fbTitleKz: '✓ ТАБЫСТЫ САҚТАУ ЖӘНЕ COR КӨРСЕТКІШІН 85%+-ҒА КӨТЕРУ',
+                                fbTextRu: 'Когда студент видит свой первый практический результат уже на 2-м уроке, возвраты падают до 0%.',
+                                fbTextKz: 'Студент алғашқы нақты нәтижесін 2-сабақта көргенде, ақша қайтару 0%-ға дейін төмендейді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -300000, trustDelta: -15,
+                                textRu: '<strong>Добавление бонусных вебинаров:</strong> «Давайте проведем еще пять 3-часовых эфиров с психологом, чтобы поднять им настроение!»',
+                                textKz: '<strong>Қосымша вебинарлар қосу:</strong> «Көңіл-күйлерін көтеру үшін психологпен тағы бес 3 сағаттық эфир өткізейік!»',
+                                fbTitleRu: '✕ ОШИБКА: ЭФФЕКТ CONTENT BLOAT (ЗАХЛАМЛЕНИЕ)',
+                                fbTitleKz: '✕ ҚАТЕ: АҚПАРАТТЫҚ ШАРШАУДЫ КҮШЕЙТУ',
+                                fbTextRu: 'Люди уже тонут в контенте — добавление новых многочасовых эфиров только ускорит отвал.',
+                                fbTextKz: 'Контенттен шаршаған студенттерге қосымша сағаттар қосу жағдайды одан әрі ушықтырады.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 2: Выгорание эксперта перед новым запуском',
+                        tagKz: '2-раунд: Жаңа ағын алдында спикердің шаршауы',
+                        speechRu: '«Мы хотим запустить новый премиальный продукт, но наш главный эксперт категорически отказывается садиться за компьютер и писать сценарии 40 уроков, конспекты и методички: "У меня нет времени писать тексты!" Трафик уже оплачен, запуск под угрозой!»',
+                        speechKz: '«Жаңа премиум өнімді іске қосқымыз келеді, бірақ бас сарапшымыз компьютерге отырып 40 сабақтың сценарийі мен әдістемелік құралдарын жазудан бас тартуда: "Мәтін жазуға уақытым жоқ!" дейді. Жарнама төленіп қойды, не істейміз?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -500000, trustDelta: -20,
+                                textRu: '<strong>Импровизация в прямом эфире:</strong> «Пусть выходит в Zoom без сценария и рассказывает что вспомнит из головы!»',
+                                textKz: '<strong>Сценарийсіз тікелей эфир:</strong> «Zoom-ға дайындықсыз шығып, ойына не келсе соны айта берсін!»',
+                                fbTitleRu: '✕ ПОТЕРЯ СТРУКТУРЫ И РАЗГРОМНЫЕ ОТЗЫВЫ',
+                                fbTitleKz: '✕ ҚҰРЫЛЫМНЫҢ ЖОҚТЫҒЫ ЖӘНЕ ТЕРІС ПІКІРЛЕР',
+                                fbTextRu: 'На высоком чеке хаотичная импровизация воспринимается покупателями как халтура.',
+                                fbTextKz: 'Жоғары чектегі жүйесіз импровизация клиенттердің наразылығын тудырады.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +500000, trustDelta: +15,
+                                textRu: '<strong>Технология Voice-to-Course (Курс и книга из голоса за 4–6 часов):</strong> «Эксперту не нужно писать ни строчки! Главный методолог "МЕТОДИКО" проводит с ним 3 коротких аудиоинтервью по пирамиде Дилтса и Обратному дизайну. Из его живой речи мы сами собираем: модульную архитектуру, тайминговые сценарии уроков, дизайнерский воркбук PDF A4 и методическую книгу курса».',
+                                textKz: '<strong>Voice-to-Course технологиясы (Дауыстан 4–6 сағатта дайын курс пен кітап):</strong> «Сарапшыға бір жол да жазудың қажеті жоқ! "МЕТОДИКО" бас әдіскері онымен Дилтс пирамидасы бойынша 3 қысқа аудио-сұхбат өткізеді. Оның жанды сөзінен біз өзіміз модульдік архитектураны, сабақ сценарийлерін, PDF A4 воркбугын және курс кітабын құрастырып шығарамыз».',
+                                fbTitleRu: '✓ ЭКОНОМИЯ 80 ЧАСОВ АВТОРА И ЭТАЛОННЫЙ ПРОДУКТ!',
+                                fbTitleKz: '✓ АВТОРДЫҢ 80 САҒАТЫН ҮНЕМДЕУ ЖӘНЕ ЭТАЛОНДЫҚ ӨНІМ!',
+                                fbTextRu: 'Спикер остается в ресурсе и сохраняет свой авторский почерк, а школа вовремя запускает продукт высшего класса.',
+                                fbTextKz: 'Спикер шаршамайды, ал мектеп жоғары сапалы өнімді уақытында іске қосады.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -350000, trustDelta: -20,
+                                textRu: '<strong>Генерация сырого текста в ChatGPT:</strong> «Попросим стажера сгенерировать методичку в бесплатном ChatGPT без участия эксперта».',
+                                textKz: '<strong>ChatGPT-де шикі мәтін жасау:</strong> «Стажерге сарапшысыз-ақ тегін ChatGPT-де әдістемелік құрал жасата салайық».',
+                                fbTitleRu: '✕ ПЛАСТИКОВЫЙ ТЕКСТ И СМЕРТЬ АВТОРСКОГО БРЕНДА',
+                                fbTitleKz: '✕ ЖАСАНДЫ МӘТІН ЖӘНЕ АВТОРЛЫҚ БРЕНДТІҢ ҚҰЛДЫРАУЫ',
+                                fbTextRu: 'Аудитория за 30 секунд распознает «пластиковую нейросетевую воду» и требует вернуть деньги.',
+                                fbTextKz: 'Аудитория жасанды мәтінді бірден танып, ақшаны қайтаруды талап етеді.'
+                            }
+                        ]
+                    },
+                    {
+                        tagRu: 'Раунд 3: Юридическая защита от потребительского экстремизма',
+                        tagKz: '3-раунд: Тұтынушылық экстремизмнен заңды қорғаныс',
+                        speechRu: '«И финальный вопрос продюсера: сейчас участились случаи, когда недобросовестный покупатель скачивает все материалы курса, а потом подает в суд: "Я не получил результата, верните 100% оплаты". Как методология защищает нашу кассу?»',
+                        speechKz: '«Продюсердің соңғы сұрағы: қазір кейбір сатып алушылар курстың барлық материалдарын жүктеп алып, кейін "Нәтиже алмадым, ақшамды 100% қайтарыңдар" деп сотқа береді. Әдіснама кассамызды қалай қорғайды?»',
+                        options: [
+                            {
+                                isCorrect: false, moneyDelta: -400000, trustDelta: -20,
+                                textRu: '<strong>Устные обещания:</strong> «Никак, просто будем надеяться на честность покупателей».',
+                                textKz: '<strong>Қорғаныссыз қалу:</strong> «Ешқалай, тек сатып алушылардың адалдығына сенеміз».',
+                                fbTitleRu: '✕ УЯЗВИМОСТЬ БИЗНЕСА ПЕРЕД ИСКАМИ',
+                                fbTitleKz: '✕ БИЗНЕСТІҢ СОТ АЛДЫНДАҒЫ ӘЛСІЗДІГІ',
+                                fbTextRu: 'Без критериальной фиксации промежуточных результатов суд почти всегда встает на сторону потребителя.',
+                                fbTextKz: 'Аралық нәтижелер тіркелмесе, сот тұтынушы жағына шығады.'
+                            },
+                            {
+                                isCorrect: true, moneyDelta: +300000, trustDelta: +10,
+                                textRu: '<strong>Институциональный Аттестационный Щит (Декомпозиция актов приемки по модулям):</strong> «Мы закладываем в архитектуру курса стоп-уроки с измеримыми артефактами и чек-листами верификации навыка. Каждый сданный модуль юридически фиксирует прогресс и передачу методологической ценности, что в связке с офертой полностью блокирует потребительский экстремизм».',
+                                textKz: '<strong>Институционалдық Аттестациялық Қалқан (Модульдер бойынша нәтижені тіркеу):</strong> «Курс архитектурасына нақты артефактілер мен дағдыны верификациялау чек-парақтары бар стоп-сабақтарды енгіземіз. Әрбір тапсырылған модуль білім беру құндылығының берілгенін заңды түрде тіркеп, тұтынушылық экстремизмге толық тосқауыл қояды».',
+                                fbTitleRu: '✓ ЖЕЛЕЗОБЕТОННАЯ ЗАЩИТА ВЫРУЧКИ ОНЛАЙН-ШКОЛЫ!',
+                                fbTitleKz: '✓ ОНЛАЙН-МЕКТЕП ТАБЫСЫНЫҢ ТЕМІРДЕЙ ҚОРҒАНЫСЫ!',
+                                fbTextRu: 'Методология работает как юридический и финансовый бронежилет вашего EdTech-бизнеса.',
+                                fbTextKz: 'Әдіснама сіздің EdTech-бизнесіңіздің заңды және қаржылық қалқаны ретінде жұмыс істейді.'
+                            },
+                            {
+                                isCorrect: false, moneyDelta: -200000, trustDelta: -15,
+                                textRu: '<strong>Закрытие доступа всем подряд:</strong> «Отключим личный кабинет всем ученикам сразу после оплаты!»',
+                                textKz: '<strong>Кабинетті жауып тастау:</strong> «Төлемнен кейін-ақ доступты жауып тастаймыз!»',
+                                fbTitleRu: '✕ АБСУРДНОЕ РЕШЕНИЕ',
+                                fbTitleKz: '✕ ҚИСЫНСЫЗ ШЕШІМ',
+                                fbTextRu: 'Нарушение обязательств по договору приведет к мгновенной блокировке счетов школы.',
+                                fbTextKz: 'Шарт міндеттемелерін бұзу есепшоттардың бұғатталуына әкеледі.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        function formatMoney(num) {
+            const sign = num > 0 ? '+' : '';
+            return sign + num.toLocaleString('ru-RU') + ' ₸';
+        }
+
         function setSimLang(lang) {
-            simCurrentLang = lang;
+            simLang = lang;
             try { localStorage.setItem('metodiko_lang', lang); } catch (e) {}
 
             document.getElementById('btn-lang-ru').classList.toggle('active', lang === 'ru');
             document.getElementById('btn-lang-kz').classList.toggle('active', lang === 'kz');
 
-            const t = simI18n[lang];
+            const t = uiLabels[lang];
             document.getElementById('txt-brand-title').innerText = t.brand_title;
             document.getElementById('txt-brand-sub').innerText = t.brand_sub;
+            document.getElementById('txt-calc-top-link').innerText = t.calc_top;
             document.getElementById('txt-back-link').innerText = t.back_link;
-            document.getElementById('txt-resp-name').innerText = t.resp_name;
-            document.getElementById('txt-resp-role').innerText = t.resp_role;
-            document.getElementById('txt-speech-speaker').innerText = t.speaker;
-            document.getElementById('txt-speech-text').innerText = t.speech;
-            document.getElementById('txt-prompt-title').innerText = t.prompt;
-            document.getElementById('txt-opt-a').innerHTML = t.opt_a;
-            document.getElementById('txt-opt-b').innerHTML = t.opt_b;
-            document.getElementById('txt-opt-c').innerHTML = t.opt_c;
-            document.getElementById('btn-retry').innerText = t.btn_retry;
-            document.getElementById('btn-back-home').innerText = t.btn_home;
+            document.getElementById('lbl-round').innerText = t.lbl_round;
+            document.getElementById('lbl-money').innerText = t.lbl_money;
+            document.getElementById('lbl-trust').innerText = t.lbl_trust;
+            document.getElementById('txt-speak-btn').innerText = t.speak_btn;
+            document.getElementById('txt-prompt-title').innerText = t.prompt_title;
+            document.getElementById('btn-retry-round').innerText = t.retry_round;
             document.getElementById('txt-ft-blume').innerText = t.ft_blume;
             document.getElementById('txt-ft-standard').innerText = t.ft_standard;
 
-            if (!answered) {
-                document.getElementById('score-val').innerText = t.score_base;
-            }
+            // Update sector tabs
+            sectorsData.forEach((sec, idx) => {
+                document.getElementById(`sec-top-${idx}`).innerText = lang === 'ru' ? sec.topRu : sec.topKz;
+                document.getElementById(`sec-name-${idx}`).innerText = lang === 'ru' ? sec.nameRu : sec.nameKz;
+            });
+
+            renderCurrentState();
         }
 
-        function submitChoice(el, type) {
-            if (answered) return;
-            answered = true;
+        function selectSector(idx) {
+            currentSector = idx;
+            currentRound = 0;
+            roundAnswered = false;
+            trustScore = 60;
+            moneyImpact = 0;
+            roundResults = [null, null, null];
 
-            const grid = document.getElementById('options-grid');
-            const btns = grid.querySelectorAll('.option-btn');
-            const fbBox = document.getElementById('feedback-box');
-            const fbHeader = document.getElementById('feedback-header');
-            const fbText = document.getElementById('feedback-text');
-            const scoreVal = document.getElementById('score-val');
-            const pBar = document.getElementById('progress-bar');
-            const t = simI18n[simCurrentLang];
+            document.querySelectorAll('.sector-tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
+            });
 
-            if (type === 'correct') {
-                el.classList.add('selected-correct');
-                scoreVal.innerText = t.score_correct;
-                pBar.style.width = '100%';
-                fbHeader.className = 'feedback-header success';
-                fbHeader.innerHTML = t.fb_h_success;
-                fbText.innerHTML = t.fb_t_success;
-            } else if (type === 'wrong_1') {
-                el.classList.add('selected-wrong');
-                scoreVal.innerText = t.score_w1;
-                pBar.style.width = '50%';
-                fbHeader.className = 'feedback-header failure';
-                fbHeader.innerHTML = t.fb_h_w1;
-                fbText.innerHTML = t.fb_t_w1;
+            document.getElementById('verdict-screen').style.display = 'none';
+            document.getElementById('round-play-area').style.display = 'block';
+
+            renderCurrentState();
+        }
+
+        function renderCurrentState() {
+            const isRu = simLang === 'ru';
+            const t = uiLabels[simLang];
+            const sec = sectorsData[currentSector];
+            const rData = sec.rounds[currentRound];
+
+            // Telemetry
+            document.getElementById('val-round').innerText = isRu
+                ? `Раунд ${currentRound + 1} из 3`
+                : `3-тен ${currentRound + 1}-раунд`;
+
+            const moneyEl = document.getElementById('val-money');
+            if (moneyImpact === 0) {
+                moneyEl.innerText = isRu ? '0 ₸ (В процессе)' : '0 ₸ (Есептелуде)';
+                moneyEl.className = 'telemetry-val';
             } else {
-                el.classList.add('selected-wrong');
-                scoreVal.innerText = t.score_w2;
-                pBar.style.width = '65%';
-                fbHeader.className = 'feedback-header failure';
-                fbHeader.innerHTML = t.fb_h_w2;
-                fbText.innerHTML = t.fb_t_w2;
+                moneyEl.innerText = formatMoney(moneyImpact);
+                moneyEl.className = 'telemetry-val ' + (moneyImpact >= 0 ? 'positive' : 'negative');
             }
 
+            document.getElementById('val-trust').innerText = `${trustScore} / 100`;
+            const barEl = document.getElementById('bar-trust');
+            barEl.style.width = `${Math.max(5, Math.min(100, trustScore))}%`;
+            barEl.style.background = trustScore >= 80
+                ? 'linear-gradient(90deg, #16a34a, #15803d)'
+                : (trustScore >= 50 ? 'linear-gradient(90deg, #f59e0b, #16a34a)' : '#dc2626');
+
+            // Dots
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                dot.className = 'round-dot';
+                if (i === currentRound) dot.classList.add('active');
+                else if (roundResults[i] === true) dot.classList.add('done-ok');
+                else if (roundResults[i] === false) dot.classList.add('done-bad');
+            }
+
+            // Client Banner & Speech
+            document.getElementById('txt-avatar').innerText = sec.avatar;
+            document.getElementById('txt-resp-name').innerText = isRu ? sec.respNameRu : sec.respNameKz;
+            document.getElementById('txt-resp-role').innerText = isRu ? sec.respRoleRu : sec.respRoleKz;
+            document.getElementById('txt-speech-speaker').innerText = isRu
+                ? `● Острая ситуация (Раунд ${currentRound + 1} из 3):`
+                : `● Өткір жағдай (3-тен ${currentRound + 1}-раунд):`;
+            document.getElementById('txt-speech-tag').innerText = isRu ? rData.tagRu : rData.tagKz;
+            document.getElementById('txt-speech-text').innerText = isRu ? rData.speechRu : rData.speechKz;
+
+            // Options
+            const grid = document.getElementById('options-grid');
+            const letters = ['A', 'B', 'C'];
+            grid.innerHTML = rData.options.map((opt, idx) => `
+                <button type="button" class="option-btn" id="opt-btn-${idx}" onclick="chooseOption(${idx})">
+                    <div class="option-letter">${letters[idx]}</div>
+                    <div>${isRu ? opt.textRu : opt.textKz}</div>
+                </button>
+            `).join('');
+
+            document.getElementById('feedback-box').style.display = 'none';
+            roundAnswered = false;
+        }
+
+        function chooseOption(optIdx) {
+            if (roundAnswered) return;
+            roundAnswered = true;
+
+            const isRu = simLang === 'ru';
+            const t = uiLabels[simLang];
+            const sec = sectorsData[currentSector];
+            const rData = sec.rounds[currentRound];
+            const opt = rData.options[optIdx];
+
+            const btn = document.getElementById(`opt-btn-${optIdx}`);
+            const fbBox = document.getElementById('feedback-box');
+            const fbHeader = document.getElementById('feedback-header');
+            const fbTitle = document.getElementById('feedback-title-span');
+            const fbDelta = document.getElementById('feedback-delta-span');
+            const fbText = document.getElementById('feedback-text');
+            const nextBtn = document.getElementById('btn-next-round');
+
+            moneyImpact += opt.moneyDelta;
+            trustScore = Math.max(10, Math.min(100, trustScore + opt.trustDelta));
+            roundResults[currentRound] = opt.isCorrect;
+
+            // Update telemetry UI immediately
+            const moneyEl = document.getElementById('val-money');
+            moneyEl.innerText = formatMoney(moneyImpact);
+            moneyEl.className = 'telemetry-val ' + (moneyImpact >= 0 ? 'positive' : 'negative');
+
+            document.getElementById('val-trust').innerText = `${trustScore} / 100`;
+            const barEl = document.getElementById('bar-trust');
+            barEl.style.width = `${trustScore}%`;
+
+            if (opt.isCorrect) {
+                btn.classList.add('selected-correct');
+                fbHeader.className = 'feedback-header success';
+                fbTitle.innerText = isRu ? opt.fbTitleRu : opt.fbTitleKz;
+                fbDelta.className = 'feedback-delta-pill plus';
+                fbDelta.innerText = `${formatMoney(opt.moneyDelta)} | +${opt.trustDelta} балл`;
+            } else {
+                btn.classList.add('selected-wrong');
+                fbHeader.className = 'feedback-header failure';
+                fbTitle.innerText = isRu ? opt.fbTitleRu : opt.fbTitleKz;
+                fbDelta.className = 'feedback-delta-pill minus';
+                fbDelta.innerText = `${formatMoney(opt.moneyDelta)} | ${opt.trustDelta} балл`;
+            }
+
+            fbText.innerHTML = isRu ? opt.fbTextRu : opt.fbTextKz;
+            nextBtn.innerText = currentRound < 2 ? t.next_round : t.finish_btn;
             fbBox.style.display = 'block';
         }
 
-        function resetDialogue() {
-            answered = false;
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected-correct', 'selected-wrong');
-            });
-            document.getElementById('feedback-box').style.display = 'none';
-            document.getElementById('score-val').innerText = simI18n[simCurrentLang].score_base;
-            document.getElementById('progress-bar').style.width = '40%';
+        function retryCurrentRound() {
+            const sec = sectorsData[currentSector];
+            const rData = sec.rounds[currentRound];
+            // Recalculate state up to currentRound - 1
+            trustScore = 60;
+            moneyImpact = 0;
+            for (let i = 0; i < currentRound; i++) {
+                const prevOpt = sec.rounds[i].options.find(o => o.isCorrect === roundResults[i]) || sec.rounds[i].options[1];
+                moneyImpact += prevOpt.moneyDelta;
+                trustScore = Math.max(10, Math.min(100, trustScore + prevOpt.trustDelta));
+            }
+            roundResults[currentRound] = null;
+            renderCurrentState();
+        }
+
+        function nextRound() {
+            if (currentRound < 2) {
+                currentRound++;
+                renderCurrentState();
+            } else {
+                showFinalVerdict();
+            }
+        }
+
+        function showFinalVerdict() {
+            const isRu = simLang === 'ru';
+            const t = uiLabels[simLang];
+            const sec = sectorsData[currentSector];
+
+            document.getElementById('round-play-area').style.display = 'none';
+            const vScreen = document.getElementById('verdict-screen');
+            vScreen.style.display = 'block';
+
+            document.getElementById('v-badge').innerText = t.v_badge;
+            document.getElementById('v-score-lbl').innerText = t.v_score_lbl;
+            document.getElementById('v-money-lbl').innerText = t.v_money_lbl;
+            document.getElementById('v-hours-lbl').innerText = t.v_hours_lbl;
+            document.getElementById('v-btn-restart').innerText = t.v_btn_restart;
+
+            const correctCount = roundResults.filter(Boolean).length;
+            const finalScore = correctCount === 3 ? 98 : (correctCount === 2 ? 86 : (correctCount === 1 ? 58 : 35));
+
+            document.getElementById('v-score').innerText = `${finalScore} / 100`;
+            document.getElementById('v-money').innerText = formatMoney(moneyImpact);
+            document.getElementById('v-hours').innerText = correctCount >= 2 ? (isRu ? '38 ч. / мес' : '38 сағ. / ай') : (isRu ? '0 ч. (Аврал)' : '0 сағ.');
+
+            const vTitle = document.getElementById('v-title');
+            const vSub = document.getElementById('v-sub');
+
+            if (finalScore >= 85) {
+                vTitle.innerText = isRu
+                    ? `🏆 АТТЕСТАЦИЯ ПРОЙДЕНА (${correctCount} из 3 раундов)! Высший пилотаж нормоконтроля`
+                    : `🏆 АТТЕСТАЦИЯДАН СӘТТІ ӨТТІҢІЗ (3-тен ${correctCount} раунд)! Жоғары нормобақылау стандарты`;
+                vSub.innerText = isRu
+                    ? 'Вы продемонстрировали безупречное владение методологией «МЕТОДИКО» (Обратный дизайн, таксономия Блума и защита ROI). Именно так будут отвечать ваши сотрудники и выглядеть ваши документы после внедрения наших стандартов под ключ.'
+                    : 'Сіз «МЕТОДИКО» әдіснамасын (Кері дизайн, Блум таксономиясы және ROI қорғау) мінсіз меңгергеніңізді көрсеттіңіз. Біздің стандарттарды енгізгеннен кейін қызметкерлеріңіз бен құжаттарыңыз дәл осылай жұмыс істейді.';
+            } else {
+                vTitle.innerText = isRu
+                    ? `⚠️ ВЫЯВЛЕНЫ ЗОНЫ ФИНАНСОВОГО РИСКА (${correctCount} из 3 раундов)`
+                    : `⚠️ ҚАРЖЫЛЫҚ ТӘУЕКЕЛ АЙМАҚТАРЫ АНЫҚТАЛДЫ (3-тен ${correctCount} раунд)`;
+                vSub.innerText = isRu
+                    ? 'Стресс-тест показал точки, где стандартные ответы приводят к потере клиентов, возвратам средств или замечаниям комиссий. Бюро «МЕТОДИКО» разработает для вашей организации готовый тренажер и пакет документации, исключающий эти ошибки за 14 дней.'
+                    : 'Стресс-тест стандартты жауаптардың клиенттерді жоғалтуға немесе комиссия ескертулеріне әкелетін тұстарын көрсетті. «МЕТОДИКО» бюросы 14 күнде осы қателерді жоятын дайын тренажер мен құжаттар пакетін әзірлейді.';
+            }
+
+            const ctaBtn = document.getElementById('v-btn-calc');
+            ctaBtn.innerText = isRu ? sec.ctaRu : sec.ctaKz;
+            ctaBtn.href = `index.html?cat=${sec.calcCat}#calculator`;
+        }
+
+        function restartSector() {
+            selectSector((currentSector + 1) % 4);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -639,8 +1668,16 @@
             if (!initLang) {
                 try { initLang = localStorage.getItem('metodiko_lang'); } catch (e) {}
             }
+            const secParam = urlParams.get('sector');
+            if (secParam !== null && !isNaN(parseInt(secParam, 10))) {
+                currentSector = Math.max(0, Math.min(3, parseInt(secParam, 10)));
+                document.querySelectorAll('.sector-tab-btn').forEach((btn, i) => {
+                    btn.classList.toggle('active', i === currentSector);
+                });
+            }
             setSimLang(initLang === 'kz' ? 'kz' : 'ru');
         });
     </script>
 </body>
 </html>
+
