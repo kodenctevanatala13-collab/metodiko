@@ -32,7 +32,7 @@
       --muted: #475569;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); line-height: 1.6; }
+    html, body { max-width: 100%; overflow-x: hidden; background: var(--bg); color: var(--text); line-height: 1.6; }
     .top-nav {
       background: var(--navy); color: #fff; border-bottom: 2px solid var(--gold);
       padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
@@ -59,8 +59,17 @@
     .hero h1 { font-size: 34px; max-width: 860px; margin: 0 auto 14px; font-family: Georgia, serif; }
     .hero p { font-size: 16px; color: #cbd5e1; max-width: 740px; margin: 0 auto; }
     .container { max-width: 1120px; margin: 40px auto; padding: 0 20px; }
-    .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 24px; }
-    @media (max-width: 640px) { .articles-grid { grid-template-columns: 1fr; } .hero h1 { font-size: 26px; } }
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 24px; }
+    @media (max-width: 768px) {
+      .top-nav { padding: 14px 16px; }
+      .hero { padding: 36px 16px; }
+      .hero h1 { font-size: 24px; }
+      .container { margin: 24px auto; padding: 0 12px; }
+      .articles-grid { grid-template-columns: 1fr; gap: 16px; }
+      .article-card { padding: 20px 18px; }
+      .article-card h2 { font-size: 18px; }
+      .btn-read, .btn-sim { width: 100%; justify-content: center; text-align: center; }
+    }
     .article-card {
       background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 28px;
       display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(15,23,42,0.05);
@@ -141,7 +150,7 @@
         <div>
           <div class="card-tag-row">
             <span class="card-tag">Сектор 2 • B2B Корпорации и РОПы</span>
-            <span class="card-status">📄 Спецификация + Тренажер</span>
+            <span class="card-status">🟢 Опубликовано • Эталон GEO 2026</span>
           </div>
           <h2>Почему стажеры сливают до 50% лидов на возражении «Қымбат / Дорого»: архитектура онбординга за 72 часа через диалоговые ИИ-симуляторы</h2>
           <p>Финансовая математика потерь отдела продаж на первых 3 неделях адаптации. Как перевести проверку знаний скриптов в автономный HTML5/SCORM тренажер и освободить 38 часов рабочего времени РОПа в месяц.</p>
@@ -150,8 +159,9 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="whitepaper-corporate-sales.html" class="btn-read">📄 Открыть спецификацию B2B →</a>
-          <a href="case-1-sales-simulator.html?sector=0" class="btn-sim">💼 Пройти дуэль продаж</a>
+          <a href="article-2-b2b-onboarding-72h.html" class="btn-read">📖 Читать полную статью →</a>
+          <a href="whitepaper-corporate-sales.html" class="btn-sim">📄 Спецификация PDF</a>
+          <a href="case-1-sales-simulator.html?sector=0" class="btn-sim">💼 Симулятор</a>
         </div>
       </article>
 
@@ -160,17 +170,18 @@
         <div>
           <div class="card-tag-row">
             <span class="card-tag">Сектор 3 • Частные школы и «Ұстаз»</span>
-            <span class="card-status">📄 Спецификация + Кейс</span>
+            <span class="card-status">🟢 Опубликовано • Эталон GEO 2026</span>
           </div>
-          <h2>Аттестация педагогов на платформе «Ұстаз» (сарапшы, зерттеуші, шебер) и фирменные тетради-комиксы: защита статуса частной школы в 2026 году</h2>
-          <p>Разбор новых правил цифровой аттестации учителей без бумажного хаоса. Как брендированный воркбук-комикс (Pre-press PDF CMYK) обосновывает родительский чек 350 000+ ₸ в месяц.</p>
+          <h2>Пилот платформы «Ұстаз» (приказ № 159-НҚ) и фирменные тетради-комиксы: защита статуса частной школы в 2026–2027 годах</h2>
+          <p>Разбор новых правил цифровой аттестации учителей и перехода на цифровой профиль. Как брендированный воркбук-комикс (Pre-press PDF CMYK) обосновывает родительский чек 350 000+ ₸ в месяц.</p>
           <div class="card-metrics">
-            📊 Внутри: Состав эталонного УМК вариативного курса (34/68 ч), смарт-дескрипторы СОР/СОЧ и паспорт рецензирования.
+            📊 Внутри: Состав эталонного УМК вариативного курса (34/68 ч), смарт-дескрипторы СОР/СОЧ и живой кейс тетради.
           </div>
         </div>
         <div class="card-actions">
-          <a href="whitepaper-ustaz-school.html" class="btn-read">📄 Открыть стандарт «Ұстаз» →</a>
-          <a href="case-1-sales-simulator.html?sector=2" class="btn-sim">🏫 Пройти симулятор школы</a>
+          <a href="article-3-ustaz-school-workbook.html" class="btn-read">📖 Читать полную статью →</a>
+          <a href="whitepaper-ustaz-school.html" class="btn-sim">📄 Спецификация PDF</a>
+          <a href="case-1-sales-simulator.html?sector=2" class="btn-sim">🏫 Симулятор</a>
         </div>
       </article>
 
@@ -179,17 +190,18 @@
         <div>
           <div class="card-tag-row">
             <span class="card-tag">Сектор 4 • EdTech СНГ и Академии</span>
-            <span class="card-status">📄 Спецификация + Аудит</span>
+            <span class="card-status">🟢 Опубликовано • Эталон GEO 2026</span>
           </div>
           <h2>Доходимость онлайн-курса (COR) ниже 18%: как провести методологический аудит (Drop-off Map) и собрать курс из голоса эксперта (Voice-to-Course)</h2>
-          <p>Как ликвидировать лавину возвратов на 3-й неделе обучения, снять когнитивную перегрузку по теории Свеллера и распаковать эксперта за 4 часа аудиоинтервью вместо 80 часов писанины.</p>
+          <p>Как ликвидировать лавину возвратов на 3-й неделе обучения, снять когнитивную перегрузку по теории Свеллера и распаковать эксперта за 4–6 часов аудиоинтервью вместо 80 часов писанины.</p>
           <div class="card-metrics">
-            📊 Внутри: Формула роста COR с 15% до 85%+, регламентированная система обратной связи кураторов (SLA 15 минут) и защита оферты.
+            📊 Внутри: Формула роста COR с 15% до 85%+, регламент обратной связи кураторов (SLA 15 минут) и калькулятор оттока.
           </div>
         </div>
         <div class="card-actions">
-          <a href="whitepaper-edtech-audit.html" class="btn-read">📄 Открыть стандарт EdTech →</a>
-          <a href="case-1-sales-simulator.html?sector=3" class="btn-sim">🚀 Пройти симулятор EdTech</a>
+          <a href="article-4-edtech-cor-voice-to-course.html" class="btn-read">📖 Читать полную статью →</a>
+          <a href="whitepaper-edtech-audit.html" class="btn-sim">📄 Спецификация PDF</a>
+          <a href="case-1-sales-simulator.html?sector=3" class="btn-sim">🚀 Симулятор</a>
         </div>
       </article>
 

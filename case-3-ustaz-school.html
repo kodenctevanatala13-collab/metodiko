@@ -583,6 +583,19 @@
     .lightbox-close {
       position: absolute; top: 24px; right: 32px; color: #FFFFFF; font-size: 36px; cursor: pointer; background: none; border: none;
     }
+    @media (max-width: 820px) {
+      html, body { overflow-x: hidden; max-width: 100%; }
+      .top-header { padding: 12px 14px; }
+      .header-inner, .hero-inner, .main-wrap { padding-left: 14px !important; padding-right: 14px !important; }
+      .hero-title { font-size: 24px !important; }
+      .kpi-strip, .attestation-grid, .workbook-layout, .ladder-grid, .teacher-passport-grid, .differentiation-grid { grid-template-columns: 1fr !important; }
+      .cover-side-card { position: static; }
+      .custom-school-banner { flex-direction: column; gap: 10px; padding: 14px 16px; }
+      .custom-banner-content { min-width: 0; width: 100%; }
+      .custom-tag { display: block; width: 100%; line-height: 1.45; white-space: normal; }
+      .tab-content > div { padding: 16px !important; }
+      table { display: block; overflow-x: auto; max-width: 100%; }
+    }
   </style>
 </head>
 <body>

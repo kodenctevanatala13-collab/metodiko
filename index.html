@@ -1709,21 +1709,66 @@
       }
     }
 
-    /* АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ */
+    /* АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ И ПЛАНШЕТОВ */
+    html, body { max-width: 100%; overflow-x: hidden; }
+    .mobile-menu-toggle {
+      display: none;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(194,157,89,0.45);
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mobile-controls { display: none; align-items: center; gap: 8px; flex-shrink: 0; }
+    .mobile-drawer {
+      display: none;
+      background: #0D1624;
+      border-top: 1px solid rgba(194,157,89,0.3);
+      padding: 12px 16px 16px;
+    }
+    .mobile-drawer.open { display: flex; flex-direction: column; gap: 10px; }
+    .mobile-drawer .nav-link { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+    .mobile-drawer .nav-btn-gold { text-align: center; padding: 10px 16px; margin-top: 4px; }
+
     @media (max-width: 992px) {
-      .bento-hero-grid { grid-template-columns: 1fr; }
-      .bento-main-hero { grid-column: span 1; }
-      .bento-mini-widget { grid-column: span 1; }
-      .bento-metric-card { grid-column: span 6; }
-      .audience-card-box { grid-template-columns: 1fr; }
-      .calc-layout-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
+      .header-nav { gap: 12px; }
+      .bento-hero-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bento-main-hero { grid-column: span 2; min-width: 0; }
+      .bento-mini-widget { grid-column: span 2; min-width: 0; }
+      .bento-metric-card { grid-column: span 1; min-width: 0; }
+      .audience-card-box { grid-template-columns: minmax(0, 1fr); }
+      .calc-layout-grid { grid-template-columns: minmax(0, 1fr); }
+      .footer-grid { grid-template-columns: minmax(0, 1fr); }
+      .bento-card, .bento-mini-widget, .calc-summary-sticky, .audience-card-box { min-width: 0; max-width: 100%; }
+    }
+    @media (max-width: 768px) {
+      .header-nav { display: none; }
+      .mobile-controls { display: flex; }
+      .mobile-menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+      .brand-name { font-size: 16px; letter-spacing: 0.8px; }
+      .brand-tagline { font-size: 9px; }
+      .brand-logo-img { height: 34px; }
     }
     @media (max-width: 640px) {
-      .bento-metric-card { grid-column: span 12; }
-      .hero-h1 { font-size: 26px; }
-      .pill-tab-btn { font-size: 12px; padding: 10px 16px; }
-      .header-nav { display: none; }
+      .container { padding: 0 14px; }
+      .hero-section { padding: 24px 0 24px; }
+      .bento-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .bento-main-hero, .bento-mini-widget, .bento-metric-card { grid-column: span 1 !important; min-width: 0; width: 100%; }
+      .bento-card, .bento-mini-widget { padding: 20px 16px; }
+      .hero-h1 { font-size: 24px; }
+      .hero-actions { flex-direction: column; }
+      .btn-main { width: 100%; justify-content: center; }
+      .widget-target-selector { grid-template-columns: 1fr 1fr; }
+      .pill-nav-wrapper { gap: 8px; }
+      .pill-tab-btn { font-size: 12px; padding: 10px 14px; width: 100%; justify-content: center; }
+      .calc-tabs-bar { grid-template-columns: 1fr 1fr; }
+      .calc-sheet-card, .calc-summary-sticky { padding: 18px 14px; }
+      .kp-sheet-modal { width: 96% !important; padding: 18px 14px !important; }
+      .sheet-table { display: block; overflow-x: auto; }
+      .calc-voice-actions-row { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
@@ -1753,6 +1798,21 @@
           <button class="lang-btn active" id="lang-ru" onclick="setLanguage('ru')">RU</button>
         </div>
       </div>
+
+      <div class="mobile-controls">
+        <div class="lang-switcher" style="margin-left:0;">
+          <button class="lang-btn" id="lang-kz-mob" onclick="setLanguage('kz')">KZ</button>
+          <button class="lang-btn active" id="lang-ru-mob" onclick="setLanguage('ru')">RU</button>
+        </div>
+        <button class="mobile-menu-toggle" onclick="document.getElementById('mobile-drawer').classList.toggle('open')" aria-label="Меню">☰</button>
+      </div>
+    </div>
+    <div class="mobile-drawer" id="mobile-drawer">
+      <a href="#navigator" class="nav-link" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_solutions">Направления</a>
+      <a href="articles.html" class="nav-link" style="color:var(--gold-light); font-weight:700;">📚 Журнал стандартов</a>
+      <a href="case-1-sales-simulator.html" class="nav-link">⚡ 4D Симулятор</a>
+      <a href="#calculator" class="nav-link" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_calc">Калькулятор сметы</a>
+      <a href="#calculator" class="nav-btn nav-btn-gold" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_btn_kp">Получить КП</a>
     </div>
   </header>
 
@@ -3467,6 +3527,10 @@
       // Кнопки переключения
       document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('lang-kz').classList.toggle('active', lang === 'kz');
+      const ruMob = document.getElementById('lang-ru-mob');
+      const kzMob = document.getElementById('lang-kz-mob');
+      if (ruMob) ruMob.classList.toggle('active', lang === 'ru');
+      if (kzMob) kzMob.classList.toggle('active', lang === 'kz');
 
       // Перевод всех элементов с data-i18n
       document.querySelectorAll('[data-i18n]').forEach(el => {

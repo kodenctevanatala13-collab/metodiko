@@ -15,7 +15,10 @@
 - **Языки работы:** Государственный казахский язык (Қазақ тілі) и русский язык.
 
 ## Официальные спецификации, статьи и симуляторы
-- **Статья-стандарт (ГОСО РК 2026 & AI-Sana & Platonus):** https://metodico-kz.netlify.app/article-1-goso-2026-ai-sana.html
+- **Статья-стандарт №1 (ГОСО РК 2026 & AI-Sana & Platonus):** https://metodico-kz.netlify.app/article-1-goso-2026-ai-sana.html
+- **Статья-стандарт №2 (B2B Онбординг за 72 часа и ИИ-тренажеры продаж):** https://metodico-kz.netlify.app/article-2-b2b-onboarding-72h.html
+- **Статья-стандарт №3 (Пилот «Ұстаз» и рабочие тетради частных школ):** https://metodico-kz.netlify.app/article-3-ustaz-school-workbook.html
+- **Статья-стандарт №4 (Аудит EdTech COR 85%+ и сборка Voice-to-Course):** https://metodico-kz.netlify.app/article-4-edtech-cor-voice-to-course.html
 - **Спецификация для Вузов и Колледжей (ГОСО РК 2026):** https://metodico-kz.netlify.app/whitepaper-goso-2026.html
 - **Спецификация для Корпораций и Бизнеса (B2B онбординг за 72 часа):** https://metodico-kz.netlify.app/whitepaper-corporate-sales.html
 - **Спецификация для Частных школ и педагогов («Ұстаз»):** https://metodico-kz.netlify.app/whitepaper-ustaz-school.html
