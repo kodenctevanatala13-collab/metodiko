@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный портал заявки — Бюро стандартов «МЕТОДИКО»</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #152238;
+      --navy-light: #1e3152;
+      --gold: #C29D59;
+      --bg: #F4F6FA;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --text: #1E293B;
+      --muted: #64748B;
+      --green: #047857;
+      --green-bg: #ECFDF5;
+      --amber-bg: #FFFBEB;
+      --amber-border: #F59E0B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      padding: 16px 24px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand span { color: var(--gold); font-size: 13px; font-family: 'Inter', sans-serif; font-weight: 600; }
+    .lang-toggle { display: flex; gap: 6px; }
+    .lang-btn {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .lang-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+    .container { max-width: 960px; margin: 28px auto; padding: 0 18px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
+    }
+    .hero-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 22px; color: var(--navy); }
+    .kp-badge {
+      display: inline-block;
+      background: var(--navy);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .status-pill {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .meta-item strong { display: block; font-size: 12px; color: var(--muted); font-weight: 600; }
+    .steps-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+    @media (max-width: 680px) { .steps-bar { grid-template-columns: 1fr 1fr; } }
+    .step-chip {
+      text-align: center;
+      padding: 9px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #F1F5F9;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .step-chip.done { background: var(--green-bg); color: var(--green); border-color: #A7F3D0; }
+    .step-chip.cur { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .section-title { font-size: 18px; color: var(--navy); margin-bottom: 10px; font-weight: 800; }
+    .notice-box {
+      background: var(--amber-bg);
+      border: 1px solid #FDE68A;
+      border-left: 4px solid var(--amber-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .kp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .kp-option {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #FAFBFD;
+    }
+    .kp-option.recommended { border-color: var(--gold); background: #FFFDF7; }
+    .kp-option h3 { font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+    .kp-price { font-size: 22px; font-weight: 800; color: var(--navy); margin: 8px 0 4px; }
+    .kp-days { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+    .kp-scope { font-size: 14px; color: var(--text); margin-bottom: 14px; }
+    label { display: block; font-weight: 600; font-size: 14px; margin: 12px 0 6px; color: var(--navy); }
+    textarea, input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid #CBD5E1;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--navy-light); }
+    .btn-gold { background: var(--gold); color: var(--navy); }
+    .btn-gold:hover { background: #b48c46; }
+    .btn-green { background: #059669; }
+    .btn-green:hover { background: #047857; }
+    .btn-outline { background: #fff; color: var(--navy); border: 1.5px solid var(--navy); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .gdrive-steps {
+      list-style: none;
+      counter-reset: gd;
+      margin: 14px 0;
+    }
+    .gdrive-steps li {
+      counter-increment: gd;
+      position: relative;
+      padding: 10px 12px 10px 44px;
+      margin-bottom: 8px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-size: 14px;
+    }
+    .gdrive-steps li::before {
+      content: counter(gd);
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toast {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 9px;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .toast.ok { display: block; background: var(--green-bg); color: var(--green); border: 1px solid #A7F3D0; }
+    .toast.err { display: block; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">МЕТОДИКО <span>ТОО «Метод и Ко»</span></div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-ru" onclick="switchLang('ru')">RU</button>
+        <button class="lang-btn" id="btn-kz" onclick="switchLang('kz')">KZ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card" id="loading-card">
+      <p id="loading-text">⏳ Загружаем данные вашей заявки...</p>
+    </div>
+
+    <div id="portal-root" style="display:none;">
+      <div class="card">
+        <div class="hero-head">
+          <div>
+            <div class="kp-badge" id="p-kp">MK-...</div>
+            <h1 id="p-title">Персональная страница проекта</h1>
+          </div>
+          <div class="status-pill" id="p-status">...</div>
+        </div>
+        <div class="meta-grid">
+          <div class="meta-item"><strong id="lbl-client">Заказчик</strong><span id="v-client">—</span></div>
+          <div class="meta-item"><strong id="lbl-cat">Направление</strong><span id="v-cat">—</span></div>
+          <div class="meta-item"><strong id="lbl-devlang">Язык материалов</strong><span id="v-devlang">—</span></div>
+          <div class="meta-item"><strong id="lbl-price">Смета / Срок</strong><span id="v-price">—</span></div>
+        </div>
+        <div class="steps-bar" id="steps-bar"></div>
+      </div>
+
+      <!-- Блок 1: Дополнительный вопрос от Натальи -->
+      <div class="card" id="sec-extra" style="display:none;">
+        <div class="section-title" id="t-extra">🟠 Уточняющий вопрос от руководителя бюро</div>
+        <div class="notice-box" id="extra-question-text"></div>
+        <label for="inp-extra" id="lbl-extra-ans">Ваш ответ (можно также приложить ссылку на документы):</label>
+        <textarea id="inp-extra"></textarea>
+        <div style="margin-top:12px;">
+          <button class="btn" onclick="submitExtraAnswer()" id="btn-extra">Отправить ответ руководителю</button>
+        </div>
+        <div class="toast" id="toast-extra"></div>
+      </div>
+
+      <!-- Блок 2: Финальное КП (3 варианта) -->
+      <div class="card" id="sec-kp3" style="display:none;">
+        <div class="section-title" id="t-kp3">💼 Финальное коммерческое предложение (3 варианта комплектации)</div>
+        <div class="notice-box" id="kp3-deadline-note"></div>
+        <div class="kp-grid" id="kp3-grid"></div>
+        <label for="inp-reqs" id="lbl-reqs">Реквизиты для договора (ТОО/ИП, БИН/ИИН, ИИК, БИК, ФИО подписанта) — если ещё не передавали:</label>
+        <textarea id="inp-reqs" placeholder="Например: ТОО «...», БИН ..., KZ..., БИК ..., Директор ..."></textarea>
+        <div class="toast" id="toast-kp3"></div>
+      </div>
+
+      <!-- Блок 3: Предварительный Договор и ориентировочное окно старта -->
+      <div class="card" id="sec-contract" style="display:none;">
+        <div class="section-title" id="t-contract">📄 Предварительный договор и планируемое окно старта</div>
+        <p id="contract-summary" style="margin-bottom:14px;"></p>
+        <div id="contract-doc-wrap" style="margin-bottom:16px;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+          <button class="btn btn-green" onclick="agreeContract()" id="btn-agree">✅ Договор согласован</button>
+        </div>
+        <label for="inp-contract-fix" id="lbl-contract-fix">Если нужны правки в формулировках или реквизитах — напишите ниже:</label>
+        <textarea id="inp-contract-fix"></textarea>
+        <div style="margin-top:10px;">
+          <button class="btn btn-outline" onclick="sendContractComment()" id="btn-fix">Отправить комментарий к договору</button>
+        </div>
+        <div class="toast" id="toast-contract"></div>
+      </div>
+
+      <!-- Блок 4: Передача исходников (Google Диск пошагово) + Даты работы -->
+      <div class="card" id="sec-materials">
+        <div class="section-title" id="t-mat">📂 Папка материалов проекта на Google Диске</div>
+        <p id="mat-lead" style="font-size:14px; color:var(--muted); margin-bottom:10px;"></p>
+        <ol class="gdrive-steps" id="gdrive-steps"></ol>
+        <label for="inp-drive" id="lbl-drive">Ссылка на вашу папку Google Диска:</label>
+        <input type="url" id="inp-drive" placeholder="https://drive.google.com/drive/folders/...">
+        <label for="inp-drive-note" id="lbl-drive-note">Комментарий по файлам (если нужно):</label>
+        <input type="text" id="inp-drive-note">
+        <div style="margin-top:12px;">
+          <button class="btn btn-gold" onclick="submitDriveLink()" id="btn-drive">Сохранить и передать ссылку в Бюро</button>
+        </div>
+        <div class="toast" id="toast-drive"></div>
+      </div>
+
+      <!-- Блок 5: Контакты -->
+      <div class="card" style="text-align:center; font-size:14px; color:var(--muted);">
+        <p id="footer-help">Есть срочный вопрос? WhatsApp Бюро: <a href="https://wa.me/77000773566" target="_blank" style="color:var(--navy); font-weight:700;">+7 (700) 077-35-66</a> · <a href="index.html" style="color:var(--navy); font-weight:700;">Вернуться на сайт МЕТОДИКО</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '/.netlify/functions/crm-api';
+    const urlParams = new URLSearchParams(window.location.search);
+    const kpParam = urlParams.get('kp') || '';
+    const tokenParam = urlParams.get('t') || '';
+    let portalData = null;
+    let lang = 'ru';
+
+    const I18N = {
+      ru: {
+        loading: '⏳ Загружаем данные вашей заявки...',
+        badLink: '❌ Неверная или неполная ссылка заявки. Проверьте ссылку из сообщения или напишите в WhatsApp +7 (700) 077-35-66.',
+        title: 'Персональная страница проекта',
+        client: 'Заказчик', cat: 'Направление', devlang: 'Язык материалов', price: 'Смета и срок',
+        steps: ['1. Бриф', '2. Финальное КП', '3. Договор', '4. Материалы', '5. В работе'],
+        t_extra: '🟠 Уточняющий вопрос от Натальи Коденцевой',
+        lbl_extra: 'Ваш ответ (можно сразу прикрепить ссылку на материалы):',
+        btn_extra: 'Отправить ответ',
+        t_kp3: '💼 Финальное КП (3 варианта комплектации)',
+        lbl_reqs: 'Реквизиты для договора (ТОО/ИП, БИН/ИИН, ИИК, БИК, подписант):',
+        pickBtn: 'Выбрать этот вариант',
+        t_contract: '📄 Предварительный договор и окно старта',
+        btn_agree: '✅ Договор согласован',
+        lbl_fix: 'Если есть правки по формулировкам или реквизитам:',
+        btn_fix: 'Отправить комментарий к договору',
+        t_mat: '📂 Передача исходных материалов через Google Диск',
+        matLead: 'Создайте одну общую папку у себя на Google Диске — туда вы сложите исходники, а мы после выполнения вернём в неё же все готовые файлы.',
+        gdSteps: [
+          'Откройте <b>drive.google.com</b> и войдите в свой Google-аккаунт.',
+          'Нажмите <b>«+ Создать» ➔ «Новую папку»</b> (например: <code>МЕТОДИКО — Ваш проект</code>).',
+          'Загрузите туда все исходные файлы: силлабусы, Word, PDF, презентации, аудио или видео любого размера.',
+          'Нажмите правой кнопкой на папку ➔ <b>«Поделиться» ➔ «Доступ по ссылке»</b> ➔ выберите <b>«Редактор»</b> и скопируйте ссылку.',
+          'Вставьте скопированную ссылку в поле ниже и нажмите кнопку отправки.'
+        ],
+        lbl_drive: 'Ссылка на вашу папку Google Диска:',
+        btn_drive: 'Передать ссылку в Бюро «МЕТОДИКО»',
+        savedOk: '✅ Данные успешно сохранены и переданы Наталье Коденцевой!'
+      },
+      kz: {
+        loading: '⏳ Өтінім деректері жүктелуде...',
+        badLink: '❌ Сілтеме қате немесе толық емес. WhatsApp арқылы хабарласыңыз: +7 (700) 077-35-66.',
+        title: 'Жобаның жеке порталы',
+        client: 'Тапсырыс беруші', cat: 'Бағыты', devlang: 'Материалдар тілі', price: 'Смета және мерзім',
+        steps: ['1. Бриф', '2. Соңғы КП', '3. Шарт', '4. Материалдар', '5. Жұмыста'],
+        t_extra: '🟠 Наталья Коденцевадан нақтылау сұрағы',
+        lbl_extra: 'Жауабыңыз (қажет болса сілтеме қосуға болады):',
+        btn_extra: 'Жауапты жіберу',
+        t_kp3: '💼 Қорытынды КП (3 жинақтау нұсқасы)',
+        lbl_reqs: 'Шарт үшін деректемелер (ЖШС/ЖК, БСН/ЖСН, ИИК, БИК, қол қоюшы):',
+        pickBtn: 'Осы нұсқаны таңдау',
+        t_contract: '📄 Алдын ала шарт және басталу терезесі',
+        btn_agree: '✅ Шарт келісілді',
+        lbl_fix: 'Мәтін немесе деректемелер бойынша түзету болса:',
+        btn_fix: 'Түзетуді жіберу',
+        t_mat: '📂 Бастапқы материалдарды Google Диск арқылы беру',
+        matLead: 'Өзіңіздің Google Дискіңізде бір ортақ бума жасаңыз — бастапқы файлдарды сонда саласыз, ал дайын өнімді де сол бумаға қайтарамыз.',
+        gdSteps: [
+          '<b>drive.google.com</b> сайтын ашып, Google аккаунтыңызға кіріңіз.',
+          '<b>«+ Создать / Жаңа бума»</b> батырмасын басып, бума жасаңыз (мысалы: <code>МЕТОДИКО</code>).',
+          'Оған барлық бастапқы материалдарды (Word, PDF, презентация, аудио/видео) жүктеңіз.',
+          'Буманы оң жақ түймемен басып ➔ <b>«Бөлісу / Поделиться»</b> ➔ <b>«Сілтеме арқылы кез келген адам — Редактор»</b> таңдап, сілтемені көшіріңіз.',
+          'Сілтемені төмендегі өріске қойып, жіберу түймесін басыңыз.'
+        ],
+        lbl_drive: 'Google Диск бумаңыздың сілтемесі:',
+        btn_drive: 'Сілтемені «МЕТОДИКО» бюросына жіберу',
+        savedOk: '✅ Деректер сақталды және Наталья Коденцеваға жіберілді!'
+      }
+    };
+
+    function switchLang(nextLang) {
+      lang = nextLang === 'kz' ? 'kz' : 'ru';
+      document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
+      document.getElementById('btn-kz').classList.toggle('active', lang === 'kz');
+      render();
+    }
+
+    function computeStepIndex(crmStatus) {
+      const s = crmStatus || '';
+      if (s.includes('🟢') || s.includes('📅') || s.includes('✅')) return 4;
+      if (s.includes('⏳') || s.includes('✍️')) return 3;
+      if (s.includes('📄') || s.includes('🤝')) return 2;
+      if (s.includes('💼')) return 1;
+      return 0;
+    }
+
+    function render() {
+      const d = I18N[lang];
+      document.getElementById('loading-text').innerText = d.loading;
+      if (!portalData) return;
+
+      document.getElementById('p-kp').innerText = portalData.kpNumber;
+      document.getElementById('p-title').innerText = d.title;
+      document.getElementById('p-status').innerText = portalData.crmStatus || '—';
+      document.getElementById('lbl-client').innerText = d.client;
+      document.getElementById('lbl-cat').innerText = d.cat;
+      document.getElementById('lbl-devlang').innerText = d.devlang;
+      document.getElementById('lbl-price').innerText = d.price;
+      document.getElementById('v-client').innerText = `${portalData.clientName} (${portalData.clientOrg})`;
+      document.getElementById('v-cat').innerText = portalData.category || '—';
+      document.getElementById('v-devlang').innerText = portalData.devLanguage || '—';
+      const datesNote = portalData.startDate ? ` | ${portalData.startDate} ➔ ${portalData.endDate}` : '';
+      document.getElementById('v-price').innerText = `${Number(portalData.agreedPrice || 0).toLocaleString('ru-RU')} ₸ · ${portalData.totalDays} дн.${datesNote}`;
+
+      const curStep = computeStepIndex(portalData.crmStatus);
+      document.getElementById('steps-bar').innerHTML = d.steps.map((st, idx) => {
+        const cls = idx < curStep ? 'step-chip done' : (idx === curStep ? 'step-chip cur' : 'step-chip');
+        return `<div class="${cls}">${st}</div>`;
+      }).join('');
+
+      // Доп. вопрос
+      const hasExtra = (portalData.crmStatus || '').includes('🟠') || Boolean(portalData.deal && portalData.deal.lastExtraQuestion);
+      document.getElementById('sec-extra').style.display = hasExtra ? 'block' : 'none';
+      document.getElementById('t-extra').innerText = d.t_extra;
+      document.getElementById('lbl-extra-ans').innerText = d.lbl_extra;
+      document.getElementById('btn-extra').innerText = d.btn_extra;
+      if (hasExtra) {
+        document.getElementById('extra-question-text').innerText = portalData.deal.lastExtraQuestion || 'Уточните, пожалуйста, детали заявки.';
+      }
+
+      // 3 варианта Финального КП
+      const variants = (portalData.deal && portalData.deal.kpVariants) || [];
+      document.getElementById('sec-kp3').style.display = (variants.length > 0 && (portalData.crmStatus || '').includes('💼')) ? 'block' : 'none';
+      document.getElementById('t-kp3').innerText = d.t_kp3;
+      document.getElementById('lbl-reqs').innerText = d.lbl_reqs;
+      if (portalData.requisites && !document.getElementById('inp-reqs').value) {
+        document.getElementById('inp-reqs').value = portalData.requisites === '—' ? '' : portalData.requisites;
+      }
+      if (variants.length > 0) {
+        const dl = portalData.deal.kpDeadlineText || '';
+        document.getElementById('kp3-deadline-note').innerHTML = lang === 'kz'
+          ? `💳 Төлем: <b>100% алдын ала төлем</b>. Осы шарттар мен смета <b>2 жұмыс күні ішінде (${dl})</b> сақталады.`
+          : `💳 Условия оплаты: <b>100% предоплата</b>. Мы держим это предложение в течение <b>2 рабочих дней (до ${dl})</b>.`;
+        document.getElementById('kp3-grid').innerHTML = variants.map((v, i) => `
+          <div class="kp-option ${i === 1 ? 'recommended' : ''}">
+            <div>
+              <h3>${v.id}. ${v.title}</h3>
+              <div class="kp-price">${Number(v.price).toLocaleString('ru-RU')} ₸</div>
+              <div class="kp-days">${v.days} ${lang === 'kz' ? 'жұм. күні' : 'раб. дн.'}</div>
+              <p class="kp-scope">${v.scope}</p>
+            </div>
+            <button class="btn ${i === 1 ? 'btn-gold' : ''}" onclick="pickKp(${v.id})">${d.pickBtn}</button>
+          </div>
+        `).join('');
+      }
+
+      // Предварительный договор
+      const showContract = (portalData.crmStatus || '').includes('📄');
+      document.getElementById('sec-contract').style.display = showContract ? 'block' : 'none';
+      document.getElementById('t-contract').innerText = d.t_contract;
+      document.getElementById('btn-agree').innerText = d.btn_agree;
+      document.getElementById('lbl-contract-fix').innerText = d.lbl_fix;
+      document.getElementById('btn-fix').innerText = d.btn_fix;
+      document.getElementById('contract-summary').innerHTML = lang === 'kz'
+        ? `Жалпы сомасы: <b>${Number(portalData.agreedPrice).toLocaleString('ru-RU')} ₸</b> (100% алдын ала төлем) · Мерзімі: <b>${portalData.totalDays} жұм. күні</b> · Графиктегі жақын бос терезе: <b>${portalData.nextFreeWindow}</b>`
+        : `Итоговая стоимость: <b>${Number(portalData.agreedPrice).toLocaleString('ru-RU')} ₸</b> (100% предоплата) · Срок: <b>${portalData.totalDays} раб. дн.</b> · Ближайшее окно старта в Графике: <b>${portalData.nextFreeWindow}</b>`;
+      document.getElementById('contract-doc-wrap').innerHTML = portalData.contractUrl
+        ? `<a href="${portalData.contractUrl}" target="_blank" class="btn btn-outline">📎 ${lang === 'kz' ? 'Шарт жобасын ашу (Google Docs)' : 'Открыть черновик договора (Google Docs)'}</a>`
+        : '';
+
+      // Материалы Google Диск
+      document.getElementById('t-mat').innerText = d.t_mat;
+      document.getElementById('mat-lead').innerText = d.matLead;
+      document.getElementById('gdrive-steps').innerHTML = d.gdSteps.map(s => `<li>${s}</li>`).join('');
+      document.getElementById('lbl-drive').innerText = d.lbl_drive;
+      document.getElementById('btn-drive').innerText = d.btn_drive;
+      if (portalData.driveFolderUrl && !document.getElementById('inp-drive').value) {
+        document.getElementById('inp-drive').value = portalData.driveFolderUrl;
+      }
+    }
+
+    async function loadPortal() {
+      if (!kpParam || !tokenParam) {
+        document.getElementById('loading-text').innerText = I18N[lang].badLink;
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}?action=client_portal&kp=${encodeURIComponent(kpParam)}&t=${encodeURIComponent(tokenParam)}`);
+        const data = await res.json();
+        if (data.status !== 'ok') {
+          document.getElementById('loading-text').innerText = I18N[lang].badLink;
+          return;
+        }
+        portalData = data;
+        lang = data.chatLang === 'kz' ? 'kz' : 'ru';
+        document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
+        document.getElementById('btn-kz').classList.toggle('active', lang === 'kz');
+        document.getElementById('loading-card').style.display = 'none';
+        document.getElementById('portal-root').style.display = 'block';
+        render();
+      } catch (e) {
+        document.getElementById('loading-text').innerText = I18N[lang].badLink;
+      }
+    }
+
+    async function sendAction(payload, toastId) {
+      const t = document.getElementById(toastId);
+      t.className = 'toast';
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.assign({ type: 'client_portal_action', kpNumber: kpParam, token: tokenParam }, payload))
+        });
+        const ans = await res.json();
+        if (ans.status === 'ok') {
+          t.innerText = I18N[lang].savedOk;
+          t.className = 'toast ok';
+          await loadPortal();
+        } else {
+          t.innerText = '⚠️ ' + (ans.message || 'Ошибка сохранения');
+          t.className = 'toast err';
+        }
+      } catch (e) {
+        t.innerText = '⚠️ Ошибка сети, попробуйте снова.';
+        t.className = 'toast err';
+      }
+    }
+
+    function submitExtraAnswer() {
+      const txt = document.getElementById('inp-extra').value.trim();
+      if (!txt) return;
+      sendAction({ action: 'answer_extra', text: txt }, 'toast-extra');
+    }
+
+    function pickKp(variantId) {
+      const reqs = document.getElementById('inp-reqs').value.trim();
+      sendAction({ action: 'select_kp_variant', variantId: variantId, requisites: reqs }, 'toast-kp3');
+    }
+
+    function agreeContract() {
+      sendAction({ action: 'agree_contract' }, 'toast-contract');
+    }
+
+    function sendContractComment() {
+      const txt = document.getElementById('inp-contract-fix').value.trim();
+      if (!txt) return;
+      sendAction({ action: 'contract_comment', text: txt }, 'toast-contract');
+    }
+
+    function submitDriveLink() {
+      const url = document.getElementById('inp-drive').value.trim();
+      const note = document.getElementById('inp-drive-note').value.trim();
+      if (!url) return;
+      sendAction({ action: 'submit_materials_link', driveLink: url, note: note }, 'toast-drive');
+    }
+
+    loadPortal();
+  </script>
+</body>
+</html>
