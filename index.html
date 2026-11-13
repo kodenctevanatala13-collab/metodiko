@@ -2119,7 +2119,7 @@
           </div>
         </div>
 
-        <!-- ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР ВОЗРАЖЕНИЙ И НОРМОКОНТРОЛЯ (6 СЦЕНАРИЕВ + ОЗВУЧКА + ФИНАНСОВЫЙ СЧЕТЧИК) -->
+        <!-- ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР ВОЗРАЖЕНИЙ И НОРМОКОНТРОЛЯ (6 СЦЕНАРИЕВ + ФИНАНСОВЫЙ СЧЕТЧИК) -->
         <div class="simulator-card-box" id="b2b-simulator" style="margin-top: 24px;">
           <div class="sim-top-bar">
             <div class="sim-header-text">
@@ -2225,7 +2225,7 @@
               </li>
               <li class="aud-bullet-item">
                 <svg class="gold-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span data-i18n="c3_b3">Интерактивный тренажер со звуковой обратной связью для интерактивной доски в классе.</span>
+                <span data-i18n="c3_b3">Интерактивный тренажер с мгновенной проверкой для интерактивной доски в классе.</span>
               </li>
             </ul>
           </div>
@@ -2954,35 +2954,6 @@
 
           </div>
 
-          <!-- ОБЩИЕ ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ ДЛЯ ВСЕХ БЛОКОВ -->
-          <div class="calc-question-box" style="background: #FDFBF7; border-color: var(--gold-border);">
-            <div style="font-size: 13px; font-weight: 700; color: var(--navy-header); margin-bottom: 8px;">
-              🌐 Дополнительные возможности и сопровождение:
-            </div>
-
-            <label class="calc-item-row">
-              <div class="calc-item-left">
-                <input type="checkbox" class="calc-item-checkbox" data-global="true" data-name-ru="Полная локализация на казахский язык (Қазақ тілі)" data-name-kz="Қазақ тіліне кәсіби толық бейімдеу" data-price="100000" data-days="2" onchange="recalculateEstimate()">
-                <div>
-                  <div class="calc-item-name">Полная локализация на казахский язык (Қазақ тілі)</div>
-                  <div class="calc-item-desc">Академический и отраслевой перевод всех материалов без кальки</div>
-                </div>
-              </div>
-              <div class="calc-item-price">100 000 ₸</div>
-            </label>
-
-            <label class="calc-item-row">
-              <div class="calc-item-left">
-                <input type="checkbox" class="calc-item-checkbox" data-global="true" data-name-ru="Нормоконтроль и 2 раунда калибровки по замечаниям комиссии (дистанционно)" data-name-kz="Нормативтік бақылау және комиссия ескертулері бойынша 2 түзету кезеңі (қашықтан)" data-price="120000" data-days="0" onchange="recalculateEstimate()">
-                <div>
-                  <div class="calc-item-name">Нормоконтроль и 2 раунда калибровки по замечаниям комиссии (дистанционно)</div>
-                  <div class="calc-item-desc">Доработка документов по замечаниям УМС/совета в рамках ТЗ без очных выездов</div>
-                </div>
-              </div>
-              <div class="calc-item-price">120 000 ₸</div>
-            </label>
-          </div>
-
         </div>
 
         <!-- ПРАВАЯ ПАНЕЛЬ: ИТОГОВАЯ СМЕТА И ЗАПРОС НА УТВЕРЖДЕНИЕ КП -->
@@ -2995,6 +2966,22 @@
 
           <div style="font-size: 12.5px; font-weight: 700; color: var(--navy-header); margin-bottom: 10px;">
             Зафиксировать условия и получить предварительное КП:
+          </div>
+
+          <div class="summary-form-group" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--navy-header); margin-bottom: 7px;" data-i18n="devlang_title">Язык разработки материалов:</div>
+            <label style="display:flex; align-items:center; gap:7px; font-size:12.5px; color:#334155; margin-bottom:5px; cursor:pointer;">
+              <input type="radio" name="calc-dev-lang" value="ru" checked onchange="recalculateEstimate()" style="accent-color:var(--gold-dark);">
+              <span data-i18n="devlang_ru">Только русский (базовая цена)</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:7px; font-size:12.5px; color:#334155; margin-bottom:5px; cursor:pointer;">
+              <input type="radio" name="calc-dev-lang" value="kz" onchange="recalculateEstimate()" style="accent-color:var(--gold-dark);">
+              <span data-i18n="devlang_kz">Только казахский (+10% цена и срок)</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:7px; font-size:12.5px; color:#334155; cursor:pointer;">
+              <input type="radio" name="calc-dev-lang" value="both" onchange="recalculateEstimate()" style="accent-color:var(--gold-dark);">
+              <span data-i18n="devlang_both">Два языка RU + KZ (+25% цена, +20% срок)</span>
+            </label>
           </div>
 
           <div class="summary-form-group">
@@ -3011,17 +2998,6 @@
           </div>
           <div class="summary-form-group">
             <input type="text" id="lead-tg" class="summary-input" placeholder="Telegram (@username или номер)">
-          </div>
-
-          <!-- БЫСТРОЕ ПОЛЕ ДЛЯ ВОПРОСА ВНУТРИ ПАНЕЛИ -->
-          <div class="summary-form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-              <label for="lead-question-side" style="font-size: 11.5px; font-weight: 600; color: #475569;" data-i18n="lbl_question">Вопрос руководителю (по желанию):</label>
-              <button type="button" class="btn-voice-mini" id="btn-voice-rec-side" onclick="toggleVoiceInput()" title="Надиктовать голосом">
-                🎙️ <span id="voice-side-btn-text">Голосом</span>
-              </button>
-            </div>
-            <textarea id="lead-question-side" class="summary-textarea" rows="2" placeholder="Вопрос по ценам, срокам или нормативам..."></textarea>
           </div>
 
           <!-- ЩИТ БЕЗОПАСНОСТИ HONEYPOT (СКРЫТАЯ ЛОВУШКА ДЛЯ СПАМ-БОТОВ) -->
@@ -3094,7 +3070,7 @@
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 ТОО «Метод и Ко» (БИН 231140018015). Бюро стандартов «МЕТОДИКО». <a href="privacy.html" style="color:#CBD5E1; text-decoration:underline; margin-left:6px;">Политика конфиденциальности</a></div>
+        <div>© 2026 ТОО «Метод и Ко» (БИН 231140018015). Бюро стандартов «МЕТОДИКО».</div>
         <div>г. Алматы • Материалы сайта не являются публичной офертой (ст. 395 ГК РК)</div>
       </div>
     </div>
@@ -3174,7 +3150,27 @@
         </table>
 
         <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; font-size: 11.5px; color: #475569; margin: 16px 0;" data-i18n="kp_legal_note">
-          <strong>Порядок согласования:</strong> Данный расчет является предварительным. Окончательный график внедрения, техническое задание и договор утверждаются руководителем Бюро стандартов «МЕТОДИКО» по результатам установочного брифинга.
+          <strong>Порядок согласования:</strong> Данный расчет является предварительным (не является публичной офертой, ст. 395 ГК РК). Работа ведется по 100% предоплате со стартом на следующий рабочий день после оплаты и получения материалов.
+        </div>
+
+        <div id="kp-next-step-box" style="background: #FFFDF5; border: 1.5px solid var(--gold-primary); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+          <div style="font-weight: 700; font-size: 13.5px; color: #0D1624; margin-bottom: 6px;" data-i18n="kp_step2_title">
+            Шаг 2: Уточните детали проекта (3 минуты, голосом или текстом)
+          </div>
+          <div style="font-size: 12px; color: #475569; margin-bottom: 10px;" data-i18n="kp_step2_desc">
+            Короткая распаковка нужна для точного ТЗ и подготовки договора. Вы можете надиктовать ответ голосом с микрофона или заполнить текстом:
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <a id="kp-brief-link" href="brief.html" class="btn-main btn-primary-gold" style="padding: 9px 16px; font-size: 12.5px; font-weight: 700; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','brief_web_open')" data-i18n="btn_go_brief">
+              🎙️ Пройти распаковку прямо на сайте (3 мин)
+            </a>
+            <a id="kp-tg-bot-link" href="#" target="_blank" class="btn-main btn-secondary-navy" style="display:none; padding: 9px 16px; font-size: 12.5px; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','brief_tg_open')" data-i18n="btn_go_tg">
+              ✈️ Пройти в Telegram-боте
+            </a>
+            <a id="kp-wa-link" href="https://wa.me/77000773566" target="_blank" class="btn-main btn-secondary-navy" style="padding: 9px 14px; font-size: 12.5px; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','whatsapp_click')">
+              💬 WhatsApp (+7 700 077-35-66)
+            </a>
+          </div>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 24px; padding-top: 14px; border-top: 1px solid #E2E8F0;">
@@ -3273,7 +3269,7 @@
         c3_lead: "Комплект документов для высшей аттестации учителя на республиканском уровне + интерактивная геймифицированная тетрадь ученика «Операция Анти-Фейк».",
         c3_b1: "Утвержденная пояснительная записка, КТП (34/68 ч) и технологические карты с дескрипторами.",
         c3_b2: "Комикс-квест для детей в двух версиях: русская и казахская (Қазақ тілі).",
-        c3_b3: "Интерактивный тренажер со звуковой обратной связью для интерактивной доски в классе.",
+        c3_b3: "Интерактивный тренажер с мгновенной проверкой для интерактивной доски в классе.",
         acc_open_sch: "Развернуть состав аттестационного пакета",
         c3_acc_txt: "Включает: диагностический аппарат (входное/выходное тестирование), критериальные рубрикаторы оценивания по таксономии Блума, рецензию эксперта высшей категории и готовую презентацию 16:9 для защиты перед комиссией.",
         c3_kpi_txt: "К надбавке заработной платы педагога при присвоении категории «Педагог-исследователь».",
@@ -3309,7 +3305,6 @@
         cat_2_title: "2. Высшая школа и ТиПО (ГОСО 2026, УМКД)",
         cat_3_title: "3. Школы и авторские программы («Ұстаз»)",
         cat_4_title: "4. EdTech и онлайн-курсы (Аудит, Voice-to-Course)",
-        cat_5_title: "5. Языковая локализация и сопровождение",
         c_sim_name: "Диалоговый тренажер (от 3 ключевых сценариев)",
         c_sim_desc: "Интерактивный тренажер диалогов и отработки сложных возражений",
         c_onb_name: "Стандарты онбординга и регламент допуска (72 часа)",
@@ -3338,10 +3333,6 @@
         c_reanim_desc: "Перепроектирование уроков, геймификация, доводимость до 85%+",
         c_v2c_name: "Упаковка курса из аудио-наговоров (Voice-to-Course)",
         c_v2c_desc: "Транскрибация наговоров эксперта, конспекты, рабочие тетради",
-        c_kz_name: "Полная локализация на казахский язык (Қазақ тілі)",
-        c_kz_desc: "Профессиональный академический и отраслевой перевод всех материалов",
-        c_sopr_name: "Нормоконтроль и 2 раунда калибровки (дистанционно)",
-        c_sopr_desc: "Внесение правок комиссий и аттестационный нормоконтроль",
         sum_heading: "Расчетная смета проекта",
         sum_time: "Срок: выберите опции слева",
         form_title: "Сформировать первичное КП на утверждение:",
@@ -3375,7 +3366,15 @@
         th_days: "Срок",
         th_cost: "Стоимость",
         th_total: "ИТОГО ПО СМЕТЕ:",
-        kp_legal_note: "Порядок согласования: Данный расчет является предварительным. Окончательный график внедрения, техническое задание и договор утверждаются руководителем Бюро стандартов «МЕТОДИКО» по результатам установочного брифинга.",
+        kp_legal_note: "<strong>Порядок согласования:</strong> Данный расчет является предварительным (не является публичной офертой, ст. 395 ГК РК). Работа ведется по 100% предоплате со стартом на следующий рабочий день после оплаты и получения материалов.",
+        devlang_title: "Язык разработки материалов:",
+        devlang_ru: "Только русский (базовая цена)",
+        devlang_kz: "Только казахский (+10% цена и срок)",
+        devlang_both: "Два языка RU + KZ (+25% цена, +20% срок)",
+        kp_step2_title: "Шаг 2: Уточните детали проекта (3 минуты, голосом или текстом)",
+        kp_step2_desc: "Короткая распаковка нужна для точного ТЗ и подготовки договора. Вы можете надиктовать ответ голосом с микрофона или заполнить текстом:",
+        btn_go_brief: "🎙️ Пройти распаковку прямо на сайте (3 мин)",
+        btn_go_tg: "✈️ Пройти в Telegram-боте",
         btn_print_kp: "🖨️ Распечатать / Сохранить в PDF",
         btn_close_modal: "Закрыть",
         lbl_consent: "Я согласен(на) на обработку персональных данных в соответствии с <a href=\"privacy.html\" target=\"_blank\" style=\"color:var(--gold-dark); text-decoration:underline; font-weight:600;\">Политикой конфиденциальности</a> (Закон РК № 94-V).",
@@ -3445,7 +3444,7 @@
         c3_lead: "Мұғалімді республикалық деңгейде жоғары аттестаттауға арналған құжаттар топтамасы + оқушының «Анти-Фейк операциясы» интерактивті геймификацияланған дәптері.",
         c3_b1: "Бекітілген түсіндірме жазба, КТЖ (34/68 сағат) және дескрипторлары бар технологиялық карталар.",
         c3_b2: "Екі тілде балаларға арналған комикс-квест: қазақша (Қазақ тілі) және орысша.",
-        c3_b3: "Сыныптағы интерактивті тақтаға арналған дыбыстық кері байланысы бар интерактивті тренажер.",
+        c3_b3: "Сыныптағы интерактивті тақтаға арналған лезде тексеретін интерактивті тренажер.",
         acc_open_sch: "Аттестаттау пакетінің құрамын ашу",
         c3_acc_txt: "Құрамына кіреді: диагностикалық аппарат (бастапқы/қорытынды тестілеу), Блум таксономиясы бойынша бағалау рубрикаторлары, жоғары санатты сарапшының рецензиясы және қорғауға арналған 16:9 презентация.",
         c3_kpi_txt: "«Педагог-зерттеуші» санатын алған кезде ұстаздың жалақысына қосылатын үстемеақыға.",
@@ -3481,7 +3480,6 @@
         cat_2_title: "2. Жоғары мектеп және ТжКБ (МЖМБС 2026, ПОӘК)",
         cat_3_title: "3. Мектептер мен авторлық бағдарламалар («Ұстаз»)",
         cat_4_title: "4. EdTech және онлайн-курстар (Аудит, Voice-to-Course)",
-        cat_5_title: "5. Тілдік локализация және сүйемелдеу",
         c_sim_name: "Диалогтік тренажер (3 негізгі сценарийден бастап)",
         c_sim_desc: "Диалогтер мен күрделі қарсылықтарды пысықтаудың интерактивті тренажері",
         c_onb_name: "Бейімдеу стандарттары және рұқсат регламенті (72 сағат)",
@@ -3510,10 +3508,6 @@
         c_reanim_desc: "Сабақтарды қайта жобалау, геймификация, 85%+ бітіруге дейін жеткізу",
         c_v2c_name: "Аудиожазбалардан курс әзірлеу (Voice-to-Course)",
         c_v2c_desc: "Сарапшының дауыстық жазбаларын мәтінге айналдыру, конспектілер",
-        c_kz_name: "Қазақ тіліне толық кәсіби локализация жасау",
-        c_kz_desc: "Барлық материалдарды кәсіби академиялық және салалық аудару",
-        c_sopr_name: "Нормативтік бақылау және 2 түзету кезеңі (қашықтан)",
-        c_sopr_desc: "Комиссиялардың түзетулерін енгізу және аттестаттау нормобақылауы",
         sum_heading: "Жобаның есептік сметасы",
         sum_time: "Мерзімі: сол жақтағы баптарды таңдаңыз",
         form_title: "Бекіту үшін бастапқы КП қалыптастыру:",
@@ -3547,7 +3541,15 @@
         th_days: "Мерзімі",
         th_cost: "Құны",
         th_total: "СМЕТА БОЙЫНША БАРЛЫҒЫ:",
-        kp_legal_note: "Келісу тәртібі: Бұл есеп алдын ала болып табылады. Түпкілікті кесте, техникалық тапсырма мен шарт брифинг нәтижесінде бекітіледі.",
+        kp_legal_note: "Келісу тәртібі: Бұл есеп алдын ала болып табылады (ҚР АК 395-бабы бойынша жария оферта емес). Жұмыс 100% алдын ала төлеммен төлем түскен және материалдар алынғаннан кейінгі келесі жұмыс күні басталады.",
+        devlang_title: "Материалдарды әзірлеу тілі:",
+        devlang_ru: "Тек орыс тілінде (негізгі баға)",
+        devlang_kz: "Тек қазақ тілінде (+10% баға мен мерзім)",
+        devlang_both: "Екі тілде RU + KZ (+25% баға, +20% мерзім)",
+        kp_step2_title: "2-қадам: Жоба мәліметтерін нақтылаңыз (3 минут, дауыспен немесе мәтінмен)",
+        kp_step2_desc: "Нақты техникалық тапсырма мен шартты дайындау үшін қысқа сұрақтарға жауап беріңіз (микрофон арқылы дауыспен жазуға да болады):",
+        btn_go_brief: "🎙️ Сайттың өзінде сұрақтарға жауап беру (3 мин)",
+        btn_go_tg: "✈️ Telegram-ботта өту",
         btn_print_kp: "🖨️ Басып шығару / PDF сақтау",
         btn_close_modal: "Жабу",
         lbl_consent: "<a href=\"privacy.html\" target=\"_blank\" style=\"color:var(--gold-dark); text-decoration:underline; font-weight:600;\">Құпиялылық саясатына</a> сәйкес дербес деректерімді өңдеуге келісім беремін (ҚР № 94-V Заңы).",
@@ -3607,24 +3609,6 @@
       const rangeEl = document.getElementById('widget-range-input');
       if (rangeEl) {
         updateWidgetCalculation(rangeEl.value);
-      }
-
-      // Обновление плейсхолдера вопроса и подсказок к микрофону
-      const qSideEl = document.getElementById('lead-question-side');
-      if (qSideEl) {
-        qSideEl.placeholder = lang === 'ru'
-          ? 'Вопрос по ценам, срокам или нормативам...'
-          : 'Баға, мерзім немесе нормативтер бойынша сұрақ...';
-      }
-      const voiceSideBtnText = document.getElementById('voice-side-btn-text');
-      if (voiceSideBtnText && !isRecordingSpeech) {
-        voiceSideBtnText.innerText = lang === 'ru' ? 'Голосом' : 'Дауыспен';
-      }
-      const voiceHintEl = document.getElementById('voice-hint');
-      if (voiceHintEl && !isRecordingSpeech) {
-        voiceHintEl.innerText = lang === 'ru' 
-          ? 'Нажмите кнопку, разрешите микрофон в браузере и говорите (до 45 сек)' 
-          : 'Түймені басып, микрофонға рұқсат беріңіз және сөйлеңіз (45 сек дейін)';
       }
 
       // Пересчет сметы
@@ -3940,7 +3924,27 @@
       recalculateEstimate();
     }
 
-    // РАСЧЕТ СМЕТЫ С УЧЕТОМ МУЛЬТИВЫБОРА, ЧАСОВ И СРОЧНОСТИ
+    const CLIENT_BOT_USERNAME = 'metodico_brif_bot'; // Подключенный клиентский бот-распаковщик (@metodico_brif_bot)
+
+    function getDevLangConfig() {
+      const checked = document.querySelector('input[name="calc-dev-lang"]:checked');
+      const code = checked ? checked.value : 'ru';
+      if (code === 'kz') return { code: 'kz', priceMult: 1.10, daysMult: 1.10 };
+      if (code === 'both') return { code: 'both', priceMult: 1.25, daysMult: 1.20 };
+      return { code: 'ru', priceMult: 1.0, daysMult: 1.0 };
+    }
+
+    function computeEstimateTotals(basePrice, baseDays, isUrgent, devLangCfg) {
+      let price = basePrice * devLangCfg.priceMult;
+      if (isUrgent) price *= 1.20;
+      const totalPrice = Math.round(price / 1000) * 1000;
+
+      let days = Math.ceil(baseDays * devLangCfg.daysMult);
+      if (isUrgent) days = Math.max(3, Math.ceil(days * 0.65));
+      return { totalPrice, totalDays: days };
+    }
+
+    // РАСЧЕТ СМЕТЫ С УЧЕТОМ МУЛЬТИВЫБОРА, ЯЗЫКА И СРОЧНОСТИ
     function recalculateEstimate() {
       const activeBlockId = audienceBlockIds[currentAudienceIndex];
       const activeBlock = document.getElementById(activeBlockId);
@@ -3965,9 +3969,8 @@
         isUrgent = true;
       }
 
-      // Коэффициент срочности +20%
-      let finalPrice = isUrgent ? Math.round(basePrice * 1.20 / 1000) * 1000 : basePrice;
-      let finalDays = isUrgent ? Math.max(3, Math.ceil(baseDays * 0.65)) : baseDays;
+      const devLangCfg = getDevLangConfig();
+      const { totalPrice: finalPrice, totalDays: finalDays } = computeEstimateTotals(basePrice, baseDays, isUrgent, devLangCfg);
 
       const totalSumEl = document.getElementById('calc-total-sum');
       const totalDaysEl = document.getElementById('calc-total-days');
@@ -3981,78 +3984,6 @@
         totalDaysEl.innerText = isRu 
           ? (isUrgent ? `⚡ Срочный режим: ${finalDays} раб. дней (форсированный)` : `Срок реализации: от ${finalDays} раб. дней`)
           : (isUrgent ? `⚡ Жедел режим: ${finalDays} жұмыс күні (жеделдетілген)` : `Орындау мерзімі: ${finalDays} жұмыс күнінен бастап`);
-      }
-    }
-
-    // ГОЛОСОВОЙ ВВОД ВОПРОСА ВНУТРИ ПАНЕЛИ КАЛЬКУЛЯТОРА (WEB SPEECH API)
-    let speechRecognitionInstance = null;
-    let isRecordingSpeech = false;
-    let voiceBaseText = '';
-
-    function toggleVoiceInput() {
-      const btnSide = document.getElementById('btn-voice-rec-side');
-      const btnSideText = document.getElementById('voice-side-btn-text');
-      const qSide = document.getElementById('lead-question-side');
-      const isRu = currentLanguage === 'ru';
-
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert(isRu 
-          ? 'Ваш браузер не поддерживает прямое распознавание речи. Пожалуйста, напишите ваш вопрос текстом в поле ввода.' 
-          : 'Браузеріңіз дауысты тікелей тануды қолдамайды. Сұрағыңызды енгізу өрісіне мәтінмен жазыңыз.');
-        return;
-      }
-
-      if (isRecordingSpeech && speechRecognitionInstance) {
-        speechRecognitionInstance.stop();
-        return;
-      }
-
-      try {
-        speechRecognitionInstance = new SpeechRecognition();
-        speechRecognitionInstance.lang = isRu ? 'ru-RU' : 'kk-KZ';
-        speechRecognitionInstance.continuous = false;
-        speechRecognitionInstance.interimResults = false;
-        speechRecognitionInstance.maxAlternatives = 1;
-
-        speechRecognitionInstance.onstart = function() {
-          isRecordingSpeech = true;
-          voiceBaseText = qSide ? qSide.value.trim() : '';
-          if (btnSide) {
-            btnSide.classList.add('recording');
-            if (btnSideText) btnSideText.innerText = isRu ? '🔴 Слушаю...' : '🔴 Тыңдауда...';
-          }
-        };
-
-        speechRecognitionInstance.onresult = function(event) {
-          if (!event.results || !event.results[0] || !event.results[0][0]) return;
-          const transcript = event.results[0][0].transcript.trim();
-          if (transcript && qSide) {
-            qSide.value = voiceBaseText ? (voiceBaseText + ' ' + transcript) : transcript;
-          }
-        };
-
-        function resetVoiceUI() {
-          isRecordingSpeech = false;
-          if (btnSide) {
-            btnSide.classList.remove('recording');
-            if (btnSideText) btnSideText.innerText = isRu ? 'Голосом' : 'Дауыспен';
-          }
-        }
-
-        speechRecognitionInstance.onerror = function() {
-          resetVoiceUI();
-        };
-
-        speechRecognitionInstance.onend = function() {
-          resetVoiceUI();
-        };
-
-        speechRecognitionInstance.start();
-      } catch (err) {
-        console.warn('Speech error:', err);
-        isRecordingSpeech = false;
-        if (btnSide) btnSide.classList.remove('recording');
       }
     }
 
@@ -4077,7 +4008,7 @@
       const clientOrg = document.getElementById('lead-org').value.trim() || (isRu ? 'Организация заказчика' : 'Тапсырыс беруші мекемесі');
       const clientEmail = document.getElementById('lead-email').value.trim() || '—';
       const clientTg = document.getElementById('lead-tg').value.trim() || '—';
-      const clientQuestion = ((document.getElementById('lead-question') ? document.getElementById('lead-question').value : '') || (document.getElementById('lead-question-side') ? document.getElementById('lead-question-side').value : '')).trim();
+      const clientQuestion = '';
 
       if (!clientName) {
         alert(isRu ? 'Пожалуйста, укажите ваше имя.' : 'Атыңызды көрсетіңіз.');
@@ -4106,7 +4037,7 @@
         return;
       }
 
-      // Проверка срочности
+      // Проверка срочности и языка разработки
       let isUrgent = false;
       const urgentRadio = activeBlock ? activeBlock.querySelector('input[type="radio"].calc-speed-radio:checked') : null;
       if (urgentRadio && urgentRadio.value === 'urgent') isUrgent = true;
@@ -4119,8 +4050,8 @@
         baseDays += parseInt(cb.getAttribute('data-days') || '0', 10);
       });
 
-      let totalPrice = isUrgent ? Math.round(basePrice * 1.20 / 1000) * 1000 : basePrice;
-      let totalDays = isUrgent ? Math.max(3, Math.ceil(baseDays * 0.65)) : baseDays;
+      const devLangCfg = getDevLangConfig();
+      const { totalPrice, totalDays } = computeEstimateTotals(basePrice, baseDays, isUrgent, devLangCfg);
 
       // Номер и дата
       const today = new Date();
@@ -4133,15 +4064,8 @@
       document.getElementById('kp-client-org').innerText = clientOrg;
       document.getElementById('kp-client-contact').innerText = `${clientPhone} | ${clientEmail} | TG: ${clientTg}`;
 
-      // Вопрос клиента
       const qBox = document.getElementById('kp-client-question-box');
-      const qText = document.getElementById('kp-client-question-text');
-      if (clientQuestion) {
-        qBox.style.display = 'block';
-        qText.innerText = clientQuestion;
-      } else {
-        qBox.style.display = 'none';
-      }
+      if (qBox) qBox.style.display = 'none';
 
       // Таблица услуг
       const tbody = document.getElementById('kp-table-body');
@@ -4166,20 +4090,69 @@
         tbody.appendChild(row);
       });
 
+      if (devLangCfg.code !== 'ru') {
+        const langRow = document.createElement('tr');
+        langRow.style.background = '#F8FAFC';
+        const langLabel = devLangCfg.code === 'kz'
+          ? (isRu ? 'Разработка на казахском языке (+10% к стоимости и сроку)' : 'Қазақ тілінде әзірлеу (+10% құны мен мерзімі)')
+          : (isRu ? 'Разработка на двух языках RU + KZ (+25% к стоимости, +20% к сроку)' : 'Екі тілде RU + KZ әзірлеу (+25% құны, +20% мерзімі)');
+        const langDelta = Math.round(basePrice * (devLangCfg.priceMult - 1) / 1000) * 1000;
+        langRow.innerHTML = `
+          <td style="text-align: center; color: #475569;">🌐</td>
+          <td><strong>${langLabel}</strong></td>
+          <td style="text-align: center; color: #475569;">+${Math.round((devLangCfg.daysMult - 1) * 100)}%</td>
+          <td style="text-align: right; font-weight: 700; color: #475569;">+${langDelta.toLocaleString('ru-RU')} ₸</td>
+        `;
+        tbody.appendChild(langRow);
+      }
+
       if (isUrgent) {
         const row = document.createElement('tr');
         row.style.background = '#FFFBEB';
+        const priceBeforeUrgent = Math.round(basePrice * devLangCfg.priceMult / 1000) * 1000;
         row.innerHTML = `
           <td style="text-align: center; color: #D97706;">⚡</td>
           <td><strong>${isRu ? 'Форсированный режим нормоконтроля (+20% к стоимости)' : 'Жеделдетілген нормобақылау режимі (+20%)'}</strong></td>
           <td style="text-align: center; color: #D97706;">${isRu ? 'Срочно' : 'Жедел'}</td>
-          <td style="text-align: right; font-weight: 700; color: #D97706;">+${(totalPrice - basePrice).toLocaleString('ru-RU')} ₸</td>
+          <td style="text-align: right; font-weight: 700; color: #D97706;">+${(totalPrice - priceBeforeUrgent).toLocaleString('ru-RU')} ₸</td>
         `;
         tbody.appendChild(row);
       }
 
       document.getElementById('kp-total-days').innerText = `${totalDays} ${isRu ? 'раб. дн.' : 'жұм. күні'}`;
       document.getElementById('kp-total-price').innerText = totalPrice.toLocaleString('ru-RU') + ' ₸';
+
+      // Настройка ссылок Шага 2 (веб-распаковщик, Telegram-бот, WhatsApp)
+      const briefLink = document.getElementById('kp-brief-link');
+      if (briefLink) {
+        const qs = new URLSearchParams({
+          kp: kpNumber,
+          cat: String(currentAudienceIndex),
+          lang: currentLanguage,
+          devlang: devLangCfg.code,
+          price: String(totalPrice),
+          days: String(totalDays),
+          name: clientName,
+          phone: clientPhone
+        });
+        briefLink.href = 'brief.html?' + qs.toString();
+      }
+      const waLink = document.getElementById('kp-wa-link');
+      if (waLink) {
+        const waMsg = isRu
+          ? `Здравствуйте! Сформировал(а) КП № ${kpNumber} на сумму ${totalPrice.toLocaleString('ru-RU')} ₸.`
+          : `Сәлеметсіз бе! № ${kpNumber} коммерциялық ұсынысты (${totalPrice.toLocaleString('ru-RU')} ₸) рәсімдедім.`;
+        waLink.href = `https://wa.me/77000773566?text=${encodeURIComponent(waMsg)}`;
+      }
+      const tgBotLink = document.getElementById('kp-tg-bot-link');
+      if (tgBotLink && CLIENT_BOT_USERNAME) {
+        tgBotLink.href = `https://t.me/${CLIENT_BOT_USERNAME}?start=${encodeURIComponent(kpNumber)}`;
+        tgBotLink.style.display = 'inline-flex';
+      }
+
+      if (window.ym) {
+        ym(114214137, 'reachGoal', 'kp_created');
+      }
 
       // ФОРМИРОВАНИЕ СТРУКТУРЫ ДЛЯ БАЗЫ И TELEGRAM
       const leadPayload = {
@@ -4192,13 +4165,14 @@
         clientEmail: clientEmail,
         clientTg: clientTg,
         audienceCategory: isRu ? audienceNamesRu[currentAudienceIndex] : audienceNamesKz[currentAudienceIndex],
+        devLanguage: devLangCfg.code,
         selectedItems: selectedItemsList,
         isUrgent: isUrgent,
         totalPrice: totalPrice,
         totalDays: totalDays,
-        clientQuestion: clientQuestion || 'Вопрос не указан',
+        clientQuestion: clientQuestion,
         company_fax_code: hpCheck,
-        status: 'Новая заявка (на утверждении)'
+        status: 'Черновик КП (ожидает бриф)'
       };
 
       // 1. Сохранение в защищенный локальный буфер браузера
@@ -4211,7 +4185,7 @@
       }
 
       // 2. Отправка в Google Apps Script (Google Таблица + Telegram-бот)
-      const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbyyi5CwPPRDl1IEZ0c9zCh6CnE8F4kAe3BcjmNERwX84j2QP51MgJNZFwnES7fQyFOz-w/exec';
+      const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbzjPyBVs_o-rvviKsJtxmSQkx_NUdy7Ijnp5q6wA2WMYUbz18WZDVLZ6MWTFROu5E_U/exec';
       const webhookUrl = localStorage.getItem('metodiko_google_script_url') || defaultWebhookUrl;
       if (webhookUrl) {
         try {

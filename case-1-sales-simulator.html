@@ -374,26 +374,6 @@
             font-weight: 500;
         }
 
-        .btn-voice-speak {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            background: #ffffff;
-            border: 1px solid var(--navy);
-            color: var(--navy);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-voice-speak:hover, .btn-voice-speak.speaking {
-            background: var(--navy);
-            color: var(--gold);
-        }
-
         /* Speech Box */
         .speech-box {
             background: #ffffff;
@@ -941,8 +921,6 @@
                 lbl_round: "Раунд дуэли",
                 lbl_money: "Финансовый эффект решения",
                 lbl_trust: "Индекс доверия и нормоконтроля",
-                speak_btn: "Озвучить голосом",
-                speaking_btn: "Звучит речь...",
                 prompt_title: "Выберите профессиональное решение (3 раунда подряд):",
                 retry_round: "↺ Переиграть этот ход",
                 next_round: "Перейти к следующему раунду →",
@@ -963,8 +941,6 @@
                 lbl_round: "Кезең (Раунд)",
                 lbl_money: "Шешімнің қаржылық әсері",
                 lbl_trust: "Сенім және нормобақылау индексі",
-                speak_btn: "Дауыспен тыңдау",
-                speaking_btn: "Оқылуда...",
                 prompt_title: "«МЕТОДИКО» стандарты бойынша шешімді таңдаңыз:",
                 retry_round: "↺ Осы жүрісті қайталау",
                 next_round: "Келесі раундқа өту →",
@@ -1485,7 +1461,6 @@
             document.getElementById('lbl-round').innerText = t.lbl_round;
             document.getElementById('lbl-money').innerText = t.lbl_money;
             document.getElementById('lbl-trust').innerText = t.lbl_trust;
-            document.getElementById('txt-speak-btn').innerText = t.speak_btn;
             document.getElementById('txt-prompt-title').innerText = t.prompt_title;
             document.getElementById('btn-retry-round').innerText = t.retry_round;
             document.getElementById('txt-ft-blume').innerText = t.ft_blume;

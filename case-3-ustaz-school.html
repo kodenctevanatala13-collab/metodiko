@@ -1357,7 +1357,7 @@
                     <span class="phase-badge-stage">4-й этап: Практикум и апробация</span>
                   </div>
                   <p style="font-size: 13px; color: #334155; line-height: 1.5;">
-                    <strong>Действия учащихся:</strong> Самостоятельно или в парах работают с кейсом в тетради / Web-тренажере: отмечают 3 улики, нажимают кнопку верификации, слышат подтверждающий аудио-сигнал и фиксируют официальную печать «100% ФЕЙК».
+                    <strong>Действия учащихся:</strong> Самостоятельно или в парах работают с кейсом в тетради / Web-тренажере: отмечают 3 улики, нажимают кнопку верификации и фиксируют официальную печать «100% ФЕЙК».
                   </p>
                   <p style="font-size: 12.5px; color: #4B5563; margin-top: 6px;">
                     <strong>Действия учителя:</strong> Педагогическое сопровождение методом Сократа. Учитель проходит по рядам, использует прием точечной индивидуальной подсказки сомневающимся ученикам («Посмотри на фразу „анонимный источник“, что с ней не так?»). Заслушивает защиту 2 детективных пар перед классом.
@@ -2399,7 +2399,7 @@
                     <span class="phase-badge-stage">4-кезең: Практикум және тәжірибе</span>
                   </div>
                   <p style="font-size: 13px; color: #334155; line-height: 1.5;">
-                    <strong>Оқушылардың іс-әрекеті:</strong> Дәптерде / Web-тренажерде 3 айғақты белгілейді, тексеруді басады, растаушы дыбысты естиді және «100% ЖАЛҒАН АҚПАРАТ» мөрін алады.
+                    <strong>Оқушылардың іс-әрекеті:</strong> Дәптерде / Web-тренажерде 3 айғақты белгілейді, тексеруді басады, лезде тексеру нәтижесін көріп, «100% ЖАЛҒАН АҚПАРАТ» мөрін алады.
                   </p>
                   <p style="font-size: 12.5px; color: #4B5563; margin-top: 6px;">
                     <strong>Мұғалімнің іс-әрекеті:</strong> Сократ әдісімен қолдау көрсетеді, қатарларды аралап, күмәнданған оқушыларға жеке бағыттаушы кеңес беру әдісін қолданады. 2 жұптың дәлелді қорғауын тыңдайды.
@@ -2739,37 +2739,6 @@
       });
     }
 
-    // SOUND EFFECTS (WEB AUDIO API)
-    function playDetectiveChime(isWin) {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        if (isWin) {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
-          osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.22);
-          gain.gain.setValueAtTime(0.18, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.45);
-        } else {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, ctx.currentTime);
-          osc.frequency.setValueAtTime(180, ctx.currentTime + 0.12);
-          gain.gain.setValueAtTime(0.12, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.3);
-        }
-      } catch(e) {}
-    }
-
     // CHECK WORKBOOK EXERCISE (RU)
     function checkExerciseWorkbook() {
       const c1 = document.getElementById('wb-chk1').checked;
@@ -2778,7 +2747,6 @@
       const resBox = document.getElementById('wb-result-box');
 
       if (c1 && c2 && c3) {
-        playDetectiveChime(true);
         resBox.className = 'verify-result-box success';
         resBox.innerHTML = `
           <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
@@ -2795,7 +2763,6 @@
           </div>
         `;
       } else {
-        playDetectiveChime(false);
         resBox.className = 'verify-result-box';
         resBox.style.display = 'block';
         resBox.style.background = '#FEF2F2';
@@ -2812,7 +2779,6 @@
       const resBox = document.getElementById('wb-result-box-kz');
 
       if (c1 && c2 && c3) {
-        playDetectiveChime(true);
         resBox.className = 'verify-result-box success';
         resBox.innerHTML = `
           <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
@@ -2831,7 +2797,6 @@
           </div>
         `;
       } else {
-        playDetectiveChime(false);
         resBox.className = 'verify-result-box';
         resBox.style.display = 'block';
         resBox.style.background = '#FEF2F2';
