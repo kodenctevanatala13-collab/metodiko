@@ -1089,10 +1089,6 @@ function sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis, customHeader) {
     [
       { text: "❓ Задать доп. вопрос", callback_data: `ask_${kpNumber}` },
       { text: "✏️ Изменить сумму/срок", callback_data: `edit_${kpNumber}` }
-    ],
-    [
-      { text: "📄 Сразу к Договору", callback_data: `approve_${kpNumber}` },
-      { text: "💰 100% оплачено", callback_data: `paid_${kpNumber}` }
     ]
   ];
   if (waLink) kb.push([{ text: "📱 WhatsApp клиента", url: waLink }]);
@@ -1258,8 +1254,8 @@ function handleAdminCallback(callbackQuery) {
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "📤 Отправить Договор клиенту на согласование", callback_data: `send_contract_${kp}` }],
-          [{ text: "💰 Подписано + 100% оплачено", callback_data: `paid_${kp}` }]
+          [{ text: "✅ Согласовано мной ➔ Отправить Договор клиенту", callback_data: `send_contract_${kp}` }],
+          [{ text: "✏️ Изменить сумму/срок", callback_data: `edit_${kp}` }]
         ]
       }
     });
@@ -1875,7 +1871,13 @@ function handleClientPortalPost(data) {
       sendTelegramApi(adminToken, "sendMessage", {
         chat_id: adminChatId,
         text: `✏️ <b>Правка/вопрос по договору ${kpNumber} (с портала):</b>\n${escapeHtml(comment)}`,
-        parse_mode: "HTML"
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❓ Ответить / Задать вопрос", callback_data: `ask_${kpNumber}` }],
+            [{ text: "📄 Пересобрать Договор", callback_data: `approve_${kpNumber}` }]
+          ]
+        }
       });
     }
     return { status: "ok" };
