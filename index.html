@@ -1348,6 +1348,11 @@
       border-color: var(--gold-primary);
       box-shadow: 0 0 0 3px rgba(194, 157, 89, 0.15);
     }
+    .summary-input.field-error {
+      border-color: #DC2626 !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.16) !important;
+      background: #FEF2F2;
+    }
     .btn-generate-kp {
       width: 100%;
       background: var(--navy-header);
@@ -1817,6 +1822,7 @@
         <a href="articles.html" class="nav-link" style="color:var(--gold-light); font-weight:700;">📚 Журнал стандартов</a>
         <a href="case-1-sales-simulator.html" class="nav-link">⚡ 4D Симулятор</a>
         <a href="#calculator" class="nav-link" data-i18n="nav_calc">Калькулятор сметы</a>
+        <a href="#" id="nav-active-portal" class="nav-link" style="display:none; color:#4ADE80; font-weight:700;">🗂️ Мой заказ</a>
         <a href="#calculator" class="nav-btn nav-btn-gold" data-i18n="nav_btn_kp">Получить КП</a>
         
         <!-- Языковой переключатель -->
@@ -1839,6 +1845,7 @@
       <a href="articles.html" class="nav-link" style="color:var(--gold-light); font-weight:700;">📚 Журнал стандартов</a>
       <a href="case-1-sales-simulator.html" class="nav-link">⚡ 4D Симулятор</a>
       <a href="#calculator" class="nav-link" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_calc">Калькулятор сметы</a>
+      <a href="#" id="nav-active-portal-mob" class="nav-link" style="display:none; color:#4ADE80; font-weight:700;" onclick="this.parentElement.classList.remove('open')">🗂️ Мой заказ</a>
       <a href="#calculator" class="nav-btn nav-btn-gold" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_btn_kp">Получить КП</a>
     </div>
   </header>
@@ -2985,19 +2992,19 @@
           </div>
 
           <div class="summary-form-group">
-            <input type="text" id="lead-name" class="summary-input" placeholder="Ваше имя *" required>
+            <input type="text" id="lead-name" class="summary-input" placeholder="Ваше имя и фамилия *" required>
           </div>
           <div class="summary-form-group">
             <input type="text" id="lead-org" class="summary-input" placeholder="Организация / Учебное заведение / Должность">
           </div>
           <div class="summary-form-group">
-            <input type="text" id="lead-phone" class="summary-input" placeholder="Телефон (WhatsApp) *" required>
+            <input type="text" id="lead-phone" class="summary-input" placeholder="Телефон / WhatsApp *" required>
           </div>
           <div class="summary-form-group">
-            <input type="email" id="lead-email" class="summary-input" placeholder="Email для официального КП и договора">
+            <input type="email" id="lead-email" class="summary-input" placeholder="Email * (сюда автоматически придут КП и Договор)" required>
           </div>
           <div class="summary-form-group">
-            <input type="text" id="lead-tg" class="summary-input" placeholder="Telegram (@username или номер)">
+            <input type="text" id="lead-tg" class="summary-input" placeholder="Telegram (@username или номер — для учёта в проекте)">
           </div>
 
           <!-- ЩИТ БЕЗОПАСНОСТИ HONEYPOT (СКРЫТАЯ ЛОВУШКА ДЛЯ СПАМ-БОТОВ) -->
@@ -3010,14 +3017,14 @@
             <span data-i18n="lbl_consent">Я согласен(на) на обработку персональных данных в соответствии с <a href="privacy.html" target="_blank" style="color:var(--gold-dark); text-decoration:underline; font-weight:600;">Политикой конфиденциальности</a> (Закон РК № 94-V).</span>
           </label>
 
-          <button type="button" onclick="generateCommercialProposal()" class="btn-generate-kp">
+          <button type="button" id="btn-calc-submit" onclick="generateCommercialProposal()" class="btn-generate-kp">
             <svg class="gold-icon" style="stroke:#FFFFFF;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span>Получить предварительное КП и отправить на утверждение</span>
+            <span>Шаг 1 из 2: Рассчитать и перейти к уточнению задачи →</span>
           </button>
 
           <div class="summary-disclaimer">
-            ℹ️ Заявка принимается руководителем ТОО «Метод и Ко» Коденцевой Н.М. Прямая связь: <strong><a href="https://wa.me/77000773566" target="_blank" style="color:var(--gold-dark); text-decoration:none;">WhatsApp: +7 (700) 077-35-66</a></strong>.
-            <div style="font-size: 10.5px; color: #64748B; margin-top: 6px;">Расчёт носит справочный характер и не является публичной офертой (ст. 395 ГК РК). Официальный договор заключается индивидуально после согласования ТЗ (100% предоплата).</div>
+            ℹ️ После расчёта откроется <strong>Шаг 2 (распаковка за 3 мин)</strong> — без него мы не сможем собрать точное Финальное КП и Договор. Все документы автоматически придут на ваш Email.
+            <div style="font-size: 10.5px; color: #64748B; margin-top: 6px;">Расчёт носит справочный характер и не является публичной офертой (ст. 395 ГК РК). Официальный договор заключается индивидуально (100% предоплата).</div>
           </div>
         </div>
 
@@ -3110,8 +3117,21 @@
           </div>
         </div>
 
-        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 12.5px; color: #166534;">
-          <strong>✅ Заявка принята в работу:</strong> Предварительная спецификация зафиксирована. Главный методолог Наталья Коденцева проверяет нормоконтроль и параметры. Окончательное утвержденное КП с гарантией сроков поступит вам в ближайшее время.
+        <div id="kp-next-step-box" class="no-print" style="background: linear-gradient(135deg, #FFFDF5 0%, #FEF3C7 100%); border: 2px solid var(--gold-primary); border-radius: 10px; padding: 16px 18px; margin-bottom: 18px;">
+          <div style="font-size: 11.5px; font-weight: 800; color: #92400E; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px;">
+            ✅ Шаг 1 из 2 выполнен • 👉 Остался последний обязательный шаг
+          </div>
+          <div style="font-weight: 800; font-size: 15px; color: #0D1624; margin-bottom: 6px;" data-i18n="kp_step2_title">
+            Шаг 2 из 2: Заполните короткую распаковку (3 минуты, голосом или текстом)
+          </div>
+          <div style="font-size: 13px; color: #334155; margin-bottom: 12px;" data-i18n="kp_step2_desc">
+            Без этих 6 коротких ответов мы не сможем подготовить для вас точное Финальное КП (3 варианта) и Договор. Все готовые документы затем автоматически придут на ваш Email и откроются в Личном кабинете.
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <a id="kp-brief-link" href="brief.html" class="btn-main btn-primary-gold" style="padding: 12px 20px; font-size: 14px; font-weight: 800; text-decoration: none; box-shadow: 0 4px 14px rgba(201,162,39,0.35);" onclick="if(window.ym) ym(114214137,'reachGoal','brief_web_open')" data-i18n="btn_go_brief">
+              🎙️ Перейти к Шагу 2: Заполнить распаковку →
+            </a>
+          </div>
         </div>
 
         <div id="kp-client-question-box" style="display: none; background: #FFFBEB; border: 1px solid #FDE68A; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 12.5px; color: #92400E;">
@@ -3151,26 +3171,6 @@
 
         <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; font-size: 11.5px; color: #475569; margin: 16px 0;" data-i18n="kp_legal_note">
           <strong>Порядок согласования:</strong> Данный расчет является предварительным (не является публичной офертой, ст. 395 ГК РК). Работа ведется по 100% предоплате со стартом на следующий рабочий день после оплаты и получения материалов.
-        </div>
-
-        <div id="kp-next-step-box" style="background: #FFFDF5; border: 1.5px solid var(--gold-primary); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
-          <div style="font-weight: 700; font-size: 13.5px; color: #0D1624; margin-bottom: 6px;" data-i18n="kp_step2_title">
-            Шаг 2: Уточните детали проекта (3 минуты, голосом или текстом)
-          </div>
-          <div style="font-size: 12px; color: #475569; margin-bottom: 10px;" data-i18n="kp_step2_desc">
-            Короткая распаковка нужна для точного ТЗ и подготовки договора. Вы можете надиктовать ответ голосом с микрофона или заполнить текстом:
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            <a id="kp-brief-link" href="brief.html" class="btn-main btn-primary-gold" style="padding: 9px 16px; font-size: 12.5px; font-weight: 700; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','brief_web_open')" data-i18n="btn_go_brief">
-              🎙️ Пройти распаковку прямо на сайте (3 мин)
-            </a>
-            <a id="kp-tg-bot-link" href="#" target="_blank" class="btn-main btn-secondary-navy" style="display:none; padding: 9px 16px; font-size: 12.5px; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','brief_tg_open')" data-i18n="btn_go_tg">
-              ✈️ Пройти в Telegram-боте
-            </a>
-            <a id="kp-wa-link" href="https://wa.me/77000773566" target="_blank" class="btn-main btn-secondary-navy" style="padding: 9px 14px; font-size: 12.5px; text-decoration: none;" onclick="if(window.ym) ym(114214137,'reachGoal','whatsapp_click')">
-              💬 WhatsApp (+7 700 077-35-66)
-            </a>
-          </div>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 24px; padding-top: 14px; border-top: 1px solid #E2E8F0;">
@@ -3371,10 +3371,9 @@
         devlang_ru: "Только русский (базовая цена)",
         devlang_kz: "Только казахский (+10% цена и срок)",
         devlang_both: "Два языка RU + KZ (+25% цена, +20% срок)",
-        kp_step2_title: "Шаг 2: Уточните детали проекта (3 минуты, голосом или текстом)",
-        kp_step2_desc: "Короткая распаковка нужна для точного ТЗ и подготовки договора. Вы можете надиктовать ответ голосом с микрофона или заполнить текстом:",
-        btn_go_brief: "🎙️ Пройти распаковку прямо на сайте (3 мин)",
-        btn_go_tg: "✈️ Пройти в Telegram-боте",
+        kp_step2_title: "Шаг 2 из 2: Заполните короткую распаковку (3 минуты, голосом или текстом)",
+        kp_step2_desc: "Без этих 6 коротких ответов мы не сможем подготовить для вас точное Финальное КП (3 варианта) и Договор. Все готовые документы затем автоматически придут на ваш Email и откроются в Личном кабинете.",
+        btn_go_brief: "🎙️ Перейти к Шагу 2: Заполнить распаковку →",
         btn_print_kp: "🖨️ Распечатать / Сохранить в PDF",
         btn_close_modal: "Закрыть",
         lbl_consent: "Я согласен(на) на обработку персональных данных в соответствии с <a href=\"privacy.html\" target=\"_blank\" style=\"color:var(--gold-dark); text-decoration:underline; font-weight:600;\">Политикой конфиденциальности</a> (Закон РК № 94-V).",
@@ -3546,10 +3545,9 @@
         devlang_ru: "Тек орыс тілінде (негізгі баға)",
         devlang_kz: "Тек қазақ тілінде (+10% баға мен мерзім)",
         devlang_both: "Екі тілде RU + KZ (+25% баға, +20% мерзім)",
-        kp_step2_title: "2-қадам: Жоба мәліметтерін нақтылаңыз (3 минут, дауыспен немесе мәтінмен)",
-        kp_step2_desc: "Нақты техникалық тапсырма мен шартты дайындау үшін қысқа сұрақтарға жауап беріңіз (микрофон арқылы дауыспен жазуға да болады):",
-        btn_go_brief: "🎙️ Сайттың өзінде сұрақтарға жауап беру (3 мин)",
-        btn_go_tg: "✈️ Telegram-ботта өту",
+        kp_step2_title: "2-қадам (міндетті): Жобаны қысқаша нақтылаңыз (3 минут, дауыспен немесе мәтінмен)",
+        kp_step2_desc: "Осы 6 сұраққа жауап берсеңіз ғана нақты Қорытынды КП (3 нұсқа) мен Шартты дайындай аламыз. Барлық құжаттар Email поштаңызға автоматты түрде келеді.",
+        btn_go_brief: "🎙️ 2-қадамға өту: Сұрақтарға жауап беру →",
         btn_print_kp: "🖨️ Басып шығару / PDF сақтау",
         btn_close_modal: "Жабу",
         lbl_consent: "<a href=\"privacy.html\" target=\"_blank\" style=\"color:var(--gold-dark); text-decoration:underline; font-weight:600;\">Құпиялылық саясатына</a> сәйкес дербес деректерімді өңдеуге келісім беремін (ҚР № 94-V Заңы).",
@@ -3924,8 +3922,6 @@
       recalculateEstimate();
     }
 
-    const CLIENT_BOT_USERNAME = 'metodico_brif_bot'; // Подключенный клиентский бот-распаковщик (@metodico_brif_bot)
-
     function getDevLangConfig() {
       const checked = document.querySelector('input[name="calc-dev-lang"]:checked');
       const code = checked ? checked.value : 'ru';
@@ -3987,8 +3983,8 @@
       }
     }
 
-    // ГЕНЕРАЦИЯ ПРЕДВАРИТЕЛЬНОГО КП И ОТПРАВКА НА УТВЕРЖДЕНИЕ
-    function generateCommercialProposal() {
+    // ГЕНЕРАЦИЯ ПРЕДВАРИТЕЛЬНОГО КП И ПЕРЕХОД В ЛИЧНЫЙ КАБИНЕТ (ШАГ 2)
+    async function generateCommercialProposal() {
       const activeBlockId = audienceBlockIds[currentAudienceIndex];
       const activeBlock = document.getElementById(activeBlockId);
 
@@ -4003,21 +3999,51 @@
         return;
       }
 
-      const clientName = document.getElementById('lead-name').value.trim();
-      const clientPhone = document.getElementById('lead-phone').value.trim();
-      const clientOrg = document.getElementById('lead-org').value.trim() || (isRu ? 'Организация заказчика' : 'Тапсырыс беруші мекемесі');
-      const clientEmail = document.getElementById('lead-email').value.trim() || '—';
-      const clientTg = document.getElementById('lead-tg').value.trim() || '—';
+      const nameEl = document.getElementById('lead-name');
+      const phoneEl = document.getElementById('lead-phone');
+      const orgEl = document.getElementById('lead-org');
+      const emailEl = document.getElementById('lead-email');
+      const tgEl = document.getElementById('lead-tg');
+      [nameEl, phoneEl, orgEl, emailEl, tgEl].forEach(el => el && el.classList.remove('field-error'));
+
+      const clientName = nameEl.value.trim();
+      const rawPhone = phoneEl.value.trim();
+      const phoneDigits = rawPhone.replace(/[^\d]/g, '');
+      const clientPhone = rawPhone;
+      const clientOrg = orgEl.value.trim() || (isRu ? 'Организация заказчика' : 'Тапсырыс беруші мекемесі');
+      const clientEmail = emailEl.value.trim();
+      let clientTg = tgEl.value.trim();
+      if (clientTg && clientTg !== '—' && !clientTg.startsWith('@') && /[a-zA-Z]/.test(clientTg)) {
+        clientTg = '@' + clientTg.replace(/\s+/g, '');
+      } else if (!clientTg) {
+        clientTg = '—';
+      }
       const clientQuestion = '';
 
-      if (!clientName) {
-        alert(isRu ? 'Пожалуйста, укажите ваше имя.' : 'Атыңызды көрсетіңіз.');
-        document.getElementById('lead-name').focus();
+      if (!/[a-zA-Zа-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ]{2,}/.test(clientName)) {
+        nameEl.classList.add('field-error');
+        nameEl.focus();
+        alert(isRu ? 'Пожалуйста, укажите реальное имя (минимум 2 буквы).' : 'Аты-жөніңізді толық көрсетіңіз (кемінде 2 әріп).');
         return;
       }
-      if (!clientPhone) {
-        alert(isRu ? 'Пожалуйста, укажите контактный телефон (WhatsApp).' : 'Байланыс телефонын (WhatsApp) көрсетіңіз.');
-        document.getElementById('lead-phone').focus();
+      if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+        phoneEl.classList.add('field-error');
+        phoneEl.focus();
+        alert(isRu ? 'Укажите корректный номер телефона (минимум 10 цифр, например: +7 700 077 35 66).' : 'Дұрыс телефон нөмірін көрсетіңіз (кемінде 10 сан, мысалы: +7 700 077 35 66).');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(clientEmail)) {
+        emailEl.classList.add('field-error');
+        emailEl.focus();
+        alert(isRu
+          ? 'Пожалуйста, укажите корректный Email (например, name@company.kz) — туда автоматически придут Финальное КП и Договор.'
+          : 'Дұрыс Email мекенжайын көрсетіңіз (мысалы, name@company.kz) — Қорытынды КП мен Шарт сол поштаға жіберіледі.');
+        return;
+      }
+      if (clientTg !== '—' && clientTg.length < 3) {
+        tgEl.classList.add('field-error');
+        tgEl.focus();
+        alert(isRu ? 'Проверьте поле Telegram (@username или номер) либо оставьте его пустым.' : 'Telegram өрісін тексеріңіз немесе бос қалдырыңыз.');
         return;
       }
       const consentChk = document.getElementById('lead-consent');
@@ -4035,6 +4061,13 @@
         console.warn('Honeypot protection: Automated bot submission blocked.');
         document.getElementById('kp-modal').classList.add('active');
         return;
+      }
+
+      const calcBtn = document.getElementById('btn-calc-submit');
+      const origBtnHtml = calcBtn ? calcBtn.innerHTML : '';
+      if (calcBtn) {
+        calcBtn.disabled = true;
+        calcBtn.innerHTML = isRu ? '<span>⏳ Создаём ваш Личный кабинет заказа...</span>' : '<span>⏳ Жеке кабинетіңіз жасалуда...</span>';
       }
 
       // Проверка срочности и языка разработки
@@ -4122,39 +4155,27 @@
       document.getElementById('kp-total-days').innerText = `${totalDays} ${isRu ? 'раб. дн.' : 'жұм. күні'}`;
       document.getElementById('kp-total-price').innerText = totalPrice.toLocaleString('ru-RU') + ' ₸';
 
-      // Настройка ссылок Шага 2 (веб-распаковщик, Telegram-бот, WhatsApp)
-      const briefLink = document.getElementById('kp-brief-link');
-      if (briefLink) {
-        const qs = new URLSearchParams({
-          kp: kpNumber,
-          cat: String(currentAudienceIndex),
-          lang: currentLanguage,
-          devlang: devLangCfg.code,
-          price: String(totalPrice),
-          days: String(totalDays),
-          name: clientName,
-          phone: clientPhone
-        });
-        briefLink.href = 'brief.html?' + qs.toString();
-      }
-      const waLink = document.getElementById('kp-wa-link');
-      if (waLink) {
-        const waMsg = isRu
-          ? `Здравствуйте! Сформировал(а) КП № ${kpNumber} на сумму ${totalPrice.toLocaleString('ru-RU')} ₸.`
-          : `Сәлеметсіз бе! № ${kpNumber} коммерциялық ұсынысты (${totalPrice.toLocaleString('ru-RU')} ₸) рәсімдедім.`;
-        waLink.href = `https://wa.me/77000773566?text=${encodeURIComponent(waMsg)}`;
-      }
-      const tgBotLink = document.getElementById('kp-tg-bot-link');
-      if (tgBotLink && CLIENT_BOT_USERNAME) {
-        tgBotLink.href = `https://t.me/${CLIENT_BOT_USERNAME}?start=${encodeURIComponent(kpNumber)}`;
-        tgBotLink.style.display = 'inline-flex';
-      }
+      // Резервная ссылка на brief.html, если ответ от API придёт без portalUrl
+      const qs = new URLSearchParams({
+        kp: kpNumber,
+        cat: String(currentAudienceIndex),
+        lang: currentLanguage,
+        devlang: devLangCfg.code,
+        price: String(totalPrice),
+        days: String(totalDays),
+        name: clientName,
+        phone: clientPhone,
+        email: clientEmail,
+        tg: clientTg,
+        org: clientOrg
+      });
+      let targetStep2Url = 'brief.html?' + qs.toString();
 
       if (window.ym) {
         ym(114214137, 'reachGoal', 'kp_created');
       }
 
-      // ФОРМИРОВАНИЕ СТРУКТУРЫ ДЛЯ БАЗЫ И TELEGRAM
+      const pageUrlParams = new URLSearchParams(window.location.search);
       const leadPayload = {
         kpNumber: kpNumber,
         date: dateStr,
@@ -4172,37 +4193,90 @@
         totalPrice: totalPrice,
         totalDays: totalDays,
         clientQuestion: clientQuestion,
+        utm_source: pageUrlParams.get('utm_source') || '',
+        utm_medium: pageUrlParams.get('utm_medium') || '',
+        utm_campaign: pageUrlParams.get('utm_campaign') || '',
+        referrer: document.referrer || '',
         company_fax_code: hpCheck,
         status: 'Черновик КП (ожидает бриф)'
       };
 
-      // 1. Сохранение в защищенный локальный буфер браузера
       try {
         const savedLeads = JSON.parse(localStorage.getItem('metodiko_leads') || '[]');
         savedLeads.unshift(leadPayload);
         localStorage.setItem('metodiko_leads', JSON.stringify(savedLeads));
-      } catch (e) {
-        console.warn('LocalStorage error:', e);
+      } catch (e) {}
+
+      // Отправляем через Netlify CRM-прокси, чтобы сразу получить постоянную ссылку Личного кабинета
+      let syncedOk = false;
+      try {
+        const apiResp = await fetch('/.netlify/functions/crm-api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(leadPayload)
+        });
+        if (apiResp.ok) {
+          const data = await apiResp.json();
+          if (data && data.portalUrl) {
+            targetStep2Url = data.portalUrl + '&tab=brief';
+            syncedOk = true;
+            try {
+              localStorage.setItem('metodiko_active_portal', JSON.stringify({
+                kpNumber: data.kpNumber || kpNumber,
+                portalUrl: data.portalUrl,
+                clientName: clientName,
+                totalPrice: totalPrice
+              }));
+              showActivePortalNav();
+            } catch (e) {}
+          }
+        }
+      } catch (apiErr) {
+        console.warn('CRM API fallback:', apiErr);
       }
 
-      // 2. Отправка в Google Apps Script (Google Таблица + Telegram-бот)
-      const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbzjPyBVs_o-rvviKsJtxmSQkx_NUdy7Ijnp5q6wA2WMYUbz18WZDVLZ6MWTFROu5E_U/exec';
-      const webhookUrl = localStorage.getItem('metodiko_google_script_url') || defaultWebhookUrl;
-      if (webhookUrl) {
-        try {
-          fetch(webhookUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(leadPayload)
-          });
-        } catch (netErr) {
-          console.warn('Webhook delivery error:', netErr);
+      if (!syncedOk) {
+        const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbzjPyBVs_o-rvviKsJtxmSQkx_NUdy7Ijnp5q6wA2WMYUbz18WZDVLZ6MWTFROu5E_U/exec';
+        const webhookUrl = localStorage.getItem('metodiko_google_script_url') || defaultWebhookUrl;
+        if (webhookUrl) {
+          try {
+            fetch(webhookUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(leadPayload)
+            });
+          } catch (netErr) {}
         }
       }
 
-      // Открытие модального окна
+      const briefLink = document.getElementById('kp-brief-link');
+      if (briefLink) {
+        briefLink.href = targetStep2Url;
+      }
+
+      if (calcBtn) {
+        calcBtn.disabled = false;
+        calcBtn.innerHTML = origBtnHtml;
+      }
+
       document.getElementById('kp-modal').classList.add('active');
+    }
+
+    function showActivePortalNav() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('metodiko_active_portal') || 'null');
+        if (saved && saved.portalUrl) {
+          ['nav-active-portal', 'nav-active-portal-mob'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.href = saved.portalUrl;
+              el.innerText = `🗂️ Заказ ${saved.kpNumber || ''}`;
+              el.style.display = 'inline-block';
+            }
+          });
+        }
+      } catch (e) {}
     }
 
     function closeKpModal() {
@@ -4211,6 +4285,7 @@
 
     // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
+      showActivePortalNav();
       const urlParams = new URLSearchParams(window.location.search);
       let initialLang = urlParams.get('lang');
       if (!initialLang) {

@@ -1,16 +1,19 @@
 /**
  * =========================================================================
  * ТОО «Метод и Ко» | Бюро стандартов «МЕТОДИКО»
- * УМНЫЙ ОБЛАЧНЫЙ МОСТ v4.0:
- * САЙТ (index.html + brief.html + client.html) ➔ GOOGLE ТАБЛИЦА ➔ 2 БОТА + GEMINI
+ * УМНЫЙ ОБЛАЧНЫЙ МОСТ v5.0:
+ * САЙТ (Единый Кабинет client.html + index.html + brief.html)
+ *   ➔ GOOGLE ТАБЛИЦА + GOOGLE ДИСК (Папки клиентов, Документы КП и Договора)
+ *   ➔ АВТО-EMAIL КЛИЕНТУ (0 ₸)
+ *   ➔ ЛИЧНЫЙ ПУЛЬТ РУКОВОДИТЕЛЯ (@metodico_sait_zayavki_bot) + GEMINI
  * =========================================================================
  * Секретные ключи хранятся ТОЛЬКО в «Настройки проекта -> Свойства скрипта»:
- *   - ADMIN_BOT_TOKEN      : токен личного пульта (@metodico_sait_zayavki_bot)
- *   - ADMIN_CHAT_ID        : ваш личный Telegram ID
- *   - CLIENT_BOT_TOKEN     : токен клиентского бота (@metodico_brif_bot)
- *   - GEMINI_API_KEY       : ключ из Google AI Studio
- *   - CONTRACT_TEMPLATE_ID : ID Google Документа шаблона договора (опционально)
- *   - PORTAL_SECRET        : секрет для подписей клиентских ссылок (опционально)
+ *   - ADMIN_BOT_TOKEN          : токен личного пульта (@metodico_sait_zayavki_bot)
+ *   - ADMIN_CHAT_ID            : ваш личный Telegram ID
+ *   - GEMINI_API_KEY           : ключ из Google AI Studio
+ *   - PORTAL_SECRET            : секрет для подписей клиентских и админских ссылок (опционально)
+ *   - ROOT_PROJECTS_FOLDER_ID  : ID корневой папки проектов на Диске (создаётся сам при 1-м запуске)
+ *   - CONTRACT_TEMPLATE_ID     : (необязательно) ID шаблона Google Docs, если хотите использовать свой шаблон
  * =========================================================================
  */
 
@@ -20,11 +23,12 @@ const CONFIG = {
   SHEET_MEMORY: "Память диалогов",
   COMPANY_NAME: "ТОО «Метод и Ко» | Бюро «МЕТОДИКО»",
   SITE_URL: "https://metodico-kz.netlify.app",
+  ROOT_FOLDER_NAME: "МЕТОДИКО — Проекты клиентов",
   MAX_CAPACITY_POINTS: 10, // Потолок одновременной загрузки (5-7 активных проектов)
   GEMINI_MODEL: "gemini-3.5-flash-lite"
 };
 
-// Карта столбцов листа «Заявки МЕТОДИКО» (1-based)
+// Карта столбцов листа «Заявки МЕТОДИКО» (1-based, совместима с v4.0)
 const COL = {
   KP: 1,
   DATE: 2,
@@ -53,7 +57,7 @@ const COL = {
 };
 
 const STATUSES = {
-  DRAFT_KP: "🟡 1. Черновик КП (с сайта)",
+  DRAFT_KP: "🟡 1. Черновик сметы (ждём распаковку)",
   IN_BRIEF: "🟣 2. В опроснике (идет распаковка)",
   FOR_APPROVAL: "🔵 3. На разборе у Натальи",
   EXTRA_QUESTION: "🟠 4. Доп. вопрос / Уточнение",
@@ -72,9 +76,13 @@ function getSecret(key, fallback) {
   return props.getProperty(key) || fallback || "";
 }
 
+function setSecret(key, value) {
+  PropertiesService.getScriptProperties().setProperty(key, String(value));
+}
+
 /**
  * =========================================================================
- * 1. ПЕРВИЧНАЯ НАСТРОЙКА ВСЕХ 3 ЛИСТОВ ТАБЛИЦЫ (БЕЗОПАСНО ДЛЯ ТЕКУЩИХ ДАННЫХ)
+ * 1. ПЕРВИЧНАЯ НАСТРОЙКА ВСЕХ ЛИСТОВ ТАБЛИЦЫ И КОРНЕВОЙ ПАПКИ ДИСКА
  * =========================================================================
  */
 function setupMetodikoCRM() {
@@ -105,8 +113,8 @@ function setupMetodikoCRM() {
     "Реквизиты для договора",         // S (19)
     "Дата старта",                    // T (20)
     "Плановая дата сдачи",            // U (21)
-    "Ссылка на Договор / tg_chat",    // V (22)
-    "Папка материалов (Google Диск)", // W (23)
+    "Ссылка на Договор (Google Док)", // V (22)
+    "Папка проекта (Google Диск)",    // W (23)
     "Состояние сделки (JSON)"         // X (24)
   ];
 
@@ -130,12 +138,13 @@ function setupMetodikoCRM() {
   memSheet.setFrozenRows(1);
 
   recalculateQueueSheet();
+  try { getOrCreateRootProjectsFolder(); } catch (e) { Logger.log("Root folder init: " + e); }
 }
 
 function ensureExtendedColumns(sheet) {
   if (!sheet) return;
   if (!sheet.getRange(1, COL.DRIVE_LINK).getValue()) {
-    sheet.getRange(1, COL.DRIVE_LINK).setValue("Папка материалов (Google Диск)")
+    sheet.getRange(1, COL.DRIVE_LINK).setValue("Папка проекта (Google Диск)")
       .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
   }
   if (!sheet.getRange(1, COL.DEAL_JSON).getValue()) {
@@ -162,7 +171,7 @@ function setupQueueSheetLayout(queueSheet) {
 
 /**
  * =========================================================================
- * 2. ОБРАБОТКА ВХОДЯЩИХ ЗАПРОСОВ: GET (ОЧЕРЕДЬ + ПОРТАЛ КЛИЕНТА) И POST
+ * 2. ОБРАБОТКА ВХОДЯЩИХ ЗАПРОСОВ: GET (ОЧЕРЕДЬ + КАБИНЕТ) И POST
  * =========================================================================
  */
 function doGet(e) {
@@ -174,9 +183,9 @@ function doGet(e) {
       return jsonResponse(getPublicQueueStatus());
     }
     if (action === "client_portal") {
-      return jsonResponse(getClientPortalState(params.kp || "", params.t || ""));
+      return jsonResponse(getClientPortalState(params.kp || "", params.t || "", params.admin || ""));
     }
-    return jsonResponse({ status: "ok", service: "METODIKO Bridge v4.0" });
+    return jsonResponse({ status: "ok", service: "METODIKO Bridge v5.0" });
   } catch (err) {
     return jsonResponse({ status: "error", message: err.toString() });
   }
@@ -201,17 +210,17 @@ function doPost(e) {
       cache.put(cacheKey, "1", 21600);
     }
 
-    // 1. Клиентский Telegram-бот (?bot=client)
+    // Старый клиентский бот (?bot=client) переводит на сайт
     if (botType === "client") {
-      return handleClientBotUpdate(data);
+      return handleDeprecatedClientBot(data);
     }
 
-    // 2. Кнопки в Пульте руководителя (Админ-бот)
+    // Кнопки в Пульте руководителя (Админ-бот)
     if (data.callback_query) {
       return handleAdminCallback(data.callback_query);
     }
 
-    // 3. Текстовое сообщение в Пульте руководителя (Reply ИЛИ активное ожидание ввода)
+    // Текстовое сообщение в Пульте руководителя
     if (data.message) {
       const adminChatId = getSecret("ADMIN_CHAT_ID");
       if (adminChatId && data.message.chat && String(data.message.chat.id) === String(adminChatId)) {
@@ -220,22 +229,22 @@ function doPost(e) {
       return ContentService.createTextOutput("OK");
     }
 
-    // 4. Honeypot-фильтр от спам-ботов с сайта
+    // Honeypot-фильтр от спам-ботов с сайта
     if (data.hp || data.company_fax_code) {
       return jsonResponse({ status: "ignored_bot" });
     }
 
-    // 5. Действие с клиентского веб-портала (client.html)
+    // Действия из Единого Кабинета Клиента / Админ-просмотра А4 (client.html)
     if (data.type === "client_portal_action") {
       return jsonResponse(handleClientPortalPost(data));
     }
 
-    // 6. Заявка с веб-распаковщика (brief.html)
+    // Заявка с отдельной страницы веб-распаковщика (brief.html)
     if (data.type === "web_brief") {
       return jsonResponse(processWebBriefSubmission(data));
     }
 
-    // 7. Первичная заявка с калькулятора сайта (index.html)
+    // Первичная заявка с калькулятора сайта (index.html)
     return jsonResponse(processNewWebsiteLead(data));
 
   } catch (error) {
@@ -244,13 +253,24 @@ function doPost(e) {
   }
 }
 
+function handleDeprecatedClientBot(update) {
+  const clientToken = getSecret("CLIENT_BOT_TOKEN");
+  if (clientToken && update && update.message && update.message.chat) {
+    sendTelegramApi(clientToken, "sendMessage", {
+      chat_id: update.message.chat.id,
+      text: `Здравствуйте! Бюро «МЕТОДИКО» перенесло расчёт, распаковку, КП и договоры в удобный Личный кабинет на сайте:\n${CONFIG.SITE_URL}/#calculator`
+    });
+  }
+  return ContentService.createTextOutput("OK");
+}
+
 function jsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
  * =========================================================================
- * 3. ПЕРВИЧНАЯ ЗАЯВКА С КАЛЬКУЛЯТОРА САЙТА И ВЕБ-РАСПАКОВЩИК
+ * 3. ПЕРВИЧНАЯ ЗАЯВКА С КАЛЬКУЛЯТОРА И РАСПАКОВКА (С СОЗДАНИЕМ ПАПКИ НА ДИСКЕ)
  * =========================================================================
  */
 function processNewWebsiteLead(lead) {
@@ -274,7 +294,20 @@ function processNewWebsiteLead(lead) {
   const loadPoints = calculateLoadPoints(lead.totalDays || 10, lead.devLanguage || "ru", lead.selectedItems || []);
   const chatLang = (lead.interfaceLang === "kz" || detectKazakhSentence(lead.audienceCategory)) ? "kz" : "ru";
 
-  const dealInit = { chatLang: chatLang, devLanguageCode: lead.devLanguage || "ru" };
+  const dealInit = {
+    chatLang: chatLang,
+    devLanguageCode: lead.devLanguage || "ru",
+    selectedItems: Array.isArray(lead.selectedItems) ? lead.selectedItems : [],
+    crmMeta: {
+      source: lead.utm_source || "website",
+      utm_medium: lead.utm_medium || "",
+      utm_campaign: lead.utm_campaign || "",
+      referrer: lead.referrer || "",
+      city: lead.clientCity || "",
+      phoneNormalized: normalizePhone(lead.clientPhone || ""),
+      createdAtIso: new Date().toISOString()
+    }
+  };
 
   const rowData = [
     kpNumber,
@@ -298,7 +331,7 @@ function processNewWebsiteLead(lead) {
     "", // S: Реквизиты
     "", // T: Дата старта
     "", // U: Плановая дата сдачи
-    "", // V: Договор / tg_chat
+    "", // V: Договор
     "", // W: Папка Google Диск
     JSON.stringify(dealInit) // X: Deal state
   ];
@@ -306,11 +339,25 @@ function processNewWebsiteLead(lead) {
   sheet.appendRow(rowData);
   const rowIdx = sheet.getLastRow();
   paintStatusCell(sheet, rowIdx, STATUSES.DRAFT_KP);
+  SpreadsheetApp.flush();
+
+  // Автоматически создаём именную папку клиента на Google Диске
+  const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
 
   const portalToken = generatePortalToken(kpNumber);
   const portalUrl = getClientPortalUrl(kpNumber);
-  sendAdminCard(lead, kpNumber, itemsSummary, devLangLabel, loadPoints, portalUrl);
-  return { status: "success", kpNumber: kpNumber, portalToken: portalToken, portalUrl: portalUrl };
+  const adminPortalUrl = getAdminPortalUrl(kpNumber);
+
+  // Уведомляем Наталью в личный пульт (спокойное уведомление: клиент перешёл к Шагу 2)
+  sendAdminStep1Notice(lead, kpNumber, rowIdx, itemsSummary, devLangLabel, loadPoints, portalUrl, adminPortalUrl, folderInfo.rootUrl);
+
+  return {
+    status: "success",
+    kpNumber: kpNumber,
+    portalToken: portalToken,
+    portalUrl: portalUrl,
+    driveFolderUrl: folderInfo.rootUrl || ""
+  };
 }
 
 function processWebBriefSubmission(payload) {
@@ -318,15 +365,27 @@ function processWebBriefSubmission(payload) {
   const chatLang = payload.interfaceLang === "kz" ? "kz" : "ru";
   const category = payload.audienceCategory || "Не указано";
 
+  const structuredAnswers = {
+    q1: payload.q1_goal || "",
+    q2: payload.q2_criteria || "",
+    q3: payload.q3_resources || "",
+    q4: payload.q4_team || "",
+    q5: payload.q5_budget || "",
+    q6: payload.q6_fkr_branch || "",
+    q7: payload.q7_extra || "",
+    q8: payload.q8_requisites || "",
+    city: payload.clientCity || ""
+  };
+
   const rawAnswersText = [
-    `1. Главная задача и эффект (Дилтс): ${payload.q1_goal || "—"}`,
-    `2. Критерии результата: ${payload.q2_criteria || "—"}`,
-    `3. Исходные материалы на руках: ${payload.q3_resources || "—"}`,
-    `4. Команда и время со стороны заказчика: ${payload.q4_team || "—"}`,
-    `5. Комфортность бюджета/сроков и дата старта: ${payload.q5_budget || "—"}`,
-    `6. Специфика направления (ФКР и стандарты): ${payload.q6_fkr_branch || "—"}`,
-    `7. Доп. информация и оставшиеся вопросы: ${payload.q7_extra || "—"}`,
-    `8. Форма оплаты и реквизиты: ${payload.q8_requisites || "—"}`
+    `1. Главная задача и эффект (Дилтс): ${structuredAnswers.q1 || "—"}`,
+    `2. Критерии результата: ${structuredAnswers.q2 || "—"}`,
+    `3. Исходные материалы на руках: ${structuredAnswers.q3 || "—"}`,
+    `4. Команда и время со стороны заказчика: ${structuredAnswers.q4 || "—"}`,
+    `5. Комфортность бюджета/сроков и дата старта: ${structuredAnswers.q5 || "—"}`,
+    `6. Специфика направления (ФКР и стандарты): ${structuredAnswers.q6 || "—"}`,
+    `7. Доп. информация и оставшиеся вопросы: ${structuredAnswers.q7 || "—"}`,
+    `8. Форма оплаты и реквизиты: ${structuredAnswers.q8 || "—"}`
   ].join("\n");
 
   const aiAnalysis = analyzeBriefWithGemini({
@@ -353,6 +412,18 @@ function processWebBriefSubmission(payload) {
   const devCode = payload.devLanguage || "ru";
 
   if (rowIdx === -1) {
+    const dealObj = {
+      chatLang: chatLang,
+      devLanguageCode: devCode,
+      briefAnswers: structuredAnswers,
+      transcript: aiAnalysis.transcript || "",
+      crmMeta: {
+        source: payload.utm_source || "web_brief",
+        city: payload.clientCity || "",
+        phoneNormalized: normalizePhone(payload.clientPhone || ""),
+        createdAtIso: new Date().toISOString()
+      }
+    };
     const newRow = [
       kpNumber,
       new Date().toLocaleString("ru-RU"),
@@ -372,10 +443,9 @@ function processWebBriefSubmission(payload) {
       calculateLoadPoints(payload.totalDays || 10, devCode, []),
       aiAnalysis.summary,
       fullBriefText,
-      aiAnalysis.requisites || payload.q8_requisites || "—",
-      "", "", "",
-      (payload.driveLink || "").trim(),
-      JSON.stringify({ chatLang: chatLang, devLanguageCode: devCode })
+      aiAnalysis.requisites || structuredAnswers.q8 || "—",
+      "", "", "", "",
+      JSON.stringify(dealObj)
     ];
     sheet.appendRow(newRow);
     rowIdx = sheet.getLastRow();
@@ -383,20 +453,41 @@ function processWebBriefSubmission(payload) {
     if (category && category !== "Не указано") {
       sheet.getRange(rowIdx, COL.CATEGORY).setValue(category);
     }
+    if (payload.clientEmail && payload.clientEmail !== "—") {
+      sheet.getRange(rowIdx, COL.EMAIL).setValue(payload.clientEmail.trim());
+    }
+    if (payload.clientTg && payload.clientTg !== "—") {
+      sheet.getRange(rowIdx, COL.TG).setValue(payload.clientTg.trim());
+    }
+    if (payload.clientPhone && payload.clientPhone !== "—") {
+      sheet.getRange(rowIdx, COL.PHONE).setValue(payload.clientPhone.trim());
+    }
+    if (payload.clientOrg && payload.clientOrg !== "—") {
+      sheet.getRange(rowIdx, COL.ORG).setValue(payload.clientOrg.trim());
+    }
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
     sheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
     sheet.getRange(rowIdx, COL.BRIEF).setValue(fullBriefText);
-    if (aiAnalysis.requisites || payload.q8_requisites) {
-      sheet.getRange(rowIdx, COL.REQUISITES).setValue(aiAnalysis.requisites || payload.q8_requisites);
+    if (aiAnalysis.requisites || structuredAnswers.q8) {
+      sheet.getRange(rowIdx, COL.REQUISITES).setValue(aiAnalysis.requisites || structuredAnswers.q8);
     }
-    if (payload.driveLink) {
-      sheet.getRange(rowIdx, COL.DRIVE_LINK).setValue(payload.driveLink.trim());
-    }
-    patchDealState(sheet, rowIdx, { chatLang: chatLang });
+    patchDealState(sheet, rowIdx, {
+      chatLang: chatLang,
+      briefAnswers: structuredAnswers,
+      transcript: aiAnalysis.transcript || ""
+    });
   }
-  paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
 
+  paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+  SpreadsheetApp.flush();
+
+  // Создаём папку проекта на Диске и сохраняем туда файл Брифа
+  ensureProjectDriveFolder(sheet, rowIdx);
+  generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiAnalysis.summary);
+
+  // Уведомляем Наталью в личный бот + отправляем клиенту письмо со ссылкой на его Кабинет
   sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis);
+  sendPortalLinkEmail(sheet, rowIdx, "brief_received");
 
   const portalToken = generatePortalToken(kpNumber);
   return {
@@ -409,648 +500,34 @@ function processWebBriefSubmission(payload) {
 
 /**
  * =========================================================================
- * 4. КЛИЕНТСКИЙ TELEGRAM-БОТ (БОТ №1) — РАСПАКОВКА + КП + ДОГОВОР + ДИСК
+ * 4. ПУЛЬТ РУКОВОДИТЕЛЯ (ТОЛЬКО ЛИЧНЫЙ БОТ НАТАЛЬИ)
  * =========================================================================
  */
-function handleClientBotUpdate(update) {
-  const clientToken = getSecret("CLIENT_BOT_TOKEN");
-  if (!clientToken) return ContentService.createTextOutput("OK");
-
-  if (update.callback_query) {
-    handleClientCallbackQuery(clientToken, update.callback_query);
-    return ContentService.createTextOutput("OK");
-  }
-
-  const msg = update.message;
-  if (!msg || !msg.chat) return ContentService.createTextOutput("OK");
-
-  const chatId = msg.chat.id.toString();
-  const text = (msg.text || "").trim();
-
-  if (text.startsWith("/start")) {
-    const kpParam = text.replace("/start", "").trim();
-    startClientBriefDialog(clientToken, chatId, msg.from, kpParam);
-    return ContentService.createTextOutput("OK");
-  }
-
-  processClientDialogTurn(clientToken, chatId, msg);
-  return ContentService.createTextOutput("OK");
-}
-
-function getMotivationIntro(lang) {
-  return lang === "kz"
-    ? "💡 <i>Мақсатыңызды, нақты сандарды және бар материалдарды неғұрлым толық әрі егжей-тегжейлі сипаттасаңыз, соғұрлым қорытынды бағдарлама мен нәтиже дәл әрі тиімді болады (дауыспен немесе толық мәтінмен жауап бере аласыз).</i>"
-    : "💡 <i>Чем подробнее и полнее вы расскажете о задаче, цифрах и материалах, тем точнее и эффективнее получится итоговый стандарт и программа под ваши цели (удобно отвечать голосом или развёрнутым текстом).</i>";
-}
-
-function startClientBriefDialog(token, chatId, fromUser, kpNumber) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-  let leadsSheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  if (!memSheet || !leadsSheet) {
-    setupMetodikoCRM();
-    memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-    leadsSheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  }
-  ensureExtendedColumns(leadsSheet);
-
-  let category = "";
-  let categoryConfirmed = false;
-  let dialogLang = "ru";
-  let devLanguage = "ru";
-  let clientName = (fromUser && fromUser.first_name) ? fromUser.first_name : "Коллега";
-
-  if (kpNumber) {
-    const r = findRowByKp(leadsSheet, kpNumber);
-    if (r !== -1) {
-      const vals = leadsSheet.getRange(r, 1, 1, COL.DEAL_JSON).getValues()[0];
-      clientName = vals[COL.NAME - 1] || clientName;
-      category = (vals[COL.CATEGORY - 1] || "").toString();
-      categoryConfirmed = Boolean(category && category !== "—");
-      devLanguage = inferDevLangCode(vals[COL.DEV_LANG - 1]);
-
-      const deal = parseJsonSafe(vals[COL.DEAL_JSON - 1], {});
-      // Язык общения берём из языка интерфейса сайта, а НЕ из языка разработки!
-      dialogLang = deal.chatLang || (detectKazakhSentence(category) ? "kz" : "ru");
-      if (deal.devLanguageCode) devLanguage = deal.devLanguageCode;
-
-      leadsSheet.getRange(r, COL.STATUS).setValue(STATUSES.IN_BRIEF);
-      ensureTgChatInCol22(leadsSheet, r, chatId);
-      paintStatusCell(leadsSheet, r, STATUSES.IN_BRIEF);
-    } else {
-      kpNumber = "";
-    }
-  }
-
-  // Прямой вход в @metodico_brif_bot без калькулятора сайта
-  if (!kpNumber) {
-    kpNumber = "MK-TG-" + Math.floor(1000 + Math.random() * 9000);
-    const tgHandle = (fromUser && fromUser.username) ? "@" + fromUser.username : ("id:" + chatId);
-    leadsSheet.appendRow([
-      kpNumber, new Date().toLocaleString("ru-RU"),
-      clientName, "—", "—", "—", tgHandle,
-      "Уточняется направление...", "Уточняется...",
-      "Прямой вход в Telegram-бота", 0, 10, "Стандарт",
-      STATUSES.IN_BRIEF, 0, 2, "", "", "", "", "", "tg_chat:" + chatId, "",
-      JSON.stringify({ chatLang: "ru", devLanguageCode: "" })
-    ]);
-    paintStatusCell(leadsSheet, leadsSheet.getLastRow(), STATUSES.IN_BRIEF);
-
-    saveDialogState(memSheet, chatId, {
-      kpNumber: kpNumber,
-      category: "",
-      categoryConfirmed: false,
-      lang: "ru",
-      step: 0,
-      answers: {}
-    });
-
-    sendCategoryChoiceMessage(token, chatId, clientName, kpNumber, "ru", null);
-    return;
-  }
-
-  saveDialogState(memSheet, chatId, {
-    kpNumber: kpNumber,
-    category: category,
-    categoryConfirmed: categoryConfirmed,
-    lang: dialogLang,
-    step: 1,
-    answers: {}
-  });
-
-  const q1 = getClientQuestionPrompt(1, category, dialogLang);
-  const intro = getMotivationIntro(dialogLang);
-  const welcome = dialogLang === "kz"
-    ? `Сәлеметсіз бе, ${escapeHtml(clientName)}! Мен «МЕТОДИКО» стандарттар бюросының ассистентімін.\n\nӨтініміңіз № <b>${kpNumber}</b> (${escapeHtml(category)}) тіркелді. Бір-бірден 6 негізгі сұрақ қоямын.\n${intro}\n\n${q1}`
-    : `Здравствуйте, ${escapeHtml(clientName)}! Я ассистент Бюро стандартов «МЕТОДИКО».\n\nВаша заявка № <b>${kpNumber}</b> (${escapeHtml(category)}) принята. Задам 6 ключевых вопросов по одному за раз.\n${intro}\n\n${q1}`;
-
-  const langSwitchKb = {
-    inline_keyboard: [[
-      dialogLang === "kz"
-        ? { text: "🇷🇺 Переключить общение на русский", callback_data: "cl_chatlang:ru" }
-        : { text: "🇰🇿 Қазақ тілінде сөйлесу", callback_data: "cl_chatlang:kz" }
-    ]]
-  };
-
-  sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: welcome, parse_mode: "HTML", reply_markup: langSwitchKb });
-}
-
-function sendCategoryChoiceMessage(token, chatId, clientName, kpNumber, lang, editMessageId) {
-  const safeName = escapeHtml(clientName || "Коллега");
-  const intro = getMotivationIntro(lang);
-  const text = lang === "kz"
-    ? `Сәлеметсіз бе, ${safeName}! Мен «МЕТОДИКО» стандарттар бюросының ассистентімін.\n\nӨтініміңіз № <b>${kpNumber}</b> ашылды. Бір-бірден 6 негізгі сұрақ қоямын.\n${intro}\n\n<b>Дәл сұрақтарды таңдау үшін жоба бағытын көрсетіңіз:</b>`
-    : `Здравствуйте, ${safeName}! Я ассистент Бюро стандартов «МЕТОДИКО».\n\nВаша заявка № <b>${kpNumber}</b> открыта. Задам 6 ключевых вопросов по одному за раз.\n${intro}\n\n<b>Выберите направление вашего проекта, чтобы я задал точные вопросы:</b>`;
-
-  const keyboard = lang === "kz"
-    ? [
-        [{ text: "🎓 ЖОО және Колледждер (ОӘК / МЖМБС)", callback_data: "cl_cat:vuz" }],
-        [{ text: "💼 Корпорациялар және B2B (Тренажерлер)", callback_data: "cl_cat:b2b" }],
-        [{ text: "🏫 Мектептер және педагог аттестациясы («Ұстаз»)", callback_data: "cl_cat:school" }],
-        [{ text: "💻 EdTech және Онлайн-курстар", callback_data: "cl_cat:edtech" }],
-        [{ text: "🇷🇺 Переключить общение на русский", callback_data: "cl_lang:ru" }]
-      ]
-    : [
-        [{ text: "🎓 ВУЗы и Колледжи (УМКД / ГОСО)", callback_data: "cl_cat:vuz" }],
-        [{ text: "💼 Корпорации и B2B (Тренажёры)", callback_data: "cl_cat:b2b" }],
-        [{ text: "🏫 Школы и Аттестация педагогов («Ұстаз»)", callback_data: "cl_cat:school" }],
-        [{ text: "💻 EdTech и Онлайн-школы", callback_data: "cl_cat:edtech" }],
-        [{ text: "🇰🇿 Қазақ тілінде сөйлесу", callback_data: "cl_lang:kz" }]
-      ];
-
-  const method = editMessageId ? "editMessageText" : "sendMessage";
-  const payload = { chat_id: chatId, text: text, parse_mode: "HTML", reply_markup: { inline_keyboard: keyboard } };
-  if (editMessageId) payload.message_id = editMessageId;
-  sendTelegramApi(token, method, payload);
-}
-
-function sendDevLangChoiceMessage(token, chatId, category, dialogLang, editMessageId) {
-  const text = dialogLang === "kz"
-    ? `✅ Бағыт таңдалды: <b>${escapeHtml(category)}</b>\n\nЕнді негізгі сұрақтар алдында маңызды нақтылау:\n<b>Дайын оқу материалдарының өзі (УМКД / курс / жаттықтырғыш) қай тілде әзірленуі керек?</b>\n<i>(Сұхбат тілі қазақша болып қала береді — бұл тек қорытынды өнімнің тілі.)</i>`
-    : `✅ Направление выбрано: <b>${escapeHtml(category)}</b>\n\nКороткое уточнение перед началом вопросов:\n<b>На каком языке нужно разработать сами итоговые материалы (УМКД / курс / тренажёр)?</b>\n<i>(Язык нашего общения останется прежним — здесь выбираем только язык готового продукта.)</i>`;
-
-  const kb = dialogLang === "kz"
-    ? [
-        [{ text: "🇷🇺 Тек орыс тілінде (база)", callback_data: "cl_devlang:ru" }],
-        [{ text: "🇰🇿 Тек қазақ тілінде (+10% мерзім мен баға)", callback_data: "cl_devlang:kz" }],
-        [{ text: "🌐 Екі тілде RU+KZ (+25% баға, +20% мерзім)", callback_data: "cl_devlang:both" }]
-      ]
-    : [
-        [{ text: "🇷🇺 Только на русском (база)", callback_data: "cl_devlang:ru" }],
-        [{ text: "🇰🇿 Только на казахском (+10% цена и срок)", callback_data: "cl_devlang:kz" }],
-        [{ text: "🌐 На двух языках RU+KZ (+25% цена, +20% срок)", callback_data: "cl_devlang:both" }]
-      ];
-
-  const method = editMessageId ? "editMessageText" : "sendMessage";
-  const payload = { chat_id: chatId, text: text, parse_mode: "HTML", reply_markup: { inline_keyboard: kb } };
-  if (editMessageId) payload.message_id = editMessageId;
-  sendTelegramApi(token, method, payload);
-}
-
-function handleClientCallbackQuery(token, cb) {
-  sendTelegramApi(token, "answerCallbackQuery", { callback_query_id: cb.id });
-  const data = cb.data || "";
-  const chatId = cb.message && cb.message.chat ? cb.message.chat.id.toString() : "";
-  const messageId = cb.message ? cb.message.message_id : null;
-  if (!chatId) return;
-
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-  const leadsSheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  let state = loadDialogState(memSheet, chatId);
-  if (!state) return;
-
-  const rowIdx = findRowByKp(leadsSheet, state.kpNumber);
-  const clientName = (cb.from && cb.from.first_name) ? cb.from.first_name : "Коллега";
-
-  // 1. Переключение ТОЛЬКО языка общения в стартовом экране (не меняет столбец I «Язык разработки»!)
-  if (data.startsWith("cl_lang:")) {
-    const newLang = data.split(":")[1] === "kz" ? "kz" : "ru";
-    state.lang = newLang;
-    saveDialogState(memSheet, chatId, state);
-    if (rowIdx !== -1) patchDealState(leadsSheet, rowIdx, { chatLang: newLang });
-    sendCategoryChoiceMessage(token, chatId, clientName, state.kpNumber, newLang, messageId);
-    return;
-  }
-
-  // Переключение языка общения во время Шага 1 (если зашёл с сайта)
-  if (data.startsWith("cl_chatlang:")) {
-    const newLang = data.split(":")[1] === "kz" ? "kz" : "ru";
-    state.lang = newLang;
-    saveDialogState(memSheet, chatId, state);
-    if (rowIdx !== -1) patchDealState(leadsSheet, rowIdx, { chatLang: newLang });
-    const q1 = getClientQuestionPrompt(1, state.category, newLang);
-    const switchedTxt = newLang === "kz"
-      ? `✅ Сұхбат тілі қазақшаға ауыстырылды.\n\n${q1}`
-      : `✅ Язык общения переключён на русский.\n\n${q1}`;
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: switchedTxt, parse_mode: "HTML" });
-    return;
-  }
-
-  // 2. Выбор направления на прямом старте -> переходим к выбору языка САМИХ МАТЕРИАЛОВ (step = 0.5)
-  if (data.startsWith("cl_cat:")) {
-    const branchKey = data.split(":")[1] || "b2b";
-    const canonicalCat = getCanonicalBranchName(branchKey, state.lang);
-    state.category = canonicalCat;
-    state.categoryConfirmed = true;
-    state.step = 0.5;
-    saveDialogState(memSheet, chatId, state);
-
-    if (rowIdx !== -1) {
-      leadsSheet.getRange(rowIdx, COL.CATEGORY).setValue(canonicalCat);
-    }
-    sendDevLangChoiceMessage(token, chatId, canonicalCat, state.lang, messageId);
-    return;
-  }
-
-  // 3. Выбор языка разработки самих материалов (прямой вход) -> старт Вопроса 1
-  if (data.startsWith("cl_devlang:")) {
-    const devCode = data.split(":")[1] || "ru";
-    const devLabel = getDevLangLabel(devCode);
-    const baseDays = devCode === "kz" ? 11 : (devCode === "both" ? 12 : 10);
-    const pts = calculateLoadPoints(baseDays, devCode, []);
-
-    state.step = 1;
-    saveDialogState(memSheet, chatId, state);
-
-    if (rowIdx !== -1) {
-      leadsSheet.getRange(rowIdx, COL.DEV_LANG).setValue(devLabel);
-      leadsSheet.getRange(rowIdx, COL.DAYS).setValue(baseDays);
-      leadsSheet.getRange(rowIdx, COL.POINTS).setValue(pts);
-      leadsSheet.getRange(rowIdx, COL.MODULES).setValue("Прямой вход в Telegram-бота (с учетом языка)");
-      patchDealState(leadsSheet, rowIdx, { chatLang: state.lang, devLanguageCode: devCode });
-    }
-
-    if (messageId) {
-      const doneTxt = state.lang === "kz"
-        ? `✅ Жоба бағыты: <b>${escapeHtml(state.category)}</b>\n🌐 Материал тілі: <b>${escapeHtml(devLabel)}</b>`
-        : `✅ Направление: <b>${escapeHtml(state.category)}</b>\n🌐 Язык материалов: <b>${escapeHtml(devLabel)}</b>`;
-      sendTelegramApi(token, "editMessageText", { chat_id: chatId, message_id: messageId, text: doneTxt, parse_mode: "HTML" });
-    }
-
-    const q1 = getClientQuestionPrompt(1, state.category, state.lang);
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: q1, parse_mode: "HTML" });
-    return;
-  }
-
-  // 4. Клиент выбирает один из 3 вариантов Финального КП
-  if (data.startsWith("cl_kp_pick:")) {
-    const parts = data.split(":");
-    const varIdx = parseInt(parts[1], 10);
-    const kpNum = parts[2] || state.kpNumber;
-    const r = findRowByKp(leadsSheet, kpNum);
-    if (r === -1) return;
-
-    const deal = readDealState(leadsSheet, r);
-    const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
-    const chosen = variants.find(v => Number(v.id) === varIdx) || variants[varIdx - 1];
-    if (!chosen) return;
-
-    leadsSheet.getRange(r, COL.AGREED_PRICE).setValue(chosen.price);
-    leadsSheet.getRange(r, COL.DAYS).setValue(chosen.days);
-    leadsSheet.getRange(r, COL.STATUS).setValue(STATUSES.KP_ACCEPTED);
-    paintStatusCell(leadsSheet, r, STATUSES.KP_ACCEPTED);
-    patchDealState(leadsSheet, r, { chosenVariant: chosen });
-
-    const reqText = (leadsSheet.getRange(r, COL.REQUISITES).getValue() || "").toString().trim();
-    const needsReq = !reqText || reqText === "—" || reqText.toLowerCase().includes("не предостав");
-
-    if (messageId) {
-      const conf = state.lang === "kz"
-        ? `🤝 <b>Таңдауыңыз қабылданды: ${escapeHtml(chosen.title)}</b> (${Number(chosen.price).toLocaleString("ru-RU")} ₸, ${chosen.days} жұм. күні)`
-        : `🤝 <b>Выбор принят: ${escapeHtml(chosen.title)}</b> (${Number(chosen.price).toLocaleString("ru-RU")} ₸, ${chosen.days} раб. дн.)`;
-      sendTelegramApi(token, "editMessageText", { chat_id: chatId, message_id: messageId, text: conf, parse_mode: "HTML" });
-    }
-
-    if (needsReq) {
-      state.step = 55;
-      saveDialogState(memSheet, chatId, state);
-      const askReq = state.lang === "kz"
-        ? "Шарт жобасын дайындау үшін ұйымыңыздың деректемелерін (БСН/ЖСН, атауы, ИИК, БИК, қол қоюшы) жіберіңіз немесе жеке тұлға ретінде ЖСН жазыңыз:"
-        : "Чтобы мы подготовили предварительный договор, пришлите, пожалуйста, реквизиты организации (Название, БИН/ИИН, ИИК, БИК, ФИО подписанта) одним сообщением:";
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: askReq });
-    } else {
-      state.step = 56;
-      saveDialogState(memSheet, chatId, state);
-      const okMsg = state.lang === "kz"
-        ? "Рахмет! Сіздің таңдауыңыз Наталья Коденцеваға жіберілді. Жақын арада тексеруге алдын ала шарт пен жоспарлы басталу күнін жібереміз."
-        : "Спасибо! Ваш выбор передан Наталье Коденцевой. Скоро направим предварительный договор на согласование и ориентировочное окно старта.";
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: okMsg });
-    }
-
-    notifyAdminKpAccepted(leadsSheet, r, chosen, needsReq);
-    return;
-  }
-
-  // 5. Клиент согласовал предварительный договор (или просит правку)
-  if (data.startsWith("cl_contract_ok:")) {
-    const kpNum = data.split(":")[1] || state.kpNumber;
-    const r = findRowByKp(leadsSheet, kpNum);
-    if (r === -1) return;
-
-    leadsSheet.getRange(r, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
-    paintStatusCell(leadsSheet, r, STATUSES.CONTRACT_AGREED);
-    state.step = 58;
-    saveDialogState(memSheet, chatId, state);
-
-    if (messageId) {
-      const agreedTxt = state.lang === "kz"
-        ? `✅ <b>№ ${kpNum} шартының мәтіні келісілді!</b>\nҚол қою және шот төлеу үшін Наталья Коденцеваға хабар берілді.`
-        : `✅ <b>Условия договора по № ${kpNum} согласованы!</b>\nПередали Наталье Коденцевой для финального подписания и выставления счёта (100% предоплата).`;
-      sendTelegramApi(token, "editMessageText", { chat_id: chatId, message_id: messageId, text: agreedTxt, parse_mode: "HTML" });
-    }
-    notifyAdminContractAgreed(leadsSheet, r);
-    return;
-  }
-
-  if (data.startsWith("cl_contract_fix:")) {
-    state.step = 57;
-    saveDialogState(memSheet, chatId, state);
-    const askFix = state.lang === "kz"
-      ? "Шарт бойынша түзетуіңізді немесе сұрағыңызды бір хабарламамен жазыңыз — біз бірден Натальяға жеткіземіз:"
-      : "Напишите ваши правки или вопрос по договору одним сообщением — сразу передадим Наталье:";
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: askFix });
-  }
-}
-
-function processClientDialogTurn(token, chatId, msg) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-  const leadsSheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  const state = loadDialogState(memSheet, chatId);
-
-  if (!state || state.step >= 99) {
-    startClientBriefDialog(token, chatId, msg.from, "");
-    return;
-  }
-
-  let userContent = (msg.text || msg.caption || "").trim();
-
-  if (msg.voice || msg.audio) {
-    const fileId = (msg.voice || msg.audio).file_id;
-    const waitTxt = state.lang === "kz" ? "⏳ Дауыстық хабарлама өңделуде..." : "⏳ Принял голосовое, расшифровываю...";
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: waitTxt });
-    const audioData = downloadTelegramFileAsBase64(token, fileId);
-    if (audioData) {
-      const transcribed = transcribeAudioWithGemini(audioData.base64, audioData.mimeType);
-      userContent = (userContent ? userContent + "\n" : "") + transcribed;
-    } else {
-      userContent = (userContent ? userContent + "\n" : "") + "[Голосовое получено, не удалось скачать файл]";
-    }
-  }
-
-  if (!userContent) {
-    const askText = state.lang === "kz"
-      ? "Жауабыңызды мәтінмен немесе дауыстық хабарламамен жіберіңіз."
-      : "Пожалуйста, отправьте ответ текстом или голосовым сообщением.";
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: askText });
-    return;
-  }
-
-  let rowIdx = findRowByKp(leadsSheet, state.kpNumber);
-
-  // --- СПЕЦ-РЕЖИМ 50: Ответ клиента на дополнительный вопрос Натальи ---
-  if (state.step === 50) {
-    handleClientPostBriefReply(token, chatId, state, rowIdx, userContent, "extra", memSheet, leadsSheet);
-    return;
-  }
-
-  // --- СПЕЦ-РЕЖИМ 52: Клиент написал вопрос вместо нажатия кнопки КП ---
-  if (state.step === 52) {
-    handleClientPostBriefReply(token, chatId, state, rowIdx, userContent, "kp_question", memSheet, leadsSheet);
-    return;
-  }
-
-  // --- СПЕЦ-РЕЖИМ 55: Досылка реквизитов после выбора КП ---
-  if (state.step === 55) {
-    if (rowIdx !== -1) {
-      leadsSheet.getRange(rowIdx, COL.REQUISITES).setValue(userContent);
-      const oldBrief = (leadsSheet.getRange(rowIdx, COL.BRIEF).getValue() || "").toString();
-      leadsSheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[РЕКВИЗИТЫ ОТ КЛИЕНТА]: " + userContent);
-    }
-    state.step = 56;
-    saveDialogState(memSheet, chatId, state);
-    const thanks = state.lang === "kz"
-      ? "✅ Деректемелер қабылданды! Наталья Коденцева шарт жобасын дайындауда."
-      : "✅ Реквизиты приняты и сохранены! Наталья Коденцева уже готовит проект договора.";
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: thanks });
-    notifyAdminRequisitesReceived(leadsSheet, rowIdx, userContent);
-    return;
-  }
-
-  // --- СПЕЦ-РЕЖИМ 57: Правка / комментарий по предварительному договору ---
-  if (state.step === 57) {
-    handleClientPostBriefReply(token, chatId, state, rowIdx, userContent, "contract_comment", memSheet, leadsSheet);
-    return;
-  }
-
-  // --- СПЕЦ-РЕЖИМ 60: Клиент отправил ссылку на папку Google Диска с исходниками ---
-  if (state.step === 60) {
-    handleClientMaterialsMessage(token, chatId, state, rowIdx, userContent, memSheet, leadsSheet);
-    return;
-  }
-
-  // Автоопределение казахского языка общения (ТОЛЬКО chatLang, НЕ язык разработки!)
-  if (state.kpNumber && state.kpNumber.startsWith("MK-TG-") && state.lang !== "kz" && detectKazakhSentence(userContent)) {
-    state.lang = "kz";
-    if (rowIdx !== -1) patchDealState(leadsSheet, rowIdx, { chatLang: "kz" });
-  }
-
-  // Если клиент пропустил кнопки выбора направления (step === 0 или 0.5) и сразу написал текст/голос
-  if (state.step < 1) {
-    if (!state.categoryConfirmed) {
-      const detectedKey = detectBranchKey(userContent);
-      if (detectedKey) {
-        state.category = getCanonicalBranchName(detectedKey, state.lang);
-        state.categoryConfirmed = true;
-        if (rowIdx !== -1) leadsSheet.getRange(rowIdx, COL.CATEGORY).setValue(state.category);
-      }
-    }
-    state.step = 1;
-  }
-
-  const currentQLabel = getClientQuestionLabel(state.step);
-  state.answers["step_" + state.step] = `${currentQLabel}: ${userContent}`;
-
-  // Если клиент пропустил кнопки языка материалов — проверим ответы или уточним
-  if (!state.categoryConfirmed) {
-    const combinedSoFar = Object.values(state.answers).join("\n");
-    const detectedKey = detectBranchKey(combinedSoFar);
-    if (detectedKey) {
-      state.category = getCanonicalBranchName(detectedKey, state.lang);
-      state.categoryConfirmed = true;
-      if (rowIdx !== -1) leadsSheet.getRange(rowIdx, COL.CATEGORY).setValue(state.category);
-    }
-  }
-
-  // Страховка прямо перед Вопросом 4
-  if (state.step === 3 && (!state.categoryConfirmed || !state.category)) {
-    const combinedBeforeQ4 = Object.values(state.answers).join("\n");
-    const aiBranchKey = classifyBranchWithGemini(combinedBeforeQ4) || "b2b";
-    state.category = getCanonicalBranchName(aiBranchKey, state.lang);
-    state.categoryConfirmed = true;
-    if (rowIdx !== -1) leadsSheet.getRange(rowIdx, COL.CATEGORY).setValue(state.category);
-  }
-
-  if (rowIdx !== -1) {
-    leadsSheet.getRange(rowIdx, COL.BRIEF).setValue(Object.values(state.answers).join("\n\n"));
-  }
-
-  if (state.step < 6) {
-    state.step += 1;
-    saveDialogState(memSheet, chatId, state);
-    const nextQ = getClientQuestionPrompt(state.step, state.category || getCanonicalBranchName("b2b", state.lang), state.lang);
-    sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: nextQ, parse_mode: "HTML" });
-    return;
-  }
-
-  // Финал (Вопрос 6 пройден) — анализ и передача Наталье
-  const finalCategory = state.category || getCanonicalBranchName("b2b", state.lang);
-  const fullRaw = Object.values(state.answers).join("\n\n---\n\n");
-  const aiAnalysis = analyzeBriefWithGemini({
-    kpNumber: state.kpNumber,
-    category: finalCategory,
-    lang: state.lang,
-    rawText: fullRaw,
-    audioBase64: "",
-    audioMimeType: ""
-  });
-
-  if (rowIdx === -1) {
-    leadsSheet.appendRow([
-      state.kpNumber, new Date().toLocaleString("ru-RU"),
-      (msg.from && msg.from.first_name) || "Клиент TG", "—", "—", "—",
-      msg.from && msg.from.username ? "@" + msg.from.username : chatId,
-      finalCategory, "Уточняется...",
-      "Бриф через Telegram-бота", 0, 10, "Стандарт",
-      STATUSES.FOR_APPROVAL, 0, 2, aiAnalysis.summary, fullRaw, aiAnalysis.requisites || "—",
-      "", "", "tg_chat:" + chatId, "", JSON.stringify({ chatLang: state.lang })
-    ]);
-    rowIdx = leadsSheet.getLastRow();
-  } else {
-    if (state.kpNumber && state.kpNumber.startsWith("MK-TG-")) {
-      leadsSheet.getRange(rowIdx, COL.CATEGORY).setValue(finalCategory);
-    }
-    leadsSheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-    leadsSheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
-    leadsSheet.getRange(rowIdx, COL.BRIEF).setValue(fullRaw);
-    leadsSheet.getRange(rowIdx, COL.REQUISITES).setValue(aiAnalysis.requisites || "—");
-    ensureTgChatInCol22(leadsSheet, rowIdx, chatId);
-  }
-  paintStatusCell(leadsSheet, rowIdx, STATUSES.FOR_APPROVAL);
-
-  sendBriefReadyCardToAdmin(leadsSheet, rowIdx, aiAnalysis);
-
-  const bye = state.lang === "kz"
-    ? `✅ Рахмет! Барлық 6 жауап Наталья Коденцеваға жіберілді.\n\nЖобаны талдағаннан кейін сізге таңдауға арналған 3 нұсқасы бар қорытынды КП немесе нақтылау сұрақтары жіберіледі.`
-    : `✅ Благодарим! Все 6 ответов переданы руководителю Бюро Наталье Коденцевой.\n\nПосле разбора мы пришлём сюда либо уточняющий вопрос, либо Финальное КП с 3 вариантами комплектации под ваш проект.`;
-  sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: bye });
-
-  state.step = 51; // Бриф завершён, ждём разбор Натальи (НЕ 99, чтобы доп. вопросы не сбрасывали заявку!)
-  saveDialogState(memSheet, chatId, state);
-}
-
-function handleClientPostBriefReply(token, chatId, state, rowIdx, userContent, mode, memSheet, leadsSheet) {
-  if (rowIdx === -1) return;
-
-  const oldBrief = (leadsSheet.getRange(rowIdx, COL.BRIEF).getValue() || "").toString();
-  const tagMap = {
-    extra: "[ОТВЕТ КЛИЕНТА НА ДОП. ВОПРОС]",
-    kp_question: "[ВОПРОС КЛИЕНТА ПО ФИНАЛЬНОМУ КП]",
-    contract_comment: "[ПРАВКА / КОММЕНТАРИЙ ПО ДОГОВОРУ]"
-  };
-  const updatedBrief = oldBrief + `\n\n${tagMap[mode] || "[СООБЩЕНИЕ КЛИЕНТА]"}:\n${userContent}`;
-  leadsSheet.getRange(rowIdx, COL.BRIEF).setValue(updatedBrief);
-
-  // Если прислана ссылка на Google Диск — сразу сохраняем и в столбец W
-  const urlMatch = userContent.match(/https?:\/\/[^\s]+/);
-  if (urlMatch && urlMatch[0].includes("drive.google")) {
-    leadsSheet.getRange(rowIdx, COL.DRIVE_LINK).setValue(urlMatch[0]);
-  }
-
-  const aiAnalysis = analyzeBriefWithGemini({
-    kpNumber: state.kpNumber,
-    category: state.category || "Общий",
-    lang: state.lang,
-    rawText: updatedBrief,
-    audioBase64: "",
-    audioMimeType: ""
-  });
-  leadsSheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
-  if (aiAnalysis.requisites && !aiAnalysis.requisites.toLowerCase().includes("не предостав")) {
-    leadsSheet.getRange(rowIdx, COL.REQUISITES).setValue(aiAnalysis.requisites);
-  }
-
-  if (mode === "extra") {
-    leadsSheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-    paintStatusCell(leadsSheet, rowIdx, STATUSES.FOR_APPROVAL);
-    patchDealState(leadsSheet, rowIdx, { lastExtraQuestion: "" });
-    state.step = 51;
-    saveDialogState(memSheet, chatId, state);
-    sendBriefReadyCardToAdmin(leadsSheet, rowIdx, aiAnalysis, "🔄 КЛИЕНТ ОТВЕТИЛ НА ДОП. ВОПРОС");
-  } else {
-    patchDealState(leadsSheet, rowIdx, { contractComment: mode === "contract_comment" ? userContent : "" });
-    const adminToken = getSecret("ADMIN_BOT_TOKEN");
-    const adminChatId = getSecret("ADMIN_CHAT_ID");
-    if (adminToken && adminChatId) {
-      const row = leadsSheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-      sendTelegramApi(adminToken, "sendMessage", {
-        chat_id: adminChatId,
-        text: `💬 <b>Сообщение от клиента по ${state.kpNumber}</b> (${escapeHtml(row[2])}):\n\n${escapeHtml(userContent)}`,
-        parse_mode: "HTML",
-        reply_markup: { inline_keyboard: [[{ text: "❓ Ответить клиенту", callback_data: `ask_${state.kpNumber}` }]] }
-      });
-    }
-  }
-
-  const ack = state.lang === "kz"
-    ? "✅ Рахмет! Жауабыңыз Наталья Коденцеваға жеткізілді."
-    : "✅ Спасибо! Ваш ответ передан Наталье Коденцевой.";
-  sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: ack });
-}
-
-function handleClientMaterialsMessage(token, chatId, state, rowIdx, userContent, memSheet, leadsSheet) {
-  if (rowIdx === -1) return;
-  const urlMatch = userContent.match(/https?:\/\/[^\s]+/);
-  if (urlMatch) {
-    leadsSheet.getRange(rowIdx, COL.DRIVE_LINK).setValue(urlMatch[0]);
-  }
-  const oldBrief = (leadsSheet.getRange(rowIdx, COL.BRIEF).getValue() || "").toString();
-  leadsSheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + `\n\n[ССЫЛКА / КОММЕНТАРИЙ ПО МАТЕРИАЛАМ]: ${userContent}`);
-
-  const adminToken = getSecret("ADMIN_BOT_TOKEN");
-  const adminChatId = getSecret("ADMIN_CHAT_ID");
-  if (adminToken && adminChatId) {
-    const row = leadsSheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-    sendTelegramApi(adminToken, "sendMessage", {
-      chat_id: adminChatId,
-      text: `📂 <b>КЛИЕНТ СДАЛ МАТЕРИАЛЫ ПО ${state.kpNumber}!</b>\n👤 ${escapeHtml(row[2])} (${escapeHtml(row[3])})\n\n🔗 ${escapeHtml(userContent)}\n\n<i>Проверьте, всё ли на месте. Как будете готовы — нажмите кнопку ниже, чтобы включить счётчик срока и занять слот в Графике:</i>`,
-      parse_mode: "HTML",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${state.kpNumber}` }],
-          [{ text: "❓ Запросить недостающее", callback_data: `ask_${state.kpNumber}` }]
-        ]
-      }
-    });
-  }
-
-  const reply = state.lang === "kz"
-    ? "✅ Материалдар сілтемесі Наталья Коденцеваға жіберілді! Тексеруден кейін бірден басталу және тапсыру күндерін бекітеміз."
-    : "✅ Ссылка и комментарий по материалам переданы Наталье Коденцевой! После короткой проверки зафиксируем точную дату старта и сдачи в Графике.";
-  sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: reply });
-}
-
-/**
- * =========================================================================
- * 5. ПУЛЬТ РУКОВОДИТЕЛЯ (БОТ №2): КНОПКИ, ДОП.ВОПРОСЫ, 3 ВАРИАНТА КП, ДОГОВОР, ГРАФИК
- * =========================================================================
- */
-function sendAdminCard(lead, kpNumber, itemsSummary, devLangLabel, loadPoints, portalUrl) {
+function sendAdminStep1Notice(lead, kpNumber, rowIdx, itemsSummary, devLangLabel, loadPoints, portalUrl, adminPortalUrl, driveUrl) {
   const token = getSecret("ADMIN_BOT_TOKEN");
   const adminChatId = getSecret("ADMIN_CHAT_ID");
   if (!token || !adminChatId) return;
 
-  const cleanPhone = (lead.clientPhone || "").replace(/[^\d+]/g, "");
-  const waLink = cleanPhone ? "https://wa.me/" + cleanPhone.replace("+", "") : "";
   const urgentBadge = lead.isUrgent ? "⚡ <b>СРОЧНЫЙ РЕЖИМ (+20%)</b>\n" : "";
 
-  let msgText = `🔔 <b>НОВАЯ ЗАЯВКА С КАЛЬКУЛЯТОРА: ${kpNumber}</b>\n`;
+  let msgText = `🟡 <b>ШАГ 1/2 (КАЛЬКУЛЯТОР): ${kpNumber}</b> (строка #${rowIdx})\n`;
   msgText += `━━━━━━━━━━━━━━━━━━━━\n`;
   msgText += `👤 <b>Заказчик:</b> ${escapeHtml(lead.clientName)}\n`;
   msgText += `🏢 <b>Организация:</b> ${escapeHtml(lead.clientOrg)}\n`;
-  msgText += `📞 <b>Телефон:</b> <code>${escapeHtml(lead.clientPhone)}</code>\n`;
+  msgText += `📞 <b>Телефон (WA):</b> <code>${escapeHtml(lead.clientPhone)}</code>\n`;
+  msgText += `📧 <b>Email:</b> <code>${escapeHtml(lead.clientEmail || "—")}</code>\n`;
+  msgText += `✈️ <b>Telegram:</b> <code>${escapeHtml(lead.clientTg || "—")}</code>\n`;
   msgText += `🎯 <b>Направление:</b> ${escapeHtml(lead.audienceCategory)}\n`;
   msgText += `🌐 <b>Язык материалов:</b> ${escapeHtml(devLangLabel)} (вес: ${loadPoints} б.)\n`;
   msgText += `${urgentBadge}`;
   msgText += `📋 <b>Модули:</b>\n${escapeHtml(itemsSummary)}\n\n`;
   msgText += `💰 <b>Предв. смета:</b> <b>${Number(lead.totalPrice).toLocaleString("ru-RU")} ₸</b> | ⏱ <b>${lead.totalDays} раб. дн.</b>\n`;
-  msgText += `<i>Статус: Ожидает распаковки в боте или веб-анкете</i>`;
+  msgText += `<i>Клиент сейчас переходит к Шагу 2 (распаковке на сайте). После заполнения придёт полная карточка на разбор.</i>`;
 
   const keyboard = [];
-  if (waLink) keyboard.push([{ text: "📱 Написать в WhatsApp", url: waLink }]);
-  if (portalUrl) keyboard.push([{ text: "🔗 Портал клиента (без TG)", url: portalUrl }]);
-  keyboard.push([{ text: "📄 Открыть Google Таблицу", url: SpreadsheetApp.getActiveSpreadsheet().getUrl() }]);
+  if (adminPortalUrl) keyboard.push([{ text: "👁️ Открыть Кабинет (Режим руководителя)", url: adminPortalUrl }]);
+  if (driveUrl) keyboard.push([{ text: "📂 Папка клиента на Google Диске", url: driveUrl }]);
+  keyboard.push([{ text: "📊 Открыть Google Таблицу", url: SpreadsheetApp.getActiveSpreadsheet().getUrl() }]);
 
   sendTelegramApi(token, "sendMessage", {
     chat_id: adminChatId,
@@ -1067,31 +544,30 @@ function sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis, customHeader) {
 
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
   const kpNumber = row[COL.KP - 1];
-  const cleanPhone = (row[COL.PHONE - 1] || "").toString().replace(/[^\d+]/g, "");
-  const waLink = cleanPhone ? "https://wa.me/" + cleanPhone.replace("+", "") : "";
-  const portalUrl = getClientPortalUrl(kpNumber);
+  const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+  const adminPortalUrl = getAdminPortalUrl(kpNumber);
+  const driveUrl = row[COL.DRIVE_LINK - 1] || (deal.driveFolders && deal.driveFolders.rootUrl) || "";
 
-  const hdr = customHeader || "🟣➡️🔵 БРИФ ПРОЙДЕН! НА РАЗБОРЕ";
-  let text = `<b>${hdr}: ${kpNumber}</b>\n`;
+  const hdr = customHeader || "🟣➡️🔵 РАСПАКОВКА ГОТОВА! НА РАЗБОРЕ";
+  let text = `<b>${hdr}: ${kpNumber}</b> (строка #${rowIdx})\n`;
   text += `━━━━━━━━━━━━━━━━━━━━\n`;
   text += `👤 <b>${escapeHtml(row[COL.NAME - 1])}</b> (${escapeHtml(row[COL.ORG - 1])})\n`;
+  text += `📞 ${escapeHtml(row[COL.PHONE - 1])} | 📧 ${escapeHtml(row[COL.EMAIL - 1])} | TG: ${escapeHtml(row[COL.TG - 1])}\n`;
   text += `🎯 ${escapeHtml(row[COL.CATEGORY - 1])} | 🌐 ${escapeHtml(row[COL.DEV_LANG - 1])}\n`;
   text += `💰 Смета: <b>${Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1]).toLocaleString("ru-RU")} ₸</b> | ⏱ ${row[COL.DAYS - 1]} раб. дн. | ⚖️ ${row[COL.POINTS - 1]} б.\n`;
   text += `━━━━━━━━━━━━━━━━━━━━\n`;
   text += `<b>📌 ВЫЖИМКА (Дилтс / ФКР / Ресурсы):</b>\n${escapeHtml(aiAnalysis.summary)}\n\n`;
   text += `<b>🏦 РЕКВИЗИТЫ ДЛЯ ДОГОВОРА:</b>\n${escapeHtml(aiAnalysis.requisites || row[COL.REQUISITES - 1] || "Не указаны")}\n`;
-  text += `\n🔗 <i>Портал клиента:</i> ${portalUrl}`;
 
   const kb = [
-    [
-      { text: "📋 Собрать Финальное КП (3 варианта)", callback_data: `prep_kp_${kpNumber}` }
-    ],
+    [{ text: "📋 Собрать Финальное КП (3 варианта + Документ А4)", callback_data: `prep_kp_${kpNumber}` }],
     [
       { text: "❓ Задать доп. вопрос", callback_data: `ask_${kpNumber}` },
       { text: "✏️ Изменить сумму/срок", callback_data: `edit_${kpNumber}` }
-    ]
+    ],
+    [{ text: "👁️ Проверить / Редактировать в Кабинете", url: adminPortalUrl }]
   ];
-  if (waLink) kb.push([{ text: "📱 WhatsApp клиента", url: waLink }]);
+  if (driveUrl) kb.push([{ text: "📂 Папка клиента на Google Диске", url: driveUrl }]);
 
   sendTelegramApi(token, "sendMessage", {
     chat_id: adminChatId,
@@ -1117,33 +593,33 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 1. Запрос дополнительного вопроса клиенту (работает БЕЗ Reply!)
+  // 1. Запрос дополнительного вопроса клиенту
   if (data.startsWith("ask_")) {
     const kp = data.replace("ask_", "");
     setAdminPendingAction(chatId, { type: "ask", kp: kp });
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `❓ <b>Доп. вопрос по заявке ${kp}</b>\nПросто напишите ваш вопрос следующим сообщением в этот чат (без свайпа Reply) — я сразу передам его клиенту.`,
+      text: `❓ <b>Доп. вопрос по заявке ${kp}</b>\nНапишите вопрос следующим сообщением в этот чат — он сразу появится в Кабинете клиента и уйдёт ему на Email.`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: [[{ text: "❌ Отмена", callback_data: "admin_cancel" }]] }
     });
     return ContentService.createTextOutput("OK");
   }
 
-  // 2. Изменение суммы и/или срока (работает БЕЗ Reply!)
+  // 2. Изменение суммы и/или срока
   if (data.startsWith("edit_")) {
     const kp = data.replace("edit_", "");
     setAdminPendingAction(chatId, { type: "edit", kp: kp });
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `✏️ <b>Корректировка суммы/срока по ${kp}</b>\nПросто напишите следующим сообщением новую сумму (и при желании комментарий):\n<code>480000 Сделали скидку за 2 модуля</code>`,
+      text: `✏️ <b>Корректировка суммы/срока по ${kp}</b>\nНапишите новую сумму (и при желании комментарий):\n<code>480000 Сделали скидку за 2 модуля</code>`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: [[{ text: "❌ Отмена", callback_data: "admin_cancel" }]] }
     });
     return ContentService.createTextOutput("OK");
   }
 
-  // 3. Сборка черновика Финального КП с 3 вариантами
+  // 3. Сборка черновика Финального КП + создание Документа А4 и файла на Диске
   if (data.startsWith("prep_kp_")) {
     const kp = data.replace("prep_kp_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -1152,23 +628,30 @@ function handleAdminCallback(callbackQuery) {
     const variants = buildFinalKpVariants(sheet, rowIdx);
     patchDealState(sheet, rowIdx, { kpVariants: variants });
 
+    ensureProjectDriveFolder(sheet, rowIdx);
+    const kpDoc = generateAndSaveFinalKpDoc(sheet, rowIdx);
+    const adminKpUrl = getAdminPortalUrl(kp, "kp");
     const preview = formatKp3VariantsPreview(kp, variants);
+
+    const kb = [
+      [{ text: "👁️ Прочитать / Отредактировать КП (А4 на сайте)", url: adminKpUrl }],
+      [{ text: "📤 Утвердить и Отправить КП клиенту (на Email + в Кабинет)", callback_data: `send_kp_${kp}` }],
+      [{ text: "✏️ Быстро поправить 3 цены в боте", callback_data: `edit_kp3_${kp}` }]
+    ];
+    if (kpDoc && kpDoc.docUrl) {
+      kb.splice(1, 0, [{ text: "📄 Открыть Google Док КП (на Диске)", url: kpDoc.docUrl }]);
+    }
+
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: preview,
+      text: preview + (kpDoc && kpDoc.docUrl ? `\n\n📂 <i>Копия КП уже сохранена в папку клиента на Диске.</i>` : ""),
       parse_mode: "HTML",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "📤 Отправить Финальное КП клиенту (срок 2 раб. дн.)", callback_data: `send_kp_${kp}` }],
-          [{ text: "✏️ Поправить цены 3 вариантов", callback_data: `edit_kp3_${kp}` }],
-          [{ text: "🔗 Открыть портал клиента", url: getClientPortalUrl(kp) }]
-        ]
-      }
+      reply_markup: { inline_keyboard: kb }
     });
     return ContentService.createTextOutput("OK");
   }
 
-  // 4. Ручная правка цен 3 вариантов КП (формат: 350000 550000 850000)
+  // 4. Ручная правка цен 3 вариантов КП
   if (data.startsWith("edit_kp3_")) {
     const kp = data.replace("edit_kp3_", "");
     setAdminPendingAction(chatId, { type: "edit_kp3", kp: kp });
@@ -1181,7 +664,7 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 5. Отправка Финального КП клиенту в @metodico_brif_bot (+ на сайт)
+  // 5. Отправка Финального КП клиенту (публикуется в Кабинете + авто-Email + PDF)
   if (data.startsWith("send_kp_")) {
     const kp = data.replace("send_kp_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -1200,69 +683,70 @@ function handleAdminCallback(callbackQuery) {
       remindedKp2d: false
     });
 
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-    const portalUrl = getClientPortalUrl(kp);
-    const clientToken = getSecret("CLIENT_BOT_TOKEN");
-    const chatLang = deal.chatLang || "ru";
+    ensureProjectDriveFolder(sheet, rowIdx);
+    generateAndSaveFinalKpDoc(sheet, rowIdx);
 
-    if (tgChatId && clientToken) {
-      updateClientMemStep(ss, tgChatId, kp, 52);
-      const clientMsg = formatKp3VariantsForClient(kp, variants, deadlineDate, chatLang);
-      const kb = variants.map(v => ([{
-        text: `${v.id}. ${v.title} — ${Number(v.price).toLocaleString("ru-RU")} ₸`,
-        callback_data: `cl_kp_pick:${v.id}:${kp}`
-      }]));
-      sendTelegramApi(clientToken, "sendMessage", {
-        chat_id: tgChatId,
-        text: clientMsg,
-        parse_mode: "HTML",
-        reply_markup: { inline_keyboard: kb }
-      });
-      sendTelegramApi(token, "sendMessage", {
-        chat_id: chatId,
-        text: `✅ <b>Финальное КП по ${kp} отправлено клиенту в Telegram!</b>\nЖдём выбор варианта до <b>${deadlineDate}</b> (2 раб. дн.).\n\n🔗 Ссылка-дубль на сайт: ${portalUrl}`,
-        parse_mode: "HTML"
-      });
-    } else {
-      sendTelegramApi(token, "sendMessage", {
-        chat_id: chatId,
-        text: `💼 <b>Финальное КП по ${kp} опубликовано на персональной странице!</b>\nКлиент оформлял заявку с сайта (без TG). Отправьте ему эту ссылку (WhatsApp / Email):\n\n<code>Здравствуйте! Ваше Финальное КП № ${kp} с 3 вариантами готово: ${portalUrl} (актуально до ${deadlineDate}).</code>`,
-        parse_mode: "HTML"
-      });
+    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "final_kp");
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const portalUrl = getClientPortalUrl(kp, "kp");
+    const adminKpUrl = getAdminPortalUrl(kp, "kp");
+
+    const emailNote = emailRes.sent
+      ? `✅ <b>Финальное КП автоматически отправлено клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыто в его Кабинете!`
+      : `💼 <b>Финальное КП опубликовано в Кабинете клиента</b> (Email не был указан — при необходимости передайте ссылку):\n<code>${portalUrl}</code>`;
+
+    const kb = [[{ text: "👁️ Открыть КП в Кабинете", url: adminKpUrl }]];
+    if (!emailRes.sent) {
+      const wa = buildWaQuickLink(row[COL.PHONE - 1], `Здравствуйте! Ваше Финальное КП № ${kp} с 3 вариантами и PDF готово: ${portalUrl}`);
+      if (wa) kb.push([{ text: "📱 Передать в WhatsApp (запасной канал)", url: wa }]);
     }
+
+    sendTelegramApi(token, "sendMessage", {
+      chat_id: chatId,
+      text: `${emailNote}\n\n⏳ Ждём выбор варианта до <b>${deadlineDate}</b> (2 раб. дн.).`,
+      parse_mode: "HTML",
+      reply_markup: { inline_keyboard: kb }
+    });
     return ContentService.createTextOutput("OK");
   }
 
-  // 6. Сборка предварительного Договора (Наталья проверяет перед отправкой!)
+  // 6. Сборка предварительного Договора (создаёт/обновляет Google Док + PDF в папке клиента и даёт ссылку А4 на проверку)
   if (data.startsWith("approve_")) {
     const kp = data.replace("approve_", "");
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx === -1) return ContentService.createTextOutput("OK");
 
-    const docUrl = tryGenerateContractDoc(sheet, rowIdx);
+    ensureProjectDriveFolder(sheet, rowIdx);
+    const docRes = generateAndSaveContractDoc(sheet, rowIdx);
     const qInfo = getPublicQueueStatus();
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
     const price = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU");
+    const adminContractUrl = getAdminPortalUrl(kp, "contract");
 
-    const replyTxt = docUrl
-      ? `📄 <b>Черновик договора по ${kp} готов к вашей проверке!</b>\n💰 Сумма: <b>${price} ₸</b> (100% предоплата) | ⏱ ${row[COL.DAYS - 1]} раб. дн.\n📅 Ближайшее окно старта: <b>${qInfo.nextFreeWindow}</b>\n\n🔗 <b>Документ:</b> ${docUrl}`
-      : `📄 <b>Подготовка договора по ${kp}:</b>\n💰 Сумма: <b>${price} ₸</b> | ⏱ ${row[COL.DAYS - 1]} раб. дн.\n📅 Ближайшее окно старта: <b>${qInfo.nextFreeWindow}</b>\n<i>(Чтобы Google Документ создавался сам, добавьте CONTRACT_TEMPLATE_ID в Свойства скрипта. Можете отправить клиенту согласование условий и окно старта прямо сейчас.)</i>`;
+    const replyTxt = `📄 <b>Черновик Договора по ${kp} готов к вашей проверке!</b>\n`
+      + `💰 Сумма: <b>${price} ₸</b> (100% предоплата) | ⏱ ${row[COL.DAYS - 1]} раб. дн.\n`
+      + `📅 Ближайшее окно старта: <b>${qInfo.nextFreeWindow}</b>\n`
+      + (docRes.docUrl ? `\n📂 <i>Сохранено в папку клиента на Диске.</i>` : "");
+
+    const kb = [
+      [{ text: "👁️ Прочитать / Отредактировать Договор (А4 на сайте)", url: adminContractUrl }],
+      [{ text: "✅ Согласовано мной ➔ Отправить Договор клиенту", callback_data: `send_contract_${kp}` }],
+      [{ text: "✏️ Изменить сумму/срок", callback_data: `edit_${kp}` }]
+    ];
+    if (docRes.docUrl) {
+      kb.splice(1, 0, [{ text: "📄 Открыть Google Док Договора (на Диске)", url: docRes.docUrl }]);
+    }
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
       text: replyTxt,
       parse_mode: "HTML",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "✅ Согласовано мной ➔ Отправить Договор клиенту", callback_data: `send_contract_${kp}` }],
-          [{ text: "✏️ Изменить сумму/срок", callback_data: `edit_${kp}` }]
-        ]
-      }
+      reply_markup: { inline_keyboard: kb }
     });
     return ContentService.createTextOutput("OK");
   }
 
-  // 7. Отправка предварительного Договора + окна старта клиенту на согласование
+  // 7. Отправка Договора клиенту (публикуется в Кабинете + авто-Email + PDF)
   if (data.startsWith("send_contract_")) {
     const kp = data.replace("send_contract_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -1271,45 +755,34 @@ function handleAdminCallback(callbackQuery) {
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
     paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
 
-    const deal = readDealState(sheet, rowIdx);
+    ensureProjectDriveFolder(sheet, rowIdx);
+    generateAndSaveContractDoc(sheet, rowIdx);
+
+    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "contract");
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-    const docUrl = extractDocUrlFromCol22(row[COL.META_DOC - 1]);
-    const qInfo = getPublicQueueStatus();
-    const portalUrl = getClientPortalUrl(kp);
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-    const clientToken = getSecret("CLIENT_BOT_TOKEN");
-    const lang = deal.chatLang || "ru";
-    const priceStr = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU");
+    const portalUrl = getClientPortalUrl(kp, "contract");
+    const adminContractUrl = getAdminPortalUrl(kp, "contract");
 
-    if (tgChatId && clientToken) {
-      updateClientMemStep(ss, tgChatId, kp, 57);
-      const cText = lang === "kz"
-        ? `📄 <b>№ ${kp} жобасы бойынша алдын ала шарт келісуге дайын!</b>\n\n• Жалпы сомасы: <b>${priceStr} ₸</b> (100% алдын ала төлем)\n• Орындау мерзімі: <b>${row[COL.DAYS - 1]} жұмыс күні</b>\n• Графиктегі жақын бос терезе: <b>${qInfo.nextFreeWindow}</b>\n<i>(Жұмыс 100% төлем түскеннен және барлық материалдар берілгеннен кейін келесі жұмыс күні басталады.)</i>\n${docUrl ? `\n📎 <b>Шарт жобасы:</b> ${docUrl}\n` : ""}\nТөмендегі батырма арқылы шартты тексеріп, келісіміңізді растаңыз:`
-        : `📄 <b>Предварительный договор по проекту № ${kp} готов к согласованию!</b>\n\n• Итоговая стоимость: <b>${priceStr} ₸</b> (100% предоплата)\n• Срок разработки: <b>${row[COL.DAYS - 1]} раб. дн.</b>\n• Ориентировочное окно старта в Графике: <b>${qInfo.nextFreeWindow}</b>\n<i>(Согласно п. 3.1 Договора отсчёт срока идёт со следующего рабочего дня после 100% оплаты И передачи полного пакета исходных материалов.)</i>\n${docUrl ? `\n📎 <b>Ссылка на договор:</b> ${docUrl}\n` : ""}\nПроверьте условия и подтвердите согласование кнопкой ниже:`;
+    const emailNote = emailRes.sent
+      ? `✅ <b>Договор по ${kp} автоматически отправлен клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыт в его Кабинете!`
+      : `📄 <b>Договор по ${kp} опубликован в Кабинете клиента</b> (Email не указан):\n<code>${portalUrl}</code>`;
 
-      const kb = lang === "kz"
-        ? [
-            [{ text: "✅ Шарт келісілді", callback_data: `cl_contract_ok:${kp}` }],
-            [{ text: "✏️ Түзету / сұрақ бар", callback_data: `cl_contract_fix:${kp}` }]
-          ]
-        : [
-            [{ text: "✅ Договор согласован", callback_data: `cl_contract_ok:${kp}` }],
-            [{ text: "✏️ Есть правка / вопрос", callback_data: `cl_contract_fix:${kp}` }]
-          ];
-
-      sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: cText, parse_mode: "HTML", reply_markup: { inline_keyboard: kb } });
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: `✅ Договор по <b>${kp}</b> отправлен клиенту в Telegram! Ждём нажатия «Договор согласован».`, parse_mode: "HTML" });
-    } else {
-      sendTelegramApi(token, "sendMessage", {
-        chat_id: chatId,
-        text: `📄 Статус по <b>${kp}</b> обновлён. Клиент без Telegram — отправьте ему персональную ссылку для согласования договора:\n<code>${portalUrl}</code>${docUrl ? `\n(Договор: ${docUrl})` : ""}`,
-        parse_mode: "HTML"
-      });
+    const kb = [[{ text: "👁️ Открыть Договор в Кабинете", url: adminContractUrl }]];
+    if (!emailRes.sent) {
+      const wa = buildWaQuickLink(row[COL.PHONE - 1], `Здравствуйте! Договор по проекту № ${kp} готов к проверке и согласованию: ${portalUrl}`);
+      if (wa) kb.push([{ text: "📱 Передать в WhatsApp (запасной канал)", url: wa }]);
     }
+
+    sendTelegramApi(token, "sendMessage", {
+      chat_id: chatId,
+      text: `${emailNote}\n\nЖдём подтверждения или правок от клиента.`,
+      parse_mode: "HTML",
+      reply_markup: { inline_keyboard: kb }
+    });
     return ContentService.createTextOutput("OK");
   }
 
-  // 8. Подписано + 100% оплачено ➔ Ждём материалы на Google Диске (мягкая бронь 3 раб. дня!)
+  // 8. Подписано + 100% оплачено ➔ Ждём материалы (авто-Email с инструкцией!)
   if (data.startsWith("paid_")) {
     const kp = data.replace("paid_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -1325,28 +798,21 @@ function handleAdminCallback(callbackQuery) {
     });
     recalculateQueueSheet();
 
-    const deal = readDealState(sheet, rowIdx);
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-    const clientToken = getSecret("CLIENT_BOT_TOKEN");
-    const portalUrl = getClientPortalUrl(kp);
-    const lang = deal.chatLang || "ru";
-    const driveInstruction = getGoogleDriveInstructionText(kp, holdUntil, lang);
+    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "waiting_materials");
+    const adminMatUrl = getAdminPortalUrl(kp, "materials");
+    const driveUrl = sheet.getRange(rowIdx, COL.DRIVE_LINK).getValue();
 
-    if (tgChatId && clientToken) {
-      updateClientMemStep(ss, tgChatId, kp, 60);
-      sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: driveInstruction, parse_mode: "HTML" });
-    }
+    const kb = [
+      [{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${kp}` }],
+      [{ text: "👁️ Открыть Кабинет клиента", url: adminMatUrl }]
+    ];
+    if (driveUrl) kb.push([{ text: "📂 Папка проекта на Диске", url: driveUrl }]);
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `💰 <b>По ${kp} зафиксированы подпись и 100% оплата!</b>\nСтатус: <i>${STATUSES.WAITING_MATERIALS}</i>\nМягкая бронь окна: до <b>${holdUntil}</b> (3 раб. дн.).\n\n${tgChatId ? "✅ Клиенту отправлена пошаговая инструкция про папку Google Диска." : "🔗 Клиент без TG — инструкция ждёт на портале: " + portalUrl}\n\nКак только клиент пришлёт материалы/ссылку и вы проверите комплект — нажмите кнопку запуска:`,
+      text: `💰 <b>По ${kp} зафиксированы подпись и 100% оплата!</b>\nМягкая бронь окна: до <b>${holdUntil}</b> (3 раб. дн.).\n\n${emailRes.sent ? `✅ Клиенту автоматически отправлено письмо на ${escapeHtml(emailRes.to)} со ссылкой на загрузку материалов.` : "🔗 Клиент может загрузить материалы в Кабинете: " + getClientPortalUrl(kp, "materials")}`,
       parse_mode: "HTML",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${kp}` }],
-          [{ text: "🔗 Открыть портал клиента", url: portalUrl }]
-        ]
-      }
+      reply_markup: { inline_keyboard: kb }
     });
     return ContentService.createTextOutput("OK");
   }
@@ -1369,27 +835,19 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 10. Уведомление клиента в Telegram о точном старте и дате сдачи
+  // 10. Уведомление клиента о точном старте и дате сдачи (авто-Email + в Кабинете)
   if (data.startsWith("notify_start_")) {
     const kp = data.replace("notify_start_", "");
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx === -1) return ContentService.createTextOutput("OK");
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-    const deal = readDealState(sheet, rowIdx);
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-    const clientToken = getSecret("CLIENT_BOT_TOKEN");
-    const lang = deal.chatLang || "ru";
+    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "project_started");
 
-    if (tgChatId && clientToken) {
-      updateClientMemStep(ss, tgChatId, kp, 65);
-      const notice = lang === "kz"
-        ? `🚀 <b>${row[COL.NAME - 1]}, жобаңыз ресми түрде іске қосылды!</b>\n\nӨтінім № <b>${kp}</b>\n• Материалдар толық қабылданды\n• Жұмыс басталуы: <b>${row[COL.START_DATE - 1]}</b>\n• Жоспарлы тапсыру күні: <b>${row[COL.END_DATE - 1]}</b>`
-        : `🚀 <b>${escapeHtml(row[COL.NAME - 1])}, ваш проект официально принят в работу!</b>\n\nЗаявка № <b>${kp}</b>\n• Оплата 100% и исходные материалы получены в полном объёме\n• Дата начала работ: <b>${row[COL.START_DATE - 1]}</b>\n• Плановая дата сдачи: <b>${row[COL.END_DATE - 1]}</b>`;
-      sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: notice, parse_mode: "HTML" });
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: `✅ Клиент по ${kp} уведомлён о старте (${row[COL.START_DATE - 1]} ➔ ${row[COL.END_DATE - 1]})!` });
-    } else {
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: `🔗 У клиента нет TG — даты старта уже обновились на портале: ${getClientPortalUrl(kp)}` });
-    }
+    sendTelegramApi(token, "sendMessage", {
+      chat_id: chatId,
+      text: `🚀 Даты по <b>${kp}</b> (${row[COL.START_DATE - 1]} ➔ ${row[COL.END_DATE - 1]}) обновлены в Кабинете!${emailRes.sent ? `\n✅ Письмо клиенту отправлено на ${escapeHtml(emailRes.to)}.` : ""}`,
+      parse_mode: "HTML"
+    });
     return ContentService.createTextOutput("OK");
   }
 
@@ -1400,9 +858,8 @@ function handleAdminCallback(callbackQuery) {
     if (rowIdx !== -1) {
       sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.DONE);
       paintStatusCell(sheet, rowIdx, STATUSES.DONE);
-      const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-      if (tgChatId) updateClientMemStep(ss, tgChatId, kp, 99);
       recalculateQueueSheet();
+      sendPortalLinkEmail(sheet, rowIdx, "project_done");
       sendTelegramApi(token, "sendMessage", {
         chat_id: chatId,
         text: `✅ Проект <b>${kp}</b> переведён в статус «Сдано», баллы в графике освобождены.`,
@@ -1414,12 +871,8 @@ function handleAdminCallback(callbackQuery) {
   return ContentService.createTextOutput("OK");
 }
 
-/**
- * Обработка текстовых команд Натальи в Пульте (как по Reply, так и простым сообщением после нажатия кнопки!)
- */
 function handleAdminMessage(msg) {
   const token = getSecret("ADMIN_BOT_TOKEN");
-  const clientToken = getSecret("CLIENT_BOT_TOKEN");
   const chatId = msg.chat.id.toString();
   const userText = (msg.text || "").trim();
   if (!userText) return ContentService.createTextOutput("OK");
@@ -1428,7 +881,6 @@ function handleAdminMessage(msg) {
   let mode = pending ? pending.type : "";
   let kp = pending ? pending.kp : "";
 
-  // Поддержка классического Reply как запасного канала
   if (!kp && msg.reply_to_message && msg.reply_to_message.text) {
     const rText = msg.reply_to_message.text;
     const mKp = rText.match(/MK-[A-Z0-9-]+/);
@@ -1463,25 +915,14 @@ function handleAdminMessage(msg) {
     sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ДОП. ВОПРОС ОТ НАТАЛЬИ]: " + userText);
     patchDealState(sheet, rowIdx, { lastExtraQuestion: userText });
 
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
-    const deal = readDealState(sheet, rowIdx);
-    const lang = deal.chatLang || "ru";
+    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "extra_question");
     const portalUrl = getClientPortalUrl(kp);
 
-    if (tgChatId && clientToken) {
-      updateClientMemStep(ss, tgChatId, kp, 50);
-      const qMsg = lang === "kz"
-        ? `💬 <b>Наталья Коденцевадан № ${kp} жобасы бойынша нақтылау сұрағы:</b>\n\n${escapeHtml(userContentSafe(userText))}\n\n<i>Осы чатқа мәтінмен немесе дауыспен жауап жіберіңіз.</i>`
-        : `💬 <b>Уточнение от Натальи Коденцевой по проекту № ${kp}:</b>\n\n${escapeHtml(userText)}\n\n<i>Отправьте ответ прямо сюда текстом или голосовым сообщением.</i>`;
-      sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: qMsg, parse_mode: "HTML" });
-      sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: `✅ Вопрос по <b>${kp}</b> отправлен клиенту в Telegram (статус: «Доп. вопрос»). Как ответит — пришлю обновлённую карточку!`, parse_mode: "HTML" });
-    } else {
-      sendTelegramApi(token, "sendMessage", {
-        chat_id: chatId,
-        text: `🟠 Вопрос по <b>${kp}</b> сохранён в таблице и опубликован на персональной странице клиента!\nОтправьте ему эту ссылку (WhatsApp / Email):\n<code>${portalUrl}</code>`,
-        parse_mode: "HTML"
-      });
-    }
+    sendTelegramApi(token, "sendMessage", {
+      chat_id: chatId,
+      text: `🟠 Вопрос по <b>${kp}</b> опубликован в Кабинете клиента!${emailRes.sent ? `\n✅ Письмо отправлено на ${escapeHtml(emailRes.to)}.` : `\n🔗 Ссылка на Кабинет: <code>${portalUrl}</code>`}`,
+      parse_mode: "HTML"
+    });
     return ContentService.createTextOutput("OK");
   }
 
@@ -1492,7 +933,7 @@ function handleAdminMessage(msg) {
       const newPrice = parseInt(matchPrice[1], 10);
       const comment = matchPrice[2].trim();
       sheet.getRange(rowIdx, COL.AGREED_PRICE).setValue(newPrice);
-      if (comment) updateCol22KeepingTgChat(sheet, rowIdx, comment);
+      if (comment) patchDealState(sheet, rowIdx, { adminPriceComment: comment });
       sendTelegramApi(token, "sendMessage", {
         chat_id: chatId,
         text: `✅ Смета по <b>${kp}</b> обновлена: <b>${newPrice.toLocaleString("ru-RU")} ₸</b>`,
@@ -1518,12 +959,15 @@ function handleAdminMessage(msg) {
     variants[2].price = parseInt(nums[2], 10);
     patchDealState(sheet, rowIdx, { kpVariants: variants });
 
+    generateAndSaveFinalKpDoc(sheet, rowIdx);
+
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
       text: formatKp3VariantsPreview(kp, variants),
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
+          [{ text: "👁️ Прочитать / Редактировать КП (А4)", url: getAdminPortalUrl(kp, "kp") }],
           [{ text: "📤 Отправить Финальное КП клиенту", callback_data: `send_kp_${kp}` }],
           [{ text: "✏️ Ещё поправить цены", callback_data: `edit_kp3_${kp}` }]
         ]
@@ -1534,61 +978,61 @@ function handleAdminMessage(msg) {
   return ContentService.createTextOutput("OK");
 }
 
-function userContentSafe(txt) { return txt || ""; }
-
 /**
  * =========================================================================
- * 6. СИСТЕМА ОЧЕРЕДНОСТИ И ГРАФИКА ЗАГРУЗКИ (ПОТОЛОК 10 БАЛЛОВ + МЯГКАЯ БРОНЬ)
+ * 5. ОЧЕРЕДЬ ЗАГРУЗКИ (10 БАЛЛОВ) И НАПОМИНАНИЯ
  * =========================================================================
  */
 function scheduleProjectIntoQueue(kpNumber) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
   const rowIdx = findRowByKp(sheet, kpNumber);
-  if (rowIdx === -1) return { adminMessage: "❌ Заявка " + kpNumber + " не найдена." };
+  if (rowIdx === -1) return { adminMessage: "❌ Заявка не найдена." };
 
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-  const devLang = (row[COL.DEV_LANG - 1] || "Русский").toString();
-  const modulesCol = (row[COL.MODULES - 1] || "").toString();
-  let days = parseInt(row[COL.DAYS - 1] || 10, 10);
+  const points = parseFloat(row[COL.POINTS - 1] || 2);
+  const days = parseInt(row[COL.DAYS - 1] || 10, 10);
 
-  const isDirect = modulesCol.includes("Telegram") || modulesCol.includes("веб-распаковщик");
-  if (isDirect && devLang.toLowerCase().includes("казах") && !modulesCol.includes("с учетом языка")) {
-    days = Math.ceil(days * 1.1);
-    sheet.getRange(rowIdx, COL.DAYS).setValue(days);
-    sheet.getRange(rowIdx, COL.MODULES).setValue(modulesCol + " (с учетом языка)");
-  }
+  const qInfo = getPublicQueueStatus();
+  let startDate;
+  let newStatus;
 
-  const projectPoints = parseFloat(row[COL.POINTS - 1] || 2);
-  const queueInfo = getPublicQueueStatus();
-
-  let startDate = addWorkingDays(new Date(), 1);
-  let newStatus = STATUSES.IN_WORK;
-
-  if (queueInfo.usedPoints + projectPoints > CONFIG.MAX_CAPACITY_POINTS) {
+  if (qInfo.usedPoints + points <= CONFIG.MAX_CAPACITY_POINTS) {
+    startDate = addWorkingDays(new Date(), 1);
+    newStatus = STATUSES.IN_WORK;
+  } else {
+    startDate = qInfo.nextFreeDateObj;
     newStatus = STATUSES.IN_QUEUE;
-    startDate = queueInfo.nextFreeDateObj;
   }
 
   const endDate = addWorkingDays(startDate, days);
-  sheet.getRange(rowIdx, COL.STATUS).setValue(newStatus);
-  sheet.getRange(rowIdx, COL.START_DATE).setValue(formatDateRu(startDate));
-  sheet.getRange(rowIdx, COL.END_DATE).setValue(formatDateRu(endDate));
-  paintStatusCell(sheet, rowIdx, newStatus);
+  const startStr = formatDateRu(startDate);
+  const endStr = formatDateRu(endDate);
 
+  sheet.getRange(rowIdx, COL.STATUS).setValue(newStatus);
+  sheet.getRange(rowIdx, COL.START_DATE).setValue(startStr);
+  sheet.getRange(rowIdx, COL.END_DATE).setValue(endStr);
+  paintStatusCell(sheet, rowIdx, newStatus);
   recalculateQueueSheet();
 
-  return {
-    adminMessage: `🚀 <b>Проект ${kpNumber} запущен в график!</b>\nСтатус: ${newStatus}\nВес: ${projectPoints} б. | Срок: ${days} раб. дн.\nСтарт: <b>${formatDateRu(startDate)}</b> ➔ Сдача: <b>${formatDateRu(endDate)}</b>\n\nНажмите кнопку ниже, чтобы отправить клиенту официальное уведомление с датами.`
-  };
+  const updatedQ = getPublicQueueStatus();
+  const adminMessage = `🚀 <b>ПРОЕКТ ${kpNumber} ЗАПЛАНИРОВАН В ГРАФИКЕ!</b>\n`
+    + `━━━━━━━━━━━━━━━━━━━━\n`
+    + `👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n`
+    + `📌 Статус: <b>${newStatus}</b>\n`
+    + `📅 Старт работ: <b>${startStr}</b>\n`
+    + `🏁 Плановая сдача: <b>${endStr}</b> (${days} раб. дн.)\n`
+    + `⚖️ Загрузка Бюро сейчас: <b>${updatedQ.usedPoints} / ${CONFIG.MAX_CAPACITY_POINTS} баллов</b>`;
+
+  return { adminMessage: adminMessage, startDate: startStr, endDate: endStr, status: newStatus };
 }
 
 function getPublicQueueStatus() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
   if (!sheet || sheet.getLastRow() < 2) {
-    const tomorrow = addWorkingDays(new Date(), 1);
-    return { usedPoints: 0, freePoints: CONFIG.MAX_CAPACITY_POINTS, activeCount: 0, nextFreeWindow: formatDateRu(tomorrow), nextFreeDateObj: tomorrow };
+    const tmr = addWorkingDays(new Date(), 1);
+    return { usedPoints: 0, freePoints: CONFIG.MAX_CAPACITY_POINTS, activeCount: 0, nextFreeWindow: formatDateRu(tmr), nextFreeDateObj: tmr };
   }
 
   const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
@@ -1670,10 +1114,6 @@ function recalculateQueueSheet() {
   queueSheet.getRange("F2").setValue(qInfo.nextFreeWindow);
 }
 
-/**
- * Ежедневный тихий будильник (по желанию подключается 1 раз в Триггеры раз в день):
- * проверяет дедлайн 2 раб. дня по Финальному КП и 3 раб. дня по сдаче материалов.
- */
 function checkDeadlinesTrigger() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
@@ -1682,7 +1122,6 @@ function checkDeadlinesTrigger() {
 
   const adminToken = getSecret("ADMIN_BOT_TOKEN");
   const adminChatId = getSecret("ADMIN_CHAT_ID");
-  const clientToken = getSecret("CLIENT_BOT_TOKEN");
   const now = new Date();
   const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
 
@@ -1692,40 +1131,29 @@ function checkDeadlinesTrigger() {
     const kp = r[COL.KP - 1];
     const st = r[COL.STATUS - 1];
     const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
-    const tgChatId = resolveClientTgChatId(ss, sheet, rowIdx, kp);
 
     if (st === STATUSES.FINAL_KP_SENT && deal.kpSentAt && !deal.remindedKp2d) {
       if (countWorkingDaysBetween(new Date(deal.kpSentAt), now) >= 2) {
         patchDealState(sheet, rowIdx, { remindedKp2d: true });
-        if (tgChatId && clientToken) {
-          const msgC = deal.chatLang === "kz"
-            ? `⏰ Сәлеметсіз бе! № <b>${kp}</b> жобасы бойынша жіберілген КП нұсқаларын қарап үлгердіңіз бе? Қандай да бір сұрағыңыз болса, осында жаза аласыз.`
-            : `⏰ Здравствуйте! Подскажите, удалось ли рассмотреть 3 варианта Финального КП по заявке № <b>${kp}</b>? Если нужно скорректировать состав или есть вопросы — напишите прямо сюда.`;
-          sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: msgC, parse_mode: "HTML" });
-        }
+        sendPortalLinkEmail(sheet, rowIdx, "reminder_kp");
         if (adminToken && adminChatId) {
           sendTelegramApi(adminToken, "sendMessage", {
             chat_id: adminChatId,
-            text: `⏰ <b>Прошло 2 раб. дня по Финальному КП ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nКлиенту ушло вежливое напоминание.`,
+            text: `⏰ <b>Прошло 2 раб. дня по Финальному КП ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nКлиенту отправлено вежливое напоминание на Email.`,
             parse_mode: "HTML"
           });
         }
       }
     }
 
-    if (st === STATUSES.WAITING_MATERIALS && deal.paidAt && !deal.remindedMat3d && !r[COL.DRIVE_LINK - 1]) {
+    if (st === STATUSES.WAITING_MATERIALS && deal.paidAt && !deal.remindedMat3d && !deal.clientMaterialsUrl && !deal.uploadedMaterialsCount) {
       if (countWorkingDaysBetween(new Date(deal.paidAt), now) >= 3) {
         patchDealState(sheet, rowIdx, { remindedMat3d: true });
-        if (tgChatId && clientToken) {
-          const msgM = deal.chatLang === "kz"
-            ? `⏰ Еске саламыз: № <b>${kp}</b> жобасын бастау үшін Google Диск бумасының сілтемесін күтеміз. Сілтемені осында жіберсеңіз, бірден келесі жұмыс күнінен іске қосамыз.`
-            : `⏰ Напоминание по проекту № <b>${kp}</b>: чтобы мы запустили работу, ждём от вас ссылку на папку Google Диска с материалами. Пришлите её сюда — и мы сразу зафиксируем дату старта.`;
-          sendTelegramApi(clientToken, "sendMessage", { chat_id: tgChatId, text: msgM, parse_mode: "HTML" });
-        }
+        sendPortalLinkEmail(sheet, rowIdx, "reminder_materials");
         if (adminToken && adminChatId) {
           sendTelegramApi(adminToken, "sendMessage", {
             chat_id: adminChatId,
-            text: `⏳ <b>Прошло 3 раб. дня ожидания материалов по ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nНапоминание отправлено. Мягкая бронь окна истекла — после сдачи файлов поставим в ближайшее свободное окно.`,
+            text: `⏳ <b>Прошло 3 раб. дня ожидания материалов по ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nНапоминание отправлено на Email.`,
             parse_mode: "HTML"
           });
         }
@@ -1736,7 +1164,7 @@ function checkDeadlinesTrigger() {
 
 /**
  * =========================================================================
- * 7. КЛИЕНТСКИЙ ВЕБ-ПОРТАЛ (client.html) ДЛЯ ЗАКАЗЧИКОВ БЕЗ TELEGRAM И WHATSAPP
+ * 6. ЕДИНЫЙ КАБИНЕТ КЛИЕНТА И АДМИН-РЕЖИМ А4 (client.html)
  * =========================================================================
  */
 function generatePortalToken(kpNumber) {
@@ -1745,16 +1173,36 @@ function generatePortalToken(kpNumber) {
   return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
 }
 
+function generateAdminToken(kpNumber) {
+  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_ADMIN_MK";
+  const sigBytes = Utilities.computeHmacSha256Signature("ADM:" + String(kpNumber), secret);
+  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
+}
+
 function verifyPortalToken(kpNumber, token) {
   if (!kpNumber || !token) return false;
   return generatePortalToken(kpNumber) === String(token).trim();
 }
 
-function getClientPortalUrl(kpNumber) {
-  return `${CONFIG.SITE_URL}/client.html?kp=${encodeURIComponent(kpNumber)}&t=${encodeURIComponent(generatePortalToken(kpNumber))}`;
+function verifyAdminToken(kpNumber, adminSig) {
+  if (!kpNumber || !adminSig) return false;
+  return generateAdminToken(kpNumber) === String(adminSig).trim();
 }
 
-function getClientPortalState(kpNumber, token) {
+function getClientPortalUrl(kpNumber, tab) {
+  const t = encodeURIComponent(generatePortalToken(kpNumber));
+  const base = `${CONFIG.SITE_URL}/client.html?kp=${encodeURIComponent(kpNumber)}&t=${t}`;
+  return tab ? `${base}&tab=${encodeURIComponent(tab)}` : base;
+}
+
+function getAdminPortalUrl(kpNumber, tab) {
+  const t = encodeURIComponent(generatePortalToken(kpNumber));
+  const adm = encodeURIComponent(generateAdminToken(kpNumber));
+  const base = `${CONFIG.SITE_URL}/client.html?kp=${encodeURIComponent(kpNumber)}&t=${t}&admin=${adm}`;
+  return tab ? `${base}&tab=${encodeURIComponent(tab)}` : base;
+}
+
+function getClientPortalState(kpNumber, token, adminSig) {
   if (!verifyPortalToken(kpNumber, token)) {
     return { status: "forbidden", message: "Неверная или устаревшая ссылка заявки." };
   }
@@ -1766,30 +1214,60 @@ function getClientPortalState(kpNumber, token) {
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
   const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
   const qInfo = getPublicQueueStatus();
+  const isAdmin = verifyAdminToken(kpNumber, adminSig);
+  const crmStatus = row[COL.STATUS - 1] || "";
+
+  // Разрешаем видеть Финальное КП: админу всегда если собрано, клиенту — с момента отправки (и дальше в архиве!)
+  const kpPublished = crmStatus.includes("💼") || crmStatus.includes("🤝") || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+  const contractPublished = crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
 
   return {
     status: "ok",
+    isAdmin: isAdmin,
     kpNumber: kpNumber,
+    branchKey: resolveBranchKeyFromCategory(row[COL.CATEGORY - 1]),
     clientName: row[COL.NAME - 1],
     clientOrg: row[COL.ORG - 1],
+    clientPhone: row[COL.PHONE - 1],
+    clientEmail: row[COL.EMAIL - 1],
+    clientTg: row[COL.TG - 1],
     category: row[COL.CATEGORY - 1],
     devLanguage: row[COL.DEV_LANG - 1],
+    devLanguageCode: deal.devLanguageCode || inferDevLangCode(row[COL.DEV_LANG - 1]),
+    modulesText: row[COL.MODULES - 1] || "",
+    selectedItems: deal.selectedItems || [],
+    sitePrice: Number(row[COL.SITE_PRICE - 1] || 0),
+    isUrgent: String(row[COL.URGENT - 1] || "").toLowerCase().includes("сроч"),
     chatLang: deal.chatLang || "ru",
-    crmStatus: row[COL.STATUS - 1],
+    crmStatus: crmStatus,
     agreedPrice: Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0),
     totalDays: Number(row[COL.DAYS - 1] || 10),
     requisites: row[COL.REQUISITES - 1] || "",
-    contractUrl: extractDocUrlFromCol22(row[COL.META_DOC - 1]),
-    driveFolderUrl: row[COL.DRIVE_LINK - 1] || "",
+    requisitesObj: deal.requisitesObj || null,
+    contractUrl: extractDocUrlFromCol22(row[COL.META_DOC - 1]) || deal.contractDocUrl || "",
+    contractPdfUrl: deal.contractPdfUrl || "",
+    kpDocUrl: deal.kpDocUrl || "",
+    kpPdfUrl: deal.kpPdfUrl || "",
+    driveFolderUrl: isAdmin ? (row[COL.DRIVE_LINK - 1] || "") : "",
+    clientMaterialsUrl: deal.clientMaterialsUrl || "",
+    uploadedMaterials: deal.uploadedMaterials || [],
     startDate: row[COL.START_DATE - 1] || "",
     endDate: row[COL.END_DATE - 1] || "",
     nextFreeWindow: qInfo.nextFreeWindow,
+    kpPublished: kpPublished,
+    contractPublished: contractPublished,
     deal: {
       lastExtraQuestion: deal.lastExtraQuestion || "",
-      kpVariants: deal.kpVariants || [],
+      briefAnswers: deal.briefAnswers || null,
+      aiSummary: row[COL.SUMMARY - 1] || "",
+      kpVariants: (isAdmin || kpPublished) ? (deal.kpVariants || []) : [],
       chosenVariant: deal.chosenVariant || null,
       kpDeadlineText: deal.kpDeadlineText || "",
-      holdUntilText: deal.holdUntilText || ""
+      holdUntilText: deal.holdUntilText || "",
+      contractCustomNotes: deal.contractCustomNotes || "",
+      contractCustomBodyHtml: deal.contractCustomBodyHtml || "",
+      contractComment: deal.contractComment || "",
+      adminPriceComment: deal.adminPriceComment || ""
     }
   };
 }
@@ -1803,18 +1281,82 @@ function handleClientPortalPost(data) {
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
   ensureExtendedColumns(sheet);
   const rowIdx = findRowByKp(sheet, kpNumber);
-  if (rowIdx === -1) return { status: "not_found" };
+  if (rowIdx === -1) return { status: "not_found", message: "Заявка не найдена." };
 
   const act = data.action || "";
   const adminToken = getSecret("ADMIN_BOT_TOKEN");
   const adminChatId = getSecret("ADMIN_CHAT_ID");
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+  const isAdmin = verifyAdminToken(kpNumber, data.admin || "");
 
+  // 1. Отправка распаковки прямо из Кабинета (client.html)
+  if (act === "submit_brief") {
+    const ans = data.answers || {};
+    const category = data.audienceCategory || row[COL.CATEGORY - 1] || "Не указано";
+    const chatLang = data.interfaceLang === "kz" ? "kz" : "ru";
+
+    const rawAnswersText = [
+      `1. Главная задача и эффект (Дилтс): ${ans.q1 || "—"}`,
+      `2. Критерии результата: ${ans.q2 || "—"}`,
+      `3. Исходные материалы на руках: ${ans.q3 || "—"}`,
+      `4. Команда и время со стороны заказчика: ${ans.q4 || "—"}`,
+      `5. Комфортность бюджета/сроков и дата старта: ${ans.q5 || "—"}`,
+      `6. Специфика направления (ФКР и стандарты): ${ans.q6 || "—"}`,
+      `7. Доп. информация и оставшиеся вопросы: ${ans.q7 || "—"}`,
+      `8. Форма оплаты и реквизиты: ${ans.q8 || "—"}`,
+      ans.city ? `9. Город / Страна: ${ans.city}` : ""
+    ].filter(Boolean).join("\n");
+
+    const aiAnalysis = analyzeBriefWithGemini({
+      kpNumber: kpNumber,
+      category: category,
+      lang: chatLang,
+      rawText: rawAnswersText,
+      audioBase64: data.audioBase64 || "",
+      audioMimeType: data.audioMimeType || "audio/webm"
+    });
+
+    const fullBriefText = aiAnalysis.transcript
+      ? rawAnswersText + "\n\n[РАСШИФРОВКА ГОЛОСОВОГО СООБЩЕНИЯ]:\n" + aiAnalysis.transcript
+      : rawAnswersText;
+
+    if (category && category !== "Не указано") sheet.getRange(rowIdx, COL.CATEGORY).setValue(category);
+    if (data.clientName && data.clientName.trim()) sheet.getRange(rowIdx, COL.NAME).setValue(data.clientName.trim());
+    if (data.clientOrg && data.clientOrg.trim()) sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim());
+    if (data.clientPhone && data.clientPhone.trim()) sheet.getRange(rowIdx, COL.PHONE).setValue(data.clientPhone.trim());
+    if (data.clientEmail && data.clientEmail.trim()) sheet.getRange(rowIdx, COL.EMAIL).setValue(data.clientEmail.trim());
+    if (data.clientTg && data.clientTg.trim()) sheet.getRange(rowIdx, COL.TG).setValue(data.clientTg.trim());
+
+    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
+    paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+    sheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
+    sheet.getRange(rowIdx, COL.BRIEF).setValue(fullBriefText);
+
+    const reqFinal = (aiAnalysis.requisites && !aiAnalysis.requisites.toLowerCase().includes("не предостав"))
+      ? aiAnalysis.requisites
+      : (ans.q8 || row[COL.REQUISITES - 1] || "");
+    if (reqFinal) sheet.getRange(rowIdx, COL.REQUISITES).setValue(reqFinal);
+
+    patchDealState(sheet, rowIdx, {
+      chatLang: chatLang,
+      briefAnswers: ans,
+      transcript: aiAnalysis.transcript || ""
+    });
+
+    ensureProjectDriveFolder(sheet, rowIdx);
+    generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiAnalysis.summary);
+    sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis);
+    sendPortalLinkEmail(sheet, rowIdx, "brief_received");
+
+    return { status: "ok", message: "Распаковка передана руководителю!" };
+  }
+
+  // 2. Ответ на дополнительный вопрос
   if (act === "answer_extra") {
-    const ans = (data.text || "").trim();
-    if (!ans) return { status: "error", message: "Пустой ответ" };
+    const ansText = (data.text || "").trim();
+    if (!ansText) return { status: "error", message: "Введите текст ответа" };
     const oldBrief = (row[COL.BRIEF - 1] || "").toString();
-    const updated = oldBrief + "\n\n[ОТВЕТ КЛИЕНТА С ПОРТАЛА НА ДОП. ВОПРОС]:\n" + ans;
+    const updated = oldBrief + "\n\n[ОТВЕТ КЛИЕНТА ИЗ КАБИНЕТА НА ДОП. ВОПРОС]:\n" + ansText;
     sheet.getRange(rowIdx, COL.BRIEF).setValue(updated);
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
     paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
@@ -1830,51 +1372,117 @@ function handleClientPortalPost(data) {
     if (aiAnalysis.requisites && !aiAnalysis.requisites.toLowerCase().includes("не предостав")) {
       sheet.getRange(rowIdx, COL.REQUISITES).setValue(aiAnalysis.requisites);
     }
-    sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis, "🌐 КЛИЕНТ ОТВЕТИЛ С САЙТА");
+    sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis, "🌐 КЛИЕНТ ОТВЕТИЛ НА ДОП. ВОПРОС");
     return { status: "ok" };
   }
 
+  // 3. Выбор 1 из 3 вариантов Финального КП
   if (act === "select_kp_variant") {
     const varId = parseInt(data.variantId, 10);
     const deal = readDealState(sheet, rowIdx);
     const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
     const chosen = variants.find(v => Number(v.id) === varId);
-    if (!chosen) return { status: "error", message: "Вариант не найден" };
+    if (!chosen) return { status: "error", message: "Вариант КП не найден" };
 
     sheet.getRange(rowIdx, COL.AGREED_PRICE).setValue(chosen.price);
     sheet.getRange(rowIdx, COL.DAYS).setValue(chosen.days);
-    if (data.requisites && data.requisites.trim()) {
+    if (data.requisitesObj) {
+      saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
+    } else if (data.requisites && data.requisites.trim()) {
       sheet.getRange(rowIdx, COL.REQUISITES).setValue(data.requisites.trim());
     }
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.KP_ACCEPTED);
     paintStatusCell(sheet, rowIdx, STATUSES.KP_ACCEPTED);
     patchDealState(sheet, rowIdx, { chosenVariant: chosen });
 
-    notifyAdminKpAccepted(sheet, rowIdx, chosen, !sheet.getRange(rowIdx, COL.REQUISITES).getValue());
-    return { status: "ok" };
+    // Обновляем КП на Диске отметкой выбранного пакета
+    ensureProjectDriveFolder(sheet, rowIdx);
+    generateAndSaveFinalKpDoc(sheet, rowIdx);
+
+    const reqNow = (sheet.getRange(rowIdx, COL.REQUISITES).getValue() || "").toString().trim();
+    const needsReq = !reqNow || reqNow === "—" || reqNow.toLowerCase().includes("не предостав");
+    notifyAdminKpAccepted(sheet, rowIdx, chosen, needsReq);
+    return { status: "ok", chosen: chosen };
   }
 
-  if (act === "agree_contract") {
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
-    paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
-    notifyAdminContractAgreed(sheet, rowIdx);
-    return { status: "ok" };
-  }
+  // 4. Сохранение реквизитов и/или редактируемого текста А4 Договора
+  if (act === "save_contract_edits") {
+    if (data.requisitesObj) {
+      saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
+    }
+    const patch = {};
+    if (typeof data.contractCustomNotes === "string") {
+      patch.contractCustomNotes = data.contractCustomNotes.trim();
+    }
+    if (typeof data.contractCustomBodyHtml === "string") {
+      patch.contractCustomBodyHtml = data.contractCustomBodyHtml;
+    }
+    if (typeof data.clientOrg === "string" && data.clientOrg.trim()) {
+      sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim());
+    }
+    if (Object.keys(patch).length) patchDealState(sheet, rowIdx, patch);
 
-  if (act === "contract_comment") {
-    const comment = (data.text || "").trim();
-    if (!comment) return { status: "error" };
-    const oldBrief = (row[COL.BRIEF - 1] || "").toString();
-    sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ПРАВКА ПО ДОГОВОРУ С ПОРТАЛА]: " + comment);
-    patchDealState(sheet, rowIdx, { contractComment: comment });
-    if (adminToken && adminChatId) {
+    ensureProjectDriveFolder(sheet, rowIdx);
+    const docRes = generateAndSaveContractDoc(sheet, rowIdx);
+
+    if (!isAdmin && adminToken && adminChatId) {
+      const admUrl = getAdminPortalUrl(kpNumber, "contract");
       sendTelegramApi(adminToken, "sendMessage", {
         chat_id: adminChatId,
-        text: `✏️ <b>Правка/вопрос по договору ${kpNumber} (с портала):</b>\n${escapeHtml(comment)}`,
+        text: `✏️ <b>Клиент обновил реквизиты / правки в А4 Договоре по ${kpNumber}</b>\n👤 ${escapeHtml(row[COL.NAME - 1])}\n${data.contractCustomNotes ? `📝 Примечание: ${escapeHtml(data.contractCustomNotes)}\n` : ""}📂 Файл на Диске автоматически обновлён.`,
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "❓ Ответить / Задать вопрос", callback_data: `ask_${kpNumber}` }],
+            [{ text: "👁️ Проверить Договор в Кабинете", url: admUrl }],
+            ...(docRes.docUrl ? [[{ text: "📄 Открыть Google Док", url: docRes.docUrl }]] : [])
+          ]
+        }
+      });
+    }
+    return { status: "ok", contractUrl: docRes.docUrl || "", contractPdfUrl: docRes.pdfUrl || "" };
+  }
+
+  // 5. Согласование Договора клиентом
+  if (act === "agree_contract") {
+    if (data.requisitesObj) {
+      saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
+    }
+    if (typeof data.contractCustomNotes === "string" && data.contractCustomNotes.trim()) {
+      patchDealState(sheet, rowIdx, { contractCustomNotes: data.contractCustomNotes.trim() });
+    }
+    if (typeof data.contractCustomBodyHtml === "string" && data.contractCustomBodyHtml.trim()) {
+      patchDealState(sheet, rowIdx, { contractCustomBodyHtml: data.contractCustomBodyHtml });
+    }
+
+    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
+    paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
+    patchDealState(sheet, rowIdx, { contractAgreedAt: new Date().toISOString() });
+
+    ensureProjectDriveFolder(sheet, rowIdx);
+    generateAndSaveContractDoc(sheet, rowIdx, true);
+
+    notifyAdminContractAgreed(sheet, rowIdx);
+    sendPortalLinkEmail(sheet, rowIdx, "contract_agreed");
+    return { status: "ok" };
+  }
+
+  // 6. Комментарий / правка по договору
+  if (act === "contract_comment") {
+    const comment = (data.text || "").trim();
+    if (!comment) return { status: "error", message: "Введите текст правки" };
+    const oldBrief = (row[COL.BRIEF - 1] || "").toString();
+    sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ПРАВКА ПО ДОГОВОРУ С ПОРТАЛА]: " + comment);
+    patchDealState(sheet, rowIdx, { contractComment: comment });
+
+    if (adminToken && adminChatId) {
+      sendTelegramApi(adminToken, "sendMessage", {
+        chat_id: adminChatId,
+        text: `✏️ <b>Правка/вопрос по договору ${kpNumber}:</b>\n${escapeHtml(comment)}`,
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "👁️ Открыть и поправить Договор (А4)", url: getAdminPortalUrl(kpNumber, "contract") }],
+            [{ text: "❓ Ответить клиенту", callback_data: `ask_${kpNumber}` }],
             [{ text: "📄 Пересобрать Договор", callback_data: `approve_${kpNumber}` }]
           ]
         }
@@ -1883,19 +1491,29 @@ function handleClientPortalPost(data) {
     return { status: "ok" };
   }
 
+  // 7. Передача ссылки на папку Google Диска клиента
   if (act === "submit_materials_link") {
     const url = (data.driveLink || "").trim();
     const note = (data.note || "").trim();
     if (!url) return { status: "error", message: "Укажите ссылку на папку" };
-    sheet.getRange(rowIdx, COL.DRIVE_LINK).setValue(url);
-    if (note) {
-      const oldBrief = (row[COL.BRIEF - 1] || "").toString();
-      sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[КОММЕНТАРИЙ К МАТЕРИАЛАМ]: " + note);
-    }
+
+    patchDealState(sheet, rowIdx, { clientMaterialsUrl: url, clientMaterialsNote: note });
+    const oldBrief = (row[COL.BRIEF - 1] || "").toString();
+    sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + `\n\n[ССЫЛКА НА МАТЕРИАЛЫ КЛИЕНТА]: ${url}${note ? " — " + note : ""}`);
+
+    // Создаём файл-ярлык со ссылкой внутри подпапки 03_Материалы_клиента на вашем Диске
+    try {
+      const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
+      if (folderInfo.subFolders && folderInfo.subFolders.materialsId) {
+        const mFolder = DriveApp.getFolderById(folderInfo.subFolders.materialsId);
+        mFolder.createFile(`Ссылка_на_материалы_${kpNumber}.txt`, `Ссылка клиента: ${url}\nКомментарий: ${note}\nДата: ${new Date().toLocaleString("ru-RU")}`, MimeType.PLAIN_TEXT);
+      }
+    } catch (e) { Logger.log("Materials note save warn: " + e); }
+
     if (adminToken && adminChatId) {
       sendTelegramApi(adminToken, "sendMessage", {
-        chat_id: adminChatId,
-        text: `📂 <b>КЛИЕНТ ЗАГРУЗИЛ ССЫЛКУ НА ПАПКУ GOOGLE ДИСКА (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])}\n🔗 ${escapeHtml(url)}${note ? `\n💬 ${escapeHtml(note)}` : ""}`,
+        chat_id: chatIdOrAdmin(adminChatId),
+        text: `📂 <b>КЛИЕНТ ПЕРЕДАЛ ССЫЛКУ НА МАТЕРИАЛЫ (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])}\n🔗 ${escapeHtml(url)}${note ? `\n💬 ${escapeHtml(note)}` : ""}`,
         parse_mode: "HTML",
         reply_markup: { inline_keyboard: [[{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${kpNumber}` }]] }
       });
@@ -1903,12 +1521,541 @@ function handleClientPortalPost(data) {
     return { status: "ok" };
   }
 
+  // 8. Прямая загрузка файла материалов клиентом в подпапку 03_Материалы_клиента
+  if (act === "upload_material_file") {
+    const fileName = (data.fileName || ("material_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_");
+    const mimeType = data.mimeType || "application/octet-stream";
+    const fileBase64 = data.fileBase64 || "";
+    if (!fileBase64) return { status: "error", message: "Файл пустой" };
+
+    try {
+      const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
+      const targetFolderId = (folderInfo.subFolders && folderInfo.subFolders.materialsId) || folderInfo.rootId;
+      const folder = DriveApp.getFolderById(targetFolderId);
+      const bytes = Utilities.base64Decode(fileBase64);
+      const blob = Utilities.newBlob(bytes, mimeType, fileName);
+      const created = folder.createFile(blob);
+
+      const deal = readDealState(sheet, rowIdx);
+      const list = Array.isArray(deal.uploadedMaterials) ? deal.uploadedMaterials : [];
+      list.push({ name: fileName, url: created.getUrl(), uploadedAt: new Date().toLocaleString("ru-RU") });
+      patchDealState(sheet, rowIdx, { uploadedMaterials: list, uploadedMaterialsCount: list.length });
+
+      if (adminToken && adminChatId) {
+        sendTelegramApi(adminToken, "sendMessage", {
+          chat_id: adminChatId,
+          text: `📎 <b>Клиент загрузил файл по ${kpNumber}:</b> <code>${escapeHtml(fileName)}</code>\n📂 Сохранено в папку «03_Материалы_клиента» на вашем Диске.`,
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "📂 Открыть папку на Диске", url: folder.getUrl() }],
+              [{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${kpNumber}` }]
+            ]
+          }
+        });
+      }
+      return { status: "ok", fileName: fileName, fileUrl: created.getUrl() };
+    } catch (err) {
+      return { status: "error", message: "Ошибка сохранения файла: " + err.toString() };
+    }
+  }
+
+  // 9. Админ сохраняет правки Финального КП прямо из Кабинета А4
+  if (act === "admin_save_kp") {
+    if (!isAdmin) return { status: "forbidden", message: "Требуются права руководителя" };
+    if (Array.isArray(data.kpVariants) && data.kpVariants.length === 3) {
+      patchDealState(sheet, rowIdx, { kpVariants: data.kpVariants });
+      ensureProjectDriveFolder(sheet, rowIdx);
+      const kpDoc = generateAndSaveFinalKpDoc(sheet, rowIdx);
+      return { status: "ok", kpDocUrl: kpDoc.docUrl || "", kpPdfUrl: kpDoc.pdfUrl || "" };
+    }
+    return { status: "error", message: "Некорректные варианты КП" };
+  }
+
+  // 10. Админ сохраняет правки суммы/срока/реквизитов/текста Договора прямо из Кабинета А4
+  if (act === "admin_save_contract") {
+    if (!isAdmin) return { status: "forbidden", message: "Требуются права руководителя" };
+    if (data.agreedPrice) sheet.getRange(rowIdx, COL.AGREED_PRICE).setValue(Number(data.agreedPrice));
+    if (data.totalDays) sheet.getRange(rowIdx, COL.DAYS).setValue(Number(data.totalDays));
+    if (data.requisitesObj) saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
+    patchDealState(sheet, rowIdx, {
+      contractCustomNotes: typeof data.contractCustomNotes === "string" ? data.contractCustomNotes : "",
+      contractCustomBodyHtml: typeof data.contractCustomBodyHtml === "string" ? data.contractCustomBodyHtml : ""
+    });
+    ensureProjectDriveFolder(sheet, rowIdx);
+    const docRes = generateAndSaveContractDoc(sheet, rowIdx);
+    return { status: "ok", contractUrl: docRes.docUrl || "", contractPdfUrl: docRes.pdfUrl || "" };
+  }
+
   return { status: "error", message: "Неизвестное действие" };
+}
+
+function chatIdOrAdmin(id) { return id; }
+
+function saveRequisitesHelper(sheet, rowIdx, reqObj) {
+  if (!reqObj || typeof reqObj !== "object") return;
+  const parts = [
+    reqObj.orgName ? `Организация: ${reqObj.orgName}` : "",
+    reqObj.binIin ? `БИН/ИИН: ${reqObj.binIin}` : "",
+    reqObj.signerName ? `Подписант: ${reqObj.signerName}${reqObj.signerBasis ? " (" + reqObj.signerBasis + ")" : ""}` : "",
+    reqObj.legalAddress ? `Юр. адрес: ${reqObj.legalAddress}` : "",
+    reqObj.bankName ? `Банк: ${reqObj.bankName}` : "",
+    reqObj.iban ? `ИИК (IBAN): ${reqObj.iban}` : "",
+    reqObj.bik ? `БИК: ${reqObj.bik}${reqObj.kbe ? ", КБе: " + reqObj.kbe : ""}` : "",
+    reqObj.phone ? `Тел.: ${reqObj.phone}` : "",
+    reqObj.email ? `Email: ${reqObj.email}` : ""
+  ].filter(Boolean);
+  const formatted = parts.join(" | ");
+  if (formatted) {
+    sheet.getRange(rowIdx, COL.REQUISITES).setValue(formatted);
+  }
+  if (reqObj.orgName && reqObj.orgName.trim()) {
+    sheet.getRange(rowIdx, COL.ORG).setValue(reqObj.orgName.trim());
+  }
+  patchDealState(sheet, rowIdx, { requisitesObj: reqObj });
 }
 
 /**
  * =========================================================================
- * 8. GEMINI API + ГЕНЕРАЦИЯ 3 ВАРИАНТОВ ФИНАЛЬНОГО КП + ДОГОВОР GOOGLE DOCS
+ * 7. АВТОМАТИЧЕСКИЕ ПАПКИ КЛИЕНТА И ГЕНЕРАЦИЯ ДОКУМЕНТОВ НА GOOGLE ДИСКЕ
+ * =========================================================================
+ */
+function getOrCreateRootProjectsFolder() {
+  const existingId = getSecret("ROOT_PROJECTS_FOLDER_ID");
+  if (existingId) {
+    try { return DriveApp.getFolderById(existingId); } catch (e) {}
+  }
+  const it = DriveApp.getFoldersByName(CONFIG.ROOT_FOLDER_NAME);
+  if (it.hasNext()) {
+    const f = it.next();
+    setSecret("ROOT_PROJECTS_FOLDER_ID", f.getId());
+    return f;
+  }
+  const created = DriveApp.createFolder(CONFIG.ROOT_FOLDER_NAME);
+  setSecret("ROOT_PROJECTS_FOLDER_ID", created.getId());
+  return created;
+}
+
+function ensureProjectDriveFolder(sheet, rowIdx) {
+  try {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    if (deal.driveFolders && deal.driveFolders.rootId) {
+      return deal.driveFolders;
+    }
+
+    const root = getOrCreateRootProjectsFolder();
+    const kp = String(row[COL.KP - 1] || "MK");
+    const name = String(row[COL.NAME - 1] || "Клиент").replace(/[\\/:*?"<>|]/g, "");
+    const org = String(row[COL.ORG - 1] || "").replace(/[\\/:*?"<>|]/g, "");
+    const folderTitle = org && org !== "—" ? `${kp} — ${name} (${org})` : `${kp} — ${name}`;
+
+    const projectFolder = root.createFolder(folderTitle);
+    const fBriefKp = projectFolder.createFolder("01_Бриф_и_КП");
+    const fContract = projectFolder.createFolder("02_Договор_и_Реквизиты");
+    const fMaterials = projectFolder.createFolder("03_Материалы_клиента");
+    const fResults = projectFolder.createFolder("04_Наши_разработки_и_Сдача");
+
+    const info = {
+      rootId: projectFolder.getId(),
+      rootUrl: projectFolder.getUrl(),
+      subFolders: {
+        briefKpId: fBriefKp.getId(),
+        contractId: fContract.getId(),
+        materialsId: fMaterials.getId(),
+        resultsId: fResults.getId()
+      }
+    };
+
+    sheet.getRange(rowIdx, COL.DRIVE_LINK).setValue(info.rootUrl);
+    patchDealState(sheet, rowIdx, { driveFolders: info });
+    return info;
+  } catch (err) {
+    Logger.log("ensureProjectDriveFolder warn: " + err.toString());
+    return { rootId: "", rootUrl: "", subFolders: {} };
+  }
+}
+
+function saveDocAndPdfToFolder(doc, folderId, pdfFileName) {
+  const file = DriveApp.getFileById(doc.getId());
+  if (folderId) {
+    try {
+      const targetFolder = DriveApp.getFolderById(folderId);
+      file.moveTo(targetFolder);
+      // Разрешаем просмотр по ссылке (только чтение), чтобы клиент мог открыть/скачать
+      try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+
+      // Удаляем старую PDF-копию с тем же именем, чтобы не плодить дубли при пересборке
+      const oldPdfs = targetFolder.getFilesByName(pdfFileName);
+      while (oldPdfs.hasNext()) {
+        oldPdfs.next().setTrashed(true);
+      }
+      const pdfBlob = file.getAs(MimeType.PDF).setName(pdfFileName);
+      const pdfFile = targetFolder.createFile(pdfBlob);
+      try { pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+      return { docUrl: file.getUrl(), pdfUrl: pdfFile.getUrl(), docId: file.getId(), pdfId: pdfFile.getId() };
+    } catch (e) {
+      Logger.log("saveDocAndPdfToFolder warn: " + e);
+    }
+  }
+  return { docUrl: file.getUrl(), pdfUrl: "", docId: file.getId(), pdfId: "" };
+}
+
+function generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiSummary) {
+  try {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const kp = String(row[COL.KP - 1]);
+    const folderId = deal.driveFolders && deal.driveFolders.subFolders ? deal.driveFolders.subFolders.briefKpId : "";
+
+    let doc;
+    if (deal.briefDocId) {
+      try { doc = DocumentApp.openById(deal.briefDocId); doc.getBody().clear(); } catch (e) { doc = null; }
+    }
+    if (!doc) doc = DocumentApp.create(`Бриф_и_Распаковка_${kp}`);
+
+    const body = doc.getBody();
+    body.appendParagraph(`БЮРО СТАНДАРТОВ «МЕТОДИКО» (ТОО «Метод и Ко»)`).setHeading(DocumentApp.ParagraphHeading.HEADING2);
+    body.appendParagraph(`КАРТОЧКА РАСПАКОВКИ И КОНТАКТОВ № ${kp}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    body.appendParagraph(`Дата: ${row[COL.DATE - 1]} | Направление: ${row[COL.CATEGORY - 1]} | Язык материалов: ${row[COL.DEV_LANG - 1]}`);
+    body.appendParagraph(`Заказчик: ${row[COL.NAME - 1]} (${row[COL.ORG - 1]})`);
+    body.appendParagraph(`Контакты: Тел/WA: ${row[COL.PHONE - 1]} | Email: ${row[COL.EMAIL - 1]} | Telegram: ${row[COL.TG - 1]}`);
+    body.appendParagraph(`Выбранные модули с сайта:\n${row[COL.MODULES - 1] || "—"}`);
+    body.appendParagraph(`Предварительная смета: ${Number(row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU")} ₸ (${row[COL.DAYS - 1]} раб. дн.)`);
+    body.appendHorizontalRule();
+    body.appendParagraph(`ИИ-ВЫЖИМКА (Дилтс / ФКР / Ресурсы):`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
+    body.appendParagraph(aiSummary || "—");
+    body.appendHorizontalRule();
+    body.appendParagraph(`ПОЛНЫЕ ОТВЕТЫ КЛИЕНТА:`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
+    body.appendParagraph(fullBriefText || "—");
+    doc.saveAndClose();
+
+    const saved = saveDocAndPdfToFolder(doc, folderId, `Бриф_${kp}.pdf`);
+    patchDealState(sheet, rowIdx, { briefDocId: saved.docId, briefDocUrl: saved.docUrl });
+    return saved;
+  } catch (e) {
+    Logger.log("Brief doc error: " + e);
+    return {};
+  }
+}
+
+function generateAndSaveFinalKpDoc(sheet, rowIdx) {
+  try {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const kp = String(row[COL.KP - 1]);
+    const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
+    const folderId = deal.driveFolders && deal.driveFolders.subFolders ? deal.driveFolders.subFolders.briefKpId : "";
+
+    let doc;
+    if (deal.kpDocId) {
+      try { doc = DocumentApp.openById(deal.kpDocId); doc.getBody().clear(); } catch (e) { doc = null; }
+    }
+    if (!doc) doc = DocumentApp.create(`Финальное_КП_${kp}`);
+
+    const body = doc.getBody();
+    body.appendParagraph(`ТОО «Метод и Ко» | Бюро стандартов «МЕТОДИКО»`).setHeading(DocumentApp.ParagraphHeading.HEADING2);
+    body.appendParagraph(`ФИНАЛЬНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ № ${kp}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    body.appendParagraph(`Дата: ${formatDateRu(new Date())} | Срок действия условий: до ${deal.kpDeadlineText || "2 раб. дня"}`);
+    body.appendParagraph(`Заказчик: ${row[COL.NAME - 1]} (${row[COL.ORG - 1]})`);
+    body.appendParagraph(`Направление: ${row[COL.CATEGORY - 1]} | Язык разработки: ${row[COL.DEV_LANG - 1]}`);
+    body.appendHorizontalRule();
+
+    variants.forEach(v => {
+      const isChosen = deal.chosenVariant && Number(deal.chosenVariant.id) === Number(v.id);
+      body.appendParagraph(`${v.id}. ${v.title}${isChosen ? " [ВЫБРАН ЗАКАЗЧИКОМ]" : ""}`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
+      body.appendParagraph(`Стоимость: ${Number(v.price).toLocaleString("ru-RU")} ₸ (без НДС) | Срок: ${v.days} раб. дн.`);
+      body.appendParagraph(`Состав работ: ${v.scope}`);
+    });
+
+    body.appendHorizontalRule();
+    body.appendParagraph(`Условия работы: 100% предоплата. Отсчёт срока ведётся со следующего рабочего дня после поступления оплаты и полного комплекта исходных материалов. Формат: 100% дистанционно.`);
+    body.appendParagraph(`Исполнитель: ТОО «Метод и Ко», БИН 231140018015, г. Алматы, АО «Kaspi Bank», ИИК KZ54722S000031140138, БИК CASPKZKA, Директор Коденцева Н.М.`);
+    doc.saveAndClose();
+
+    const saved = saveDocAndPdfToFolder(doc, folderId, `Финальное_КП_${kp}.pdf`);
+    patchDealState(sheet, rowIdx, { kpDocId: saved.docId, kpDocUrl: saved.docUrl, kpPdfUrl: saved.pdfUrl });
+    return saved;
+  } catch (e) {
+    Logger.log("Final KP doc error: " + e);
+    return {};
+  }
+}
+
+function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
+  try {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const kp = String(row[COL.KP - 1]);
+    const folderId = deal.driveFolders && deal.driveFolders.subFolders ? deal.driveFolders.subFolders.contractId : "";
+    const templateId = getSecret("CONTRACT_TEMPLATE_ID");
+
+    const req = deal.requisitesObj || {};
+    const orgDisplay = req.orgName || row[COL.ORG - 1] || "________________________________________";
+    const signerDisplay = req.signerName || row[COL.NAME - 1] || "_____________________";
+    const signerBasis = req.signerBasis || "Устава / ИП";
+    const reqBlock = [
+      orgDisplay,
+      `БИН/ИИН: ${req.binIin || "________________"}`,
+      `Юр. адрес: ${req.legalAddress || "________________"}`,
+      `Банк: ${req.bankName || "________________"}`,
+      `ИИК (IBAN): ${req.iban || "________________"}`,
+      `БИК: ${req.bik || "________"} КБе: ${req.kbe || "__"}`,
+      `Тел.: ${req.phone || row[COL.PHONE - 1] || "—"} | Email: ${req.email || row[COL.EMAIL - 1] || "—"}`
+    ].join("\n");
+
+    const priceNum = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0);
+    const daysNum = Number(row[COL.DAYS - 1] || 10);
+    const chosen = deal.chosenVariant || {};
+    const pkgText = chosen.title ? `${chosen.title} — ${chosen.scope || ""}` : (row[COL.MODULES - 1] || row[COL.CATEGORY - 1]);
+
+    // Если пользователь явно задал свой Google Docs шаблон — используем его, иначе создаём полный Договор автоматически!
+    if (templateId && !deal.contractDocId) {
+      const templateFile = DriveApp.getFileById(templateId);
+      const copyFile = templateFile.makeCopy(`Договор_${kp}_${orgDisplay}`);
+      const docT = DocumentApp.openById(copyFile.getId());
+      const bodyT = docT.getBody();
+      bodyT.replaceText("{{KP_NUMBER}}", kp);
+      bodyT.replaceText("{{DATE}}", formatDateRu(new Date()));
+      bodyT.replaceText("{{CLIENT_NAME}}", signerDisplay);
+      bodyT.replaceText("{{CLIENT_ORG}}", orgDisplay);
+      bodyT.replaceText("{{REQUISITES}}", row[COL.REQUISITES - 1] || reqBlock);
+      bodyT.replaceText("{{TOTAL_PRICE}}", priceNum.toLocaleString("ru-RU"));
+      bodyT.replaceText("{{TOTAL_DAYS}}", String(daysNum));
+      bodyT.replaceText("{{CHOSEN_PACKAGE}}", pkgText);
+      bodyT.replaceText("{{PAYMENT_TERMS}}", "100% предоплата; отсчёт срока со следующего рабочего дня после поступления оплаты И полного комплекта исходных материалов (п. 3.1)");
+      docT.saveAndClose();
+      const savedT = saveDocAndPdfToFolder(docT, folderId, `Договор_${kp}.pdf`);
+      updateCol22KeepingTgChat(sheet, rowIdx, savedT.docUrl);
+      patchDealState(sheet, rowIdx, { contractDocId: savedT.docId, contractDocUrl: savedT.docUrl, contractPdfUrl: savedT.pdfUrl });
+      return savedT;
+    }
+
+    let doc;
+    if (deal.contractDocId) {
+      try { doc = DocumentApp.openById(deal.contractDocId); doc.getBody().clear(); } catch (e) { doc = null; }
+    }
+    if (!doc) doc = DocumentApp.create(`Договор_авторского_заказа_${kp}`);
+
+    const body = doc.getBody();
+    const statusBadge = isFinalAgreed ? " [СОГЛАСОВАН СТОРОНАМИ]" : " [ПРОЕКТ ДЛЯ СОГЛАСОВАНИЯ]";
+    body.appendParagraph(`ДОГОВОР АВТОРСКОГО ЗАКАЗА И УЧЕБНО-МЕТОДИЧЕСКОГО ПРОЕКТИРОВАНИЯ № ${kp}${statusBadge}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    body.appendParagraph(`г. Алматы | Дата: ${formatDateRu(new Date())}`);
+    body.appendParagraph(`Товарищество с ограниченной ответственностью «Метод и Ко» (Бюро стандартов «МЕТОДИКО»), именуемое в дальнейшем «Исполнитель», в лице Директора Коденцевой Натальи Михайловны, действующей на основании Устава, с одной стороны, и ${orgDisplay}, именуемое в дальнейшем «Заказчик», в лице ${signerDisplay}, действующего(ей) на основании ${signerBasis}, с другой стороны, заключили настоящий Договор о нижеследующем:`);
+
+    const sections = getFullContractPlainTextSections(kp, priceNum, daysNum, pkgText, row[COL.CATEGORY - 1], row[COL.DEV_LANG - 1], deal.contractCustomNotes || "");
+    sections.forEach(s => {
+      body.appendParagraph(s.title).setHeading(DocumentApp.ParagraphHeading.HEADING3);
+      s.paragraphs.forEach(p => body.appendParagraph(p));
+    });
+
+    body.appendHorizontalRule();
+    body.appendParagraph(`10. РЕКВИЗИТЫ И ПОДПИСИ СТОРОН`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
+    body.appendParagraph(`ИСПОЛНИТЕЛЬ:\nТОО «Метод и Ко» (Бюро «МЕТОДИКО»)\nБИН: 231140018015\nЮр. адрес: 050019, г. Алматы, Турксибский р-н, мкр. Кайрат, ул. Жетысай, дом 15/2\nБанк: АО «Kaspi Bank» | ИИК: KZ54722S000031140138 | БИК: CASPKZKA | КБе: 17\nТел.: +7 (700) 077-35-66 | Сайт: metodico-kz.netlify.app\nДиректор: ____________________ / Коденцева Н.М. /`);
+    body.appendParagraph(`ЗАКАЗЧИК:\n${reqBlock}\nПодписант: ____________________ / ${signerDisplay} /`);
+    doc.saveAndClose();
+
+    const pdfName = isFinalAgreed ? `Договор_${kp}_СОГЛАСОВАН.pdf` : `Договор_${kp}_проект.pdf`;
+    const saved = saveDocAndPdfToFolder(doc, folderId, pdfName);
+    updateCol22KeepingTgChat(sheet, rowIdx, saved.docUrl);
+    patchDealState(sheet, rowIdx, { contractDocId: saved.docId, contractDocUrl: saved.docUrl, contractPdfUrl: saved.pdfUrl });
+    return saved;
+  } catch (err) {
+    Logger.log("Contract doc error: " + err.toString());
+    return {};
+  }
+}
+
+function getFullContractPlainTextSections(kp, priceNum, daysNum, pkgText, category, devLang, customNotes) {
+  const priceStr = Number(priceNum || 0).toLocaleString("ru-RU");
+  const list = [
+    {
+      title: "1. ПРЕДМЕТ ДОГОВОРА",
+      paragraphs: [
+        "1.1. Исполнитель обязуется по заданию Заказчика оказать комплекс научно-методических, проектных и учебно-аналитических услуг («Работы») по разработке образовательных комплексов, учебно-методической документации, корпоративных регламентов или диалоговых тренажёров, а Заказчик обязуется принять результат надлежаще выполненных Работ и оплатить их.",
+        `1.2. Направление проекта: ${category || "Методическая разработка"} | Язык материалов: ${devLang || "Русский"}.`,
+        `1.3. Согласованный состав работ (Техническое задание / Приложение к № ${kp}): ${pkgText || "Согласно выбранной спецификации"}.`,
+        "1.4. Формат оказания услуг: 100% дистанционный (удалённый). Передача результатов осуществляется в электронном виде (DOCX, XLSX, PDF, HTML) через Google Диск и электронную почту."
+      ]
+    },
+    {
+      title: "2. СТОИМОСТЬ РАБОТ И ПОРЯДОК РАСЧЕТОВ",
+      paragraphs: [
+        `2.1. Общая стоимость Работ по настоящему Договору составляет ${priceStr} (тенге) РК. НДС не облагается (Исполнитель не является плательщиком НДС).`,
+        "2.2. Расчёты производятся в порядке 100% предоплаты в течение 3 (трёх) банковских дней с момента согласования Договора и выставления счёта на оплату (частичные/поэтапные схемы не применяются).",
+        "2.3. Исполнитель выставляет электронный Акт выполненных работ (АВР) и ЭСФ в ИС ЭСФ в установленные законодательством РК сроки."
+      ]
+    },
+    {
+      title: "3. СРОКИ ВЫПОЛНЕНИЯ И ПРАВИЛА ПРАВОК",
+      paragraphs: [
+        `3.1. Срок выполнения Работ составляет ${daysNum} рабочих дней и начинает исчисляться со следующего рабочего дня после выполнения Заказчиком двух условий в совокупности: (1) поступление 100% предоплаты на расчётный счёт Исполнителя и (2) передача Заказчиком полного пакета согласованных исходных материалов.`,
+        "3.2. Автоматическое продление сроков: при задержке Заказчиком предоставления исходных материалов или обратной связи более чем на 24 часа срок выполнения Работ автоматически сдвигается на количество дней задержки без штрафных санкций.",
+        "3.3. Норматив правок: корректировки в рамках согласованного ТЗ осуществляются до сдачи материалов в пределах не более 3 (трёх) консолидированных итераций. Дополнительные работы после приемки или за пределами ТЗ оплачиваются отдельно по ставке 15 000 ₸/час."
+      ]
+    },
+    {
+      title: "4. ПОРЯДОК СДАЧИ И АВТОМАТИЧЕСКОЙ ПРИЕМКИ РАБОТ",
+      paragraphs: [
+        "4.1. По завершении Работ Исполнитель загружает готовые материалы в проектную папку Заказчика и направляет АВР.",
+        "4.2. Заказчик в течение 3 (трёх) рабочих дней подписывает АВР либо направляет мотивированный письменный отказ с указанием несоответствий ТЗ. При отсутствии ответа в течение 3 рабочих дней Работы считаются принятыми автоматически в полном объёме (презумпция надлежащего исполнения)."
+      ]
+    },
+    {
+      title: "5. ИСКЛЮЧИТЕЛЬНЫЕ ПРАВА И КОНФИДЕНЦИАЛЬНОСТЬ (NDA)",
+      paragraphs: [
+        "5.1. Исключительные имущественные права на разработанные материалы переходят к Заказчику с момента приёмки и при условии полной 100% оплаты.",
+        "5.2. Стороны обязуются соблюдать конфиденциальность коммерческой и методологической информации в течение 3 лет в соответствии со ст. 126 ГК РК.",
+        "5.3. Ограничение ответственности: Исполнитель гарантирует соответствие материалов ТЗ и стандартам, но не несёт ответственности за коммерческие показатели продаж Заказчика и субъективные решения внешних комиссий. В соответствии со ст. 963 ГК РК возврат средств за качественно выполненные интеллектуальные работы не предусмотрен."
+      ]
+    },
+    {
+      title: "6. РАЗРЕШЕНИЕ СПОРОВ",
+      paragraphs: [
+        "6.1. Обязательный досудебный претензионный порядок (срок рассмотрения — 10 рабочих дней). При недостижении согласия спор рассматривается в СМЭС г. Алматы по праву РК.",
+        "6.2. Сканированные и электронные копии настоящего Договора, Приложений и АВР имеют полную юридическую силу."
+      ]
+    }
+  ];
+  if (customNotes) {
+    list.push({
+      title: "7. ОСОБЫЕ УСЛОВИЯ И ДОПОЛНЕНИЯ СТОРОН",
+      paragraphs: [customNotes]
+    });
+  }
+  return list;
+}
+
+/**
+ * =========================================================================
+ * 8. АВТОМАТИЧЕСКИЕ EMAIL-УВЕДОМЛЕНИЯ КЛИЕНТУ (0 ₸ ЧЕРЕЗ GMAIL / MailApp)
+ * =========================================================================
+ */
+function sendPortalLinkEmail(sheet, rowIdx, eventType) {
+  try {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const email = (row[COL.EMAIL - 1] || "").toString().trim();
+    if (!email || !email.includes("@")) return { sent: false, reason: "no_email" };
+
+    const kp = String(row[COL.KP - 1]);
+    const name = String(row[COL.NAME - 1] || "Коллега");
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const lang = deal.chatLang === "kz" ? "kz" : "ru";
+
+    let tab = "";
+    let subject = "";
+    let heading = "";
+    let bodyHtml = "";
+    let btnText = lang === "kz" ? "Жеке кабинетті ашу →" : "Открыть Личный кабинет заказа →";
+    const attachments = [];
+
+    if (eventType === "brief_received") {
+      tab = "brief";
+      subject = lang === "kz" ? `МЕТОДИКО: № ${kp} өтінімі қабылданды` : `МЕТОДИКО: Заявка № ${kp} принята на разбор`;
+      heading = lang === "kz" ? `Рахмет, ${escapeHtml(name)}!` : `Спасибо, ${escapeHtml(name)}!`;
+      bodyHtml = lang === "kz"
+        ? `<p>Сіздің <b>№ ${kp}</b> жобаңыз бойынша мәліметтер Наталья Коденцеваға жеткізілді.</p><p>Осы сілтемені сақтап қойыңыз — сіздің жеке кабинетіңізде Қорытынды КП, Шарт және дайын материалдар пайда болады:</p>`
+        : `<p>Ваша распаковка по заявке <b>№ ${kp}</b> передана руководителю Бюро Наталье Коденцевой.</p><p>Сохраните ссылку на ваш постоянный Личный кабинет — именно здесь появятся Финальное КП (PDF), Договор и статус проекта:</p>`;
+    } else if (eventType === "extra_question") {
+      tab = "brief";
+      subject = `МЕТОДИКО: Уточняющий вопрос по заявке № ${kp}`;
+      heading = `Уточняющий вопрос по проекту № ${kp}`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Для точной сборки Финального КП руководитель Бюро «МЕТОДИКО» Наталья Коденцева оставила вопрос в вашем кабинете:</p><blockquote style="background:#FFFBEB;border-left:4px solid #C9A227;padding:12px 16px;margin:12px 0;">${escapeHtml(deal.lastExtraQuestion || "")}</blockquote>`;
+      btnText = "Ответить в Личном кабинете →";
+    } else if (eventType === "final_kp") {
+      tab = "kp";
+      subject = lang === "kz" ? `МЕТОДИКО: № ${kp} Қорытынды КП дайын (3 нұсқа)` : `МЕТОДИКО: Ваше Финальное КП № ${kp} готово (3 варианта + PDF)`;
+      heading = lang === "kz" ? `№ ${kp} Қорытынды КП дайын!` : `Финальное КП по проекту № ${kp} готово!`;
+      const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
+      const listHtml = variants.map(v => `<li><b>${v.id}. ${escapeHtml(v.title)}</b> — <b>${Number(v.price).toLocaleString("ru-RU")} ₸</b> (${v.days} раб. дн.)<br><span style="color:#475569;font-size:13px;">${escapeHtml(v.scope)}</span></li>`).join("");
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Подготовили 3 варианта комплектации под ваш проект (предложение действует до <b>${escapeHtml(deal.kpDeadlineText || "2 раб. дней")}</b>):</p><ul>${listHtml}</ul><p>Откройте Кабинет, чтобы просмотреть полный бланк А4, скачать PDF и выбрать удобный вариант:</p>`;
+      btnText = "Открыть Финальное КП и выбрать вариант →";
+      tryAttachDrivePdf(deal.kpPdfUrl || "", deal.kpDocId || "", `Финальное_КП_${kp}.pdf`, attachments);
+    } else if (eventType === "contract") {
+      tab = "contract";
+      subject = lang === "kz" ? `МЕТОДИКО: № ${kp} Шарт жобасы келісуге дайын` : `МЕТОДИКО: Договор по проекту № ${kp} готов к согласованию`;
+      heading = `Договор по заявке № ${kp}`;
+      const priceStr = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU");
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Подготовили Договор авторского заказа (сумма: <b>${priceStr} ₸</b>, срок: <b>${row[COL.DAYS - 1]} раб. дн.</b>, 100% предоплата).</p><p>В вашем Кабинете вы можете прочитать полный текст Договора А4, при необходимости дописать/исправить реквизиты прямо в документе, скачать PDF и нажать кнопку «Договор согласован»:</p>`;
+      btnText = "Открыть и согласовать Договор →";
+      tryAttachDrivePdf(deal.contractPdfUrl || "", deal.contractDocId || "", `Договор_${kp}.pdf`, attachments);
+    } else if (eventType === "contract_agreed") {
+      tab = "contract";
+      subject = `МЕТОДИКО: Договор по № ${kp} согласован`;
+      heading = `Договор № ${kp} согласован`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Мы зафиксировали согласование Договора. Ожидайте счёт на оплату (100% предоплата). Подписанный экземпляр также доступен для скачивания в вашем Кабинете.</p>`;
+    } else if (eventType === "waiting_materials") {
+      tab = "materials";
+      subject = `МЕТОДИКО: Оплата получена — передайте материалы по № ${kp}`;
+      heading = `Оплата получена! Готовы принимать исходники по № ${kp}`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! 100% оплата зафиксирована. Мы забронировали для вас окно в Графике до <b>${escapeHtml(deal.holdUntilText || "3 раб. дней")}</b>.</p><p>Перейдите в Кабинет, чтобы прикрепить ссылку на Google Диск или загрузить исходные файлы:</p>`;
+      btnText = "Передать материалы в Кабинете →";
+    } else if (eventType === "project_started") {
+      tab = "materials";
+      subject = `МЕТОДИКО: Проект № ${kp} запущен в работу!`;
+      heading = `Проект № ${kp} официально в работе!`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Материалы приняты в полном объёме.</p><p>• <b>Дата старта:</b> ${escapeHtml(row[COL.START_DATE - 1])}<br>• <b>Плановая дата сдачи:</b> ${escapeHtml(row[COL.END_DATE - 1])}</p>`;
+    } else if (eventType === "project_done") {
+      tab = "materials";
+      subject = `МЕТОДИКО: Проект № ${kp} выполнен`;
+      heading = `Проект № ${kp} завершён!`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Благодарим за сотрудничество с Бюро стандартов «МЕТОДИКО». Все материалы и история заявки всегда доступны в вашем Кабинете.</p>`;
+    } else if (eventType === "reminder_kp") {
+      tab = "kp";
+      subject = `Напоминание: Финальное КП по № ${kp} ждёт выбора`;
+      heading = `Финальное КП по проекту № ${kp}`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Напоминаем, что в вашем Кабинете опубликованы 3 варианта Финального КП. Если есть вопросы по составу или смете — напишите комментарий прямо на странице.</p>`;
+    } else if (eventType === "reminder_materials") {
+      tab = "materials";
+      subject = `Напоминание: ждём исходные материалы по проекту № ${kp}`;
+      heading = `Материалы по проекту № ${kp}`;
+      bodyHtml = `<p>Здравствуйте, ${escapeHtml(name)}! Чтобы запустить счётчик срока разработки, передайте исходные файлы или ссылку на Google Диск в вашем Кабинете.</p>`;
+    } else {
+      return { sent: false, reason: "unknown_event" };
+    }
+
+    const portalUrl = getClientPortalUrl(kp, tab);
+    const fullHtml = `
+      <div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;color:#1E293B;">
+        <div style="background:#152238;color:#FFFFFF;padding:18px 24px;border-bottom:3px solid #C9A227;">
+          <div style="font-size:18px;font-weight:700;letter-spacing:0.5px;">МЕТОДИКО <span style="color:#E8C547;font-size:13px;font-weight:600;">ТОО «Метод и Ко»</span></div>
+        </div>
+        <div style="padding:24px;line-height:1.6;font-size:15px;">
+          <h2 style="color:#152238;margin-top:0;">${heading}</h2>
+          ${bodyHtml}
+          <p style="margin:24px 0;">
+            <a href="${portalUrl}" style="display:inline-block;background:#C9A227;color:#0D1624;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:8px;font-size:15px;">${btnText}</a>
+          </p>
+          <p style="font-size:12px;color:#64748B;">Если кнопка не открывается, скопируйте ссылку в браузер:<br>${portalUrl}</p>
+        </div>
+        <div style="background:#F8FAFC;padding:14px 24px;font-size:12px;color:#64748B;border-top:1px solid #E2E8F0;">
+          Бюро стандартов «МЕТОДИКО» · г. Алматы · +7 (700) 077-35-66 · ${CONFIG.SITE_URL}
+        </div>
+      </div>`;
+
+    const mailOpts = { htmlBody: fullHtml, name: "Бюро стандартов «МЕТОДИКО»" };
+    if (attachments.length) mailOpts.attachments = attachments;
+
+    MailApp.sendEmail(email, subject, `${heading}\n\nПерейдите в Личный кабинет: ${portalUrl}`, mailOpts);
+    return { sent: true, to: email };
+  } catch (err) {
+    Logger.log("sendPortalLinkEmail error: " + err.toString());
+    return { sent: false, reason: err.toString() };
+  }
+}
+
+function tryAttachDrivePdf(pdfUrl, docId, fileName, attachments) {
+  try {
+    if (docId) {
+      const f = DriveApp.getFileById(docId);
+      attachments.push(f.getAs(MimeType.PDF).setName(fileName));
+    }
+  } catch (e) {}
+}
+
+/**
+ * =========================================================================
+ * 9. GEMINI API + 3 ВАРИАНТА КП + ФОРМАТИРОВАНИЕ КАРТОЧЕК
  * =========================================================================
  */
 function callGeminiContent(parts) {
@@ -1928,23 +2075,6 @@ function callGeminiContent(parts) {
     throw new Error(`HTTP ${code}: ${json.error ? json.error.message : body.slice(0, 120)}`);
   }
   return json.candidates[0].content.parts[0].text;
-}
-
-function classifyBranchWithGemini(rawText) {
-  try {
-    const apiKey = getSecret("GEMINI_API_KEY");
-    if (!apiKey || !rawText) return "";
-    const out = callGeminiContent([{
-      text: `Определи направление бюро «МЕТОДИКО» (верни ТОЛЬКО одно слово: vuz, school, edtech или b2b):\n${rawText}`
-    }]).toLowerCase().trim();
-    if (out.includes("edtech")) return "edtech";
-    if (out.includes("vuz")) return "vuz";
-    if (out.includes("school")) return "school";
-    if (out.includes("b2b")) return "b2b";
-    return "";
-  } catch (e) {
-    return "";
-  }
 }
 
 function buildFinalKpVariants(sheet, rowIdx) {
@@ -1986,7 +2116,7 @@ function buildFinalKpVariants(sheet, rowIdx) {
   try {
     const prompt = `Ты — главный методолог Бюро «МЕТОДИКО». На основе брифа клиента составь 3 варианта Финального КП на языке: ${lang === "kz" ? "КАЗАХСКИЙ" : "РУССКИЙ"}.
 Категория: ${category} | Язык продукта: ${devLang}
-Ориентир цен (можешь слегка адаптировать только текст, цифры оставь точно):
+Ориентир цен (цифры оставь точно):
 1) Вариант 1: ${p1} тг, ${d1} раб. дн.
 2) Вариант 2: ${p2} тг, ${d2} раб. дн.
 3) Вариант 3: ${p3} тг, ${d3} раб. дн.
@@ -1994,7 +2124,7 @@ function buildFinalKpVariants(sheet, rowIdx) {
 Выжимка брифа: ${row[COL.SUMMARY - 1] || row[COL.BRIEF - 1] || "Стандартный запрос"}
 
 Верни СТРОГО JSON-массив из 3 объектов без markdown:
-[{"id":1,"title":"...","price":${p1},"days":${d1},"scope":"краткий конкретный состав работ до 160 знаков"}, ...]`;
+[{"id":1,"title":"...","price":${p1},"days":${d1},"scope":"конкретный состав работ до 260 знаков"}, ...]`;
 
     const raw = callGeminiContent([{ text: prompt }]).replace(/```json|```/g, "").trim();
     const arrMatch = raw.match(/\[[\s\S]*\]/);
@@ -2055,88 +2185,13 @@ ${input.rawText}`;
   }
 }
 
-function transcribeAudioWithGemini(base64Audio, mimeType) {
-  const apiKey = getSecret("GEMINI_API_KEY");
-  if (!apiKey || !base64Audio) return "[Аудио получено, но GEMINI_API_KEY не задан]";
-  try {
-    return callGeminiContent([
-      { text: "Расшифруй это голосовое сообщение дословно на том языке, на котором говорит клиент (русский или казахский), сохраняя смысл и термины." },
-      { inline_data: { mime_type: mimeType || "audio/ogg", data: base64Audio } }
-    ]).trim();
-  } catch (e) {
-    return "[Ошибка распознавания голоса: " + e.toString() + "]";
-  }
-}
-
-function tryGenerateContractDoc(sheet, rowIdx) {
-  const templateId = getSecret("CONTRACT_TEMPLATE_ID");
-  if (!templateId) return "";
-
-  try {
-    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-    const deal = readDealState(sheet, rowIdx);
-    const chosen = deal.chosenVariant || {};
-    const templateFile = DriveApp.getFileById(templateId);
-    const copyFile = templateFile.makeCopy(`Договор_${row[COL.KP - 1]}_${row[COL.ORG - 1] || row[COL.NAME - 1]}`);
-    const doc = DocumentApp.openById(copyFile.getId());
-    const body = doc.getBody();
-
-    body.replaceText("{{KP_NUMBER}}", row[COL.KP - 1] || "");
-    body.replaceText("{{DATE}}", formatDateRu(new Date()));
-    body.replaceText("{{CLIENT_NAME}}", row[COL.NAME - 1] || "");
-    body.replaceText("{{CLIENT_ORG}}", row[COL.ORG - 1] || "");
-    body.replaceText("{{REQUISITES}}", row[COL.REQUISITES - 1] || "");
-    body.replaceText("{{TOTAL_PRICE}}", Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU"));
-    body.replaceText("{{TOTAL_DAYS}}", String(row[COL.DAYS - 1] || 14));
-    body.replaceText("{{CHOSEN_PACKAGE}}", chosen.title ? `${chosen.title}: ${chosen.scope || ""}` : (row[COL.MODULES - 1] || ""));
-    body.replaceText("{{PAYMENT_TERMS}}", "100% предоплата; отсчёт срока со следующего рабочего дня после поступления оплаты И полного комплекта исходных материалов (п. 3.1)");
-    doc.saveAndClose();
-
-    const url = copyFile.getUrl();
-    updateCol22KeepingTgChat(sheet, rowIdx, url);
-    return url;
-  } catch (err) {
-    Logger.log("Contract gen error: " + err.toString());
-    return "";
-  }
-}
-
-/**
- * =========================================================================
- * 9. ФОРМАТИРОВАНИЕ КАРТОЧЕК, ИНСТРУКЦИИ GOOGLE ДИСКА И ВСПОМОГАТЕЛЬНЫЕ ХЕЛПЕРЫ
- * =========================================================================
- */
 function formatKp3VariantsPreview(kp, variants) {
   let msg = `📋 <b>ЧЕРНОВИК ФИНАЛЬНОГО КП (3 варианта) по ${kp}:</b>\n━━━━━━━━━━━━━━━━━━━━\n`;
   variants.forEach(v => {
     msg += `\n<b>${v.id}. ${escapeHtml(v.title)}</b> — <b>${Number(v.price).toLocaleString("ru-RU")} ₸</b> (${v.days} раб. дн.)\n<i>${escapeHtml(v.scope)}</i>\n`;
   });
-  msg += `\n💳 Условия оплаты: <b>100% предоплата</b>, старт на следующий рабочий день после оплаты и получения материалов.\n⏳ Окно выбора для клиента: <b>2 рабочих дня</b>.`;
+  msg += `\n💳 Оплата: <b>100% предоплата</b>, старт на след. раб. день после оплаты и материалов.\n⏳ Окно выбора для клиента: <b>2 раб. дня</b>.`;
   return msg;
-}
-
-function formatKp3VariantsForClient(kp, variants, deadlineDate, lang) {
-  if (lang === "kz") {
-    let t = `💼 <b>№ ${kp} өтінімі бойынша Қорытынды коммерциялық ұсыныс (3 нұсқа):</b>\n━━━━━━━━━━━━━━━━━━━━\n`;
-    variants.forEach(v => {
-      t += `\n<b>${v.id}. ${escapeHtml(v.title)}</b> — <b>${Number(v.price).toLocaleString("ru-RU")} ₸</b> (${v.days} жұм. күні)\n<i>${escapeHtml(v.scope)}</i>\n`;
-    });
-    t += `\n💳 Төлем шарты: <b>100% алдын ала төлем</b> (материалдарды алғаннан кейінгі келесі жұмыс күнінен басталады).\n⏰ Осы шарттар мен сметаны <b>2 жұмыс күні ішінде (дейін: ${deadlineDate})</b> сақтаймыз.\n\nТөмендегі батырмалардан өзіңізге қолайлы нұсқаны таңдаңыз:`;
-    return t;
-  }
-  let t = `💼 <b>Финальное коммерческое предложение по проекту № ${kp}:</b>\n━━━━━━━━━━━━━━━━━━━━\n`;
-  variants.forEach(v => {
-    t += `\n<b>${v.id}. ${escapeHtml(v.title)}</b> — <b>${Number(v.price).toLocaleString("ru-RU")} ₸</b> (${v.days} раб. дн.)\n<i>${escapeHtml(v.scope)}</i>\n`;
-  });
-  t += `\n💳 Оплата: <b>100% предоплата</b>, старт на следующий рабочий день после оплаты и передачи исходных материалов.\n⏰ Мы держим эти условия и расчёт <b>в течение 2 рабочих дней (до ${deadlineDate})</b>.\n\nВыберите подходящий вариант кнопкой ниже (или задайте вопрос сюда же):`;
-  return t;
-}
-
-function getGoogleDriveInstructionText(kp, holdUntil, lang) {
-  if (lang === "kz") {
-    return `✅ <b>Шарт пен 100% төлем расталды! № ${kp} жобасын бастауға дайынбыз.</b>\n\n📂 <b>Бастапқы материалдарды (құжаттар, презентациялар, аудио/видео жазбалар) 3 жұмыс күні ішінде (дейін: ${holdUntil}) қалай жіберуге болады:</b>\n\n1️⃣ Өзіңіздің <b>Google Дискіңізді</b> (drive.google.com) ашыңыз.\n2️⃣ <b>«+ Создать / Жаңа бума»</b> батырмасы арқылы жаңа бума жасаңыз (мысалы: <code>МЕТОДИКО ${kp}</code>).\n3️⃣ Барлық бастапқы материалдарды (Word, PDF, силлабус, аудио) сол бумаға жүктеңіз.\n4️⃣ Буманы оң жақ түймемен басып ➔ <b>«Поделиться / Бөлісу»</b> ➔ <b>«Сілтеме арқылы кез келген адам — Редактор (немесе Оқушы)»</b> таңдап, сілтемені көшіріңіз.\n5️⃣ Сол сілтемені осы чатқа жіберіңіз!\n\n<i>Дайын нәтижені де осы бумаға жүктеп, өзіңізге тапсырамыз.</i>`;
-  }
-  return `✅ <b>Договор и 100% оплата зафиксированы! Готовы принимать материалы по № ${kp}.</b>\n⏳ На период до <b>${holdUntil}</b> (3 раб. дн.) придерживаем ваше окно в Графике.\n\n📂 <b>Как за 2 минуты передать все исходники (документы, силлабусы, записи, аудио):</b>\n\n1️⃣ Откройте свой <b>Google Диск</b> (drive.google.com).\n2️⃣ Нажмите <b>«+ Создать» ➔ «Новую папку»</b> (назовите её, например: <code>МЕТОДИКО ${kp}</code>).\n3️⃣ Перетащите туда все нужные файлы и аудиозаписи (любого объёма).\n4️⃣ Нажмите на папку правой кнопкой ➔ <b>«Поделиться» ➔ «Доступ по ссылке»</b> ➔ выберите <b>«Редактор»</b> (чтобы мы могли и скачать исходники, и загрузить в эту же папку готовые результаты для вас) и нажмите <b>«Копировать ссылку»</b>.\n5️⃣ Пришлите скопированную ссылку прямо сюда в ответном сообщении!\n\n<i>После проверки комплекта мы сразу включим рабочий отсчёт и пришлём точные даты старта и сдачи.</i>`;
 }
 
 function notifyAdminKpAccepted(sheet, rowIdx, chosen, needsReq) {
@@ -2147,24 +2202,14 @@ function notifyAdminKpAccepted(sheet, rowIdx, chosen, needsReq) {
   const kp = row[COL.KP - 1];
   sendTelegramApi(token, "sendMessage", {
     chat_id: adminChatId,
-    text: `🤝 <b>КЛИЕНТ ПРИНЯЛ ФИНАЛЬНОЕ КП: ${kp}</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n📦 Вариант: <b>${escapeHtml(chosen.title)}</b>\n💰 Сумма: <b>${Number(chosen.price).toLocaleString("ru-RU")} ₸</b> | ⏱ ${chosen.days} раб. дн.\n🏦 Реквизиты: ${needsReq ? "<i>запросили у клиента, ждём</i>" : escapeHtml(row[COL.REQUISITES - 1])}`,
+    text: `🤝 <b>КЛИЕНТ ПРИНЯЛ ФИНАЛЬНОЕ КП: ${kp}</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n📦 Вариант: <b>${escapeHtml(chosen.title)}</b>\n💰 Сумма: <b>${Number(chosen.price).toLocaleString("ru-RU")} ₸</b> | ⏱ ${chosen.days} раб. дн.\n🏦 Реквизиты: ${needsReq ? "<i>пока не указаны (клиент сможет вписать в Договор А4)</i>" : escapeHtml(row[COL.REQUISITES - 1])}`,
     parse_mode: "HTML",
     reply_markup: {
-      inline_keyboard: [[{ text: "📄 Собрать и проверить Договор", callback_data: `approve_${kp}` }]]
+      inline_keyboard: [
+        [{ text: "📄 Собрать и проверить Договор (А4)", callback_data: `approve_${kp}` }],
+        [{ text: "👁️ Открыть Кабинет сделки", url: getAdminPortalUrl(kp, "contract") }]
+      ]
     }
-  });
-}
-
-function notifyAdminRequisitesReceived(sheet, rowIdx, reqText) {
-  const token = getSecret("ADMIN_BOT_TOKEN");
-  const adminChatId = getSecret("ADMIN_CHAT_ID");
-  if (!token || !adminChatId || rowIdx === -1) return;
-  const kp = sheet.getRange(rowIdx, COL.KP).getValue();
-  sendTelegramApi(token, "sendMessage", {
-    chat_id: adminChatId,
-    text: `🏦 <b>Реквизиты получены по ${kp}:</b>\n<code>${escapeHtml(reqText)}</code>`,
-    parse_mode: "HTML",
-    reply_markup: { inline_keyboard: [[{ text: "📄 Собрать и проверить Договор", callback_data: `approve_${kp}` }]] }
   });
 }
 
@@ -2174,14 +2219,38 @@ function notifyAdminContractAgreed(sheet, rowIdx) {
   if (!token || !adminChatId) return;
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
   const kp = row[COL.KP - 1];
+  const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+  const kb = [
+    [{ text: "💰 Подписано + 100% оплачено (Ждем материалы)", callback_data: `paid_${kp}` }],
+    [{ text: "👁️ Открыть согласованный Договор (А4)", url: getAdminPortalUrl(kp, "contract") }]
+  ];
+  if (deal.contractPdfUrl) kb.push([{ text: "📄 Скачать PDF Договора с Диска", url: deal.contractPdfUrl }]);
+
   sendTelegramApi(token, "sendMessage", {
     chat_id: adminChatId,
-    text: `✍️ <b>ДОГОВОР СОГЛАСОВАН КЛИЕНТОМ: ${kp}!</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n💰 ${Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1]).toLocaleString("ru-RU")} ₸\n\nПосле подписания и поступления 100% оплаты нажмите кнопку ниже, чтобы отправить клиенту инструкцию по передаче материалов и забронировать окно:`,
+    text: `✍️ <b>ДОГОВОР СОГЛАСОВАН КЛИЕНТОМ: ${kp}!</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n💰 ${Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1]).toLocaleString("ru-RU")} ₸\n\nПосле подписания и поступления 100% оплаты нажмите кнопку ниже:`,
     parse_mode: "HTML",
-    reply_markup: {
-      inline_keyboard: [[{ text: "💰 Подписано + 100% оплачено (Ждем материалы)", callback_data: `paid_${kp}` }]]
-    }
+    reply_markup: { inline_keyboard: kb }
   });
+}
+
+/**
+ * =========================================================================
+ * 10. ВСПОМОГАТЕЛЬНЫЕ ХЕЛПЕРЫ
+ * =========================================================================
+ */
+function buildWaQuickLink(phone, text) {
+  const clean = String(phone || "").replace(/[^\d]/g, "");
+  if (clean.length < 10) return "";
+  return `https://wa.me/${clean}?text=${encodeURIComponent(text || "")}`;
+}
+
+function normalizePhone(phone) {
+  const digits = String(phone || "").replace(/[^\d]/g, "");
+  if (digits.length === 11 && digits.startsWith("8")) return "+7" + digits.slice(1);
+  if (digits.length === 11 && digits.startsWith("7")) return "+" + digits;
+  if (digits.length === 10) return "+7" + digits;
+  return phone ? String(phone).trim() : "";
 }
 
 function getDevLangLabel(code) {
@@ -2206,41 +2275,6 @@ function calculateLoadPoints(days, devLang, selectedItems) {
   return base;
 }
 
-function getClientQuestionLabel(step) {
-  const labels = {
-    1: "1. Главная задача (Дилтс)",
-    2: "2. Критерии результата",
-    3: "3. Материалы и команда",
-    4: "4. Отраслевая специфика (ФКР)",
-    5: "5. Сроки и доп. вопросы",
-    6: "6. Оплата и реквизиты"
-  };
-  return labels[step] || ("Вопрос " + step);
-}
-
-function getClientQuestionPrompt(step, category, lang) {
-  if (lang === "kz") {
-    const mapKz = {
-      1: "<b>6-дан 1-сұрақ.</b> Бұл жоба қандай басты міндетті шешуі керек және 3–6 айдан кейін не өзгеруі тиіс?",
-      2: "<b>6-дан 2-сұрақ.</b> Жобаның 100% сәтті іске асқанын қандай нақты сандар мен нәтижелер бойынша бағалайсыз?",
-      3: "<b>6-дан 3-сұрақ.</b> Қолыңызда қандай дайын материалдар бар (презентация, силлабус, аудио/видео) және сіздің тарапыңыздан командаға кім қатысады?",
-      4: getBranchQuestionText(category, "kz"),
-      5: "<b>6-дан 5-сұрақ.</b> Жобаны қашан бастау ыңғайлы және тағы нені ескеруіміз маңызды?",
-      6: "<b>6-дан 6-сұрақ.</b> Төлемді қалай жоспарлайсыз (ЖШС / ЖК / жеке тұлға)? Шарт үшін деректемелерді жазыңыз (немесе «кейін жіберемін» деңіз)."
-    };
-    return mapKz[step] || mapKz[6];
-  }
-  const mapRu = {
-    1: "<b>Вопрос 1 из 6.</b> Какую главную задачу должен решить проект и что изменится после внедрения?",
-    2: "<b>Вопрос 2 из 6.</b> По каким конкретным цифрам или действиям вы поймёте, что проект сработал на 100%?",
-    3: "<b>Вопрос 3 из 6.</b> Какие материалы уже есть на руках (презентации, силлабусы, записи звонков/лекций) и кто будет в команде с вашей стороны?",
-    4: getBranchQuestionText(category, "ru"),
-    5: "<b>Вопрос 5 из 6.</b> Когда вам комфортно стартовать и что ещё нам важно знать о проекте?",
-    6: "<b>Вопрос 6 из 6.</b> Как планируете оплату (ТОО / ИП / физлицо)? Напишите реквизиты организации для договора (или «отправлю позже»)."
-  };
-  return mapRu[step] || mapRu[6];
-}
-
 function detectKazakhSentence(text) {
   if (!text) return false;
   const cleaned = text.toString().replace(/ұстаз/gi, "");
@@ -2250,73 +2284,15 @@ function detectKazakhSentence(text) {
 function detectBranchKey(text) {
   const c = (text || "").toLowerCase();
   if (!c) return "";
-  const wb = "(?:^|[^a-zа-яёәіңғүұқөһ])";
-  const wa = "(?:$|[^a-zа-яёәіңғүұқөһ])";
-  const hasWord = (words) => new RegExp(wb + "(" + words + ")" + wa).test(c);
-
-  if (/(edtech|онлайн-школ|онлайн школ|онлайн-курс|онлайн курс|онлайн-мектеп|доходимост|геткурс|getcourse|вебинар|продюсер|инфокурс|аяқтау көрсеткіш)/.test(c) || hasWord("cor|эдтех")) {
-    return "edtech";
-  }
-  if (/(универ|колледж|умкд|силлабус|platonus|moodle|ects|кредит|бакалавр|магистр|кафедр|госо|мжмбс)/.test(c) || hasWord("вуз|вузы|вуза|вузу|вузов|жоо|оәк|пән|пәні|пәннің")) {
-    return "vuz";
-  }
-  if (/(ұстаз|устаз|аттестац|аттестат|модератор|сарапшы|зерттеуші|шебер|комикс|школ|мектеп|34 час|68 час|34 сағат|68 сағат)/.test(c) || hasWord("ктп|қмж|ктж|бжб|тжб|сор|соч|фо")) {
-    return "school";
-  }
-  if (/(корпорац|корпоратив|тренаж|отдел продаж|менеджер|стаж[её]р|скрипт|битрикс|bitrix|колл-центр|қызметкер)/.test(c) || hasWord("b2b|битуби|crm|срм|роп|ропа|ропу|сату")) {
-    return "b2b";
-  }
+  if (/(edtech|онлайн-школ|онлайн школ|онлайн-курс|онлайн курс|онлайн-мектеп|доходимост|cor|эдтех)/.test(c)) return "edtech";
+  if (/(универ|колледж|умкд|силлабус|platonus|moodle|ects|кредит|вуз|жоо|оәк|госо|мжмбс)/.test(c)) return "vuz";
+  if (/(ұстаз|устаз|аттестац|аттестат|модератор|сарапшы|зерттеуші|шебер|комикс|школ|мектеп|34 час|68 час)/.test(c)) return "school";
+  if (/(корпорац|корпоратив|тренаж|отдел продаж|менеджер|стаж[её]р|b2b|битрикс|колл-центр)/.test(c)) return "b2b";
   return "";
 }
 
 function resolveBranchKeyFromCategory(category) {
   return detectBranchKey(category) || "b2b";
-}
-
-function getCanonicalBranchName(branchKey, lang) {
-  if (lang === "kz") {
-    const mapKz = {
-      vuz: "ЖОО және Колледждер (МЖМБС 2026)",
-      b2b: "Корпорациялар және B2B (Тренажерлер)",
-      school: "Мектептер және «Ұстаз»",
-      edtech: "EdTech және Онлайн-курстар"
-    };
-    return mapKz[branchKey] || mapKz.b2b;
-  }
-  const mapRu = {
-    vuz: "ВУЗы и Колледжи (ГОСО 2026)",
-    b2b: "Корпорации и B2B (Тренажеры)",
-    school: "Школы и «Ұстаз»",
-    edtech: "EdTech и Онлайн-школы"
-  };
-  return mapRu[branchKey] || mapRu.b2b;
-}
-
-function getBranchQuestionText(category, lang) {
-  const branchKey = resolveBranchKeyFromCategory(category);
-  if (lang === "kz") {
-    if (branchKey === "edtech") {
-      return "<b>6-дан 4-сұрақ (EdTech / Курстар).</b> Бұл қолданыстағы курсты жандандыру ма (қазіргі COR % қандай?) әлде аудиодан жаңа курс құрастыру ма?";
-    }
-    if (branchKey === "vuz") {
-      return "<b>6-дан 4-сұрақ (ЖОО / Колледж).</b> Пән атауын, кредит санын және қандай LMS (Platonus/Moodle) қолданатыныңызды жазыңыз.";
-    }
-    if (branchKey === "school") {
-      return "<b>6-дан 4-сұрақ (Мектеп / «Ұстаз»).</b> Пәнді, сыныпты, сағат көлемін (34 немесе 68 сағат) және педагог растайтын санатты (педагог-модератор, сарапшы, зерттеуші, шебер) көрсетіңіз.";
-    }
-    return "<b>6-дан 4-сұрақ (Корпоративтік B2B).</b> Кімді оқытамыз (стажер, менеджер, басшы) және сатылым қай кезеңде жиі үзіледі?";
-  }
-
-  if (branchKey === "edtech") {
-    return "<b>Вопрос 4 из 6 (EdTech и курсы).</b> Это реанимация действующего курса (какой сейчас % доходимости COR?) или сборка с нуля из аудиозаписей?";
-  }
-  if (branchKey === "vuz") {
-    return "<b>Вопрос 4 из 6 (ВУЗ / Колледж).</b> Напишите название дисциплины, количество кредитов ECTS и используемую платформу (Platonus/Moodle).";
-  }
-  if (branchKey === "school") {
-    return "<b>Вопрос 4 из 6 (Школа / Аттестация).</b> Укажите предмет, класс, объём (34 или 68 часов) и подтверждаемую категорию педагога (педагог-модератор, эксперт, исследователь, мастер).";
-  }
-  return "<b>Вопрос 4 из 6 (Корпоративный B2B).</b> Кого именно обучаем (стажёры, менеджеры, руководители) и на каком этапе чаще всего теряются сделки?";
 }
 
 function addWorkingDays(startDate, daysToAdd) {
@@ -2380,54 +2356,8 @@ function paintStatusCell(sheet, rowIdx, statusText) {
   cell.setBackground(bg).setFontWeight("bold");
 }
 
-function saveDialogState(memSheet, chatId, state) {
-  if (!memSheet) return;
-  const data = memSheet.getDataRange().getValues();
-  const rowVals = [chatId, state.kpNumber, state.category, state.lang, state.step, JSON.stringify(state.answers), new Date().toLocaleString("ru-RU")];
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]) === String(chatId)) {
-      memSheet.getRange(i + 1, 1, 1, 7).setValues([rowVals]);
-      return;
-    }
-  }
-  memSheet.appendRow(rowVals);
-}
-
-function loadDialogState(memSheet, chatId) {
-  if (!memSheet) return null;
-  const data = memSheet.getDataRange().getValues();
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]) === String(chatId)) {
-      const parsedStep = parseFloat(data[i][4]);
-      return {
-        kpNumber: data[i][1],
-        category: data[i][2],
-        categoryConfirmed: Boolean(data[i][2]),
-        lang: data[i][3] || "ru",
-        step: isNaN(parsedStep) ? 1 : parsedStep,
-        answers: parseJsonSafe(data[i][5], {})
-      };
-    }
-  }
-  return null;
-}
-
-function updateClientMemStep(ss, chatId, kpNumber, newStep) {
-  const memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-  if (!memSheet) return;
-  const state = loadDialogState(memSheet, chatId);
-  if (state && String(state.kpNumber) === String(kpNumber)) {
-    state.step = newStep;
-    saveDialogState(memSheet, chatId, state);
-  }
-}
-
 function parseJsonSafe(str, fallback) {
-  try {
-    return str ? JSON.parse(str.toString()) : fallback;
-  } catch (e) {
-    return fallback;
-  }
+  try { return str ? JSON.parse(str.toString()) : fallback; } catch (e) { return fallback; }
 }
 
 function readDealState(sheet, rowIdx) {
@@ -2443,32 +2373,15 @@ function patchDealState(sheet, rowIdx, patchObj) {
   return next;
 }
 
-function ensureTgChatInCol22(sheet, rowIdx, chatId) {
-  if (!sheet || rowIdx === -1 || !chatId) return;
-  const cell = sheet.getRange(rowIdx, COL.META_DOC);
-  const existing = (cell.getValue() || "").toString().trim();
-  const tag = "tg_chat:" + chatId;
-  if (existing.includes(tag)) return;
-  if (/tg_chat:\d+/.test(existing)) {
-    cell.setValue(existing.replace(/tg_chat:\d+/, tag));
-  } else {
-    cell.setValue(existing ? `${tag} | ${existing}` : tag);
-  }
-}
-
 function updateCol22KeepingTgChat(sheet, rowIdx, noteOrUrl) {
   if (!sheet || rowIdx === -1) return;
   const cell = sheet.getRange(rowIdx, COL.META_DOC);
   const existing = (cell.getValue() || "").toString();
   const m = existing.match(/tg_chat:\d+/);
   const cleanNote = (noteOrUrl || "").toString().trim();
-  if (m && cleanNote) {
-    cell.setValue(`${m[0]} | ${cleanNote}`);
-  } else if (m) {
-    cell.setValue(m[0]);
-  } else {
-    cell.setValue(cleanNote);
-  }
+  if (m && cleanNote) cell.setValue(`${m[0]} | ${cleanNote}`);
+  else if (m) cell.setValue(m[0]);
+  else cell.setValue(cleanNote);
 }
 
 function extractDocUrlFromCol22(val) {
@@ -2476,27 +2389,9 @@ function extractDocUrlFromCol22(val) {
   return m ? m[0] : "";
 }
 
-function resolveClientTgChatId(ss, leadsSheet, rowIdx, kpNumber) {
-  if (leadsSheet && rowIdx !== -1) {
-    const meta = (leadsSheet.getRange(rowIdx, COL.META_DOC).getValue() || "").toString();
-    const m = meta.match(/tg_chat:(\d+)/);
-    if (m) return m[1];
-  }
-  const memSheet = ss.getSheetByName(CONFIG.SHEET_MEMORY);
-  if (!memSheet || !kpNumber) return "";
-  const memData = memSheet.getDataRange().getValues();
-  for (let i = 1; i < memData.length; i++) {
-    if (String(memData[i][1]) === String(kpNumber) && memData[i][0]) {
-      return String(memData[i][0]);
-    }
-  }
-  return "";
-}
-
 function setAdminPendingAction(chatId, actionObj) {
-  const props = PropertiesService.getScriptProperties();
-  actionObj.expiresAt = Date.now() + 1800000; // 30 минут
-  props.setProperty("ADMIN_PENDING_" + chatId, JSON.stringify(actionObj));
+  actionObj.expiresAt = Date.now() + 1800000;
+  PropertiesService.getScriptProperties().setProperty("ADMIN_PENDING_" + chatId, JSON.stringify(actionObj));
 }
 
 function getAdminPendingAction(chatId) {
@@ -2512,22 +2407,6 @@ function getAdminPendingAction(chatId) {
 
 function clearAdminPendingAction(chatId) {
   PropertiesService.getScriptProperties().deleteProperty("ADMIN_PENDING_" + chatId);
-}
-
-function downloadTelegramFileAsBase64(token, fileId) {
-  try {
-    const fileMetaResp = UrlFetchApp.fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${fileId}`);
-    const meta = JSON.parse(fileMetaResp.getContentText());
-    if (!meta.ok) return null;
-    const filePath = meta.result.file_path;
-    const blob = UrlFetchApp.fetch(`https://api.telegram.org/file/bot${token}/${filePath}`).getBlob();
-    return {
-      base64: Utilities.base64Encode(blob.getBytes()),
-      mimeType: filePath.endsWith(".ogg") || filePath.endsWith(".oga") ? "audio/ogg" : (blob.getContentType() || "audio/ogg")
-    };
-  } catch (e) {
-    return null;
-  }
 }
 
 function sendTelegramApi(token, method, payload) {

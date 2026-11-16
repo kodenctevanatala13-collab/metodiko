@@ -336,9 +336,27 @@
         <div class="step-title" id="s1-title">1. Цели, ресурсы и бюджет проекта</div>
         <div class="step-desc" id="s1-desc">Ключевые вводные, которые помогут точно оценить трудоемкость и сроки.</div>
 
-        <div class="field" id="contact-fallback" style="display:none;">
-          <label id="lbl-contact-fb">Ваше имя и телефон (WhatsApp) *</label>
-          <input type="text" id="q-contact-fb" placeholder="Например: Айгуль, +7 701 000 00 00">
+        <div id="contact-fallback" style="display:none; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:10px; padding:14px; margin-bottom:16px;">
+          <div class="field">
+            <label id="lbl-contact-fb">Ваше имя и фамилия *</label>
+            <input type="text" id="q-contact-name" placeholder="Например: Айгуль Нурланова">
+          </div>
+          <div class="field">
+            <label>Организация / Учебное заведение / Должность</label>
+            <input type="text" id="q-contact-org" placeholder="Например: ТОО «...» или Школа №...">
+          </div>
+          <div class="field">
+            <label>Телефон (WhatsApp) *</label>
+            <input type="text" id="q-contact-phone" placeholder="+7 701 000 00 00">
+          </div>
+          <div class="field">
+            <label>Email * (сюда автоматически придут КП и Договор)</label>
+            <input type="email" id="q-contact-email" placeholder="name@company.kz">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>Telegram (@username или номер — для учёта в проекте)</label>
+            <input type="text" id="q-contact-tg" placeholder="@username">
+          </div>
         </div>
 
         <div class="field">
@@ -402,9 +420,8 @@
 
     <div class="success-box" id="success-box">
       <h2 id="suc-h">✅ Распаковка отправлена!</h2>
-      <p id="suc-p">Материалы переданы Наталье Коденцевой. После разбора вы получите уточнения либо Финальное КП с 3 вариантами комплектации на вашей персональной странице заявки (работаем по 100% предоплате со стартом после поступления оплаты и материалов).</p>
-      <a href="#" id="btn-suc-portal" class="btn-submit" style="display:none; text-decoration:none; margin:16px auto; max-width:440px;">🔗 Открыть персональную страницу заявки (КП, договор и файлы)</a>
-      <a href="https://wa.me/77000773566" target="_blank" class="btn-wa" id="btn-suc-wa" onclick="if(window.ym) ym(114214137,'reachGoal','whatsapp_click')">💬 Перейти в WhatsApp (+7 700 077-35-66)</a>
+      <p id="suc-p">Материалы переданы Наталье Коденцевой. Все дальнейшие шаги (Финальное КП в PDF, редактируемый Договор А4 и загрузка файлов) происходят в вашем Личном кабинете, а уведомления придут на ваш Email.</p>
+      <a href="#" id="btn-suc-portal" class="btn-submit" style="display:none; text-decoration:none; margin:16px auto; max-width:440px;">🔗 Открыть Личный кабинет заявки (КП, договор и файлы)</a>
       <a href="index.html" class="btn-back" id="btn-suc-home">← Вернуться на сайт</a>
     </div>
   </main>
@@ -566,7 +583,7 @@
       document.getElementById('btn-submit').innerText = d.btn_submit;
       document.getElementById('suc-h').innerText = d.suc_h;
       document.getElementById('suc-p').innerText = d.suc_p;
-      document.getElementById('btn-suc-wa').innerText = d.btn_suc_wa;
+      if (document.getElementById('btn-suc-wa')) document.getElementById('btn-suc-wa').innerText = d.btn_suc_wa;
       document.getElementById('btn-suc-home').innerText = d.btn_suc_home;
 
       renderCategoryQuestions();
@@ -648,9 +665,36 @@
 
     document.getElementById('brief-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const fbVisible = document.getElementById('contact-fallback').style.display !== 'none';
+      const fbName = document.getElementById('q-contact-name').value.trim();
+      const fbPhone = document.getElementById('q-contact-phone').value.trim();
+      const fbEmail = document.getElementById('q-contact-email').value.trim();
+      const fbOrg = document.getElementById('q-contact-org').value.trim();
+      let fbTg = document.getElementById('q-contact-tg').value.trim();
+      if (fbTg && !fbTg.startsWith('@') && /[a-zA-Z]/.test(fbTg)) fbTg = '@' + fbTg.replace(/\s+/g, '');
+
+      if (fbVisible) {
+        const pDigits = fbPhone.replace(/[^\d]/g, '');
+        if (!/[a-zA-Zа-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ]{2,}/.test(fbName)) {
+          alert(currentLang === 'kz' ? 'Аты-жөніңізді толық көрсетіңіз.' : 'Укажите ваше имя и фамилию (минимум 2 буквы).');
+          document.getElementById('q-contact-name').focus();
+          return;
+        }
+        if (pDigits.length < 10 || pDigits.length > 15) {
+          alert(currentLang === 'kz' ? 'Дұрыс телефон нөмірін көрсетіңіз (кемінде 10 сан).' : 'Укажите корректный телефон (минимум 10 цифр).');
+          document.getElementById('q-contact-phone').focus();
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(fbEmail)) {
+          alert(currentLang === 'kz' ? 'Дұрыс Email көрсетіңіз.' : 'Укажите корректный Email (туда придут КП и договор).');
+          document.getElementById('q-contact-email').focus();
+          return;
+        }
+      }
+
       const btn = document.getElementById('btn-submit');
       btn.disabled = true;
-      btn.innerText = currentLang === 'ru' ? '⏳ Отправка и обработка...' : '⏳ Жіберілуде...';
+      btn.innerText = currentLang === 'ru' ? '⏳ Отправка и создание кабинета...' : '⏳ Жіберілуде...';
 
       const branchAnswers = Array.from(document.querySelectorAll('.branch-textarea')).map(el => {
         return `${el.getAttribute('data-label')}: ${el.value.trim() || '—'}`;
@@ -665,8 +709,11 @@
         interfaceLang: currentLang,
         devLanguage: urlParams.get('devlang') || 'ru',
         audienceCategory: catText,
-        clientName: urlParams.get('name') || document.getElementById('q-contact-fb').value.trim() || 'Клиент с сайта',
-        clientPhone: urlParams.get('phone') || document.getElementById('q-contact-fb').value.trim() || '—',
+        clientName: urlParams.get('name') || fbName || 'Клиент с сайта',
+        clientOrg: urlParams.get('org') || fbOrg || '—',
+        clientPhone: urlParams.get('phone') || fbPhone || '—',
+        clientEmail: urlParams.get('email') || fbEmail || '—',
+        clientTg: urlParams.get('tg') || fbTg || '—',
         totalPrice: parseInt(urlParams.get('price') || '0', 10),
         totalDays: parseInt(urlParams.get('days') || '10', 10),
         q1_goal: document.getElementById('q1').value.trim(),
@@ -690,11 +737,19 @@
         if (apiResp.ok) {
           const data = await apiResp.json();
           if (data && data.portalUrl) {
+            try {
+              localStorage.setItem('metodiko_active_portal', JSON.stringify({
+                kpNumber: data.kpNumber,
+                portalUrl: data.portalUrl,
+                clientName: payload.clientName,
+                totalPrice: payload.totalPrice
+              }));
+            } catch (e) {}
             const pBtn = document.getElementById('btn-suc-portal');
             pBtn.href = data.portalUrl;
             pBtn.innerText = currentLang === 'kz'
-              ? `🔗 Өтінімнің жеке бетін ашу № ${data.kpNumber} (КП, шарт, файлдар)`
-              : `🔗 Открыть личную страницу заявки № ${data.kpNumber} (КП, договор, файлы)`;
+              ? `🔗 Жеке кабинетті ашу № ${data.kpNumber} (КП, шарт, файлдар)`
+              : `🔗 Открыть Личный кабинет заявки № ${data.kpNumber} (КП, договор, файлы)`;
             pBtn.style.display = 'inline-block';
           }
         }
