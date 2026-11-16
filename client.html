@@ -542,6 +542,9 @@
       <!-- Глобальное уведомление (не исчезает при переключении блоков) -->
       <div class="global-toast no-print" id="global-toast"></div>
 
+      <!-- Плашка 1-клик подключения Telegram-колокольчика -->
+      <div class="no-print" id="tg-connect-bar" style="display:none; margin-bottom:14px;"></div>
+
       <!-- ВКЛАДКА 1: СМЕТА И ЗАЯВКА -->
       <div class="tab-pane" id="tab-overview">
         <div class="card">
@@ -570,7 +573,7 @@
         <div class="card" id="brief-done-view" style="display:none;">
           <div class="success-banner" id="brief-done-banner">
             ✅ <b>Распаковка заполнена и передана Наталье Коденцевой!</b><br>
-            Как только Финальное КП (3 варианта) будет готово, оно откроется во вкладке «3. Финальное КП» и придёт вам на Email.
+            Как только Финальное КП (3 варианта) будет готово, оно откроется во вкладке «3. Финальное КП» — и мы сразу пришлём вам сигнал в Telegram (если подключён) и на Email.
           </div>
           <div class="section-title" id="t-brief-saved">📝 Ваши ответы по проекту</div>
           <div id="brief-saved-summary" style="font-size:14px; color:#334155;"></div>
@@ -643,7 +646,7 @@
       <div class="tab-pane" id="tab-kp">
         <div class="card" id="kp-waiting-card">
           <div class="section-title">💼 Финальное коммерческое предложение</div>
-          <p style="color:var(--muted);">⏳ Наталья Коденцева изучает вашу заявку и собирает 3 варианта комплектации. Как только Финальное КП будет готово, оно откроется здесь и придёт вам на Email.</p>
+          <p style="color:var(--muted);">⏳ Наталья Коденцева изучает вашу заявку и собирает 3 варианта комплектации. Как только Финальное КП будет готово, оно откроется прямо здесь (и придёт уведомление в Telegram / на Email).</p>
         </div>
 
         <div id="kp-ready-wrap" style="display:none;">
@@ -1074,6 +1077,39 @@
           btn.innerText = d.tabs[idx];
         }
       });
+
+      // --- ПЛАШКА ПОДКЛЮЧЕНИЯ TELEGRAM-УВЕДОМЛЕНИЙ ---
+      const tgBar = document.getElementById('tg-connect-bar');
+      if (tgBar) {
+        if (portalData.isAdmin) {
+          tgBar.style.display = 'none';
+        } else {
+          const tgUrl = portalData.tgDeepLink || `https://t.me/metodico_brif_bot?start=${encodeURIComponent(portalData.kpNumber || '')}`;
+          const botName = portalData.tgBotUsername || 'metodico_brif_bot';
+          tgBar.style.display = 'block';
+          if (portalData.tgConnected) {
+            tgBar.innerHTML = lang === 'kz'
+              ? `<div class="success-banner" style="margin-bottom:0;">✅ <b>Telegram хабарламалары қосылған (@${escapeHtml(botName)}):</b> Қорытынды КП, Шарт немесе жоба басталғаны туралы белгі бірден осы ботқа келеді.</div>`
+              : `<div class="success-banner" style="margin-bottom:0;">✅ <b>Telegram-уведомления подключены (@${escapeHtml(botName)}):</b> как только КП, Договор или старт проекта будут готовы, бот сразу пришлёт сигнал со ссылкой сюда.</div>`;
+          } else {
+            tgBar.innerHTML = lang === 'kz'
+              ? `<div class="card" style="margin-bottom:0; border:2px solid var(--gold); background:#FFFBEB; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
+                   <div style="flex:1; min-width:240px;">
+                     <strong style="color:var(--navy); font-size:15px;">🔔 Сайтта күтпеу үшін Telegram хабарламасын қосыңыз</strong><br>
+                     <span style="font-size:13px; color:#475569;">Түймені басып, ботта «Старт» деңіз — жеке кабинетіңіздің сілтемесі сақталады және Қорытынды КП дайын болғанда бірден хабар келеді.</span>
+                   </div>
+                   <a href="${tgUrl}" target="_blank" rel="noopener" class="btn btn-gold" onclick="startTgQuickPoll()">✈️ Telegram-да хабарлама алу</a>
+                 </div>`
+              : `<div class="card" style="margin-bottom:0; border:2px solid var(--gold); background:#FFFBEB; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
+                   <div style="flex:1; min-width:240px;">
+                     <strong style="color:var(--navy); font-size:15px;">🔔 Чтобы не держать сайт открытым — подключите уведомления в Telegram</strong><br>
+                     <span style="font-size:13px; color:#475569;">Нажмите кнопку и затем «Старт» в боте: ссылка на ваш Кабинет сохранится, а как только Наталья подготовит Финальное КП или Договор — придёт сигнал.</span>
+                   </div>
+                   <a href="${tgUrl}" target="_blank" rel="noopener" class="btn btn-gold" onclick="startTgQuickPoll()">✈️ Подключить уведомления в Telegram</a>
+                 </div>`;
+          }
+        }
+      }
 
       // --- ВКЛАДКА 1: СМЕТА ---
       let itemsHtml = '';
@@ -1624,6 +1660,17 @@
         }
         loadPortal(true);
       }, 10000);
+    }
+
+    function startTgQuickPoll() {
+      let tries = 0;
+      const timer = setInterval(async () => {
+        tries++;
+        await loadPortal(true);
+        if ((portalData && portalData.tgConnected) || tries >= 8) {
+          clearInterval(timer);
+        }
+      }, 3000);
     }
 
     async function sendAction(payload, btnEl, successMsg, nextTab) {

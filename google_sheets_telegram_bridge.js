@@ -9,6 +9,7 @@
  * =========================================================================
  * Секретные ключи хранятся ТОЛЬКО в «Настройки проекта -> Свойства скрипта»:
  *   - ADMIN_BOT_TOKEN          : токен личного пульта (@metodico_sait_zayavki_bot)
+ *   - CLIENT_BOT_TOKEN         : токен ТГ-колокольчика уведомлений (@metodico_brif_bot)
  *   - ADMIN_CHAT_ID            : ваш личный Telegram ID
  *   - GEMINI_API_KEY           : ключ из Google AI Studio
  *   - PORTAL_SECRET            : секрет для подписей клиентских и админских ссылок (опционально)
@@ -23,6 +24,7 @@ const CONFIG = {
   SHEET_MEMORY: "Память диалогов",
   COMPANY_NAME: "ТОО «Метод и Ко» | Бюро «МЕТОДИКО»",
   SITE_URL: "https://metodico-kz.netlify.app",
+  CLIENT_BOT_USERNAME: "metodico_brif_bot",
   ROOT_FOLDER_NAME: "МЕТОДИКО — Проекты клиентов",
   MAX_CAPACITY_POINTS: 10, // Потолок одновременной загрузки (5-7 активных проектов)
   GEMINI_MODEL: "gemini-3.5-flash-lite"
@@ -211,9 +213,9 @@ function doPost(e) {
       cache.put(cacheKey, "1", 21600);
     }
 
-    // Старый клиентский бот (?bot=client) переводит на сайт
+    // Клиентский бот-колокольчик уведомлений (?bot=client)
     if (botType === "client") {
-      return handleDeprecatedClientBot(data);
+      return handleClientNotifierBot(data);
     }
 
     // Кнопки в Пульте руководителя (Админ-бот)
@@ -254,14 +256,93 @@ function doPost(e) {
   }
 }
 
-function handleDeprecatedClientBot(update) {
+function handleClientNotifierBot(update) {
   const clientToken = getSecret("CLIENT_BOT_TOKEN");
-  if (clientToken && update && update.message && update.message.chat) {
-    sendTelegramApi(clientToken, "sendMessage", {
-      chat_id: update.message.chat.id,
-      text: `Здравствуйте! Бюро «МЕТОДИКО» перенесло расчёт, распаковку, КП и договоры в удобный Личный кабинет на сайте:\n${CONFIG.SITE_URL}/#calculator`
-    });
+  if (!clientToken || !update || !update.message || !update.message.chat) {
+    return ContentService.createTextOutput("OK");
   }
+
+  const msg = update.message;
+  const chatId = String(msg.chat.id);
+  const text = (msg.text || "").toString().trim();
+  const tgUser = (msg.from && msg.from.username) ? ("@" + msg.from.username) : "";
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  if (sheet) ensureExtendedColumns(sheet);
+
+  const mStart = text.match(/^\/start(?:\s+([A-Za-z0-9_-]+))?/i);
+  let rowIdx = -1;
+  if (sheet) {
+    if (mStart && mStart[1]) {
+      rowIdx = findRowByKp(sheet, mStart[1].trim());
+    }
+    if (rowIdx === -1) {
+      rowIdx = findRowByTgChatId(sheet, chatId);
+    }
+    if (rowIdx === -1 && tgUser) {
+      rowIdx = findRowByTgUsername(sheet, tgUser);
+    }
+  }
+
+  if (rowIdx !== -1 && sheet) {
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const kp = String(row[COL.KP - 1]);
+    const lang = deal.chatLang === "kz" ? "kz" : "ru";
+    const alreadyConnected = Boolean(extractTgChatId(row, deal));
+    saveClientTgChat(sheet, rowIdx, chatId, tgUser);
+
+    const portalUrl = getClientPortalUrl(kp);
+    if (mStart) {
+      const helloMsg = lang === "kz"
+        ? `🔔 <b>№ ${escapeHtml(kp)} өтінімі бойынша хабарламалар қосылды!</b>\n\nНаталья Коденцева Қорытынды КП, Шарт немесе сұрақ дайындаған бойда мен сізге осы жерге бірден хабар беремін.\n\n📌 Барлық құжаттар, таңдау және реквизиттер сайттағы Жеке кабинетте 👇`
+        : `🔔 <b>Уведомления по заявке № ${escapeHtml(kp)} подключены!</b>\n\nТеперь как только руководитель Бюро «МЕТОДИКО» Наталья Коденцева подготовит Финальное КП, Договор или уточняющий вопрос — я сразу пришлю вам сигнал сюда с кнопкой входа.\n\n📌 Вся работа с документами и выбор варианта идут на сайте в вашем Личном кабинете 👇`;
+
+      sendTelegramApi(clientToken, "sendMessage", {
+        chat_id: chatId,
+        text: helloMsg,
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [[{ text: lang === "kz" ? "🌐 Жеке кабинетті ашу" : "🌐 Открыть мой Личный кабинет", url: portalUrl }]]
+        }
+      });
+
+      if (!alreadyConnected) {
+        const adminToken = getSecret("ADMIN_BOT_TOKEN");
+        const adminChatId = getSecret("ADMIN_CHAT_ID");
+        if (adminToken && adminChatId) {
+          sendTelegramApi(adminToken, "sendMessage", {
+            chat_id: adminChatId,
+            text: `🔔 Клиент по <b>${escapeHtml(kp)}</b> (${escapeHtml(row[COL.NAME - 1])}) подключил Telegram-уведомления (ID: <code>${chatId}</code>${tgUser ? ", " + escapeHtml(tgUser) : ""}).`,
+            parse_mode: "HTML"
+          });
+        }
+      }
+    } else {
+      const hintMsg = lang === "kz"
+        ? `ℹ️ <b>№ ${escapeHtml(kp)}</b> жобасы бойынша барлық жауаптар, КП таңдау, Шартты түзету және файл жүктеу тек сайттағы Жеке кабинетте жүргізіледі 👇`
+        : `ℹ️ Вся работа по заявке <b>${escapeHtml(kp)}</b> (ответы, выбор КП, правка Договора А4 и загрузка материалов) идёт в вашем Личном кабинете на сайте 👇`;
+
+      sendTelegramApi(clientToken, "sendMessage", {
+        chat_id: chatId,
+        text: hintMsg,
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [[{ text: lang === "kz" ? "🌐 Жеке кабинетті ашу" : "🌐 Открыть Личный кабинет", url: portalUrl }]]
+        }
+      });
+    }
+    return ContentService.createTextOutput("OK");
+  }
+
+  sendTelegramApi(clientToken, "sendMessage", {
+    chat_id: chatId,
+    text: `Здравствуйте! Бюро «МЕТОДИКО» перенесло расчёт сметы, распаковку, КП и Договор в единый Личный кабинет на сайте.\n\nНажмите кнопку ниже, чтобы открыть сайт и оформить заявку 👇`,
+    reply_markup: {
+      inline_keyboard: [[{ text: "🌐 Открыть сайт МЕТОДИКО", url: `${CONFIG.SITE_URL}/#calculator` }]]
+    }
+  });
   return ContentService.createTextOutput("OK");
 }
 
@@ -486,9 +567,9 @@ function processWebBriefSubmission(payload) {
   ensureProjectDriveFolder(sheet, rowIdx);
   generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiAnalysis.summary);
 
-  // Уведомляем Наталью в личный бот + отправляем клиенту письмо со ссылкой на его Кабинет
+  // Уведомляем Наталью в личный бот + отправляем клиенту в ТГ (если подключён) и на Email
   sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis);
-  sendPortalLinkEmail(sheet, rowIdx, "brief_received");
+  notifyClientAllChannels(sheet, rowIdx, "brief_received");
 
   const portalToken = generatePortalToken(kpNumber);
   return {
@@ -688,24 +769,22 @@ function handleAdminCallback(callbackQuery) {
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveFinalKpDoc(sheet, rowIdx);
 
-    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "final_kp");
+    const delivery = notifyClientAllChannels(sheet, rowIdx, "final_kp");
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
     const portalUrl = getClientPortalUrl(kp, "kp");
     const adminKpUrl = getAdminPortalUrl(kp, "kp");
 
-    const emailNote = emailRes.sent
-      ? `✅ <b>Финальное КП автоматически отправлено клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыто в его Кабинете!`
-      : `⚠️ <b>Финальное КП опубликовано в Кабинете, но письмо не ушло</b> (${escapeHtml(row[COL.EMAIL - 1] || "пусто")} | причина: ${escapeHtml(emailRes.reason || "нет Email")}).\nСсылка для клиента:\n<code>${portalUrl}</code>`;
+    const deliveryNote = formatDeliveryNoteHtml("Финальное КП", delivery, row[COL.EMAIL - 1], portalUrl);
 
     const kb = [[{ text: "👁️ Открыть КП в Кабинете", url: adminKpUrl }]];
-    if (!emailRes.sent) {
+    if (!delivery.tgSent && !delivery.emailSent) {
       const wa = buildWaQuickLink(row[COL.PHONE - 1], `Здравствуйте! Ваше Финальное КП № ${kp} с 3 вариантами и PDF готово: ${portalUrl}`);
       if (wa) kb.push([{ text: "📱 Передать в WhatsApp (запасной канал)", url: wa }]);
     }
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `${emailNote}\n\n⏳ Ждём выбор варианта до <b>${deadlineDate}</b> (2 раб. дн.).`,
+      text: `${deliveryNote}\n\n⏳ Ждём выбор варианта до <b>${deadlineDate}</b> (2 раб. дн.).`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: kb }
     });
@@ -761,24 +840,22 @@ function handleAdminCallback(callbackQuery) {
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveContractDoc(sheet, rowIdx);
 
-    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "contract");
+    const delivery = notifyClientAllChannels(sheet, rowIdx, "contract");
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
     const portalUrl = getClientPortalUrl(kp, "contract");
     const adminContractUrl = getAdminPortalUrl(kp, "contract");
 
-    const emailNote = emailRes.sent
-      ? `✅ <b>Договор по ${kp} автоматически отправлен клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыт в его Кабинете!`
-      : `⚠️ <b>Договор по ${kp} опубликован в Кабинете, но письмо не ушло</b> (${escapeHtml(row[COL.EMAIL - 1] || "пусто")} | причина: ${escapeHtml(emailRes.reason || "нет Email")}):\n<code>${portalUrl}</code>`;
+    const deliveryNote = formatDeliveryNoteHtml(`Договор по ${kp}`, delivery, row[COL.EMAIL - 1], portalUrl);
 
     const kb = [[{ text: "👁️ Открыть Договор в Кабинете", url: adminContractUrl }]];
-    if (!emailRes.sent) {
+    if (!delivery.tgSent && !delivery.emailSent) {
       const wa = buildWaQuickLink(row[COL.PHONE - 1], `Здравствуйте! Договор по проекту № ${kp} готов к проверке и согласованию: ${portalUrl}`);
       if (wa) kb.push([{ text: "📱 Передать в WhatsApp (запасной канал)", url: wa }]);
     }
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `${emailNote}\n\nЖдём подтверждения или правок от клиента.`,
+      text: `${deliveryNote}\n\nЖдём подтверждения или правок от клиента.`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: kb }
     });
@@ -801,9 +878,11 @@ function handleAdminCallback(callbackQuery) {
     });
     recalculateQueueSheet();
 
-    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "waiting_materials");
+    const delivery = notifyClientAllChannels(sheet, rowIdx, "waiting_materials");
+    const rowNow = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
     const adminMatUrl = getAdminPortalUrl(kp, "materials");
     const driveUrl = sheet.getRange(rowIdx, COL.DRIVE_LINK).getValue();
+    const deliveryNote = formatDeliveryNoteHtml(`Инструкция по материалам (${kp})`, delivery, rowNow[COL.EMAIL - 1], getClientPortalUrl(kp, "materials"));
 
     const kb = [
       [{ text: "🚀 Материалы приняты — СТАРТ В РАБОТУ", callback_data: `start_work_${kp}` }],
@@ -813,7 +892,7 @@ function handleAdminCallback(callbackQuery) {
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `💰 <b>По ${kp} зафиксированы подпись и 100% оплата!</b>\nМягкая бронь окна: до <b>${holdUntil}</b> (3 раб. дн.).\n\n${emailRes.sent ? `✅ Клиенту автоматически отправлено письмо на ${escapeHtml(emailRes.to)} со ссылкой на загрузку материалов.` : "🔗 Клиент может загрузить материалы в Кабинете: " + getClientPortalUrl(kp, "materials")}`,
+      text: `💰 <b>По ${kp} зафиксированы подпись и 100% оплата!</b>\nМягкая бронь окна: до <b>${holdUntil}</b> (3 раб. дн.).\n\n${deliveryNote}`,
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: kb }
     });
@@ -844,11 +923,12 @@ function handleAdminCallback(callbackQuery) {
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx === -1) return ContentService.createTextOutput("OK");
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "project_started");
+    const delivery = notifyClientAllChannels(sheet, rowIdx, "project_started");
+    const deliveryNote = formatDeliveryNoteHtml(`Уведомление о старте ${kp}`, delivery, row[COL.EMAIL - 1], getClientPortalUrl(kp, "materials"));
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `🚀 Даты по <b>${kp}</b> (${row[COL.START_DATE - 1]} ➔ ${row[COL.END_DATE - 1]}) обновлены в Кабинете!${emailRes.sent ? `\n✅ Письмо клиенту отправлено на ${escapeHtml(emailRes.to)}.` : ""}`,
+      text: `🚀 Даты по <b>${kp}</b> (${row[COL.START_DATE - 1]} ➔ ${row[COL.END_DATE - 1]}) обновлены в Кабинете!\n\n${deliveryNote}`,
       parse_mode: "HTML"
     });
     return ContentService.createTextOutput("OK");
@@ -862,7 +942,7 @@ function handleAdminCallback(callbackQuery) {
       sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.DONE);
       paintStatusCell(sheet, rowIdx, STATUSES.DONE);
       recalculateQueueSheet();
-      sendPortalLinkEmail(sheet, rowIdx, "project_done");
+      notifyClientAllChannels(sheet, rowIdx, "project_done");
       sendTelegramApi(token, "sendMessage", {
         chat_id: chatId,
         text: `✅ Проект <b>${kp}</b> переведён в статус «Сдано», баллы в графике освобождены.`,
@@ -918,12 +998,13 @@ function handleAdminMessage(msg) {
     sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ДОП. ВОПРОС ОТ НАТАЛЬИ]: " + userText);
     patchDealState(sheet, rowIdx, { lastExtraQuestion: userText });
 
-    const emailRes = sendPortalLinkEmail(sheet, rowIdx, "extra_question");
-    const portalUrl = getClientPortalUrl(kp);
+    const delivery = notifyClientAllChannels(sheet, rowIdx, "extra_question");
+    const portalUrl = getClientPortalUrl(kp, "brief");
+    const rowNow = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: `🟠 Вопрос по <b>${kp}</b> опубликован в Кабинете клиента!${emailRes.sent ? `\n✅ Письмо отправлено на ${escapeHtml(emailRes.to)}.` : `\n🔗 Ссылка на Кабинет: <code>${portalUrl}</code>`}`,
+      text: formatDeliveryNoteHtml(`Вопрос по ${kp}`, delivery, rowNow[COL.EMAIL - 1], portalUrl),
       parse_mode: "HTML"
     });
     return ContentService.createTextOutput("OK");
@@ -1138,11 +1219,11 @@ function checkDeadlinesTrigger() {
     if (st === STATUSES.FINAL_KP_SENT && deal.kpSentAt && !deal.remindedKp2d) {
       if (countWorkingDaysBetween(new Date(deal.kpSentAt), now) >= 2) {
         patchDealState(sheet, rowIdx, { remindedKp2d: true });
-        sendPortalLinkEmail(sheet, rowIdx, "reminder_kp");
+        notifyClientAllChannels(sheet, rowIdx, "reminder_kp");
         if (adminToken && adminChatId) {
           sendTelegramApi(adminToken, "sendMessage", {
             chat_id: adminChatId,
-            text: `⏰ <b>Прошло 2 раб. дня по Финальному КП ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nКлиенту отправлено вежливое напоминание на Email.`,
+            text: `⏰ <b>Прошло 2 раб. дня по Финальному КП ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nКлиенту отправлено вежливое напоминание.`,
             parse_mode: "HTML"
           });
         }
@@ -1152,11 +1233,11 @@ function checkDeadlinesTrigger() {
     if (st === STATUSES.WAITING_MATERIALS && deal.paidAt && !deal.remindedMat3d && !deal.clientMaterialsUrl && !deal.uploadedMaterialsCount) {
       if (countWorkingDaysBetween(new Date(deal.paidAt), now) >= 3) {
         patchDealState(sheet, rowIdx, { remindedMat3d: true });
-        sendPortalLinkEmail(sheet, rowIdx, "reminder_materials");
+        notifyClientAllChannels(sheet, rowIdx, "reminder_materials");
         if (adminToken && adminChatId) {
           sendTelegramApi(adminToken, "sendMessage", {
             chat_id: adminChatId,
-            text: `⏳ <b>Прошло 3 раб. дня ожидания материалов по ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nНапоминание отправлено на Email.`,
+            text: `⏳ <b>Прошло 3 раб. дня ожидания материалов по ${kp}</b> (${escapeHtml(r[COL.NAME - 1])}).\nНапоминание отправлено клиенту.`,
             parse_mode: "HTML"
           });
         }
@@ -1259,6 +1340,9 @@ function getClientPortalState(kpNumber, token, adminSig) {
     nextFreeWindow: qInfo.nextFreeWindow,
     kpPublished: kpPublished,
     contractPublished: contractPublished,
+    tgConnected: Boolean(extractTgChatId(row, deal)),
+    tgDeepLink: getClientTgDeepLink(kpNumber),
+    tgBotUsername: CONFIG.CLIENT_BOT_USERNAME,
     deal: {
       lastExtraQuestion: deal.lastExtraQuestion || "",
       briefAnswers: deal.briefAnswers || null,
@@ -1349,7 +1433,7 @@ function handleClientPortalPost(data) {
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiAnalysis.summary);
     sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis);
-    sendPortalLinkEmail(sheet, rowIdx, "brief_received");
+    notifyClientAllChannels(sheet, rowIdx, "brief_received");
 
     return { status: "ok", message: "Распаковка передана руководителю!" };
   }
@@ -1465,7 +1549,7 @@ function handleClientPortalPost(data) {
     generateAndSaveContractDoc(sheet, rowIdx, true);
 
     notifyAdminContractAgreed(sheet, rowIdx);
-    sendPortalLinkEmail(sheet, rowIdx, "contract_agreed");
+    notifyClientAllChannels(sheet, rowIdx, "contract_agreed");
     return { status: "ok" };
   }
 
@@ -2056,6 +2140,127 @@ function tryAttachDrivePdf(pdfUrl, docId, fileName, attachments) {
   } catch (e) {}
 }
 
+function sendClientTelegramNotice(sheet, rowIdx, eventType) {
+  try {
+    const clientToken = getSecret("CLIENT_BOT_TOKEN");
+    if (!clientToken) return { sent: false, reason: "no_client_bot_token" };
+
+    const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+    const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
+    const tgChatId = extractTgChatId(row, deal);
+    if (!tgChatId) return { sent: false, reason: "tg_not_connected" };
+
+    const kp = String(row[COL.KP - 1]);
+    const name = String(row[COL.NAME - 1] || "Коллега");
+    const lang = deal.chatLang === "kz" ? "kz" : "ru";
+
+    let tab = "";
+    let text = "";
+    let btnText = lang === "kz" ? "🌐 Жеке кабинетті ашу →" : "🌐 Открыть Личный кабинет →";
+
+    if (eventType === "brief_received") {
+      tab = "brief";
+      text = lang === "kz"
+        ? `✅ <b>№ ${escapeHtml(kp)} өтінімі қабылданды!</b>\nНаталья Коденцева деректерді талдауға кірісті. Қорытынды КП дайын болғанда бірден хабар беремін.`
+        : `✅ <b>Распаковка по № ${escapeHtml(kp)} принята!</b>\nНаталья Коденцева уже изучает ваш проект. Как только Финальное КП будет готово, я сразу пришлю вам сигнал сюда.`;
+    } else if (eventType === "extra_question") {
+      tab = "brief";
+      text = `🟠 <b>Уточняющий вопрос по заявке № ${escapeHtml(kp)}</b>\n\nНаталья Коденцева оставила короткий вопрос для точной сборки КП:\n<i>«${escapeHtml(deal.lastExtraQuestion || "")}»</i>\n\nОтветьте прямо в Кабинете по кнопке ниже 👇`;
+      btnText = "✍️ Ответить в Кабинете на сайте →";
+    } else if (eventType === "final_kp") {
+      tab = "kp";
+      const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
+      const vLines = variants.map(v => `• <b>${v.id}. ${escapeHtml(v.title)}</b> — ${Number(v.price).toLocaleString("ru-RU")} ₸ (${v.days} раб. дн.)`).join("\n");
+      text = lang === "kz"
+        ? `💼 <b>№ ${escapeHtml(kp)} Қорытынды КП дайын!</b>\n\n${vLines}\n\nА4 бланкін ашу, PDF жүктеу және нұсқаны таңдау үшін төмендегі батырманы басыңыз 👇`
+        : `💼 <b>Ваше Финальное КП № ${escapeHtml(kp)} готово!</b>\n\n${vLines}\n\n⏳ Предложение действует до <b>${escapeHtml(deal.kpDeadlineText || "2 раб. дн.")}</b>. Откройте бланк А4 и выберите вариант на сайте 👇`;
+      btnText = lang === "kz" ? "💼 Қорытынды КП-ны ашу →" : "💼 Открыть Финальное КП (А4) →";
+    } else if (eventType === "contract") {
+      tab = "contract";
+      const priceStr = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU");
+      text = lang === "kz"
+        ? `📄 <b>№ ${escapeHtml(kp)} Шарт жобасы дайын!</b>\nСомасы: <b>${priceStr} ₸</b> | Мерзімі: <b>${row[COL.DAYS - 1]} жұм. күн</b>.\n\nРеквизиттерді тексеріп, Шартты сайтта келісіңіз 👇`
+        : `📄 <b>Договор по заявке № ${escapeHtml(kp)} готов к согласованию!</b>\nСумма: <b>${priceStr} ₸</b> (100% предоплата) | Срок: <b>${row[COL.DAYS - 1]} раб. дн.</b>\n\nОткройте А4, при необходимости допишите реквизиты и нажмите «Договор согласован» 👇`;
+      btnText = lang === "kz" ? "📄 Шартты ашу және келісу →" : "📄 Открыть и согласовать Договор →";
+    } else if (eventType === "contract_agreed") {
+      tab = "contract";
+      text = `✍️ <b>Договор по № ${escapeHtml(kp)} согласован!</b>\nОжидайте счёт на 100% предоплату. После оплаты в Кабинете откроется загрузка материалов.`;
+    } else if (eventType === "waiting_materials") {
+      tab = "materials";
+      text = `⏳ <b>Оплата по № ${escapeHtml(kp)} получена!</b>\nМы забронировали слот в графике до <b>${escapeHtml(deal.holdUntilText || "3 раб. дн.")}</b>.\n\nЗагрузите исходные файлы или вставьте ссылку на Google Диск в Кабинете 👇`;
+      btnText = "📂 Передать материалы в Кабинете →";
+    } else if (eventType === "project_started") {
+      tab = "materials";
+      text = `🚀 <b>Проект № ${escapeHtml(kp)} официально в работе!</b>\n• Старт работ: <b>${escapeHtml(row[COL.START_DATE - 1])}</b>\n• Плановая дата сдачи: <b>${escapeHtml(row[COL.END_DATE - 1])}</b>`;
+    } else if (eventType === "project_done") {
+      tab = "materials";
+      text = `✅ <b>Проект № ${escapeHtml(kp)} завершён!</b>\nБлагодарим за сотрудничество с Бюро стандартов «МЕТОДИКО». Все документы доступны в Кабинете.`;
+    } else if (eventType === "reminder_kp") {
+      tab = "kp";
+      text = `⏰ <b>Напоминание по № ${escapeHtml(kp)}:</b>\nЗдравствуйте, ${escapeHtml(name)}! В вашем Кабинете ждут выбора 3 варианта Финального КП 👇`;
+      btnText = "💼 Выбрать вариант КП →";
+    } else if (eventType === "reminder_materials") {
+      tab = "materials";
+      text = `⏰ <b>Напоминание по № ${escapeHtml(kp)}:</b>\nЗдравствуйте, ${escapeHtml(name)}! Чтобы запустить отсчёт срока разработки, загрузите материалы в Кабинете 👇`;
+      btnText = "📂 Загрузить материалы →";
+    } else {
+      return { sent: false, reason: "unknown_event" };
+    }
+
+    const portalUrl = getClientPortalUrl(kp, tab);
+    const resp = sendTelegramApi(clientToken, "sendMessage", {
+      chat_id: tgChatId,
+      text: text,
+      parse_mode: "HTML",
+      reply_markup: { inline_keyboard: [[{ text: btnText, url: portalUrl }]] }
+    });
+    if (!resp) return { sent: false, reason: "empty_response" };
+    const code = resp.getResponseCode();
+    const json = parseJsonSafe(resp.getContentText(), {});
+    if (code === 200 && json.ok) {
+      return { sent: true, chatId: tgChatId };
+    }
+    return { sent: false, reason: (json && json.description) ? json.description : ("HTTP " + code) };
+  } catch (err) {
+    Logger.log("sendClientTelegramNotice error: " + err.toString());
+    return { sent: false, reason: err.toString() };
+  }
+}
+
+function notifyClientAllChannels(sheet, rowIdx, eventType) {
+  const tgRes = sendClientTelegramNotice(sheet, rowIdx, eventType);
+  const emailRes = sendPortalLinkEmail(sheet, rowIdx, eventType);
+  return {
+    tgSent: Boolean(tgRes && tgRes.sent),
+    tgChatId: (tgRes && tgRes.chatId) || "",
+    tgReason: (tgRes && tgRes.reason) || "",
+    emailSent: Boolean(emailRes && emailRes.sent),
+    emailTo: (emailRes && emailRes.to) || "",
+    emailReason: (emailRes && emailRes.reason) || ""
+  };
+}
+
+function formatDeliveryNoteHtml(title, delivery, clientEmailCell, portalUrl) {
+  const tgLine = delivery.tgSent
+    ? `✈️ <b>Telegram-колокольчик:</b> ✅ доставлено клиенту (ID <code>${escapeHtml(delivery.tgChatId)}</code>)`
+    : `✈️ <b>Telegram-колокольчик:</b> ⚪ клиент ещё не нажал «Уведомления в ТГ»`;
+
+  const emailDisplay = escapeHtml(clientEmailCell || "не указан");
+  const emailLine = delivery.emailSent
+    ? `📧 <b>Email-дубль (${emailDisplay}):</b> ✅ отправлено`
+    : `📧 <b>Email-дубль (${emailDisplay}):</b> ⚪ не отправлено`;
+
+  const header = (delivery.tgSent || delivery.emailSent)
+    ? `✅ <b>${escapeHtml(title)} опубликовано на сайте и отправлено клиенту!</b>`
+    : `⚠️ <b>${escapeHtml(title)} опубликовано на сайте</b> (у клиента ещё не подключён ТГ-колокольчик и не сработал Email).`;
+
+  let out = `${header}\n\n${tgLine}\n${emailLine}`;
+  if (!delivery.tgSent && !delivery.emailSent && portalUrl) {
+    out += `\n\n🔗 Ссылка на Кабинет (если нужно передать вручную):\n<code>${portalUrl}</code>`;
+  }
+  return out;
+}
+
 /**
  * =========================================================================
  * 9. GEMINI API + 3 ВАРИАНТА КП + ФОРМАТИРОВАНИЕ КАРТОЧЕК
@@ -2376,11 +2581,73 @@ function patchDealState(sheet, rowIdx, patchObj) {
   return next;
 }
 
+function getClientTgDeepLink(kpNumber) {
+  return `https://t.me/${CONFIG.CLIENT_BOT_USERNAME}?start=${encodeURIComponent(String(kpNumber || "").trim())}`;
+}
+
+function extractTgChatId(row, deal) {
+  if (deal && deal.clientTgChatId) return String(deal.clientTgChatId).trim();
+  const col22 = (row && row[COL.META_DOC - 1]) ? String(row[COL.META_DOC - 1]) : "";
+  const m = col22.match(/tg_chat:(-?\d+)/);
+  return m ? m[1] : "";
+}
+
+function setCol22TgChat(sheet, rowIdx, chatId) {
+  if (!sheet || rowIdx === -1 || !chatId) return;
+  const cell = sheet.getRange(rowIdx, COL.META_DOC);
+  const existing = (cell.getValue() || "").toString().trim();
+  const cleaned = existing.replace(/tg_chat:-?\d+\s*\|?\s*/g, "").replace(/^\|\s*|\s*\|$/g, "").trim();
+  cell.setValue(cleaned ? `tg_chat:${chatId} | ${cleaned}` : `tg_chat:${chatId}`);
+}
+
+function saveClientTgChat(sheet, rowIdx, chatId, tgUsername) {
+  if (!sheet || rowIdx === -1 || !chatId) return;
+  setCol22TgChat(sheet, rowIdx, chatId);
+  patchDealState(sheet, rowIdx, {
+    clientTgChatId: String(chatId),
+    clientTgUsername: tgUsername || "",
+    tgConnectedAt: new Date().toISOString()
+  });
+  if (tgUsername) {
+    const curTg = (sheet.getRange(rowIdx, COL.TG).getValue() || "").toString().trim();
+    if (!curTg || curTg === "—") {
+      sheet.getRange(rowIdx, COL.TG).setValue(tgUsername);
+    }
+  }
+  SpreadsheetApp.flush();
+}
+
+function findRowByTgChatId(sheet, chatId) {
+  if (!sheet || !chatId || sheet.getLastRow() < 2) return -1;
+  const target = String(chatId).trim();
+  const cols = sheet.getRange(2, COL.META_DOC, sheet.getLastRow() - 1, 3).getValues();
+  for (let i = cols.length - 1; i >= 0; i--) {
+    const meta = String(cols[i][0] || "");
+    const deal = parseJsonSafe(cols[i][2], {});
+    if ((deal && String(deal.clientTgChatId || "") === target) || meta.includes(`tg_chat:${target}`)) {
+      return i + 2;
+    }
+  }
+  return -1;
+}
+
+function findRowByTgUsername(sheet, tgUsername) {
+  if (!sheet || !tgUsername || sheet.getLastRow() < 2) return -1;
+  const norm = String(tgUsername).trim().replace(/^@/, "").toLowerCase();
+  if (!norm) return -1;
+  const vals = sheet.getRange(2, COL.TG, sheet.getLastRow() - 1, 1).getValues();
+  for (let i = vals.length - 1; i >= 0; i--) {
+    const cellNorm = String(vals[i][0] || "").trim().replace(/^@/, "").toLowerCase();
+    if (cellNorm && cellNorm === norm) return i + 2;
+  }
+  return -1;
+}
+
 function updateCol22KeepingTgChat(sheet, rowIdx, noteOrUrl) {
   if (!sheet || rowIdx === -1) return;
   const cell = sheet.getRange(rowIdx, COL.META_DOC);
   const existing = (cell.getValue() || "").toString();
-  const m = existing.match(/tg_chat:\d+/);
+  const m = existing.match(/tg_chat:-?\d+/);
   const cleanNote = (noteOrUrl || "").toString().trim();
   if (m && cleanNote) cell.setValue(`${m[0]} | ${cleanNote}`);
   else if (m) cell.setValue(m[0]);
