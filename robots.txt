@@ -1,4 +1,52 @@
+# Robots & AI Crawlers Policy — Бюро стандартов «МЕТОДИКО»
+# Подробный паспорт для ИИ: https://metodico-kz.netlify.app/llms.txt
+
 User-agent: *
 Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: bingbot
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
+
+User-agent: Yandex
+Allow: /
+Disallow: /brief.html
+Disallow: /client.html
+Disallow: /netlify/
 
 Sitemap: https://metodico-kz.netlify.app/sitemap.xml

@@ -7,28 +7,95 @@
   <meta name="yandex-verification" content="cdf222eb0e1aa144" />
   <title>Бюро стандартов «МЕТОДИКО» | Академические и корпоративные стандарты, симуляторы и ГОСО 2026</title>
   <meta name="description" content="Бюро академических и корпоративных стандартов «МЕТОДИКО» (ТОО «Метод и Ко»). Интерактивные ИИ-симуляторы, регламенты онбординга, разработка УМКД по ГОСО 2026 и нормоконтроль программ в Казахстане и СНГ.">
+  <link rel="canonical" href="https://metodico-kz.netlify.app/">
   
   <!-- Open Graph -->
   <meta property="og:title" content="Бюро стандартов «МЕТОДИКО» | Академический бутик стандартов">
   <meta property="og:description" content="Исключаем человеческий фактор и ошибки персонала: интерактивные тренажеры онбординга, эталонные УМКД и нормоконтроль образовательных программ.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://metodico-kz.netlify.app/">
+  <meta property="og:image" content="https://metodico-kz.netlify.app/assets/Metodico_logo_gold.png">
 
   <!-- Schema.org Microdata -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "Бюро академических и корпоративных стандартов «МЕТОДИКО»",
-    "alternateName": "ТОО «Метод и Ко»",
-    "url": "https://metodico-kz.netlify.app/",
-    "logo": "https://metodico-kz.netlify.app/assets/Metodico_logo_gold.png",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Алматы",
-      "addressCountry": "KZ"
-    },
-    "description": "Разработка корпоративных диалоговых симуляторов, ввод в должность за 72 часа, создание УМКД и силлабусов по ГОСО 2026, аттестация программ «Ұстаз» и аудит курсов.",
-    "priceRange": "75000₸ - 1200000₸"
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": "https://metodico-kz.netlify.app/#organization",
+        "name": "Бюро академических и корпоративных стандартов «МЕТОДИКО»",
+        "alternateName": ["ТОО «Метод и Ко»", "МЕТОДИКО", "METODICO"],
+        "url": "https://metodico-kz.netlify.app/",
+        "logo": "https://metodico-kz.netlify.app/assets/Metodico_logo_gold.png",
+        "telephone": "+7-700-077-35-66",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Алматы",
+          "addressCountry": "KZ"
+        },
+        "areaServed": [
+          { "@type": "Country", "name": "Kazakhstan" },
+          { "@type": "Place", "name": "CIS" }
+        ],
+        "founder": {
+          "@type": "Person",
+          "@id": "https://metodico-kz.netlify.app/#founder",
+          "name": "Наталья Коденцева",
+          "jobTitle": "Магистр педагогики, Главный методолог Бюро стандартов «МЕТОДИКО»",
+          "description": "Методолог проекта «Jana Urpaq», участие в создании и разработке более 300 проектов и курсов, 24 года научно-педагогической и руководящей практики."
+        },
+        "description": "Разработка корпоративных диалоговых ИИ-симуляторов, ввод менеджеров в должность за 72 часа, создание двуязычных УМКД и силлабусов по ГОСО РК 2026 (AI-Sana, Platonus), аттестация программ «Ұстаз», рабочие тетради-комиксы и методологический аудит онлайн-курсов (COR 85%+).",
+        "priceRange": "75000₸ - 1200000₸",
+        "knowsLanguage": ["ru", "kk"],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Услуги и стандарты Бюро «МЕТОДИКО»",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Разработка УМКД, силлабусов по ГОСО РК 2026 (AI-Sana) и тестов для Platonus / Moodle",
+                "url": "https://metodico-kz.netlify.app/whitepaper-goso-2026.html"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Корпоративные диалоговые ИИ-тренажёры продаж и онбординг менеджеров за 72 часа",
+                "url": "https://metodico-kz.netlify.app/whitepaper-corporate-sales.html"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Авторские программы, КТП, рабочие тетради и портфолио аттестации «Ұстаз» для школ",
+                "url": "https://metodico-kz.netlify.app/whitepaper-ustaz-school.html"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Методологический аудит EdTech-курсов (COR 85%+) и сборка курсов из аудио Voice-to-Course",
+                "url": "https://metodico-kz.netlify.app/whitepaper-edtech-audit.html"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://metodico-kz.netlify.app/#website",
+        "url": "https://metodico-kz.netlify.app/",
+        "name": "Бюро стандартов «МЕТОДИКО»",
+        "inLanguage": ["ru", "kk"],
+        "publisher": { "@id": "https://metodico-kz.netlify.app/#organization" }
+      }
+    ]
   }
   </script>
 
@@ -1801,8 +1868,6 @@
     });
   </script>
   <link rel="icon" type="image/png" href="assets/Metodico_logo_gold.png">
-  <meta property="og:url" content="https://metodico-kz.netlify.app/">
-  <meta property="og:image" content="https://metodico-kz.netlify.app/assets/Metodico_logo_gold.png">
 </head>
 <body>
 
