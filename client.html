@@ -170,8 +170,64 @@
     }
     .step-tab:hover { border-color: var(--gold); color: var(--navy); background: #FFFDF7; }
     .step-tab.done { background: var(--green-bg); color: var(--green); border-color: #A7F3D0; }
-    .step-tab.cur { background: var(--navy); color: #fff; border-color: var(--navy); box-shadow: 0 4px 12px rgba(21,34,56,0.2); }
-    .step-tab.active-view { outline: 3px solid rgba(201,162,39,0.55); transform: translateY(-1px); }
+    @keyframes tabGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.75); }
+      50% { box-shadow: 0 0 0 8px rgba(201, 162, 39, 0); }
+    }
+    .step-tab.cur {
+      background: linear-gradient(135deg, #152238 0%, #1e3152 100%);
+      color: #FFD966;
+      border-color: var(--gold);
+      animation: tabGlow 1.8s infinite;
+    }
+    .step-tab.locked {
+      background: #F8FAFC;
+      color: #94A3B8;
+      border-style: dashed;
+    }
+    .step-tab.active-view { outline: 3px solid rgba(201,162,39,0.75); transform: translateY(-1px); }
+
+    /* Горящее модальное окно-оповещение о новом шаге */
+    .alert-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 22, 36, 0.78);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .alert-modal-overlay.open { display: flex; }
+    @keyframes cardGlow {
+      0%, 100% { box-shadow: 0 0 28px rgba(201, 162, 39, 0.55); }
+      50% { box-shadow: 0 0 46px rgba(232, 197, 71, 0.95); }
+    }
+    .alert-modal-card {
+      background: #FFFFFF;
+      border: 3px solid var(--gold);
+      border-radius: 18px;
+      max-width: 520px;
+      width: 100%;
+      padding: 28px 26px;
+      text-align: center;
+      animation: cardGlow 2s infinite;
+    }
+    .alert-modal-badge {
+      display: inline-block;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #F59E0B;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .alert-modal-card h2 { font-size: 21px; color: var(--navy); margin-bottom: 10px; }
+    .alert-modal-card p { font-size: 14.5px; color: #334155; margin-bottom: 20px; line-height: 1.55; }
 
     /* Глобальное постоянное уведомление */
     .global-toast {
@@ -462,7 +518,10 @@
             <div class="kp-badge" id="p-kp">MK-...</div>
             <h1 id="p-title">Личный кабинет вашего заказа</h1>
           </div>
-          <div class="status-pill" id="p-status">...</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <div class="status-pill" id="p-status">...</div>
+            <button type="button" class="btn btn-outline" style="padding:7px 12px; font-size:12.5px;" onclick="manualRefreshPortal(this)" title="Проверить обновления статуса">🔄 Обновить</button>
+          </div>
         </div>
         <div class="meta-grid">
           <div class="meta-item"><strong id="lbl-client">Заказчик</strong><span id="v-client">—</span></div>
@@ -788,6 +847,16 @@
     </div>
   </div>
 
+  <!-- ГОРЯЩЕЕ МОДАЛЬНОЕ ОПОВЕЩЕНИЕ О НОВОМ ЭТАПЕ (НЕ ПРОПУСТИТ НИ ОДИН ШАГ) -->
+  <div class="alert-modal-overlay no-print" id="alert-action-modal">
+    <div class="alert-modal-card">
+      <div class="alert-modal-badge" id="alert-modal-badge">🔔 Новое действие по заказу</div>
+      <h2 id="alert-modal-title">Финальное КП готово!</h2>
+      <p id="alert-modal-desc">...</p>
+      <button type="button" class="btn btn-gold" style="width:100%; padding:14px 20px; font-size:15.5px;" id="alert-modal-btn" onclick="ackActionAlert()">👉 Открыть и прочитать →</button>
+    </div>
+  </div>
+
   <script>
     const API_URL = '/.netlify/functions/crm-api';
     const urlParams = new URLSearchParams(window.location.search);
@@ -887,6 +956,23 @@
     }
 
     function openTab(tabName) {
+      if (portalData && !portalData.isAdmin) {
+        const curIdx = computeStepIndex(portalData.crmStatus);
+        const tabOrder = { overview: 0, brief: 1, kp: 2, contract: 3, materials: 4 };
+        const targetIdx = tabOrder[tabName] ?? 0;
+        if (targetIdx === 2 && curIdx < 2 && !portalData.kpPublished) {
+          showToast('⏳ Финальное КП ещё готовится руководителем. Как только оно будет готово, здесь загорится оповещение!', 'info');
+          return;
+        }
+        if (targetIdx === 3 && curIdx < 3 && !portalData.contractPublished) {
+          showToast('🔒 Сначала завершите шаг «3. Финальное КП» (выберите один из 3 вариантов) — и сразу откроется Договор.', 'info');
+          return;
+        }
+        if (targetIdx === 4 && curIdx < 4 && !(portalData.crmStatus || '').includes('✍️')) {
+          showToast('🔒 Загрузка материалов откроется сразу после согласования Договора и оплаты.', 'info');
+          return;
+        }
+      }
       activeTab = tabName;
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       const pane = document.getElementById('tab-' + tabName);
@@ -969,15 +1055,24 @@
       const datesNote = portalData.startDate ? ` | ${portalData.startDate} ➔ ${portalData.endDate}` : '';
       document.getElementById('v-price').innerText = `${Number(portalData.agreedPrice || 0).toLocaleString('ru-RU')} ₸ · ${portalData.totalDays} дн.${datesNote}`;
 
-      // Вкладки этапов
+      // Вкладки этапов (подсветка текущего шага и замочки на будущие)
       const curStep = computeStepIndex(portalData.crmStatus);
       const tabKeys = ['overview', 'brief', 'kp', 'contract', 'materials'];
       tabKeys.forEach((k, idx) => {
         const btn = document.getElementById('tabbtn-' + k);
-        btn.innerText = d.tabs[idx];
-        btn.classList.remove('done', 'cur');
-        if (idx < curStep) btn.classList.add('done');
-        else if (idx === curStep) btn.classList.add('cur');
+        btn.classList.remove('done', 'cur', 'locked');
+        if (idx < curStep) {
+          btn.innerText = '✅ ' + d.tabs[idx];
+          btn.classList.add('done');
+        } else if (idx === curStep) {
+          btn.innerText = '🔥 ' + d.tabs[idx];
+          btn.classList.add('cur');
+        } else if (!portalData.isAdmin && idx >= 3) {
+          btn.innerText = '🔒 ' + d.tabs[idx];
+          btn.classList.add('locked');
+        } else {
+          btn.innerText = d.tabs[idx];
+        }
       });
 
       // --- ВКЛАДКА 1: СМЕТА ---
@@ -1395,9 +1490,9 @@
       setTimeout(() => document.body.classList.remove('print-kp', 'print-contract'), 500);
     }
 
-    async function loadPortal() {
+    async function loadPortal(silent) {
       if (!kpParam || !tokenParam) {
-        document.getElementById('loading-text').innerText = I18N[lang].badLink;
+        if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
         return;
       }
       try {
@@ -1405,10 +1500,12 @@
         const res = await fetch(`${API_URL}?action=client_portal&kp=${encodeURIComponent(kpParam)}&t=${encodeURIComponent(tokenParam)}${adminQs}`);
         const data = await res.json();
         if (data.status !== 'ok') {
-          document.getElementById('loading-text').innerText = I18N[lang].badLink;
+          if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
           return;
         }
         const firstLoad = !portalData;
+        const prevStatus = portalData ? portalData.crmStatus : '';
+        const prevExtra = portalData && portalData.deal ? portalData.deal.lastExtraQuestion : '';
         portalData = data;
         lang = data.chatLang === 'kz' ? 'kz' : 'ru';
         document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
@@ -1418,12 +1515,115 @@
         render();
         if (firstLoad) {
           openTab(pickInitialTab(data));
+          checkAndShowActionAlert(data);
         } else {
-          openTab(activeTab);
+          if (prevStatus !== data.crmStatus || prevExtra !== (data.deal && data.deal.lastExtraQuestion)) {
+            openTab(pickInitialTab(data));
+            checkAndShowActionAlert(data);
+          } else {
+            openTab(activeTab);
+          }
         }
       } catch (e) {
-        document.getElementById('loading-text').innerText = I18N[lang].badLink;
+        if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
       }
+    }
+
+    let pendingAlertTab = null;
+    let pendingAlertAckKey = null;
+
+    function checkAndShowActionAlert(data) {
+      if (!data || data.isAdmin) return;
+      const s = data.crmStatus || '';
+      let stageKey = '';
+      let badge = '';
+      let title = '';
+      let desc = '';
+      let btnTxt = '';
+      let targetTab = '';
+
+      if (s.includes('🟠')) {
+        stageKey = 'extra_' + (data.deal && data.deal.lastExtraQuestion || '').slice(0, 20);
+        badge = '🟠 Вопрос от руководителя Бюро';
+        title = 'Нужно короткое уточнение по проекту';
+        desc = 'Наталья Коденцева задала уточняющий вопрос, чтобы точно рассчитать Финальное КП. Пожалуйста, прочитайте и ответьте, чтобы двигаться дальше.';
+        btnTxt = '👉 Прочитать вопрос и ответить →';
+        targetTab = 'brief';
+      } else if (s.includes('💼')) {
+        stageKey = 'kp_ready';
+        badge = '🔥 Важный шаг: Финальное КП готово!';
+        title = 'Ваше Финальное КП (3 варианта) опубликовано!';
+        desc = 'Нажмите кнопку ниже, чтобы открыть официальный документ А4, ознакомиться с 3 вариантами комплектации, скачать PDF и выбрать удобный вариант.';
+        btnTxt = '👉 Открыть и прочитать Финальное КП →';
+        targetTab = 'kp';
+      } else if (s.includes('📄')) {
+        stageKey = 'contract_ready';
+        badge = '🔥 Договор готов к проверке!';
+        title = 'Подготовлен Договор авторского заказа (А4)';
+        desc = 'Пожалуйста, откройте текст Договора, проверьте/допишите ваши реквизиты прямо в бланке А4 и нажмите «✅ Договор согласован».';
+        btnTxt = '👉 Открыть, проверить и согласовать Договор →';
+        targetTab = 'contract';
+      } else if (s.includes('⏳')) {
+        stageKey = 'waiting_materials';
+        badge = '💰 Оплата подтверждена!';
+        title = 'Готовы принимать исходные материалы';
+        desc = 'Мы забронировали для вас окно в Графике. Передайте файлы проекта (ссылкой на Google Диск или прямой загрузкой), чтобы запустить счётчик срока.';
+        btnTxt = '👉 Перейти к передаче материалов →';
+        targetTab = 'materials';
+      } else if (s.includes('🟢') || s.includes('📅')) {
+        stageKey = 'started';
+        badge = '🚀 Проект запущен в работу!';
+        title = `Зафиксированы даты старта и сдачи`;
+        desc = `Старт работ: ${data.startDate || '—'} · Плановая дата сдачи: ${data.endDate || '—'}. Все детали доступны в вашем Кабинете.`;
+        btnTxt = '👉 Посмотреть график работ →';
+        targetTab = 'materials';
+      }
+
+      if (!stageKey) return;
+      const ackStorageKey = `mk_ack_${data.kpNumber}_${stageKey}`;
+      try {
+        if (localStorage.getItem(ackStorageKey) === '1') return;
+      } catch (e) {}
+
+      pendingAlertTab = targetTab;
+      pendingAlertAckKey = ackStorageKey;
+      document.getElementById('alert-modal-badge').innerText = badge;
+      document.getElementById('alert-modal-title').innerText = title;
+      document.getElementById('alert-modal-desc').innerText = desc;
+      document.getElementById('alert-modal-btn').innerText = btnTxt;
+      document.getElementById('alert-action-modal').classList.add('open');
+    }
+
+    function ackActionAlert() {
+      document.getElementById('alert-action-modal').classList.remove('open');
+      if (pendingAlertAckKey) {
+        try { localStorage.setItem(pendingAlertAckKey, '1'); } catch (e) {}
+      }
+      if (pendingAlertTab) {
+        openTab(pendingAlertTab);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    async function manualRefreshPortal(btn) {
+      const orig = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = '⏳ Проверяем...';
+      await loadPortal(true);
+      btn.disabled = false;
+      btn.innerText = orig;
+      showToast('✅ Статус заказа обновлён!', 'info');
+    }
+
+    function startAutoPolling() {
+      setInterval(() => {
+        if (document.visibilityState !== 'visible' || isRecording) return;
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.getAttribute('contenteditable') === 'true')) {
+          return; // Не мешаем клиенту, пока он печатает в поле
+        }
+        loadPortal(true);
+      }, 10000);
     }
 
     async function sendAction(payload, btnEl, successMsg, nextTab) {
@@ -1693,7 +1893,7 @@
       reader.readAsDataURL(file);
     }
 
-    loadPortal();
+    loadPortal(false).then(() => startAutoPolling());
   </script>
 </body>
 </html>

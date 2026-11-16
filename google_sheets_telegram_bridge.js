@@ -139,6 +139,7 @@ function setupMetodikoCRM() {
 
   recalculateQueueSheet();
   try { getOrCreateRootProjectsFolder(); } catch (e) { Logger.log("Root folder init: " + e); }
+  try { MailApp.getRemainingDailyQuota(); } catch (e) { Logger.log("MailApp quota check: " + e); }
 }
 
 function ensureExtendedColumns(sheet) {
@@ -314,8 +315,8 @@ function processNewWebsiteLead(lead) {
     new Date().toLocaleString("ru-RU"),
     lead.clientName || "—",
     lead.clientOrg || "—",
-    lead.clientPhone || "—",
-    lead.clientEmail || "—",
+    normalizePhone(lead.clientPhone) || lead.clientPhone || "—",
+    (lead.clientEmail || "").toString().trim() || "—",
     lead.clientTg || "—",
     lead.audienceCategory || "—",
     devLangLabel,
@@ -682,6 +683,7 @@ function handleAdminCallback(callbackQuery) {
       kpDeadlineText: deadlineDate,
       remindedKp2d: false
     });
+    SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveFinalKpDoc(sheet, rowIdx);
@@ -693,7 +695,7 @@ function handleAdminCallback(callbackQuery) {
 
     const emailNote = emailRes.sent
       ? `✅ <b>Финальное КП автоматически отправлено клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыто в его Кабинете!`
-      : `💼 <b>Финальное КП опубликовано в Кабинете клиента</b> (Email не был указан — при необходимости передайте ссылку):\n<code>${portalUrl}</code>`;
+      : `⚠️ <b>Финальное КП опубликовано в Кабинете, но письмо не ушло</b> (${escapeHtml(row[COL.EMAIL - 1] || "пусто")} | причина: ${escapeHtml(emailRes.reason || "нет Email")}).\nСсылка для клиента:\n<code>${portalUrl}</code>`;
 
     const kb = [[{ text: "👁️ Открыть КП в Кабинете", url: adminKpUrl }]];
     if (!emailRes.sent) {
@@ -754,6 +756,7 @@ function handleAdminCallback(callbackQuery) {
 
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
     paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
+    SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveContractDoc(sheet, rowIdx);
@@ -765,7 +768,7 @@ function handleAdminCallback(callbackQuery) {
 
     const emailNote = emailRes.sent
       ? `✅ <b>Договор по ${kp} автоматически отправлен клиенту на Email</b> (${escapeHtml(emailRes.to)}) и открыт в его Кабинете!`
-      : `📄 <b>Договор по ${kp} опубликован в Кабинете клиента</b> (Email не указан):\n<code>${portalUrl}</code>`;
+      : `⚠️ <b>Договор по ${kp} опубликован в Кабинете, но письмо не ушло</b> (${escapeHtml(row[COL.EMAIL - 1] || "пусто")} | причина: ${escapeHtml(emailRes.reason || "нет Email")}):\n<code>${portalUrl}</code>`;
 
     const kb = [[{ text: "👁️ Открыть Договор в Кабинете", url: adminContractUrl }]];
     if (!emailRes.sent) {
@@ -2240,7 +2243,7 @@ function notifyAdminContractAgreed(sheet, rowIdx) {
  * =========================================================================
  */
 function buildWaQuickLink(phone, text) {
-  const clean = String(phone || "").replace(/[^\d]/g, "");
+  const clean = normalizePhone(phone).replace(/[^\d]/g, "");
   if (clean.length < 10) return "";
   return `https://wa.me/${clean}?text=${encodeURIComponent(text || "")}`;
 }
