@@ -1492,8 +1492,13 @@ function handleClientPortalPost(data) {
     if (data.clientEmail && data.clientEmail.trim()) sheet.getRange(rowIdx, COL.EMAIL).setValue(data.clientEmail.trim());
     if (data.clientTg && data.clientTg.trim()) sheet.getRange(rowIdx, COL.TG).setValue(data.clientTg.trim());
 
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-    paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+    const curSt1 = String(row[COL.STATUS - 1] || "");
+    if (!curSt1 || curSt1.includes("🟡") || curSt1.includes("🟣") || curSt1.includes("🔵") || curSt1.includes("🟠")) {
+      if (!row[COL.START_DATE - 1]) {
+        sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
+        paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+      }
+    }
     sheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
     sheet.getRange(rowIdx, COL.BRIEF).setValue(fullBriefText);
 
@@ -1523,8 +1528,11 @@ function handleClientPortalPost(data) {
     const oldBrief = (row[COL.BRIEF - 1] || "").toString();
     const updated = oldBrief + "\n\n[ОТВЕТ КЛИЕНТА ИЗ КАБИНЕТА НА ДОП. ВОПРОС]:\n" + ansText;
     sheet.getRange(rowIdx, COL.BRIEF).setValue(updated);
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-    paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+    const curSt2 = String(row[COL.STATUS - 1] || "");
+    if (curSt2.includes("🟠") && !row[COL.START_DATE - 1]) {
+      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
+      paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
+    }
     patchDealState(sheet, rowIdx, { lastExtraQuestion: "" });
 
     const aiAnalysis = analyzeBriefWithGemini({

@@ -1512,8 +1512,38 @@
       }
     }
 
-    function computeStepIndex(crmStatus) {
-      const s = crmStatus || '';
+    function fmtDate(val) {
+      if (!val) return '';
+      const s = String(val).trim();
+      if (/^\d{2}\.\d{2}\.\d{4}/.test(s)) return s;
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        try { return d.toLocaleDateString('ru-RU', { timeZone: 'Asia/Almaty' }); } catch (e) { return d.toLocaleDateString('ru-RU'); }
+      }
+      return s;
+    }
+
+    function getEffectiveStatus(data) {
+      if (!data) return '';
+      const s = data.crmStatus || '';
+      if (s.includes('✅')) return s;
+      if (data.startDate && (s.includes('🟡') || s.includes('🟣') || s.includes('🔵') || s.includes('🟠'))) {
+        return '🟢 10. В РАБОТЕ (Активный слот)';
+      }
+      if ((data.contractUrl || data.contractPublished) && (s.includes('🟡') || s.includes('🟣') || s.includes('🔵') || s.includes('🟠'))) {
+        return (data.clientSignedOnline || (data.signedContractFiles && data.signedContractFiles.length))
+          ? '✍️ 8. Договор согласован'
+          : '📄 7. Договор на согласовании';
+      }
+      if ((data.kpPublished || (data.deal && data.deal.kpVariants && data.deal.kpVariants.length)) && (s.includes('🟡') || s.includes('🟣') || s.includes('🔵') || s.includes('🟠'))) {
+        return (data.deal && data.deal.chosenVariant) ? '🤝 6. КП принято клиентом' : '💼 5. Финальное КП отправлено';
+      }
+      return s;
+    }
+
+    function computeStepIndex(crmStatus, dataObj) {
+      const d = dataObj || portalData;
+      const s = d ? getEffectiveStatus(d) : (crmStatus || '');
       if (s.includes('⏳') || s.includes('🟢') || s.includes('📅') || s.includes('✅')) return 4;
       if (s.includes('📄') || s.includes('✍️')) return 3;
       if (s.includes('💼') || s.includes('🤝')) return 2;
@@ -1525,7 +1555,7 @@
       if (requestedTab && ['overview', 'brief', 'kp', 'contract', 'materials'].includes(requestedTab)) {
         return requestedTab;
       }
-      const s = data.crmStatus || '';
+      const s = getEffectiveStatus(data);
       if (s.includes('⏳') || s.includes('🟢') || s.includes('📅') || s.includes('✅')) return 'materials';
       if (s.includes('📄') || s.includes('✍️')) return 'contract';
       if (s.includes('💼') || s.includes('🤝')) return 'kp';
@@ -1642,9 +1672,10 @@
         document.getElementById('admin-banner-links').innerHTML = links.join('');
       }
 
+      const effStatus = getEffectiveStatus(portalData);
       document.getElementById('p-kp').innerText = portalData.kpNumber;
       document.getElementById('p-title').innerText = d.title;
-      document.getElementById('p-status').innerText = portalData.crmStatus || '—';
+      document.getElementById('p-status').innerText = effStatus || '—';
       document.getElementById('lbl-client').innerText = d.client;
       document.getElementById('lbl-cat').innerText = d.cat;
       document.getElementById('lbl-devlang').innerText = d.devlang;
@@ -1652,16 +1683,18 @@
       document.getElementById('v-client').innerText = `${portalData.clientName} (${portalData.clientOrg})`;
       document.getElementById('v-cat').innerText = portalData.category || '—';
       document.getElementById('v-devlang').innerText = portalData.devLanguage || '—';
-      const datesNote = portalData.startDate ? ` | ${portalData.startDate} ➔ ${portalData.endDate}` : '';
+      const startFmt = fmtDate(portalData.startDate);
+      const endFmt = fmtDate(portalData.endDate);
+      const datesNote = startFmt ? ` | ${startFmt} ➔ ${endFmt}` : '';
       document.getElementById('v-price').innerText = `${Number(portalData.agreedPrice || 0).toLocaleString('ru-RU')} ₸ · ${portalData.totalDays} дн.${datesNote}`;
 
       // Прогресс заказа в %
-      const pct = Number(portalData.progressPercent || computeFallbackProgress(portalData));
+      const pct = Math.max(Number(portalData.progressPercent || 0), computeFallbackProgress(portalData));
       document.getElementById('v-progress-pct').innerText = pct + '%';
       document.getElementById('v-progress-bar').style.width = pct + '%';
 
       // Вкладки-якоря
-      const curStep = computeStepIndex(portalData.crmStatus);
+      const curStep = computeStepIndex(effStatus, portalData);
       const tabKeys = ['overview', 'brief', 'kp', 'contract', 'materials'];
       tabKeys.forEach((k, idx) => {
         const btn = document.getElementById('tabbtn-' + k);
@@ -1747,7 +1780,7 @@
 
       // --- ШАГ 3: ФИНАЛЬНОЕ КП (А4 С ПЕЧАТЬЮ И ПОДПИСЬЮ) ---
       const variants = (portalData.deal && portalData.deal.kpVariants) || [];
-      const showKp = variants.length > 0 && (portalData.isAdmin || portalData.kpPublished);
+      const showKp = variants.length > 0;
       document.getElementById('kp-waiting-card').style.display = showKp ? 'none' : 'block';
       document.getElementById('kp-ready-wrap').style.display = showKp ? 'block' : 'none';
 
@@ -1812,7 +1845,7 @@
       }
 
       // --- ШАГ 4: ДОГОВОР (А4 + ОНЛАЙН-ПОДПИСЬ ИЛИ ЗАГРУЗКА СКАНА + ЧЕК) ---
-      const showContract = portalData.isAdmin || portalData.contractPublished || Boolean(portalData.deal && portalData.deal.chosenVariant);
+      const showContract = Boolean(portalData.isAdmin || portalData.contractPublished || portalData.contractUrl || portalData.contractPdfUrl || (portalData.deal && portalData.deal.chosenVariant) || portalData.startDate);
       document.getElementById('contract-waiting-card').style.display = showContract ? 'none' : 'block';
       document.getElementById('contract-ready-wrap').style.display = showContract ? 'block' : 'none';
 
@@ -1860,7 +1893,7 @@
       // --- ШАГ 5: ТАБЛО ГОТОВНОСТИ ДОКУМЕНТОВ, ФАЙЛЫ И ПРЯМАЯ СВЯЗЬ ---
       const schedEl = document.getElementById('schedule-status-box');
       if (portalData.startDate) {
-        schedEl.innerHTML = `🚀 <b>Проект в графике Бюро!</b> Дата старта: <b>${portalData.startDate}</b> · Плановая дата сдачи: <b>${portalData.endDate}</b>`;
+        schedEl.innerHTML = `🚀 <b>Проект в графике Бюро!</b> Дата старта: <b>${fmtDate(portalData.startDate)}</b> · Плановая дата сдачи: <b>${fmtDate(portalData.endDate)}</b>`;
       } else {
         schedEl.innerHTML = `📅 Ближайшее свободное окно в Графике Бюро: <b>${portalData.nextFreeWindow}</b>. Отсчёт срока разработки начинается на следующий рабочий день после оплаты и передачи исходных материалов.`;
       }
@@ -1871,13 +1904,13 @@
     }
 
     function computeFallbackProgress(data) {
-      const s = data.crmStatus || '';
+      const s = getEffectiveStatus(data);
       if (s.includes('✅')) return 100;
-      if (s.includes('🟢') || s.includes('📅')) return 75;
+      if (s.includes('🟢') || s.includes('📅') || data.startDate) return 75;
       if (s.includes('⏳')) return 65;
       if (s.includes('✍️')) return 58;
-      if (s.includes('📄')) return 48;
-      if (s.includes('🤝')) return 40;
+      if (s.includes('📄') || data.contractUrl) return 50;
+      if (s.includes('🤝') || (data.deal && data.deal.chosenVariant)) return 42;
       if (s.includes('💼')) return 32;
       if (data.deal && data.deal.briefAnswers) return 22;
       return 12;
@@ -2544,7 +2577,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
               <div style="font-size:12.5px; color:var(--muted);">
                 📎 Файлов от клиента: <b>${o.uploadedCount || 0}</b> · 💬 Сообщений в кабинете: <b>${o.messagesCount || 0}</b>
-                ${o.endDate ? ` · 🏁 Сдача до: <b>${escapeHtml(o.endDate)}</b>` : ''}
+                ${o.endDate ? ` · 🏁 Сдача до: <b>${escapeHtml(fmtDate(o.endDate))}</b>` : ''}
               </div>
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 ${waLink ? `<a href="${waLink}" target="_blank" class="btn btn-outline" style="padding:7px 12px;font-size:12.5px;">📱 WhatsApp</a>` : ''}
