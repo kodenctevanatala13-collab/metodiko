@@ -2211,6 +2211,7 @@ function generateAndSaveFinalKpDoc(sheet, rowIdx) {
     body.appendHorizontalRule();
     body.appendParagraph(`Условия работы: 100% предоплата. Отсчёт срока ведётся со следующего рабочего дня после поступления оплаты и полного комплекта исходных материалов. Формат: 100% дистанционно.`);
     body.appendParagraph(`Исполнитель: ТОО «Метод и Ко», БИН 231140018015, г. Алматы, АО «Kaspi Bank», ИИК KZ54722S000031140138, БИК CASPKZKA, Директор Коденцева Н.М.`);
+    appendDirectorStampToDocBody(body, kp, deal.kpSignedAt || formatDateRu(new Date()));
     doc.saveAndClose();
 
     const saved = saveDocAndPdfToFolder(doc, folderId, `Финальное_КП_${kp}.pdf`);
@@ -2291,8 +2292,11 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
 
     body.appendHorizontalRule();
     body.appendParagraph(`10. РЕКВИЗИТЫ И ПОДПИСИ СТОРОН`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
-    body.appendParagraph(`ИСПОЛНИТЕЛЬ:\nТОО «Метод и Ко» (Бюро «МЕТОДИКО»)\nБИН: 231140018015\nЮр. адрес: 050019, г. Алматы, Турксибский р-н, мкр. Кайрат, ул. Жетысай, дом 15/2\nБанк: АО «Kaspi Bank» | ИИК: KZ54722S000031140138 | БИК: CASPKZKA | КБе: 17\nТел.: +7 (700) 077-35-66 | Сайт: metodico-kz.netlify.app\nДиректор: ____________________ / Коденцева Н.М. /`);
-    body.appendParagraph(`ЗАКАЗЧИК:\n${reqBlock}\nПодписант: ____________________ / ${signerDisplay} /`);
+    body.appendParagraph(`ИСПОЛНИТЕЛЬ:\nТОО «Метод и Ко» (Бюро «МЕТОДИКО»)\nБИН: 231140018015\nЮр. адрес: 050019, г. Алматы, Турксибский р-н, мкр. Кайрат, ул. Жетысай, дом 15/2\nБанк: АО «Kaspi Bank» | ИИК: KZ54722S000031140138 | БИК: CASPKZKA | КБе: 17\nТел.: +7 (700) 077-35-66 | Сайт: metodico-kz.netlify.app\nДиректор: Коденцева Н.М.`);
+    appendDirectorStampToDocBody(body, kp, deal.contractSignedAt || formatDateRu(new Date()));
+
+    body.appendParagraph(`\nЗАКАЗЧИК:\n${reqBlock}\nПодписант: ${signerDisplay}`);
+    appendClientSignatureToDocBody(body, kp, orgDisplay, req.binIin || "", signerDisplay, deal, isFinalAgreed);
     doc.saveAndClose();
 
     const pdfName = isFinalAgreed ? `Договор_${kp}_СОГЛАСОВАН.pdf` : `Договор_${kp}_проект.pdf`;
@@ -3060,14 +3064,15 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
     return { status: "not_found", message: "Заявки пока не найдены." };
   }
 
-  // Защита от перебора (Rate Limit)
   const cleanDigits = String(rawPhone || "").replace(/[^\d]/g, "");
   const cleanKp = String(rawKp || "").trim().toUpperCase();
-  if (cleanDigits.length < 10 && !cleanKp.startsWith("MK-")) {
+  const tail10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : "";
+  const isOwnerPhone = (tail10 === "7000773566") || cleanKp === "ШТАБ" || cleanKp === "НАТАЛЬЯ" || cleanKp === "ДИРЕКТОР";
+
+  if (cleanDigits.length < 10 && !cleanKp.startsWith("MK-") && !isOwnerPhone) {
     return { status: "error", message: "Введите корректный номер телефона (10–11 цифр) или номер заказа MK-..." };
   }
 
-  const tail10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : "";
   const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
   const matches = [];
 
@@ -3100,7 +3105,7 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
     }
   }
 
-  if (matches.length === 0) {
+  if (matches.length === 0 && !isOwnerPhone) {
     return {
       status: "not_found",
       message: "Заказ с таким номером телефона не найден. Проверьте цифры номера или оформите смету на главной странице."
@@ -3109,8 +3114,11 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
 
   return {
     status: "ok",
+    isOwnerPhone: isOwnerPhone,
+    directorHubUrl: isOwnerPhone ? getStaffHubUrl("director") : "",
+    assistantHubUrl: isOwnerPhone ? getStaffHubUrl("assistant") : "",
     orders: matches,
-    primaryOrder: matches[0]
+    primaryOrder: matches[0] || null
   };
 }
 
@@ -3338,4 +3346,39 @@ function sendStaffSummaryReportToAdmin(targetChatId) {
       ]
     }
   });
+}
+
+function appendDirectorStampToDocBody(body, kp, signedAtStr) {
+  try {
+    const stampResp = UrlFetchApp.fetch(`${CONFIG.SITE_URL}/assets/metodico_stamp_sign.png`, { muteHttpExceptions: true });
+    if (stampResp.getResponseCode() === 200) {
+      const img = body.appendImage(stampResp.getBlob());
+      img.setWidth(190);
+      img.setHeight(138);
+    }
+  } catch (e) {
+    Logger.log("Stamp image insert warn: " + e);
+  }
+  const dt = signedAtStr || formatDateRu(new Date());
+  body.appendParagraph(`✅ ПОДПИСАНО И УТВЕРЖДЕНО ИСПОЛНИТЕЛЕМ: ТОО «Метод и Ко» (БИН 231140018015), Директор Коденцева Н.М. | Дата: ${dt} | Реестровый № ${kp} (${CONFIG.SITE_URL})`);
+}
+
+function appendClientSignatureToDocBody(body, kp, orgDisplay, binIin, signerDisplay, deal, isFinalAgreed) {
+  const signedOnline = Boolean(isFinalAgreed || (deal && deal.clientSignedOnline));
+  const signedFiles = (deal && Array.isArray(deal.signedContractFiles)) ? deal.signedContractFiles : [];
+  if (deal && deal.clientSignatureDataUrl && deal.clientSignatureDataUrl.indexOf("base64,") !== -1) {
+    try {
+      const b64 = deal.clientSignatureDataUrl.split("base64,")[1];
+      const sigBlob = Utilities.newBlob(Utilities.base64Decode(b64), "image/png", "client_signature.png");
+      const sigImg = body.appendImage(sigBlob);
+      sigImg.setWidth(150);
+      sigImg.setHeight(45);
+    } catch (e) {}
+  }
+  if (signedOnline || signedFiles.length > 0) {
+    const dt = (deal && deal.clientSignedAt) || new Date().toLocaleString("ru-RU");
+    body.appendParagraph(`✅ ДОКУМЕНТ ПОДПИСАН И АКЦЕПТОВАН ЗАКАЗЧИКОМ ЭЛЕКТРОННО В ЛИЧНОМ КАБИНЕТЕ (п. 2 ст. 152, п. 3 ст. 396 ГК РК)\nОрганизация: ${orgDisplay} (БИН/ИИН: ${binIin || "—"})\nПодписант: ${signerDisplay} | Дата и время акцепта: ${dt} | Код верификации: ${kp}`);
+  } else {
+    body.appendParagraph(`Подпись Заказчика: ____________________ / ${signerDisplay} /   М.П.`);
+  }
 }

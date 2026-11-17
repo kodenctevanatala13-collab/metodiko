@@ -728,8 +728,8 @@
       <p style="font-size:14px; color:var(--muted); margin-bottom:14px;">
         Введите номер телефона, который вы указывали при расчёте сметы (или номер заказа <code>MK-...</code>) — и мы сразу откроем вашу страницу с КП, Договором и готовыми документами на любом устройстве:
       </p>
-      <label for="login-phone-inp">Ваш номер телефона (или номер КП MK-2026-...):</label>
-      <input type="text" id="login-phone-inp" placeholder="Например: +7 701 123 45 67 или MK-2026-..." onkeydown="if(event.key==='Enter') findOrderByPhoneAction(document.getElementById('btn-find-phone'))">
+      <label for="login-phone-inp">Ваш номер телефона, номер КП (MK-2026-...) или ваша ссылка Руководителя:</label>
+      <input type="text" id="login-phone-inp" placeholder="Например: +7 701 123 45 67, MK-2026-... или вставьте ссылку" onkeydown="if(event.key==='Enter') findOrderByPhoneAction(document.getElementById('btn-find-phone'))">
       <div class="btn-row" style="margin-top:14px;">
         <button type="button" class="btn btn-gold" id="btn-find-phone" onclick="findOrderByPhoneAction(this)" style="width:100%; padding:13px;">🔍 Найти и открыть мой заказ →</button>
       </div>
@@ -2345,41 +2345,70 @@
       setTimeout(() => document.body.classList.remove('print-kp', 'print-contract'), 500);
     }
 
-    // ==================== ВХОД ПО НОМЕРУ ТЕЛЕФОНА ====================
+    // ==================== ВХОД ПО НОМЕРУ ТЕЛЕФОНА ИЛИ ССЫЛКЕ ====================
     async function findOrderByPhoneAction(btn) {
       const inp = document.getElementById('login-phone-inp');
       const raw = (inp ? inp.value : '').trim();
       const resBox = document.getElementById('phone-login-results');
-      if (!raw || raw.length < 4) {
-        showToast('⚠️ Введите ваш номер телефона (10–11 цифр) или номер заказа MK-...', 'err');
+      if (!raw || raw.length < 3) {
+        showToast('⚠️ Введите ваш номер телефона (10–11 цифр), номер заказа MK-... или вставьте вашу ссылку.', 'err');
         return;
       }
+
+      // Если вставили готовую ссылку (например, ссылку руководителя или ссылку заказа) — сразу переходим по ней!
+      if (raw.includes('client.html?') || raw.startsWith('http://') || raw.startsWith('https://')) {
+        window.location.href = raw;
+        return;
+      }
+
       const origTxt = btn ? btn.innerText : '';
-      if (btn) { btn.disabled = true; btn.innerText = '⏳ Ищем ваш заказ...'; }
+      if (btn) { btn.disabled = true; btn.innerText = '⏳ Ищем...'; }
       resBox.innerHTML = '';
 
       try {
-        const isKp = raw.toUpperCase().startsWith('MK-');
-        const qs = isKp ? `kp=${encodeURIComponent(raw)}` : `phone=${encodeURIComponent(raw)}`;
+        const upper = raw.toUpperCase();
+        const isKpOrCmd = upper.startsWith('MK-') || upper === 'ШТАБ' || upper === 'НАТАЛЬЯ' || upper === 'ДИРЕКТОР';
+        const qs = isKpOrCmd ? `kp=${encodeURIComponent(raw)}` : `phone=${encodeURIComponent(raw)}`;
         const resp = await fetch(`${API_URL}?action=find_by_phone&${qs}`);
         const data = await resp.json();
 
-        if (data && data.status === 'ok' && Array.isArray(data.orders) && data.orders.length > 0) {
-          if (data.orders.length === 1) {
-            window.location.href = data.orders[0].portalUrl;
+        if (data && data.status === 'ok') {
+          let htmlOut = '';
+          if (data.isOwnerPhone && data.directorHubUrl) {
+            htmlOut += `
+              <div style="background:linear-gradient(135deg,#152238 0%,#243b61 100%); color:#fff; border:2px solid var(--gold); border-radius:12px; padding:14px 16px; margin-bottom:12px;">
+                <div style="font-weight:800; color:#FFD966; font-size:15px; margin-bottom:6px;">👑 Распознан номер Руководителя Бюро (Наталья Коденцева)</div>
+                <p style="font-size:13px; color:#E2E8F0; margin-bottom:10px;">Нажмите кнопку ниже, чтобы открыть единый Штаб со списком ВСЕХ клиентов, процентами выполнения и документами:</p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <a href="${data.directorHubUrl}" class="btn btn-gold" style="width:100%;">🏛️ Открыть Штаб ВСЕХ клиентов (Режим Руководителя) →</a>
+                </div>
+              </div>
+            `;
+          }
+
+          const orders = Array.isArray(data.orders) ? data.orders : [];
+          if (orders.length === 1 && !data.isOwnerPhone) {
+            window.location.href = orders[0].portalUrl;
             return;
           }
-          resBox.innerHTML = `<div style="font-weight:700; color:var(--navy); margin-bottom:8px;">Найдено заказов (${data.orders.length}) — выберите нужный:</div>`
-            + data.orders.map(o => `
-                <div style="border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:#F8FAFC;">
-                  <div>
-                    <strong>${escapeHtml(o.kpNumber)} — ${escapeHtml(o.clientName)}</strong> (${escapeHtml(o.clientOrg)})<br>
-                    <span style="font-size:12.5px; color:var(--muted);">${escapeHtml(o.crmStatus)} · Готовность: ${o.progressPercent || 15}%</span>
+          if (orders.length > 0) {
+            htmlOut += `<div style="font-weight:700; color:var(--navy); margin-bottom:8px;">Найдено заказов (${orders.length}) — выберите нужный:</div>`
+              + orders.map(o => `
+                  <div style="border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:#F8FAFC;">
+                    <div>
+                      <strong>${escapeHtml(o.kpNumber)} — ${escapeHtml(o.clientName)}</strong> (${escapeHtml(o.clientOrg)})<br>
+                      <span style="font-size:12.5px; color:var(--muted);">${escapeHtml(o.crmStatus)} · Готовность: ${o.progressPercent || 15}%</span>
+                    </div>
+                    <a href="${o.portalUrl}" class="btn btn-gold">Открыть заказ →</a>
                   </div>
-                  <a href="${o.portalUrl}" class="btn btn-gold">Открыть заказ →</a>
-                </div>
-              `).join('');
-          return;
+                `).join('');
+          }
+
+          if (htmlOut) {
+            resBox.innerHTML = htmlOut;
+            if (btn) { btn.disabled = false; btn.innerText = origTxt; }
+            return;
+          }
         }
       } catch (e) {}
 
