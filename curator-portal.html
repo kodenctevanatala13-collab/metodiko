@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Штаб Куратора и Регламенты 2026 | Бюро «МЕТОДИКО»</title>
+  <style>
+    :root {
+      --navy-900: #0E1727;
+      --navy-800: #152238;
+      --navy-700: #1E3150;
+      --gold-600: #8F6D2C;
+      --gold-500: #C5A059;
+      --gold-400: #DFB76C;
+      --gold-100: #FBF7EE;
+      --gold-border: rgba(197, 160, 89, 0.4);
+      --bg-page: #F4F6FA;
+      --bg-card: #FFFFFF;
+      --text-main: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --border-dark: #CBD5E1;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 14px rgba(15,23,42,0.06);
+      --shadow-lg: 0 10px 25px rgba(15,23,42,0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ ШАПКА ШТАБА ============ */
+    .master-header {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 65%, var(--navy-700) 100%);
+      color: #FFFFFF;
+      border-bottom: 3px solid var(--gold-500);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(14, 23, 39, 0.2);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-col {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(197, 160, 89, 0.15);
+      border: 1px solid var(--gold-500);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--gold-400);
+    }
+
+    .brand-info h1 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.2;
+    }
+
+    .brand-info h1 span.gold {
+      color: var(--gold-400);
+    }
+
+    .brand-info p {
+      font-size: 13px;
+      color: #CBD5E1;
+      margin-top: 2px;
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #E2E8F0;
+      font-size: 12px;
+      padding: 5px 11px;
+      border-radius: 99px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-pill.gold {
+      background: rgba(197, 160, 89, 0.2);
+      border-color: var(--gold-500);
+      color: #FDE68A;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-hdr {
+      background: #FFFFFF;
+      color: var(--navy-800);
+      border: 1px solid transparent;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-hdr:hover {
+      background: var(--gold-100);
+      color: var(--navy-900);
+      border-color: var(--gold-500);
+      transform: translateY(-1px);
+    }
+
+    .btn-hdr.btn-hdr-gold {
+      background: var(--gold-500);
+      color: #0E1727;
+      font-weight: 700;
+    }
+
+    .btn-hdr.btn-hdr-gold:hover {
+      background: var(--gold-400);
+    }
+
+    /* ============ ДВУХКОЛОНОЧНЫЙ МАКЕТ ============ */
+    .app-layout {
+      max-width: 1400px;
+      margin: 20px auto 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ============ ЛЕВАЯ ПАНЕЛЬ / МЕНЮ ============ */
+    .sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 96px;
+      max-height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 14px 16px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-head h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .quick-search-box {
+      position: relative;
+    }
+
+    .quick-search-box input {
+      width: 100%;
+      padding: 8px 12px 8px 32px;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .quick-search-box input:focus {
+      border-color: var(--gold-500);
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+    }
+
+    .quick-search-box span.search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .sidebar-nav {
+      overflow-y: auto;
+      padding: 8px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-bottom: 3px;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      background: #F1F5F9;
+      border-color: #E2E8F0;
+    }
+
+    .nav-item.active {
+      background: var(--navy-800);
+      color: #FFFFFF;
+      border-color: var(--navy-900);
+    }
+
+    .nav-item.active .nav-num {
+      background: var(--gold-500);
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    .nav-item.active .nav-sub {
+      color: #CBD5E1;
+    }
+
+    .nav-num {
+      width: 28px;
+      height: 28px;
+      background: #E2E8F0;
+      color: var(--navy-800);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .nav-title-wrap {
+      flex: 1;
+      min-width: 0;
+      line-height: 1.3;
+    }
+
+    .nav-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-footer {
+      padding: 12px 16px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ============ ПРАВАЯ ОБЛАСТЬ ЧТЕНИЯ ============ */
+    .doc-viewer {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      min-height: 600px;
+    }
+
+    .doc-header-card {
+      background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px 20px 32px;
+    }
+
+    .doc-breadcrumbs {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .doc-breadcrumbs a {
+      color: var(--navy-700);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .doc-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy-900);
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .doc-meta-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .doc-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+    }
+
+    .doc-readtime {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .doc-tools-bar {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-tool {
+      background: #F1F5F9;
+      border: 1px solid var(--border-dark);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-tool:hover {
+      background: #E2E8F0;
+      color: var(--navy-900);
+    }
+
+    /* ============ ТЕЛО ДОКУМЕНТА (ТИПОГРАФИКА) ============ */
+    .doc-body-wrap {
+      padding: 32px 36px 48px 36px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    .doc-body-wrap h1 {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--navy-900);
+      margin-top: 10px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+      border-bottom: 2px solid var(--gold-500);
+      padding-bottom: 8px;
+    }
+
+    .doc-body-wrap h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy-800);
+      margin-top: 28px;
+      margin-bottom: 12px;
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #E2E8F0;
+      padding-bottom: 6px;
+    }
+
+    .doc-body-wrap h3 {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 20px;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .doc-body-wrap h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #475569;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    .doc-body-wrap p {
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .doc-body-wrap strong {
+      color: #0F172A;
+      font-weight: 600;
+    }
+
+    .doc-body-wrap ul, .doc-body-wrap ol {
+      margin: 8px 0 16px 24px;
+    }
+
+    .doc-body-wrap li {
+      margin-bottom: 6px;
+      padding-left: 2px;
+    }
+
+    .doc-body-wrap hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    .doc-body-wrap blockquote {
+      border-left: 4px solid var(--gold-500);
+      background: var(--gold-100);
+      padding: 12px 18px;
+      margin: 14px 0 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 14.5px;
+      color: #475569;
+    }
+
+    .doc-body-wrap blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Таблицы */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 18px 0 24px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    table th {
+      background: #F1F5F9;
+      color: var(--navy-900);
+      font-weight: 700;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-body);
+    }
+
+    table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table tr:nth-child(even) td {
+      background: #FAFAFC;
+    }
+
+    table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    /* Коллауты */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14.5px;
+      line-height: 1.55;
+    }
+
+    .callout-warning {
+      background: #FFFBEB;
+      border-left: 4px solid #F59E0B;
+      border-right: 1px solid #FDE68A;
+      border-top: 1px solid #FDE68A;
+      border-bottom: 1px solid #FDE68A;
+    }
+
+    .callout-warning .callout-head {
+      color: #92400E;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .callout-info {
+      background: #EFF6FF;
+      border-left: 4px solid #3B82F6;
+      border-right: 1px solid #BFDBFE;
+      border-top: 1px solid #BFDBFE;
+      border-bottom: 1px solid #BFDBFE;
+    }
+
+    .callout-info .callout-head {
+      color: #1E40AF;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .callout-tip {
+      background: #ECFDF5;
+      border-left: 4px solid #10B981;
+      border-right: 1px solid #A7F3D0;
+      border-top: 1px solid #A7F3D0;
+      border-bottom: 1px solid #A7F3D0;
+    }
+
+    .callout-tip .callout-head {
+      color: #065F46;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* Футер документа с переключением */
+    .doc-nav-footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 36px;
+      background: #F8FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .btn-doc-nav {
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--navy-800);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-doc-nav:hover:not(:disabled) {
+      background: var(--navy-800);
+      color: #FFFFFF;
+      border-color: var(--navy-900);
+    }
+
+    .btn-doc-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ============ ИНТЕРАКТИВНЫЙ ГЛОССАРИЙ ============ */
+    .glossary-filter-box {
+      background: var(--gold-100);
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .glossary-filter-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--gold-500);
+      border-radius: 6px;
+      font-size: 14.5px;
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .glossary-filter-box input:focus {
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.25);
+    }
+
+    /* Toast уведомление */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--navy-900);
+      color: #FFFFFF;
+      border: 1px solid var(--gold-500);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ АДАПТИВ ДЛЯ СМАРТФОНОВ ============ */
+    @media (max-width: 980px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        max-height: 380px;
+      }
+      .doc-viewer {
+        min-height: auto;
+      }
+      .doc-header-card {
+        padding: 18px 20px;
+      }
+      .doc-body-wrap {
+        padding: 20px;
+      }
+      .doc-nav-footer {
+        padding: 16px 20px;
+      }
+      .header-badges {
+        display: none;
+      }
+    }
+
+    /* ============ СТИЛИ ДЛЯ ПЕЧАТИ ============ */
+    @media print {
+      .master-header, .sidebar, .doc-tools-bar, .doc-nav-footer, .glossary-filter-box, .toast-msg {
+        display: none !important;
+      }
+      body {
+        background: #FFFFFF;
+        font-size: 12pt;
+      }
+      .app-layout {
+        display: block;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .doc-viewer {
+        border: none;
+        box-shadow: none;
+      }
+      .doc-header-card {
+        background: none;
+        border-bottom: 2px solid #000;
+        padding: 0 0 10pt 0;
+      }
+      .doc-body-wrap {
+        padding: 10pt 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ШАПКА ШТАБА -->
+  <header class="master-header">
+    <div class="header-inner">
+      <div class="brand-col">
+        <div class="brand-icon">🏛️</div>
+        <div class="brand-info">
+          <h1>БЮРО <span class="gold">«МЕТОДИКО»</span> • ШТАБ КУРАТОРОВ 2026</h1>
+          <p>ТОО «Метод и Ко» (БИН 231140018015, г. Алматы) • Руководитель: Наталья Коденцева</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge-pill gold">⭐️ 10 документов «под ключ»</span>
+        <span class="badge-pill">⚡️ 100% Автономный файл</span>
+        <span class="badge-pill">🔒 Конфиденциально</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-hdr" onclick="printDoc()" title="Распечатать или сохранить в PDF">
+          🖨 Печать / PDF
+        </button>
+        <button class="btn-hdr btn-hdr-gold" onclick="copyCurrentText()" title="Скопировать текст активного регламента">
+          📋 Копировать
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ОСНОВНОЙ МАКЕТ -->
+  <main class="app-layout">
+    
+    <!-- ЛЕВАЯ ПАНЕЛЬ С МЕНЮ ДОКУМЕНТОВ -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h3>Реестр документов (10)</h3>
+        <div class="quick-search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="sidebar-filter" placeholder="Быстрый поиск по списку..." oninput="filterSidebar()">
+        </div>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        
+        <div class="nav-item active" id="nav-btn-doc-00" onclick="switchDoc('doc-00')" data-title="главный навигатор и 5 ключевых правил 00. главный навигатор">
+          <div class="nav-num">00</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">🧭 00. Главный навигатор</div>
+            <div class="nav-sub">
+              <span>Старт</span> • <span>4 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-01" onclick="switchDoc('doc-01')" data-title="концепция и бизнес-модель бюро «методико» 2026 01. концепция бюро">
+          <div class="nav-num">01</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">🏛 01. Концепция Бюро</div>
+            <div class="nav-sub">
+              <span>Стратегия</span> • <span>6 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-02" onclick="switchDoc('doc-02')" data-title="инструкция пользования сайтом и путь заказа 02. работа на сайте (crm)">
+          <div class="nav-num">02</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">💻 02. Работа на сайте (CRM)</div>
+            <div class="nav-sub">
+              <span>IT и регламент</span> • <span>8 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-03" onclick="switchDoc('doc-03')" data-title="инструкция активного поиска клиентов и переговоров 03. поиск клиентов и продажи">
+          <div class="nav-num">03</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">🎯 03. Поиск клиентов и продажи</div>
+            <div class="nav-sub">
+              <span>Продажи (20%)</span> • <span>7 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-04" onclick="switchDoc('doc-04')" data-title="регламент вычитки и тарифы казаховеда-филолога 04. регламент казаховеда">
+          <div class="nav-num">04</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">🇰🇿 04. Регламент казаховеда</div>
+            <div class="nav-sub">
+              <span>Лингвистика</span> • <span>5 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-05" onclick="switchDoc('doc-05')" data-title="должностные обязанности куратора и матрица raci 05. обязанности и raci">
+          <div class="nav-num">05</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">📋 05. Обязанности и RACI</div>
+            <div class="nav-sub">
+              <span>Субординация</span> • <span>5 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-06" onclick="switchDoc('doc-06')" data-title="пакет бланков, шаблонов кп и чеклистов 06. бланки, кп и чеклисты">
+          <div class="nav-num">06</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">📁 06. Бланки, КП и чеклисты</div>
+            <div class="nav-sub">
+              <span>Инструменты</span> • <span>7 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-07" onclick="switchDoc('doc-07')" data-title="глоссарий ключевых терминов и аббревиатур госо 2026 07. глоссарий терминов госо">
+          <div class="nav-num">07</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">📖 07. Глоссарий терминов ГОСО</div>
+            <div class="nav-sub">
+              <span>Обучение</span> • <span>8 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-08" onclick="switchDoc('doc-08')" data-title="предварительный договор с куратором (гпх) 08. договор с куратором">
+          <div class="nav-num">08</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">✍️ 08. Договор с Куратором</div>
+            <div class="nav-sub">
+              <span>Юриспруденция</span> • <span>6 мин</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nav-item " id="nav-btn-doc-09" onclick="switchDoc('doc-09')" data-title="предварительное соглашение о конфиденциальности (nda) 09. соглашение nda">
+          <div class="nav-num">09</div>
+          <div class="nav-title-wrap">
+            <div class="nav-title">🔒 09. Соглашение NDA</div>
+            <div class="nav-sub">
+              <span>Безопасность</span> • <span>5 мин</span>
+            </div>
+          </div>
+        </div>
+        
+      </nav>
+      <div class="sidebar-footer">
+        <span>ТОО «Метод и Ко»</span>
+        <span style="color:var(--gold-600); font-weight:700;">ГОСО 2026</span>
+      </div>
+    </aside>
+
+    <!-- ПРАВАЯ ОБЛАСТЬ: ПРОСМОТР АКТИВНОГО ДОКУМЕНТА -->
+    <section class="doc-viewer">
+      <div class="doc-header-card">
+        <div class="doc-breadcrumbs">
+          <span>Штаб МЕТОДИКО</span> &gt;
+          <span id="bc-category">Старт</span> &gt;
+          <span id="bc-id" style="color:var(--navy-900); font-weight:600;">Документ 00</span>
+        </div>
+        <h2 class="doc-main-title" id="active-title">Главный навигатор и 5 правил для Кураторов</h2>
+        <div class="doc-meta-strip">
+          <span class="doc-badge" id="active-badge">Сводный регламент</span>
+          <span class="doc-readtime" id="active-readtime">⏱ ~4 мин чтения</span>
+          <div class="doc-tools-bar">
+            <button class="btn-tool" onclick="copyCurrentText()">📋 Копировать текст</button>
+            <button class="btn-tool" onclick="printDoc()">🖨 Печать</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ТЕЛО ДОКУМЕНТА -->
+      <article class="doc-body-wrap" id="doc-content">
+        <!-- Сюда динамически подставляется HTML активного документа -->
+      </article>
+
+      <!-- ПЕРЕКЛЮЧАТЕЛЬ СЛЕДУЮЩИЙ / ПРЕДЫДУЩИЙ -->
+      <footer class="doc-nav-footer">
+        <button class="btn-doc-nav" id="btn-prev" onclick="navStep(-1)">
+          ← Предыдущий документ
+        </button>
+        <span id="doc-counter" style="font-size:13px; font-weight:600; color:var(--text-muted);">
+          Документ 1 из 10
+        </span>
+        <button class="btn-doc-nav" id="btn-next" onclick="navStep(1)">
+          Следующий документ →
+        </button>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- УВЕДОМЛЕНИЕ О КОПИРОВАНИИ -->
+  <div class="toast-msg" id="toast">✅ Текст документа скопирован в буфер обмена!</div>
+
+  <!-- БАЗА ДОКУМЕНТОВ В ПЕРЕМЕННОЙ JAVASCRIPT -->
+  <script>
+    const docsDatabase = [{"id":"doc-00","num":"00","icon":"🧭","title":"Главный навигатор и 5 ключевых правил","shortTitle":"00. Главный навигатор","category":"Старт","badge":"Сводный регламент","file":"00_ГЛАВНЫЙ_НАВИГАТОР_И_РЕГЛАМЕНТ_КУРАТОРОВ.md","readTime":"4 мин","html":"<h1>🧭 ГЛАВНЫЙ НАВИГАТОР И РЕГЛАМЕНТЫ БЮРО «МЕТОДИКО 2026»</h1>\n<blockquote>\n<p><strong>Организация:</strong> ТОО «Метод и Ко» (БИН 231140018015, г. Алматы)<br><strong>Руководитель Бюро:</strong> Наталья Коденцева (Магистр педагогики, подполковник)<br><strong>Официальный портал:</strong> <a href=\"https://metodico-kz.netlify.app/\">https://metodico-kz.netlify.app/</a><br><strong>Единый кабинет и Штаб заказов:</strong> <a href=\"https://metodico-kz.netlify.app/client.html?staff=1\">https://metodico-kz.netlify.app/client.html?staff=1</a></p>\n</blockquote>\n<hr>\n<h2>📌 КЛЮЧЕВЫЕ ПРАВИЛА В 5 СТРОКАХ ДЛЯ КАЖДОГО КУРАТОРА:</h2>\n<ol>\n<li><strong>Клиент платит СТРОГО 100% ПРЕДОПЛАТУ</strong> на официальный счет ТОО «Метод и Ко». Без полной оплаты работа экспертов не начинается.</li>\n<li><strong>Вознаграждение Куратора:</strong> <strong>10%</strong> с входящей заявки с сайта (дежурство через одного) / <strong>20%</strong> за личного клиента из вуза или школы.</li>\n<li><strong>Порядок выплаты Куратору (50% / 50%):</strong> первая половина комиссии — в день поступления 100% оплаты от клиента; вторая половина — после подписания клиентом Акта (АВР).</li>\n<li><strong>Казаховед-филолог:</strong> получает <strong>500 тенге за страницу А4</strong> (1800 знаков с пробелами). Работает <strong>СТРОГО через Кураторов</strong>, с клиентами и Натальей напрямую не контактирует.</li>\n<li><strong>Субординация и переписка:</strong> к Руководителю обращаемся строго <strong>«Наталья»</strong> и только на <strong>«Вы»</strong>. Вся переписка с Заказчиками ведется <strong>только внутри кабинета на сайте</strong>.</li>\n</ol>\n<hr>\n<h2>📚 РЕЕСТР ДОКУМЕНТОВ ПАПКИ</h2>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"center\">№</th>\n<th align=\"left\">Название документа</th>\n<th align=\"left\">Назначение</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"center\"><strong>01</strong></td>\n<td align=\"left\">01. Концепция и бизнес-модель Бюро «МЕТОДИКО 2026»</td>\n<td align=\"left\">Миссия, 4 целевые аудитории, конвейер производства, финансовая модель и статус военных пенсионеров.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>02</strong></td>\n<td align=\"left\">02. Инструкция пользования сайтом и сквозной путь заказа</td>\n<td align=\"left\">Авторизация в Штабе, ведение клиента по 5 шагам от заявки до сдачи, встроенный чат, загрузка документов в облачный сейф.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>03</strong></td>\n<td align=\"left\">03. Инструкция активного поиска клиентов и переговоров</td>\n<td align=\"left\">Карта ЛПР (проректоры, директора школ, РОПы), скрипты первого контакта, проход секретарей, бронь организаций (20%) и жесткие красные линии.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>04</strong></td>\n<td align=\"left\">04. Регламент вычитки на казахском языке и субординация Казаховеда</td>\n<td align=\"left\">Ставка 500 ₸ за 1800 знаков с пробелами, формула подсчета в Word, академический стиль ГОСО РК и закрытый контур субординации.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>05</strong></td>\n<td align=\"left\">05. Должностные обязанности и матрица ответственности (RACI)</td>\n<td align=\"left\">Зоны ответственности Куратора, Казаховеда, Руководителя Бюро и Бухгалтера. Правила дежурства и нормативы времени.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>06</strong></td>\n<td align=\"left\">06. Пакет бланков, шаблонов и чек-листов Бюро «МЕТОДИКО»</td>\n<td align=\"left\">Чек-лист первичного сбора фактуры, Чек-лист нормоконтроля, Чек-лист паритета RU/KZ, Бланк бронирования организаций и шаблоны сообщений.</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>07</strong></td>\n<td align=\"left\">07. Глоссарий ключевых терминов и аббревиатур</td>\n<td align=\"left\">Понятный справочник-ликбез: расшифровка 23 терминов (ГОСО, УМКД, ПОӘК, СРО, СРСП, РУП, ФОС, Platonus, Ұстаз, COR, e-Salyq, АВР, NDA).</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>08</strong></td>\n<td align=\"left\">08. Предварительный договор с Куратором</td>\n<td align=\"left\">Официальный договор ГПХ (10%/20%, выплата 50/50, права и обязанности, e-Salyq Business).</td>\n</tr>\n<tr>\n<td align=\"center\"><strong>09</strong></td>\n<td align=\"left\">09. Предварительное соглашение о конфиденциальности (NDA)</td>\n<td align=\"left\">Защита клиентской базы, авторских методик Натальи Коденцевой, запрет работы в обход ТОО и штраф 1 000 000 ₸.</td>\n</tr>\n</tbody></table></div>\n"},{"id":"doc-01","num":"01","icon":"🏛","title":"Концепция и бизнес-модель Бюро «МЕТОДИКО» 2026","shortTitle":"01. Концепция Бюро","category":"Стратегия","badge":"Базовый регламент","file":"01_КОНЦЕПЦИЯ_И_БИЗНЕС_МОДЕЛЬ_МЕТОДИКО_2026.md","readTime":"6 мин","html":"<h1>🏛️ КОНЦЕПЦИЯ И БИЗНЕС-МОДЕЛЬ БЮРО «МЕТОДИКО 2026»</h1>\n<blockquote>\n<p><strong>Организация:</strong> ТОО «Метод и Ко» (БИН 231140018015, г. Алматы)<br><strong>Руководитель Бюро и Главный методолог:</strong> Наталья Коденцева (Магистр педагогики, подполковник, 24 года безупречной службы, автор свыше 300 образовательных программ)<br><strong>Статус документа:</strong> Постоянный регламент для штата Кураторов проектов и специалистов Бюро</p>\n</blockquote>\n<hr>\n<h2>1. О НАС И НАШЕЙ МИССИИ</h2>\n<p>Бюро стандартов и симуляторов <strong>«МЕТОДИКО»</strong> — это независимый институт учебно-методического консалтинга, академического аудита и проектирования образовательных систем. </p>\n<h3>Наша ключевая позиция на рынке:</h3>\n<ul>\n<li><strong>Мы НЕ занимаемся инфобизнесом</strong>, «марафонами» и поверхностным обучением.</li>\n<li><strong>Мы НЕ пишем студенческие рефераты, курсовые и дипломы</strong>. Любые подобные запросы отклоняются сразу.</li>\n<li><strong>Мы работаем исключительно в сегменте B2B и B2G:</strong> создаем эталонные учебно-методические комплексы (УМКД), корпоративные стандарты обучения, тренажеры переговоров и сертифицированные программы для первых лиц образовательных учреждений и бизнеса.</li>\n</ul>\n<p>Фундамент нашего авторитета — <strong>24 года дисциплины высшей военной школы</strong>, академическая глубина магистратуры педагогики и бронебойный нормоконтроль, гарантирующий прохождение любых государственных и независимых аттестаций (МОН/МНВО РК, ГОСО 2026).</p>\n<hr>\n<h2>2. ЧЕТЫРЕ НАПРАВЛЕНИЯ И ПРОДУКТОВАЯ МАТРИЦА</h2>\n<p>Бюро ведет работу строго по четырем целевым направлениям. Каждый Куратор обязан знать их специфику:</p>\n<pre><code>                                  ┌── 1. ВУЗЫ И КОЛЛЕДЖИ РК (ГОСО 2026, УМКД, силлабусы)\n                                  ├── 2. B2B КОРПОРАЦИИ (Онбординг 72ч, симуляторы продаж)\nБЮРО СТАНДАРТОВ «МЕТОДИКО» ───────┼── 3. ЧАСТНЫЕ ШКОЛЫ И ЛИЦЕИ (Стандарт «Ұстаз», тетради)\n                                  └── 4. EDTECH И L&amp;D (COR 85%+, Voice-to-Course)\n</code></pre>\n<ol>\n<li><strong>Вузы и Колледжи РК (Сектор высшего образования):</strong><ul>\n<li><em>Заказчики:</em> Ректораты, проректоры по учебной работе, начальники УМУ, деканы, зав. кафедрами.</li>\n<li><em>Продукты:</em> Силлабусы по ГОСО 2026, эталонные УМКД / ПОӘК под ключ, фонды оценочных средств (ФОС), дескрипторы аттестации.</li>\n<li><em>Средний чек пакета:</em> <strong>180 000 – 950 000 ₸</strong>.</li>\n</ul>\n</li>\n<li><strong>B2B Корпорации (Корпоративный сектор):</strong><ul>\n<li><em>Заказчики:</em> Генеральные директора, собственники бизнеса, коммерческие директора, РОПы, HRD.</li>\n<li><em>Продукты:</em> Симуляторы сложных переговоров, стандарты вывода новичка на план продаж за 72 часа, книги стандартов компании.</li>\n<li><em>Средний чек пакета:</em> <strong>350 000 – 1 200 000 ₸</strong>.</li>\n</ul>\n</li>\n<li><strong>Частные школы и Лицеи («Ұстаз»):</strong><ul>\n<li><em>Заказчики:</em> Учредители частных школ, директора, завучи по научно-методической работе.</li>\n<li><em>Продукты:</em> Авторские спецкурсы (34ч / 68ч), иллюстрированные рабочие тетради-комиксы, пакеты к национальной аттестации педагогов «Ұстаз».</li>\n<li><em>Средний чек пакета:</em> <strong>180 000 – 850 000 ₸</strong>.</li>\n</ul>\n</li>\n<li><strong>EdTech и Онлайн-академии:</strong><ul>\n<li><em>Заказчики:</em> Продюсеры онлайн-школ, эксперты, корпоративные L&amp;D академии.</li>\n<li><em>Продукты:</em> Экспресс- и глубокий аудит программ, проектирование доходимости (COR 85%+), сборка курса с голоса автора по методологии <em>Voice-to-Course</em>.</li>\n<li><em>Средний чек пакета:</em> <strong>150 000 – 1 100 000 ₸</strong>.</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h2>3. АРХИТЕКТУРА ПРОИЗВОДСТВЕННОГО КОНВЕЙЕРА</h2>\n<p>Работа в Бюро строится по принципу четкого конвейерного разделения труда:</p>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"left\">Звено конвейера</th>\n<th align=\"left\">Кто выполняет</th>\n<th align=\"left\">Главные задачи</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"left\"><strong>1. Фронт-офис и Сопровождение</strong></td>\n<td align=\"left\"><strong>Кураторы проектов</strong></td>\n<td align=\"left\">Активный поиск, первичный контакт, проведение переговоров, сбор 100% фактуры и документов с Заказчика, ведение переписки в кабинете, сдача работ и подписание закрывающих актов (АВР).</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>2. Фабрика смыслов (Ядро)</strong></td>\n<td align=\"left\"><strong>Наталья Коденцева + ИИ</strong></td>\n<td align=\"left\">Методологическая концепция, обратный дизайн программ, генерация структуры, сложные педагогические узлы, высший экспертный нормоконтроль.</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>3. Технический нормоконтроль</strong></td>\n<td align=\"left\"><strong>Кураторы проектов</strong></td>\n<td align=\"left\">Первичная вычитка оформления (поля, таблицы, титульные листы, отсутствие технических хвостов), контроль полноты комплекта.</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>4. Академический языковой фильтр</strong></td>\n<td align=\"left\"><strong>Казаховед-филолог</strong></td>\n<td align=\"left\">Литературная правка и вычитка готового текста на казахском языке (ГОСО/МОН РК). Работает строго через Кураторов.</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>5. Финал и печать</strong></td>\n<td align=\"left\"><strong>Наталья Коденцева</strong></td>\n<td align=\"left\">Нанесение гербовой печати ТОО «Метод и Ко», официальное утверждение договора и готового продукта.</td>\n</tr>\n</tbody></table></div>\n<hr>\n<h2>4. ФИНАНСОВАЯ МОДЕЛЬ И ВЫПЛАТЫ КУРАТОРАМ</h2>\n<p>В Бюро действует прозрачная, открытая и равная для всех действующих и будущих Кураторов система комиссионного вознаграждения. Окладов и фиксированных ставок нет — доход привязан к конкретному финансовому результату:</p>\n<pre><code>                                  ┌── Клиент с сайта (общий входящий поток) ──&gt; 10% от чека\nВОЗНАГРАЖДЕНИЕ КУРАТОРА С ЧЕКА ───┤\n                                  └── Личный клиент (нашла и привела сама) ────&gt; 20% от чека\n</code></pre>\n<h3>🔴 Железное правило расчетов с Заказчиками:</h3>\n<blockquote>\n<p><strong>Клиент оплачивает разработку СТРОГО В РАЗМЕРЕ 100% ПРЕДОПЛАТЫ.</strong><br>Никаких отсрочек, кредитов или схем 50/50 для Заказчиков не предусмотрено. Работа начинается только в момент поступления 100% суммы на расчетный счет ТОО «Метод и Ко».</p>\n</blockquote>\n<h3>🟢 Порядок выплаты вознаграждения Куратору:</h3>\n<p>Вознаграждение Куратора выплачивается <strong>в два этапа (50% / 50%)</strong>:</p>\n<ol>\n<li><strong>Первая часть (50% от комиссии):</strong> выплачивается в день поступления 100% оплаты от клиента и официального запуска заказа в разработку.</li>\n<li><strong>Вторая часть (оставшиеся 50% от комиссии):</strong> выплачивается после полной выдачи всех документов, утверждения работы Заказчиком и подписания Акта выполненных работ (АВР).</li>\n</ol>\n<h4>Пример наглядного расчета:</h4>\n<ul>\n<li><em>Заказ на комплекс УМКД кафедры:</em> сумма чека <strong>950 000 ₸</strong>.</li>\n<li><em>Клиент найден лично Куратором (ставка 20%):</em> комиссия составляет <strong>190 000 ₸</strong>.</li>\n<li><em>Клиент внес 100% оплату (950 000 ₸) на счет ТОО.</em></li>\n<li><em>Куратор получает первую часть:</em> <strong>95 000 ₸</strong> сразу.</li>\n<li><em>После сдачи материалов и подписания АВР Куратор получает вторую часть:</em> <strong>95 000 ₸</strong>.</li>\n</ul>\n<hr>\n<h2>5. НАЛОГОВЫЙ СТАТУС ВОЕННЫХ ПЕНСИОНЕРОВ</h2>\n<p>Все Кураторы и специалисты Бюро оформляют официальное сотрудничество в соответствии с законодательством Республики Казахстан:</p>\n<ul>\n<li><strong>Форма сотрудничества:</strong> Специальный налоговый режим через мобильное приложение <em><strong>e-Salyq Business</strong></em> (статус самозанятого лица).</li>\n<li><strong>Налоговые льготы:</strong> В соответствии с Социальным кодексом РК (ст. 248) и Законом об ОСМС (ст. 26), получатели пенсионных выплат за выслугу лет (военные пенсионеры) <strong>полностью освобождены</strong> от уплаты обязательных пенсионных взносов (ОПВ 10%), медстрахования (ВОСМС 2% и ООСМС 3%) и социальных отчислений.</li>\n<li><strong>Налог с дохода:</strong> составляет всего <strong>1% ИПН</strong>, уплачиваемый Куратором самостоятельно через приложение при формировании электронного чека на сумму полученной комиссии.</li>\n<li><strong>Для ТОО «Метод и Ко»:</strong> нулевая дополнительная налоговая нагрузка, абсолютно белый и легальный документооборот.</li>\n</ul>\n<hr>\n<h2>6. КОРПОРАТИВНЫЙ КОДЕКС И СУБОРДИНАЦИЯ</h2>\n<p>В Бюро приняты единые профессиональные стандарты взаимодействия:</p>\n<ol>\n<li><strong>Обращение к Руководителю:</strong><br>К Руководителю Бюро принято обращаться строго по имени — <strong>Наталья</strong> (или Наталья Коденцева), исключительно на <strong>«Вы»</strong>.</li>\n<li><strong>Равные условия для всех:</strong><br>Вся рабочая документация, распределение клиентов, порядок выплат и требования нормоконтроля едины для любого специалиста команды, независимо от стажа или личного знакомства.</li>\n<li><strong>Единая рабочая среда:</strong><br>Вся деловая переписка, обмен файлами и согласования ведутся <strong>только внутри официального кабинета Бюро на сайте</strong> и служебных Google Таблицах. Личная переписка с клиентами в WhatsApp без фиксации в карточке заказа запрещена.</li>\n<li><strong>Конфиденциальность и безопасность (NDA):</strong><br>Методологические алгоритмы Бюро, тексты договоров, шаблоны силлабусов и база заказчиков являются коммерческой тайной ТОО «Метод и Ко». Их передача третьим лицам или использование в сторонних проектах влечет немедленное расторжение сотрудничества и установленную законодательством ответственность.</li>\n</ol>\n"},{"id":"doc-02","num":"02","icon":"💻","title":"Инструкция пользования сайтом и путь заказа","shortTitle":"02. Работа на сайте (CRM)","category":"IT и регламент","badge":"Штаб заказов","file":"02_ИНСТРУКЦИЯ_ПОЛЬЗОВАНИЯ_САЙТОМ_И_ПУТЬ_ЗАКАЗА.md","readTime":"8 мин","html":"<h1>💻 ИНСТРУКЦИЯ ПОЛЬЗОВАНИЯ САЙТОМ И ПУТЬ ЗАКАЗА (ОТ А ДО Я)</h1>\n<blockquote>\n<p><strong>Портал Бюро:</strong> <code>https://metodico-kz.netlify.app/</code><br><strong>Единый кабинет и Штаб заказов:</strong> <code>client.html</code><br><strong>Роль Куратора:</strong> Полное сопровождение клиента, фиксация договоренностей, проверка полноты исходных материалов, нормоконтроль и доведение до подписания Акта.</p>\n</blockquote>\n<hr>\n<h2>1. АВТОРИЗАЦИЯ И РАБОТА В «ШТАБЕ БЮРО»</h2>\n<p>Все заказы клиентов стекаются в единую цифровую систему Бюро.</p>\n<h3>Вход в рабочий режим:</h3>\n<ol>\n<li>Откройте в браузере служебный раздел кабинета:<br><code>https://metodico-kz.netlify.app/client.html?staff=1</code></li>\n<li>Вверху страницы активируется тёмно-синяя панель: <strong>«🏛️ Штаб Бюро стандартов «МЕТОДИКО»</strong>.</li>\n<li><strong>Панель фильтров:</strong><ul>\n<li><strong>«Все заказы»</strong> — полный реестр проектов;</li>\n<li><strong>«🔥 Ждут нашего ответа»</strong> — заказы, где клиент написал сообщение в чате или прикрепил свежие материалы;</li>\n<li><strong>«🟢 В работе и согласовании»</strong> — проекты, по которым поступила оплата и идет разработка.</li>\n</ul>\n</li>\n<li>По клику на любой заказ вы попадаете внутрь карточки проекта клиента со всеми 5 шагами.</li>\n</ol>\n<hr>\n<h2>2. СКВОЗНОЙ ПУТЬ ЗАКАЗА: 5 ЭТАПОВ</h2>\n<pre><code>[1. ЗАЯВКА С САЙТА] ──&gt; [2. РАСПАКОВКА / БРИФ] ──&gt; [3. СОГЛАСОВАНИЕ КП] ──&gt; [4. ДОГОВОР И 100% ОПЛАТА] ──&gt; [5. СДАЧА И АВР]\n  Фиксация куратора      Сбор 100% фактуры           Утверждение Натальей       Kaspi Pay / Банк ТОО           Подписание Акта\n</code></pre>\n<hr>\n<h3>ЭТАП 1. ПОСТУПЛЕНИЕ ЗАЯВКИ И ОПРЕДЕЛЕНИЕ КУРАТОРА</h3>\n<ol>\n<li>Клиент на сайте рассчитывает стоимость в интерактивном калькуляторе.</li>\n<li>Внизу калькулятора расположена обязательная кнопка-селектор: <strong>«Кто ваш куратор»</strong>:<ul>\n<li>Если клиент указывает фамилию конкретного Куратора $\\rightarrow$ заказ сразу закрепляется за ней со ставкой <strong>20%</strong>;</li>\n<li>Если клиент выбирает <em>«Сайт / Прямое обращение»</em> $\\rightarrow$ заявка передается Кураторам <strong>строго по очереди через одну</strong> со ставкой <strong>10%</strong>.</li>\n</ul>\n</li>\n<li><strong>Первичное действие Куратора (в течение 15 минут):</strong><ul>\n<li>Открыть карточку заказа в Штабе;</li>\n<li>Проверить номер телефона, город, организацию и выбранные опции сметы;</li>\n<li>Связаться с клиентом (написать в чат на сайте либо сделать контрольный звонок):<br><em>«Здравствуйте, [Имя Заказчика]! Меня зовут [Имя Куратора], я ведущий куратор Бюро стандартов «МЕТОДИКО». Ваша заявка принята, смета рассчитана. Переходим к шагу заполнения данных для разработки»</em>.</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h3>ЭТАП 2. РАСПАКОВКА (БРИФ) И «ДОЖИМ ФАКТУРЫ»</h3>\n<p>Качество методологической разработки напрямую зависит от полноты исходных данных. Если клиент прислал пару отрывочных фраз — начинать разработку категорически запрещено.</p>\n<ol>\n<li><strong>Что заполняет клиент на Шаге 2:</strong><ul>\n<li>Цель программы, целевая аудитория, формат, требования к аттестации;</li>\n<li>Либо наговаривает голосом через встроенную кнопку аудиозаписи прямо на сайте;</li>\n<li>Прикрепляет имеющиеся наработки (старые силлабусы, файлы Word, презентации).</li>\n</ul>\n</li>\n<li><strong>Задача Куратора — «Дожать фактуру»:</strong><ul>\n<li>Проверить материалы по Чек-листу первичного сбора;</li>\n<li>Если есть пробелы, Куратор вежливо запрашивает недостающее:<br><em>«Для идеального соответствия требованиям ГОСО 2026 нам необходимы точные наименования кафедры и утвержденный учебный план. Прикрепите их, пожалуйста, в кабинете»</em>.</li>\n</ul>\n</li>\n<li>Только когда собран исчерпывающий пакет исходных данных, Куратор переводит заказ на Шаг 3.</li>\n</ol>\n<hr>\n<h3>ЭТАП 3. ФИНАЛЬНОЕ КП И СОГЛАСОВАНИЕ С НАХОДЯЩИМСЯ РУКОВОДИТЕЛЕМ</h3>\n<ol>\n<li>В карточке заказа автоматически формируется Финальное коммерческое предложение (3 варианта комплектации + официальный лист А4).</li>\n<li>Куратор внимательно перепроверяет:<ul>\n<li>Правильность написания организации и ФИО Заказчика;</li>\n<li>Итоговую сумму и сроки выполнения;</li>\n<li>Отсутствие опечаток.</li>\n</ul>\n</li>\n<li><strong>Точка согласования с Натальей:</strong><ul>\n<li>Куратор направляет Руководителю служебное уведомление:<br><em>«Наталья, добрый день. По заказу MK-[номер] фактура собрана в полном объеме, проект КП вычитан и проверен. Прошу согласовать выпуск клиенту»</em>.</li>\n<li>Наталья утверждает КП, после чего клиент видит готовый расчет в своем кабинете.</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h3>ЭТАП 4. ДОГОВОР И 100% ПРЕДОПЛАТА</h3>\n<div class=\"callout callout-warning\"><div class=\"callout-head\">⚠️ Важное правило:</div><div class=\"callout-body\"><p><strong>ЖЕЛЕЗНЫЙ ФИНАНСОВЫЙ СТАНДАРТ БЮРО:</strong><br><strong>Клиент оплачивает СТРОГО 100% ПРЕДОПЛАТУ.</strong> Работа экспертов не начинается без полной оплаты на счет ТОО.</p>\n</div></div><ol>\n<li><strong>Подписание Договора клиентом:</strong><ul>\n<li>Клиент знакомится с Договором авторского заказа РК 2026 прямо на Шаге 4;</li>\n<li><em>Способ А:</em> нажимает кнопку «✍️ Подписать Договор онлайн на сайте»;</li>\n<li><em>Способ Б:</em> скачивает официальный PDF А4 с печатью ТОО «Метод и Ко», ставит свою подпись/печать (или подписывает ЭЦП) и прикрепляет скан в окно отправки.</li>\n</ul>\n</li>\n<li><strong>Выставление счета и прием оплаты:</strong><ul>\n<li>Куратор направляет клиенту счет на оплату в Kaspi Pay или официальные банковские реквизиты ТОО «Метод и Ко»;</li>\n<li>Клиент после оплаты прикрепляет чек или платежное поручение кнопкой <strong>«🧾 Прикрепить чек / платёжное поручение»</strong>.</li>\n</ul>\n</li>\n<li><strong>Фиксация оплаты и первая выплата Куратору:</strong><ul>\n<li>Куратор сверяет поступление средств на счет ТОО;</li>\n<li>Переводит заказ в статус «В работе»;</li>\n<li><strong>Куратор получает первую часть своего вознаграждения (50% от причитающейся комиссии)</strong>.</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h3>ЭТАП 5. ПРОИЗВОДСТВО, НОРМОКОНТРОЛЬ, ВЫДАЧА И АВР</h3>\n<ol>\n<li><strong>Передача в производство:</strong><br>Полный пакет материалов уходит Наталье Коденцевой и ИИ на методологическую сборку.</li>\n<li><strong>Получение черновика и технический нормоконтроль:</strong><br>Готовый черновик возвращается Куратору. Куратор вычитывает оформление по Чек-листу нормоконтроля (шрифты, отступы, таблицы, титульные страницы).</li>\n<li><strong>Языковой фильтр (если требуется казахский язык):</strong><br>Куратор передает материалы казаховеду-филологу (регламент описан в Документе №4), контролирует срок, принимает проверенный текст обратно.</li>\n<li><strong>Выкладка готовых документов Заказчику:</strong><br>В Шаге 5 через блок <em>«Панель Бюро: Выложить отработанный документ клиенту»</em> Куратор загружает готовый файл. Система автоматически помещает его в защищенную облачную папку Google Диска («04_Наши_разработки_и_Сдача») и обновляет шкалу готовности у Заказчика.</li>\n<li><strong>Финальное утверждение клиентом и закрытие договора:</strong>  <ul>\n<li>Клиент скачивает готовые документы и нажимает кнопку <strong>«✅ Утверждаю»</strong> в кабинете;</li>\n<li>Куратор передает бухгалтеру данные для выставления электронного Акта выполненных работ (АВР) и ЭСФ;</li>\n<li>Заказчик подписывает АВР;</li>\n<li><strong>Куратор получает вторую часть вознаграждения (оставшиеся 50% комиссии)</strong>. Заказ торжественно перемещается в архив выполненных.</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h2>3. РЕГЛАМЕНТ РАБОТЫ СО ВСТРОЕННЫМ ЧАТОМ («ВАТСАП НА САЙТЕ»)</h2>\n<p>Внутри Шага 5 кабинета функционирует официальный диалоговый модуль связи Заказчика с Бюро.</p>\n<h3>5 незыблемых правил переписки:</h3>\n<ol>\n<li><strong>Никаких внешних личных чатов:</strong><br>Все ключевые обсуждения, согласования правок и отправка файлов ведутся <strong>исключительно на сайте</strong>. Если клиент пишет в личный WhatsApp — Куратор вежливо дублирует суть в кабинет: <em>«Фиксирую наше телефонное согласование в карточке вашего заказа на сайте: темы 4 и 5 дополнены практическими кейсами»</em>.</li>\n<li><strong>Юридический щит:</strong><br>История сообщений кабинета сохраняется в защищенную базу данных. В случае любых претензий со стороны Заказчика протокол переписки в кабинете служит неоспоримым доказательством согласованного объема работ.</li>\n<li><strong>Тон коммуникации:</strong><br>Деловой, доброжелательный, академический. Без жаргонизмов, смайликов и уменьшительно-ласкательных слов.</li>\n<li><strong>Скорость реакции:</strong><br>В рабочее время (с 09:00 до 18:00) входящее сообщение клиента не должно оставаться без ответа дольше <strong>15 минут</strong>.</li>\n<li><strong>Прикрепление файлов:</strong><br>Любые промежуточные версии документов прикрепляются прямо к сообщению через иконку скрепки.</li>\n</ol>\n"},{"id":"doc-03","num":"03","icon":"🎯","title":"Инструкция активного поиска клиентов и переговоров","shortTitle":"03. Поиск клиентов и продажи","category":"Продажи (20%)","badge":"Полевой стандарт","file":"03_ИНСТРУКЦИЯ_ПОИСКА_КЛИЕНТОВ_И_ПЕРЕГОВОРОВ.md","readTime":"7 мин","html":"<h1>🎯 ИНСТРУКЦИЯ ПО АКТИВНОМУ ПОИСКУ КЛИЕНТОВ И ПЕРЕГОВОРАМ</h1>\n<blockquote>\n<p><strong>Цель Куратора:</strong> Выстроить системный поток B2B и академических заказов, обеспечить авторитетный выход на первых лиц организаций и закрепить сделку по ставке <strong>20%</strong>.<br><strong>Главный капитал Бюро:</strong> Безупречная репутация, официальный статус ТОО «Метод и Ко» и 24-летний авторитет Натальи Коденцевой.</p>\n</blockquote>\n<hr>\n<h2>1. КАРТА ЛИЦ, ПРИНИМАЮЩИХ РЕШЕНИЯ (ЛПР)</h2>\n<p>Куратор не тратит время на рядовых специалистов. Переговоры ведутся строго с теми, кто распоряжается бюджетом или подписывает учебно-методическую документацию:</p>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"left\">Сегмент</th>\n<th align=\"left\">Кто наш ЛПР</th>\n<th align=\"left\">Ключевая головная боль ЛПР</th>\n<th align=\"left\">Чем мы спасаем</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"left\"><strong>Вузы и Колледжи</strong></td>\n<td align=\"left\">• Проректор по учебной/академической работе<br>• Начальник УМУ<br>• Декан факультета<br>• Заведующий кафедрой</td>\n<td align=\"left\">Преподаватели завалены часами, силлабусы пишутся кое-как, впереди государственная аттестация по ГОСО 2026, риск замечаний министерства.</td>\n<td align=\"left\">Берем разработку цикла дисциплин под ключ. Даем бронебойный нормоконтроль, готовый к проверкам Platonus/Moodle.</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>Частные школы и Лицеи</strong></td>\n<td align=\"left\">• Учредитель школы<br>• Генеральный директор<br>• Завуч по научно-методической работе</td>\n<td align=\"left\">Высокая конкуренция за родителей, учителя работают по советским шаблонам, сложная национальная аттестация педагогов «Ұстаз».</td>\n<td align=\"left\">Создаем авторский спецкурс с яркой тетрадью-комиксом (вау-эффект у родителей) и комплект к аттестации «Ұстаз».</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>B2B Корпорации</strong></td>\n<td align=\"left\">• Коммерческий директор<br>• Директор по продажам (РОП)<br>• HR-директор / Собственник</td>\n<td align=\"left\">Новички долго раскачиваются, «сливают» лиды в первый месяц, высокая текучка, стандарты продаж никто не читает.</td>\n<td align=\"left\">Внедряем систему онбординга 72ч и интерактивный стресс-тренажер переговоров с практической отработкой.</td>\n</tr>\n</tbody></table></div>\n<hr>\n<h2>2. МЕХАНИКА ОЧНЫХ ВИЗИТОВ И ПРОХОДА СЕКРЕТАРЕЙ</h2>\n<p>При живом посещении вузов и школ Куратор действует с достоинством официального представителя Бюро стандартов.</p>\n<h3>Скрипт прохода приемной / секретаря:</h3>\n<blockquote>\n<p>❌ <strong>Как говорить нельзя:</strong> <em>«Здравствуйте, я менеджер по продажам, хочу предложить ваши услуги...»</em> (секретарь сразу отправит на общую почту).<br>🟢 <strong>Как говорить правильно:</strong><br><em>«Здравствуйте. Бюро академических стандартов «МЕТОДИКО», меня зовут [Имя Куратора]. Мы официально передаем проректору по учебной работе аналитический пакет и чек-листы соответствия новым требованиям ГОСО 2026. Проректор у себя? Передайте, пожалуйста, пакет документов лично в руки, у меня краткий рабочий регламент на 3 минуты»</em>.</p>\n</blockquote>\n<h3>Что всегда должно быть с собой в печатной папке Куратора:</h3>\n<ol>\n<li>Фирменный White Paper по ГОСО 2026 (распечатанный на качественной бумаге А4);</li>\n<li>Чек-лист соответствия силлабусов требованиям аттестации;</li>\n<li>Листовка с QR-кодом для перехода в интерактивный калькулятор на сайте;</li>\n<li>Официальная визитка Бюро стандартов «МЕТОДИКО».</li>\n</ol>\n<hr>\n<h2>3. СКРИПТ ПЕРЕГОВОРОВ С РУКОВОДИТЕЛЕМ (ДИАЛОГ 5 МИНУТ)</h2>\n<h3>Этап 1. Присоединение через экспертизу и уважение:</h3>\n<blockquote>\n<p><em>«[Имя Отчество], добрый день. Прекрасно знаем, какая колоссальная методическая нагрузка сейчас лежит на кафедрах в связи с переходом на обновленный ГОСО 2026. Преподаватели перегружены аудиторными часами, а к документации комиссии предъявляют всё более жесткие требования. Наше Бюро специализируется именно на закрытии этой боли под ключ»</em>.</p>\n</blockquote>\n<h3>Этап 2. Презентация нашего решения:</h3>\n<blockquote>\n<p><em>«Руководитель нашего Бюро — Наталья Коденцева, магистр педагогики, 24 года безупречной службы в высшей военной школе. Мы берем на себя полную методологическую упаковку: силлабусы, 15 недель лекций и лабораторных, дескрипторы для Platonus и рубежный контроль. На выходе кафедра получает идеальный УМКД с гарантией соответствия ГОСО РК и двойным нормоконтролем»</em>.</p>\n</blockquote>\n<h3>Этап 3. Перевод на сайт и калькулятор:</h3>\n<blockquote>\n<p><em>«Чтобы не отнимать ваше время, у нас на официальном сайте развернут прозрачный калькулятор сметы. Вы можете за 1 минуту выбрать нужный объем часов и дисциплин, нажать кнопку, указав меня куратором, и система сразу выдаст готовый расчет с договором от ТОО «Метод и Ко». Давайте прямо сейчас я покажу вам на планшете/телефоне, как это устроено»</em>.</p>\n</blockquote>\n<hr>\n<h2>4. ЖЕЛЕЗНЫЕ КРАСНЫЕ ЛИНИИ БЮРО</h2>\n<p>Каждый Куратор обязан свято соблюдать границы дозволенного. Нарушение красных линий ведет к немедленному отстранению от работы.</p>\n<h3>🟢 ЧТО МОЖНО И НУЖНО ОБЕЩАТЬ КЛИЕНТУ:</h3>\n<ol>\n<li><strong>100% соответствие ГОСО 2026:</strong> Мы гарантируем полное прохождение требований государственных и независимых аттестаций РК.</li>\n<li><strong>Лимит 3 бесплатных правок:</strong> Если в течение 3 рабочих дней после получения материалов у заказчика есть замечания в рамках утвержденного ТЗ — мы бесплатно дорабатываем их.</li>\n<li><strong>Официальный юридический контур:</strong> Договор с ТОО «Метод и Ко», официальный счет, предоставление полного комплекта бухгалтерских закрывающих документов (ЭСФ, Акт выполненных работ).</li>\n<li><strong>Академическое двуязычие:</strong> Материалы разрабатываются на чистейшем русском языке и передаются в выверенной казахской версии, проверенной филологом.</li>\n<li><strong>Конфиденциальность:</strong> Коммерческая тайна и авторские разработки Заказчика защищены договором.</li>\n</ol>\n<hr>\n<h3>🔴 ЧТО КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО ОБЕЩАТЬ И ДЕЛАТЬ:</h3>\n<ol>\n<li>❌ <strong>ЗАПРЕЩЕНО обещать сдачу за 24 часа:</strong> Срок разработки силлабуса — от 3 рабочих дней, цикла кафедры — от 10–14 рабочих дней. Срочные заказы принимаются строго с согласия Натальи с наценкой +20%.</li>\n<li>❌ <strong>ЗАПРЕЩЕНО брать заказы на студенческие работы:</strong> Никаких дипломов, курсовых, рефератов или решения сессий за студентов! Мы работаем только с образовательными программами, кафедрами и корпорациями.</li>\n<li>❌ <strong>ЗАПРЕЩЕНО давать самовольные скидки:</strong> Цены фиксированы калькулятором на сайте. Любая скидка согласуется исключительно с Натальей.</li>\n<li>❌ <strong>ЗАПРЕЩЕНО обещать бесконечные переделки:</strong> Вся работа регламентирована утвержденным ТЗ. Если клиент кардинально меняет тему или концепцию посреди проекта — это оформляется новым отдельным заказом.</li>\n<li>❌ <strong>КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО принимать оплату на личные карты:</strong> Все переводы осуществляются <strong>строго на официальный счет ТОО «Метод и Ко»</strong> либо через Kaspi Pay Бюро. Прием денег на личные реквизиты расценивается как грубейшее финансовое нарушение.</li>\n</ol>\n<hr>\n<h2>5. «ПРАВИЛО ПЕРВОГО КАСАНИЯ» И БРОНЬ ОРГАНИЗАЦИЙ (20%)</h2>\n<p>Чтобы между Кураторами никогда не возникало трений за клиентов, действует <strong>Штабной реестр бронирования</strong>:</p>\n<ol>\n<li>Перед тем как отправиться на встречу в вуз, колледж или компанию, Куратор вносит запись в общую Google Таблицу <code>Реестр визитов</code>:<ul>\n<li>Дата визита;</li>\n<li>Точное наименование организации (например: <em>КазНУ им. аль-Фараби, факультет журналистики</em>);</li>\n<li>ФИО и должность ЛПР;</li>\n<li>Фамилия Куратора.</li>\n</ul>\n</li>\n<li><strong>Срок действия брони — 30 календарных дней.</strong></li>\n<li>Если в течение 30 дней от этого учреждения поступает заявка на сайт (даже если клиент забыл нажать кнопку куратора) — заказ <strong>железно закрепляется за данным Куратором со ставкой 20%</strong>.</li>\n<li>Если за 30 дней контракт не заключен и повторных визитов не зафиксировано — организация становится свободной для работы любого другого Куратора.</li>\n</ol>\n"},{"id":"doc-04","num":"04","icon":"🇰🇿","title":"Регламент вычитки и тарифы казаховеда-филолога","shortTitle":"04. Регламент казаховеда","category":"Лингвистика","badge":"500 ₸ / стр.","file":"04_РЕГЛАМЕНТ_ВЫЧИТКИ_И_ТАРИФЫ_КАЗАХОВЕДА.md","readTime":"5 мин","html":"<h1>🇰🇿 РЕГЛАМЕНТ ВЫЧИТКИ НА КАЗАХСКОМ ЯЗЫКЕ И СУБОРДИНАЦИЯ КАЗАХОВЕДА</h1>\n<blockquote>\n<p><strong>Роль специалиста:</strong> Академический редактор и пруфридер текстов на казахском языке.<br><strong>Статус работы:</strong> Литературная, стилистическая и терминологическая вычитка готового проекта (не перевод с нуля).<br><strong>Ключевой принцип:</strong> Строгий закрытый коммуникационный контур.</p>\n</blockquote>\n<hr>\n<h2>1. СУБОРДИНАЦИЯ И ЗАКРЫТЫЙ КОНТУР</h2>\n<p>В структуре Бюро стандартов «МЕТОДИКО» казаховед-филолог работает в строго изолированном контуре:</p>\n<pre><code>[НАТАЛЬЯ + ИИ] ──&gt; [КУРАТОР ПРОЕКТА] ⇄ [КАЗАХОВЕД-ФИЛОЛОГ] ──&gt; [КУРАТОР ПРОЕКТА] ──&gt; [ЗАКАЗЧИК]\n                    (Единственная точка                         (Сверка паритета,\n                      коммуникации)                               выгрузка в кабинет)\n</code></pre>\n<h3>🔴 Железные правила субординации:</h3>\n<ol>\n<li><strong>Казаховед никуда не лезет и напрямую с Заказчиками не контактирует:</strong><br>Специалисту категорически запрещено звонить клиентам, переписываться с ними в личных мессенджерах или давать комментарии по содержанию проекта. Для клиента единственным лицом Бюро является закрепленный Куратор.</li>\n<li><strong>Никаких отвлечений Руководителя:</strong><br>Все рабочие файлы передаются казаховеду <strong>только через Кураторов</strong> и возвращаются <strong>только Кураторам</strong>. Руководитель Бюро (Наталья) подключается лишь в спорных терминологических случаях по запросу Куратора.</li>\n<li><strong>Режим правок:</strong><br>Все исправления вносятся в документ Word строго в режиме <strong>«Исправления» (Track Changes)</strong>, чтобы Куратор видел каждое скорректированное слово.</li>\n</ol>\n<hr>\n<h2>2. ТАРИФ И ПРАВИЛА РАСЧЕТА СТРАНИЦ А4 (ЗНАКОВ С ПРОБЕЛАМИ)</h2>\n<p>В соответствии с распоряжением Руководителя Бюро установлена единая фиксированная ставка:</p>\n<blockquote>\n<h3>💰 СТАВКА: 500 тенге за 1 расчетную страницу А4</h3>\n</blockquote>\n<h3>📐 Как считается учетная страница в издательском деле:</h3>\n<ul>\n<li>В профессиональной академической среде объем текста измеряется <strong>не количеством листов бумаги</strong>, а объемом символов, так как на одном листе можно разместить текст разным шрифтом и интервалом.</li>\n<li><strong>1 стандартная учетная страница А4 = 1 800 знаков с пробелами</strong> (что соответствует ~250–270 словам текста 14-м кеглем Times New Roman с полуторным межстрочным интервалом).</li>\n</ul>\n<hr>\n<h3>🔍 Пошаговая инструкция для Куратора (как посчитать объем в Word):</h3>\n<ol>\n<li>Откройте вычитываемый документ в Microsoft Word;</li>\n<li>Нажмите вкладку верхнего меню: <strong>«Рецензирование» $\\rightarrow$ «Статистика»</strong><br><em>(либо просто кликните левой кнопкой мыши по счетчику слов внизу окна Word)</em>;</li>\n<li>В появившемся окне посмотрите строку: <strong>«Знаков (с пробелами)»</strong>;</li>\n<li><strong>Формула расчета стоимости к оплате:</strong></li>\n</ol>\n<p>$$\\text{Сумма выплаты (₸)} = \\left( \\frac{\\text{Всего знаков с пробелами}}{1800} \\right) \\times 500\\text{ ₸}$$</p>\n<h4>Наглядные примеры расчета:</h4>\n<ul>\n<li><strong>Краткий силлабус (18 000 знаков с пробелами):</strong><br>$18,000 / 1800 = 10\\text{ страниц} \\times 500\\text{ ₸} = \\mathbf{5,000\\text{ тенге}}$.</li>\n<li><strong>Полный УМКД семестрового курса (72 000 знаков с пробелами):</strong><br>$72,000 / 1800 = 40\\text{ страниц} \\times 500\\text{ ₸} = \\mathbf{20,000\\text{ тенге}}$.</li>\n<li><strong>Комплексный кафедральный цикл (126 000 знаков с пробелами):</strong><br>$126,000 / 1800 = 70\\text{ страниц} \\times 500\\text{ ₸} = \\mathbf{35,000\\text{ тенге}}$.</li>\n</ul>\n<hr>\n<h2>3. ЧТО КОНКРЕТНО ВХОДИТ В ВЫЧИТКУ КАЗАХОВЕДА</h2>\n<p>Поскольку черновой перевод структуры генерируется ИИ под контролем Натальи, казаховед выполняет <strong>академическую и стилистическую полировку</strong>:</p>\n<ol>\n<li><strong>Терминологический нормоконтроль МОН / МНВО РК:</strong><br>Сверка специальных терминов (силлабус, ПОӘК, дескриптор, құзыреттілік, аралық бақылау, өзіндік жұмыс) с официальными академическими словарями Республики Казахстан.</li>\n<li><strong>Ликвидация «кальки»:</strong><br>Устранение тяжелых дословных конструкций, переведенных с русского языка, и приведение предложений к естественному казахскому научному и деловому стилю.</li>\n<li><strong>Грамматический контроль:</strong><br>Проверка сингармонизма, корректности падежных окончаний, согласования времен и множественного числа.</li>\n<li><strong>Оформление тестов и дескрипторов:</strong><br>Проверка формулировок тестовых вопросов (единичный/множественный выбор) для систем Platonus/Moodle, чтобы исключить двоякое толкование студентами.</li>\n</ol>\n<hr>\n<h2>4. ЗОНА ОТВЕТСТВЕННОСТИ КУРАТОРА ПРИ ПРИЕМЕ РАБОТЫ</h2>\n<p>После того как казаховед возвращает проверенный файл, Куратор обязан:</p>\n<ol>\n<li><strong>Проверить зеркальность структуры (RU ⇄ KZ):</strong>  <ul>\n<li>Количество тем в русском и казахском варианте должно быть строго одинаковым;</li>\n<li>Количество таблиц, колонок и пунктов рубежного контроля должно совпадать на 100%;</li>\n<li>Ни один раздел не должен быть случайно удален или пропущен.</li>\n</ul>\n</li>\n<li><strong>Проверить техническое форматирование:</strong>  <ul>\n<li>Единый шрифт (Times New Roman / Calibri, 12 или 14 кегль);</li>\n<li>Корректная нумерация страниц и заголовков.</li>\n</ul>\n</li>\n<li><strong>Утверждение и выплата:</strong><br>После того как Куратор принял документ без нареканий, казаховеду перечисляется расчетная сумма (безналичный расчет через <em>e-Salyq Business</em>).</li>\n</ol>\n"},{"id":"doc-05","num":"05","icon":"📋","title":"Должностные обязанности Куратора и матрица RACI","shortTitle":"05. Обязанности и RACI","category":"Субординация","badge":"Штабной регламент","file":"05_ДОЛЖНОСТНЫЕ_ОБЯЗАННОСТИ_И_МАТРИЦА_RACI.md","readTime":"5 мин","html":"<h1>👥 ДОЛЖНОСТНЫЕ ОБЯЗАННОСТИ И МАТРИЦА ОТВЕТСТВЕННОСТИ (RACI)</h1>\n<blockquote>\n<p><strong>Принцип Бюро:</strong> Каждый специалист точно знает границы своей ответственности, нормативы времени и точку сдачи результата. Никаких «серых зон» и перекладывания задач.</p>\n</blockquote>\n<hr>\n<h2>1. МАТРИЦА ОТВЕТСТВЕННОСТИ (RACI)</h2>\n<p>В матрице используются стандартные роли управления качеством:</p>\n<ul>\n<li><strong>R (Responsible / Исполнитель):</strong> Непосредственно делает задачу руками.</li>\n<li><strong>A (Accountable / Ответственный):</strong> Утверждает результат, несет итоговую ответственность перед Заказчиком.</li>\n<li><strong>C (Consulted / Консультант):</strong> Привлекается для экспертизы или вычитки.</li>\n<li><strong>I (Informed / Информируемый):</strong> Получает уведомление о статусе задачи.</li>\n</ul>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"left\">Этап производственного цикла</th>\n<th align=\"center\">Куратор проекта</th>\n<th align=\"center\">Казаховед</th>\n<th align=\"center\">Наталья Коденцева</th>\n<th align=\"center\">Бухгалтер ТОО</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"left\"><strong>1. Активный поиск вузов и школ (обход)</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>2. Внесение в Реестр бронирования (First Touch)</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>3. Прием заявки с сайта (дежурство 50/50)</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>4. Сбор фактуры и дожим брифа от клиента</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>5. Проверка КП и проекта Договора</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong> (Согласование)</td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>6. Контроль 100% оплаты от Заказчика</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\"><strong>C</strong></td>\n</tr>\n<tr>\n<td align=\"left\"><strong>7. Выплата куратору 1-й части (50% комиссии)</strong></td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong> (Выплата)</td>\n<td align=\"center\"><strong>R</strong></td>\n</tr>\n<tr>\n<td align=\"left\"><strong>8. Методологическая сборка и генерация</strong></td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>R / A</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>9. Первичный нормоконтроль оформления</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>10. Академическая вычитка на казахском (500 ₸)</strong></td>\n<td align=\"center\"><strong>A</strong> (Контроль)</td>\n<td align=\"center\"><strong>R</strong> (Вычитка)</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>11. Сверка паритета RU / KZ</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\"><strong>C</strong></td>\n<td align=\"center\"><strong>A</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>12. Нанесение гербовой печати ТОО</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>R / A</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>13. Загрузка документов в облачный сейф и выдача</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>14. Финальное утверждение клиентом и АВР</strong></td>\n<td align=\"center\"><strong>R</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong></td>\n<td align=\"center\"><strong>R</strong> (ЭСФ/Акт)</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>15. Выплата куратору 2-й части комиссии (50%)</strong></td>\n<td align=\"center\"><strong>I</strong></td>\n<td align=\"center\">—</td>\n<td align=\"center\"><strong>A</strong> (Выплата)</td>\n<td align=\"center\"><strong>R</strong></td>\n</tr>\n</tbody></table></div>\n<hr>\n<h2>2. ДОЛЖНОСТНЫЕ ОБЯЗАННОСТИ КУРАТОРА ПРОЕКТОВ</h2>\n<h3>Главные задачи:</h3>\n<ol>\n<li><strong>Ведение воронки и переговоров:</strong>  <ul>\n<li>Очные визиты в ректораты вузов, деканаты, частные лицеи и B2B компании;  </li>\n<li>Презентация преимуществ Бюро с фирменными печатными материалами (White Papers);  </li>\n<li>Внесение организаций в Реестр бронирования.</li>\n</ul>\n</li>\n<li><strong>Администрирование заказов в кабинете на сайте:</strong>  <ul>\n<li>Постоянный мониторинг раздела «Штаб заказов» (<code>client.html?staff=1</code>);  </li>\n<li>Оперативный ответ клиенту в чате сайта в течение 15 минут в рабочее время;  </li>\n<li>Контроль сбора 100% фактуры, учебных планов и файлов по Чек-листу №1.</li>\n</ul>\n</li>\n<li><strong>Финансовый контроль:</strong>  <ul>\n<li>Контроль поступления <strong>100% предоплаты</strong> на счет ТОО «Метод и Ко» до запуска разработки;  </li>\n<li>Передача реквизитов бухгалтеру для выставления официальных счетов и договоров.</li>\n</ul>\n</li>\n<li><strong>Технический нормоконтроль оформления:</strong>  <ul>\n<li>Проверка шрифтов, полей, таблиц, нумерации страниц;  </li>\n<li>Передача текстов казаховеду на вычитку и строгий контроль дедлайна возврата;  </li>\n<li>Контроль зеркальности структуры (RU ⇄ KZ).</li>\n</ul>\n</li>\n<li><strong>Сдача работ и закрытие сделки:</strong>  <ul>\n<li>Выкладка утвержденных файлов в защищенную облачную папку Google Диска через панель кабинета;  </li>\n<li>Получение от Заказчика подтверждения «Утверждаю»;  </li>\n<li>Контроль подписания Заказчиком электронного Акта выполненных работ (АВР).</li>\n</ul>\n</li>\n</ol>\n<hr>\n<h2>3. ПРАВИЛА ДЕЖУРСТВА И ВЗАИМОВЫРУЧКИ</h2>\n<ol>\n<li><strong>Чередование входящих с сайта (через одного):</strong>  <ul>\n<li>Заявки, поступившие напрямую с сайта (где клиент не выбрал конкретного куратора), распределяются строго по очереди: Заявка №1 — Куратор А, Заявка №2 — Куратор Б.</li>\n</ul>\n</li>\n<li><strong>Взаимная страховка:</strong>  <ul>\n<li>Когда один Куратор находится на очных выездах в вузах или на встречах с директорами школ, второй Куратор держит под контролем входящий чат на сайте, оперативно отвечая новым посетителям.</li>\n</ul>\n</li>\n<li><strong>Единый командный результат:</strong>  <ul>\n<li>Все данные открыты и прозрачны. Любые вопросы и спорные моменты решаются в рабочем порядке через Руководителя Бюро (Наталью).</li>\n</ul>\n</li>\n</ol>\n"},{"id":"doc-06","num":"06","icon":"📁","title":"Пакет бланков, шаблонов КП и чеклистов","shortTitle":"06. Бланки, КП и чеклисты","category":"Инструменты","badge":"Шаблоны в работу","file":"06_ПАКЕТ_БЛАНКОВ_ШАБЛОНОВ_И_ЧЕКЛИСТОВ.md","readTime":"7 мин","html":"<h1>📑 ПАКЕТ БЛАНКОВ, ШАБЛОНОВ И ЧЕК-ЛИСТОВ БЮРО «МЕТОДИКО»</h1>\n<blockquote>\n<p><strong>Назначение:</strong> Практический инструментарий Кураторов для ежедневной работы, исключающий субъективные ошибки, потерю данных и срыв стандартов качества.</p>\n</blockquote>\n<hr>\n<h2>ЧЕК-ЛИСТ №1. ПЕРВИЧНЫЙ СБОР ФАКТУРЫ С ЗАКАЗЧИКА</h2>\n<p><em>(Без заполнения этих пунктов передавать заказ в производство запрещено)</em></p>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"center\">№</th>\n<th align=\"left\">Контрольный параметр</th>\n<th align=\"left\">Где проверить / Что спросить</th>\n<th align=\"center\">Статус проверки</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"center\">1</td>\n<td align=\"left\"><strong>Точное наименование организации</strong></td>\n<td align=\"left\">Полное юридическое и академическое название (вуз, факультет, кафедра, школа).</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">2</td>\n<td align=\"left\"><strong>ФИО и должность контактного лица</strong></td>\n<td align=\"left\">ФИО завкафедрой / преподавателя / завуча, прямой телефон и WhatsApp.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">3</td>\n<td align=\"left\"><strong>Утвержденный рабочий учебный план (РУП)</strong></td>\n<td align=\"left\">Количество академических часов по стандарту: лекции, семинары, СРО/СРСП.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">4</td>\n<td align=\"left\"><strong>Цель и пререквизиты дисциплины</strong></td>\n<td align=\"left\">Какие предметы студенты изучали до этого, какие компетенции формируются.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">5</td>\n<td align=\"left\"><strong>Язык разработки материалов</strong></td>\n<td align=\"left\">Только русский / Только казахский / Полный двуязычный комплект (RU+KZ).</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">6</td>\n<td align=\"left\"><strong>Формат рубежного и итогового контроля</strong></td>\n<td align=\"left\">Компьютерное тестирование (Platonus/Moodle), письменный экзамен или кейсы.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">7</td>\n<td align=\"left\"><strong>Наличие старых наработок Заказчика</strong></td>\n<td align=\"left\">Получены ли старые силлабусы, презентации или тезисы преподавателя (в кабинете).</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">8</td>\n<td align=\"left\"><strong>Особые требования ученого совета вуза</strong></td>\n<td align=\"left\">Специфические внутривузовские методические указания или бланки (если есть).</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">9</td>\n<td align=\"left\"><strong>Критический дедлайн аттестации</strong></td>\n<td align=\"left\">Дата заседания кафедры или министерской проверки, к которой всё должно быть готово.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n<tr>\n<td align=\"center\">10</td>\n<td align=\"left\"><strong>Подтверждение 100% оплаты</strong></td>\n<td align=\"left\">Чек / платежное поручение прикреплено в кабинете и подтверждено на счете ТОО.</td>\n<td align=\"center\">[  ] Да</td>\n</tr>\n</tbody></table></div>\n<hr>\n<h2>ЧЕК-ЛИСТ №2. ТЕХНИЧЕСКИЙ НОРМОКОНТРОЛЬ ДОКУМЕНТА</h2>\n<p><em>(Выполняется Куратором перед выкладкой готовой работы в облачный сейф)</em></p>\n<ol>\n<li>[  ] <strong>Единый академический шрифт:</strong> Текст оформлен стандартным шрифтом (Times New Roman, 12 или 14 кегль). Межстрочный интервал — 1.5 (или 1.0 в таблицах).</li>\n<li>[  ] <strong>Поля страницы по стандарту ГОСО РК:</strong> Левое — 30 мм, правое — 10 мм, верхнее — 20 мм, нижнее — 20 мм.</li>\n<li>[  ] <strong>Титульный лист:</strong> Указаны актуальные реквизиты учреждения, текущий 2026 год, гриф согласования кафедры / деканата / совета.</li>\n<li>[  ] <strong>Нумерация страниц:</strong> Сквозная нумерация по центру или справа внизу, на титульном листе номер не ставится.</li>\n<li>[  ] <strong>Оформление таблиц:</strong> Каждая таблица имеет номер и название («Таблица 1 — Тематический план»). Шапки таблиц повторяются при переносе на следующую страницу.</li>\n<li>[  ] <strong>Отсутствие технических меток:</strong> В тексте нет черновых пометок ИИ, скобок с вопросами или пустых пропусков («[вставить дату]»).</li>\n<li>[  ] <strong>Фонд оценочных средств:</strong> В тестах четко выделен правильный вариант ответа (ключ), вопросы пронумерованы от 1 до N.</li>\n</ol>\n<hr>\n<h2>ЧЕК-ЛИСТ №3. КОНТРОЛЬ ПАРИТЕТА КАЗАХСКОЙ ВЕРСИИ (RU ⇄ KZ)</h2>\n<p><em>(Выполняется Куратором при приеме вычитки от казаховеда)</em></p>\n<ol>\n<li>[  ] <strong>Зеркальность структуры:</strong> Количество разделов, тем лекций и лабораторных в казахском тексте строго равно русскому оригиналу.</li>\n<li>[  ] <strong>Сохранение нумерации и таблиц:</strong> Все таблицы, схемы и списки литературы стоят на своих местах, ни один блок не потерян при вычитке.</li>\n<li>[  ] <strong>Академическая терминология:</strong> Использованы утвержденные термины МНВО РК, нет грубой грамматической кальки с русского языка.</li>\n<li>[  ] <strong>Учет объема знаков:</strong> Посчитано количество знаков с пробелами в Word, сумма к выплате казаховеду (по 500 ₸ за 1800 знаков) зафиксирована.</li>\n</ol>\n<hr>\n<h2>БЛАНК. ЖУРНАЛ БРОНИРОВАНИЯ ОРГАНИЗАЦИЙ И ВИЗИТОВ</h2>\n<p><em>(Ведется в служебной Google Таблице Бюро для закрепления ставки 20%)</em></p>\n<pre><code>+------------+-----------------------------------+--------------------------+-----------------+-----------------+\n| Дата внес. | Точное наименование организации   | ФИО и должность ЛПР      | Закрепленный    | Срок действия   |\n|            | (вуз, школа, компания, город)     | (контактное лицо)        | Куратор проекта | брони (30 дней) |\n+------------+-----------------------------------+--------------------------+-----------------+-----------------+\n| 18.11.2026 | КазНУ им. аль-Фараби, фак. журн.  | Профессор Садыков А.К.   | Куратор Анна    | До 18.12.2026   |\n+------------+-----------------------------------+--------------------------+-----------------+-----------------+\n| 19.11.2026 | Частная школа-лицей «Дарын», Алм. | Директор Смагулова Б.Т.  | Куратор Елена   | До 19.12.2026   |\n+------------+-----------------------------------+--------------------------+-----------------+-----------------+\n</code></pre>\n<hr>\n<h2>ШАБЛОНЫ СЛУЖЕБНЫХ СООБЩЕНИЙ</h2>\n<h3>Шаблон 1. Согласование КП с Натальей Коденцевой (в чате Бюро):</h3>\n<blockquote>\n<p><em>«Наталья, добрый день. По заказу MK-[номер] (Заказчик: [Название вуза / ФИО]) фактура и исходные материалы собраны в полном объеме по Чек-листу №1. Проект Финального КП и Договора проверен, реквизиты сверены. Прошу Вашего согласования для выпуска клиенту»</em>.</p>\n</blockquote>\n<h3>Шаблон 2. Сопроводительное сообщение клиенту при выдаче готовой работы:</h3>\n<blockquote>\n<p><em>«Уважаемый(ая) [Имя Отчество Заказчика]!<br>Бюро академических стандартов «МЕТОДИКО» завершило разработку вашего проекта по заказу MK-[номер].<br>Все документы прошли двойной экспертный нормоконтроль и размещены в вашем защищенном Личном кабинете на сайте (Шаг 5, блок «Готовые документы»).<br>Вы можете скачать готовые файлы прямо сейчас. Ознакомьтесь с материалами и нажмите в кабинете зеленую кнопку «✅ Утверждаю». Спасибо за доверие к нашим академическим стандартам!»</em></p>\n</blockquote>\n<hr>\n<h2>ПАМЯТКА ПО ЗАЩИТЕ КОММЕРЧЕСКОЙ ТАЙНЫ (NDA)</h2>\n<p>Каждый специалист Бюро «МЕТОДИКО» приступает к работе только после принятия условий о конфиденциальности:</p>\n<ol>\n<li><strong>База Заказчиков:</strong> Все контактные данные директоров школ, проректоров, преподавателей и РОПов являются исключительной собственностью ТОО «Метод и Ко».</li>\n<li><strong>Авторские алгоритмы:</strong> Структуры программ, опросники распаковки и шаблоны силлабусов Натальи Коденцевой защищены нормами авторского права РК.</li>\n<li><strong>Запрет на работу в обход:</strong> Категорически запрещено оказывать услуги клиентам Бюро в частном порядке в обход расчетного счета ТОО.</li>\n</ol>\n"},{"id":"doc-07","num":"07","icon":"📖","title":"Глоссарий ключевых терминов и аббревиатур ГОСО 2026","shortTitle":"07. Глоссарий терминов ГОСО","category":"Обучение","badge":"Ликбез-справочник","file":"07_ГЛОССАРИЙ_ТЕРМИНОВ_И_АББРЕВИАТУР_МЕТОДИКО.md","readTime":"8 мин","html":"<h1>📖 ГЛОССАРИЙ КЛЮЧЕВЫХ ТЕРМИНОВ И АББРЕВИАТУР БЮРО «МЕТОДИКО»</h1>\n<blockquote>\n<p><strong>Назначение документа:</strong> Справочник-ликбез для Кураторов проектов.<br>Здесь простым человеческим языком («на пальцах») объяснено, что означают профессиональные термины, аббревиатуры и сокращения, с которыми вы ежедневно сталкиваетесь при общении с ректоратами, директорами школ, бухгалтерией и клиентами.</p>\n</blockquote>\n<hr>\n<h2>🏛️ РАЗДЕЛ 1. АКАДЕМИЧЕСКИЙ СЕКТОР (ВУЗЫ И КОЛЛЕДЖИ)</h2>\n<h3>1. ГОСО РК (МЖМБС)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Государственный общеобязательный стандарт образования Республики Казахстан (каз. <em>Мемлекеттік жалпыға міндетті білім беру стандарты</em>).</li>\n<li><strong>Что это простыми словами:</strong> Главный закон и свод государственных правил для всех вузов и колледжей страны. ГОСО определяет, сколько часов студенты должны учиться, какие предметы обязательны, как оформлять программы и за что вуз могут лишить лицензии.</li>\n<li><strong>Почему это важно для нас:</strong> С 2026 года вступили в силу обновленные жесткие стандарты цифровизации и практикоориентированности программ (<strong>ГОСО 2026</strong>). Преподаватели не успевают переделывать сотни документов — Бюро «МЕТОДИКО» делает это за них под ключ.</li>\n</ul>\n<h3>2. УМКД (каз. ПОӘК)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Учебно-методический комплекс дисциплины (каз. <em>Пәннің оқу-әдістемелік кешені</em>).</li>\n<li><strong>Что это простыми словами:</strong> Полное «досье» предмета. Это огромная папка документов по одной дисциплине, куда входят: силлабус, конспекты лекций, планы семинаров и лабораторных работ, задания на самостоятельную работу, критерии оценок и экзаменационные билеты.</li>\n<li><strong>Боль клиента:</strong> Написание одного УМКД вручную занимает у преподавателя от 1 до 2 месяцев каторжного труда.</li>\n</ul>\n<h3>3. Силлабус (Syllabus / Оқу бағдарламасы)</h3>\n<ul>\n<li><strong>Что это:</strong> Главный путеводитель по предмету для студента. Договор между преподавателем и студентом на 1 семестр. В силлабусе расписана каждая неделя: какая тема читается, что нужно прочитать дома, к какому числу сдать реферат или проект, и сколько баллов за это поставят.</li>\n</ul>\n<h3>4. РУП (ЖОП)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Рабочий учебный план (каз. <em>Жұмыс оқу жоспары</em>).</li>\n<li><strong>Что это:</strong> Официальная таблица-сетка специальности. В ней указано, в каком семестре читается предмет и сколько кредитов (часов) на него выделено государством (например: 3 кредита = 90 академических часов: 30 часов лекций + 15 часов практики + 45 часов СРО).</li>\n</ul>\n<h3>5. СРО / БӨЖ и СРСП / ОӨЖ</h3>\n<ul>\n<li><strong>СРО (БӨЖ):</strong> Самостоятельная работа студента (каз. <em>Білім алушының өзіндік жұмысы</em>). Домашняя работа, эссе, проекты, которые студент делает сам без преподавателя.</li>\n<li><strong>СРСП (ОӨЖ):</strong> Самостоятельная работа студента под руководством преподавателя (каз. <em>Оқытушының жетекшілігімен білім алушының өзіндік жұмысы</em>). Консультации, разборы ошибок, индивидуальная работа в аудитории.</li>\n</ul>\n<h3>6. ФОС (БҚҚ)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Фонд оценочных средств (каз. <em>Бағалау құралдарының қоры</em>).</li>\n<li><strong>Что это:</strong> Банк тестов, экзаменационных вопросов, практических кейсов и задач, по которым проверяют знания студентов на рубежном контроле и на экзамене.</li>\n</ul>\n<h3>7. Дескрипторы оценивания</h3>\n<ul>\n<li><strong>Что это:</strong> Пошаговая таблица критериев оценки: за что конкретно ставится «отлично», «хорошо» или «неудовлетворительно». Например: <em>«Студент назвал формулу и решил задачу без подсказок — 100 баллов; назвал формулу, но ошибся в расчетах — 70 баллов»</em>. Дескрипторы спасают вуз от обвинений в предвзятости на аттестациях.</li>\n</ul>\n<h3>8. Platonus / Moodle</h3>\n<ul>\n<li><strong>Что это:</strong> Автоматизированные университетские интернет-системы. «Платонус» используется в большинстве вузов и колледжей Казахстана. Преподаватели обязаны загружать туда УМКД, силлабусы и тесты. Наши документы оформляются так, чтобы преподаватель мог скопировать их в Platonus за 5 минут без сбоев верстки.</li>\n</ul>\n<h3>9. МНВО РК и МП РК (Оқу-ағарту министрлігі)</h3>\n<ul>\n<li><strong>МНВО РК:</strong> Министерство науки и высшего образования РК (курирует вузы, науку, магистратуру и докторантуру).</li>\n<li><strong>МП РК:</strong> Министерство просвещения РК (курирует детские сады, школы, гимназии, лицеи и колледжи).</li>\n</ul>\n<hr>\n<h2>🏫 РАЗДЕЛ 2. ШКОЛЬНЫЙ СЕКТОР И ПЕДАГОГИКА</h2>\n<h3>10. Аттестация «Ұстаз»</h3>\n<ul>\n<li><strong>Что это:</strong> Национальная система квалификационной аттестации школьных учителей Казахстана (присвоение категорий: педагог-модератор, педагог-эксперт, педагог-исследователь, педагог-мастер). От категории напрямую зависит прибавка к зарплате учителя (от 30% до 50%).</li>\n<li><strong>Что делает Бюро:</strong> Мы упаковываем авторские методические разработки, спецкурсы и портфолио педагога, чтобы он гарантированно защитил высшую категорию перед аттестационной комиссией.</li>\n</ul>\n<h3>11. Рабочая тетрадь-комикс (Воркбук)</h3>\n<ul>\n<li><strong>Что это:</strong> Наш фирменный школьный продукт для частных лицеев. Вместо унылых черно-белых методичек мы создаем красочные глянцевые тетради с персонажами, диалогами, инфографикой и практическими заданиями. Это вызывает восторг у детей и родителей и поднимает статус частной школы.</li>\n</ul>\n<hr>\n<h2>💼 РАЗДЕЛ 3. КОРПОРАТИВНЫЙ B2B И EDTECH</h2>\n<h3>12. Онбординг 72 часа (Onboarding)</h3>\n<ul>\n<li><strong>Что это:</strong> Система экспресс-ввода нового сотрудника (менеджера по продажам) в компанию. Вместо двух месяцев адаптации новичок за 3 дня (72 часа) изучает стандарты компании, сдает тесты и выходит на реальные звонки и выполнение плана.</li>\n</ul>\n<h3>13. Симулятор сложных переговоров (4D Стресс-тренажер)</h3>\n<ul>\n<li><strong>Что это:</strong> Интерактивная программа Бюро, моделирующая реальные ситуации жестких переговоров с клиентами («Дорого!», «У конкурентов дешевле», «Я подумаю»). Менеджер тренируется на компьютере или смартфоне перед выходом к реальным заказчикам.</li>\n</ul>\n<h3>14. COR (Completion Rate / Доходимость)</h3>\n<ul>\n<li><strong>Что это:</strong> Процент студентов или сотрудников, которые дошли образовательный курс до самого конца и получили диплом. На рынке средний COR составляет всего 15–20% (80% бросают учебу). Методология Бюро «МЕТОДИКО» обеспечивает <strong>COR от 85%+</strong>.</li>\n</ul>\n<h3>15. Drop-off карта (Карта оттока)</h3>\n<ul>\n<li><strong>Что это:</strong> Аналитическая схема, показывающая, на каком именно уроке или домашнем задании ученики чаще всего бросают курс и почему (слишком сложно, скучно, непонятно сформулировано).</li>\n</ul>\n<h3>16. Voice-to-Course</h3>\n<ul>\n<li><strong>Что это:</strong> Авторская методология Натальи Коденцевой по упаковке курса «с голоса». Эксперту не нужно писать тексты месяцами — он наговаривает свои мысли на диктофон, а Бюро вместе с ИИ превращает аудиозаписи в готовые уроки, презентации и методические пособия.</li>\n</ul>\n<hr>\n<h2>⚖️ РАЗДЕЛ 4. ЮРИДИЧЕСКИЕ, НАЛОГОВЫЕ И ОРГАНИЗАЦИОННЫЕ ТЕРМИНЫ</h2>\n<h3>17. БИН и ИИН</h3>\n<ul>\n<li><strong>БИН:</strong> Бизнес-идентификационный номер (12 цифр компании/ТОО). БИН ТОО «Метод и Ко» — <code>231140018015</code>.</li>\n<li><strong>ИИН:</strong> Индивидуальный идентификационный номер гражданина (12 цифр физлица).</li>\n</ul>\n<h3>18. ТОО (ЖШС)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Товарищество с ограниченной ответственностью (каз. <em>Жауапкершілігі шектеулі серіктестік</em>). Официальное юридическое лицо нашего Бюро.</li>\n</ul>\n<h3>19. ЭСФ и АВР</h3>\n<ul>\n<li><strong>ЭСФ:</strong> Электронный счет-фактура. Главный налоговый электронный документ в Казахстане, подтверждающий стоимость оказанных услуг для бухгалтерии Заказчика.</li>\n<li><strong>АВР:</strong> Акт выполненных работ (официальная форма Р-1). Документ, который подписывает Заказчик после получения готовых материалов. Подписание АВР означает, что у клиента нет претензий, а Куратор получает вторую половину своего вознаграждения.</li>\n</ul>\n<h3>20. e-Salyq Business</h3>\n<ul>\n<li><strong>Что это:</strong> Официальное мобильное приложение Налогового комитета РК для самозанятых граждан. Позволяет Кураторам (военным пенсионерам) легально получать комиссионные с выплатой налога всего <strong>1%</strong>, выбивать электронные чеки в телефоне за 30 секунд без кассовых аппаратов и без уплаты лишних пенсионных взносов.</li>\n</ul>\n<h3>21. NDA (Соглашение о конфиденциальности)</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> <em>Non-Disclosure Agreement</em>. Договор о неразглашении служебной и коммерческой тайны. Защищает базу клиентов, шаблоны и методики Бюро от утечки к конкурентам.</li>\n</ul>\n<h3>22. ЛПР</h3>\n<ul>\n<li><strong>Полная расшифровка:</strong> Лицо, принимающее решение (ректор, проректор, директор школы, коммерческий директор, собственник бизнеса) — человек, имеющий право подписи и бюджет.</li>\n</ul>\n<h3>23. First Touch («Правило первого касания»)</h3>\n<ul>\n<li><strong>Что это:</strong> Внутрикорпоративное правило Бюро, защищающее вознаграждение Куратора. Если Куратор первой провела переговоры с организацией и внесла её в Журнал бронирования — заказ от этой организации в течение 30 дней железно закреплен за данным Куратором со ставкой <strong>20%</strong>.</li>\n</ul>\n"},{"id":"doc-08","num":"08","icon":"✍️","title":"Предварительный Договор с Куратором (ГПХ)","shortTitle":"08. Договор с Куратором","category":"Юриспруденция","badge":"e-Salyq Business (1%)","file":"08_ПРЕДВАРИТЕЛЬНЫЙ_ДОГОВОР_С_КУРАТОРОМ.md","readTime":"6 мин","html":"<h1>📑 ПРЕДВАРИТЕЛЬНЫЙ ДОГОВОР ВОЗМЕЗДНОГО ОКАЗАНИЯ УСЛУГ № ___ / 2026</h1>\n<p><strong>г. Алматы</strong><br><strong>«___» ____________ 2026 г.</strong></p>\n<p><strong>Товарищество с ограниченной ответственностью «Метод и Ко»</strong> (БИН 231140018015), именуемое в дальнейшем <strong>«Заказчик»</strong> (Бюро «МЕТОДИКО»), в лице Директора <strong>Коденцевой Натальи Михайловны</strong>, действующей на основании Устава, с одной стороны, и</p>\n<p>Гражданин(ка) Республики Казахстан <strong>__________________________________________________</strong>, ИИН ________________________, зарегистрированный(ая) в качестве плательщика специального налогового режима с использованием специального мобильного приложения (<em>e-Salyq Business</em>), именуемый(ая) в дальнейшем <strong>«Исполнитель» (Куратор проекта)</strong>, с другой стороны,</p>\n<p>вместе именуемые «Стороны», заключили настоящий Договор о нижеследующем:</p>\n<hr>\n<h2>1. ПРЕДМЕТ ДОГОВОРА</h2>\n<p>1.1. Заказчик поручает, а Исполнитель принимает на себя обязательства по оказанию комплекса представительских, организационных, коммуникационных услуг и услуг технического нормоконтроля в рамках деятельности Бюро стандартов «МЕТОДИКО», включая:</p>\n<ul>\n<li>Активный поиск и привлечение потенциальных корпоративных и академических заказчиков (вузы, колледжи, частные школы, B2B-компании, EdTech-академии);</li>\n<li>Проведение первичных переговоров и презентация стандартов Бюро Заказчикам;</li>\n<li>Сбор полного пакета исходных материалов и фактуры от клиентов по утвержденным Чек-листам Бюро;</li>\n<li>Сопровождение клиентского взаимодействия в едином цифровом кабинете Бюро на официальном сайте (<code>client.html</code>);</li>\n<li>Осуществление первичного технического нормоконтроля оформления готовых учебно-методических документов (шрифты, поля, таблицы, паритет версий);</li>\n<li>Координация взаимодействия с казаховедом-филологом при вычитке казахской версии документации;</li>\n<li>Организация сдачи готовых материалов клиенту и контроль подписания закрывающего Акта выполненных работ (АВР).</li>\n</ul>\n<p>1.2. Настоящий Договор носит исключительно гражданско-правовой характер и не влечет возникновения трудовых отношений по Трудовому кодексу Республики Казахстан.</p>\n<hr>\n<h2>2. СТОИМОСТЬ УСЛУГ И ПОРЯДОК РАСЧЕТОВ</h2>\n<p>2.1. Вознаграждение Исполнителя носит комиссионный характер и рассчитывается в процентах от фактической суммы договора, оплаченной Заказчиком за вычетом прямых налогов:</p>\n<ul>\n<li><strong>20% (двадцать процентов)</strong> от суммы оплаченного договора — в случае самостоятельного привлечения клиента Исполнителем (личное посещение, встреча с ЛПР, фиксация в Реестре бронирования Бюро);</li>\n<li><strong>10% (десять процентов)</strong> от суммы оплаченного договора — в случае передачи Исполнителю входящей заявки, поступившей напрямую с официального сайта Бюро в порядке дежурства.</li>\n</ul>\n<p>2.2. <strong>Порядок выплаты вознаграждения Исполнителю:</strong></p>\n<ul>\n<li><strong>Первая часть (50% от причитающейся суммы комиссии):</strong> перечисляется Заказчиком Исполнителю в течение 2 (двух) банковских дней с момента поступления <strong>100% предоплаты от Заказчика</strong> на расчетный счет ТОО «Метод и Ко» и передачи полного пакета исходных материалов в разработку;</li>\n<li><strong>Вторая часть (оставшиеся 50% от суммы комиссии):</strong> перечисляется Заказчиком Исполнителю в течение 2 (двух) банковских дней с момента утверждения разработанных документов клиентом и подписания Заказчиком электронного Акта выполненных работ (АВР) в ИС ЭСФ / на сайте.</li>\n</ul>\n<p>2.3. Выплата вознаграждения осуществляется в безналичном порядке на текущий (карточный) счет Исполнителя в АО «Kaspi Bank» / АО «Halyk Bank».<br>2.4. Исполнитель самостоятельно формирует чек в мобильном приложении <em>e-Salyq Business</em> на каждую полученную сумму вознаграждения и передает электронный чек Заказчику. Налоговые обязательства (ИПН 1%) Исполнитель исполняет самостоятельно в соответствии со статьями Налогового кодекса РК.</p>\n<hr>\n<h2>3. ПРАВА И ОБЯЗАННОСТИ СТОРОН</h2>\n<p>3.1. <strong>Исполнитель обязуется:</strong></p>\n<ul>\n<li>Оказывать услуги качественно, добросовестно и в строгом соответствии с Регламентами и Чек-листами Бюро стандартов «МЕТОДИКО»;</li>\n<li>Обеспечивать ответ клиентам во встроенном чате кабинета на сайте в течение 15 минут в рабочее время;</li>\n<li>Не давать клиентам обещаний, выходящих за рамки официальных стандартов Бюро (запрет обещания сроков менее 3 рабочих дней без согласования, запрет студенческих работ, запрет несогласованных скидок);</li>\n<li>Категорически не принимать денежные средства от Заказчиков наличными или на личные банковские реквизиты. Все расчеты производятся строго через расчетный счет ТОО «Метод и Ко»;</li>\n<li>Соблюдать строгую конфиденциальность в отношении клиентской базы и авторских методик Заказчика.</li>\n</ul>\n<p>3.2. <strong>Заказчик обязуется:</strong></p>\n<ul>\n<li>Предоставлять Исполнителю актуальные информационные материалы, White Papers, шаблоны договоров и доступ к панели Штаба кабинета;</li>\n<li>Своевременно проводить экспертную методологическую разработку заказов силами Руководителя Бюро и ИИ;</li>\n<li>Выплачивать вознаграждение Исполнителю в сроки и размерах, установленных разделом 2 настоящего Договора.</li>\n</ul>\n<hr>\n<h2>4. КОНФИДЕНЦИАЛЬНОСТЬ И ЗАПРЕТ НА КОНКУРЕНЦИЮ</h2>\n<p>4.1. Исполнитель подтверждает, что вся информация о клиентах, контактах ЛПР, технологиях ценообразования, структуре программ и методологических алгоритмах Натальи Коденцевой является коммерческой тайной Заказчика.<br>4.2. Исполнитель обязуется подписать Соглашение о конфиденциальности (NDA), являющееся неотъемлемой частью настоящего Договора.<br>4.3. В течение срока действия настоящего Договора и 3 (трех) лет после его расторжения Исполнителю запрещается оказывать аналогичные услуги клиентам Заказчика напрямую либо через третьих лиц в обход ТОО «Метод и Ко».</p>\n<hr>\n<h2>5. СРОК ДЕЙСТВИЯ И ПОРЯДОК РАСТОРЖЕНИЯ</h2>\n<p>5.1. Настоящий Договор вступает в силу с момента его подписания и действует до «31» декабря 2026 года с возможностью автоматической пролонгации.<br>5.2. Любая из Сторон вправе расторгнуть настоящий Договор в одностороннем порядке, письменно уведомив другую Сторону за 10 (десять) календарных дней, при условии полного завершения расчетов по всем принятым и оплаченным на момент уведомления заказам.</p>\n<hr>\n<h2>6. ЮРИДИЧЕСКИЕ АДРЕСА И РЕКВИЗИТЫ СТОРОН</h2>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"left\">ЗАКАЗЧИК</th>\n<th align=\"left\">ИСПОЛНИТЕЛЬ (КУРАТОР ПРОЕКТА)</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"left\"><strong>ТОО «Метод и Ко»</strong><br>БИН: 231140018015<br>г. Алматы, Бостандыкский район<br>Р/с: KZ86722C000000000000 в АО «Kaspi Bank»<br>БИК: CASPKZKA<br>Тел.: +7 (700) 077-35-66<br><br>____________________ / <strong>Коденцева Н. М.</strong> /</td>\n<td align=\"left\"><strong>ФИО:</strong> ______________________________________<br>ИИН: ________________________________________<br>Адрес проживания: ____________________________<br>Телефон / WhatsApp: ______<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><br>Банковский счет (IBAN): KZ</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><br>Банк: ___________________<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><br><br></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> / ____________________ /</td>\n</tr>\n</tbody></table></div>\n"},{"id":"doc-09","num":"09","icon":"🔒","title":"Предварительное соглашение о конфиденциальности (NDA)","shortTitle":"09. Соглашение NDA","category":"Безопасность","badge":"Штраф 1 000 000 ₸","file":"09_ПРЕДВАРИТЕЛЬНЫЙ_NDA_СОГЛАШЕНИЕ_О_КОНФИДЕНЦИАЛЬНОСТИ.md","readTime":"5 мин","html":"<h1>🔒 СОГЛАШЕНИЕ О НЕРАЗГЛАШЕНИИ КОНФИДЕНЦИАЛЬНОЙ ИНФОРМАЦИИ (NDA)</h1>\n<p><strong>г. Алматы</strong><br><strong>«___» ____________ 2026 г.</strong></p>\n<p><strong>ТОО «Метод и Ко»</strong> (БИН 231140018015), в лице Директора <strong>Коденцевой Натальи Михайловны</strong>, именуемое в дальнейшем <strong>«Раскрывающая сторона»</strong> (Бюро «МЕТОДИКО»), с одной стороны, и</p>\n<p>Гражданин(ка) Республики Казахстан <strong>__________________________________________________</strong>, ИИН ________________________, именуемый(ая) в дальнейшем <strong>«Получающая сторона»</strong> (Куратор проекта), с другой стороны,</p>\n<p>заключили настоящее Соглашение о нижеследующем:</p>\n<hr>\n<h2>1. ПРЕДМЕТ СОГЛАШЕНИЯ И ОПРЕДЕЛЕНИЯ</h2>\n<p>1.1. В целях совместной деятельности в рамках Бюро стандартов «МЕТОДИКО» Раскрывающая сторона предоставляет Получающей стороне доступ к служебной, методологической, финансовой и коммерческой информации.<br>1.2. <strong>Под «Конфиденциальной информацией» в настоящем Соглашении понимается:</strong></p>\n<ul>\n<li>Полная клиентская база Бюро: списки вузов, колледжей, школ, персональные контактные телефоны и адреса проректоров, директоров, завкафедрами и руководителей компаний;</li>\n<li>Авторские методологические наработки, педагогические алгоритмы, шаблоны силлабусов, архитектура обратного дизайна (Backward Design) и технологии Voice-to-Course Натальи Коденцевой;</li>\n<li>Структура взаимодействия с ИИ-моделями, специализированные промпты и инженерные инструкции Бюро;</li>\n<li>Финансовая информация: реальная себестоимость, маржинальность пакетов, налоговые схемы, размеры комиссий и обороты ТОО «Метод и Ко»;</li>\n<li>Тексты непубличных коммерческих предложений, спецификаций и переписки с Заказчиками в кабинете Бюро.</li>\n</ul>\n<hr>\n<h2>2. ОБЯЗАТЕЛЬСТВА ПОЛУЧАЮЩЕЙ СТОРОНЫ</h2>\n<p>2.1. Получающая сторона обязуется:</p>\n<ul>\n<li>Хранить Конфиденциальную информацию в строгой тайне и принимать все разумные меры безопасности для предотвращения её утечки;</li>\n<li>Использовать Конфиденциальную информацию <strong>исключительно</strong> для надлежащего исполнения обязанностей Куратора проектов Бюро;</li>\n<li>Не копировать, не дублировать и не переносить клиентские базы и служебные файлы на личные съемные носители или сторонние облачные диски без письменного разрешения Раскрывающей стороны;</li>\n<li>Не передавать, не публиковать и не раскрывать Конфиденциальную информацию третьим лицам без предварительного письменного согласия Раскрывающей стороны;</li>\n<li>В случае прекращения сотрудничества незамедлительно возвратить Раскрывающей стороне либо уничтожить все имеющиеся на руках рабочие материалы, списки контактов и черновики.</li>\n</ul>\n<hr>\n<h2>3. ЗАПРЕТ РАБОТЫ В ОБХОД И НЕРАЗГЛАШЕНИЕ (NON-CIRCUMVENTION)</h2>\n<p>3.1. Получающая сторона безоговорочно обязуется <strong>не оказывать учебно-методические, консалтинговые или образовательные услуги клиентам Бюро в частном порядке</strong> в обход официального расчетного счета ТОО «Метод и Ко».<br>3.2. Любые обращения клиентов Бюро с предложением неофициального сотрудничества Получающая сторона обязана немедленно перенаправлять Руководителю Бюро (Наталье Коденцевой).</p>\n<hr>\n<h2>4. ОТВЕТСТВЕННОСТЬ СТОРОН</h2>\n<p>4.1. В случае установления факта разглашения Конфиденциальной информации, передачи клиентской базы третьим лицам либо оказания услуг клиентам Бюро в обход ТОО, Получающая сторона обязуется:</p>\n<ul>\n<li>Возместить Раскрывающей стороне все причиненные этим документально подтвержденные прямые убытки и упущенную выгоду;</li>\n<li>Выплатить Раскрывающей стороне договорную неустойку (штраф) в размере <strong>1 000 000 (один миллион) тенге</strong> за каждый доказанный факт несанкционированного раскрытия информации или увода клиента.<br>4.2. Нарушение условий настоящего Соглашения может повлечь гражданско-правовую ответственность в соответствии с Законом РК «О коммерческой тайне» и Уголовным кодексом РК.</li>\n</ul>\n<hr>\n<h2>5. СРОК ДЕЙСТВИЯ СОГЛАШЕНИЯ</h2>\n<p>5.1. Настоящее Соглашение вступает в силу с момента его подписания и сохраняет свою юридическую силу в течение всего периода сотрудничества Сторон, а также в течение <strong>3 (трех) календарных лет</strong> с момента прекращения сотрудничества или расторжения основного Договора.</p>\n<hr>\n<h2>6. ПОДПИСИ СТОРОН</h2>\n<div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th align=\"left\">РАСКРЫВАЮЩАЯ СТОРОНА</th>\n<th align=\"left\">ПОЛУЧАЮЩАЯ СТОРОНА</th>\n</tr>\n</thead>\n<tbody><tr>\n<td align=\"left\"><strong>ТОО «Метод и Ко»</strong><br>БИН: 231140018015<br>Директор Бюро стандартов «МЕТОДИКО»<br><br><br>____________________ / <strong>Коденцева Н. М.</strong> /</td>\n<td align=\"left\"><strong>Куратор проекта:</strong><br>ФИО: ______________________________________<br>ИИН: ____________________<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><br><br><br></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> / ____________________ /</td>\n</tr>\n</tbody></table></div>\n"}];
+    let currentDocIndex = 0;
+
+    function renderDoc(index) {
+      if (index < 0 || index >= docsDatabase.length) return;
+      currentDocIndex = index;
+      const doc = docsDatabase[index];
+
+      // Update header
+      document.getElementById('active-title').innerHTML = doc.icon + ' ' + doc.title;
+      document.getElementById('bc-category').textContent = doc.category;
+      document.getElementById('bc-id').textContent = 'Документ ' + doc.num;
+      document.getElementById('active-badge').textContent = doc.badge;
+      document.getElementById('active-readtime').textContent = '⏱ ~' + doc.readTime + ' чтения';
+
+      // Update content
+      let contentHtml = doc.html;
+
+      // If document is Glossary (doc-07), inject interactive live filter at top
+      if (doc.id === 'doc-07') {
+        contentHtml = `
+          <div class="glossary-filter-box">
+            <label style="display:block; font-weight:700; color:#8F6D2C; margin-bottom:6px; font-size:13.5px;">
+              ⚡️ Мгновенный поиск термина в словаре:
+            </label>
+            <input type="text" id="glossary-live-search" placeholder="Введите термин или аббревиатуру (например: ГОСО, УМКД, Платонус, СРО, ЭСФ)..." oninput="filterGlossaryTerms()">
+          </div>
+          <div id="glossary-terms-area">
+            ${contentHtml}
+          </div>
+        `;
+      }
+
+      document.getElementById('doc-content').innerHTML = contentHtml;
+
+      // Update active nav item
+      document.querySelectorAll('.nav-item').forEach((item, idx) => {
+        if (idx === index) {
+          item.classList.add('active');
+          item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Update footer buttons
+      document.getElementById('btn-prev').disabled = (index === 0);
+      document.getElementById('btn-next').disabled = (index === docsDatabase.length - 1);
+      document.getElementById('doc-counter').textContent = `Документ ${index + 1} из ${docsDatabase.length}`;
+
+      // Scroll view to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchDoc(docId) {
+      const idx = docsDatabase.findIndex(d => d.id === docId);
+      if (idx !== -1) {
+        renderDoc(idx);
+      }
+    }
+
+    function navStep(delta) {
+      const newIdx = currentDocIndex + delta;
+      if (newIdx >= 0 && newIdx < docsDatabase.length) {
+        renderDoc(newIdx);
+      }
+    }
+
+    function filterSidebar() {
+      const q = document.getElementById('sidebar-filter').value.trim().toLowerCase();
+      document.querySelectorAll('.nav-item').forEach(item => {
+        const text = item.getAttribute('data-title') || '';
+        if (!q || text.includes(q)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function filterGlossaryTerms() {
+      const q = document.getElementById('glossary-live-search').value.trim().toLowerCase();
+      const area = document.getElementById('glossary-terms-area');
+      if (!area) return;
+
+      const headers = area.querySelectorAll('h3');
+      headers.forEach(h3 => {
+        let el = h3.nextElementSibling;
+        let match = h3.textContent.toLowerCase().includes(q);
+        const relatedEls = [h3];
+
+        while (el && el.tagName !== 'H3' && el.tagName !== 'H2' && el.tagName !== 'HR') {
+          if (el.textContent.toLowerCase().includes(q)) match = true;
+          relatedEls.push(el);
+          el = el.nextElementSibling;
+        }
+
+        relatedEls.forEach(element => {
+          if (!q || match) {
+            element.style.display = '';
+          } else {
+            element.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    function copyCurrentText() {
+      const contentEl = document.getElementById('doc-content');
+      if (!contentEl) return;
+      const text = contentEl.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('✅ Текст регламента скопирован в буфер!');
+      }).catch(() => {
+        showToast('⚠️ Выделите текст и нажмите Ctrl+C');
+      });
+    }
+
+    function printDoc() {
+      window.print();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    // Keyboard navigation (Left / Right arrow)
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight') navStep(1);
+      if (e.key === 'ArrowLeft') navStep(-1);
+    });
+
+    // Initial render
+    renderDoc(0);
+  </script>
+
+</body>
+</html>
