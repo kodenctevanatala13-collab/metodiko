@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Личный кабинет проекта — Бюро стандартов «МЕТОДИКО»</title>
+  <title>Единый кабинет проекта и Штаб — Бюро стандартов «МЕТОДИКО»</title>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" href="assets/Metodico_logo_gold.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -29,71 +29,88 @@
       --red-bg: #FEF2F2;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
+
+    /* Верхняя шапка без случайного выхода с рабочей страницы */
     .topbar {
       background: var(--navy-dark);
       color: #fff;
-      padding: 14px 20px;
+      padding: 12px 18px;
       border-bottom: 3px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      box-shadow: 0 4px 20px rgba(13, 22, 36, 0.25);
     }
     .topbar-inner {
-      max-width: 1020px;
+      max-width: 1080px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       text-decoration: none;
       color: #fff;
+      cursor: pointer;
     }
     .brand img { width: 38px; height: 38px; object-fit: contain; }
-    .brand-title { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; letter-spacing: 0.4px; }
+    .brand-title { font-family: 'Playfair Display', serif; font-size: 18.5px; font-weight: 700; letter-spacing: 0.4px; }
     .brand-sub { color: var(--gold-light); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .lang-toggle { display: flex; gap: 6px; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .top-pill-btn {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 6px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+    .top-pill-btn:hover { border-color: var(--gold); background: rgba(201,162,39,0.2); }
+    .top-pill-btn.gold { background: var(--gold); color: var(--navy-dark); border-color: var(--gold); font-weight: 700; }
+    .lang-toggle { display: flex; gap: 4px; }
     .lang-btn {
       background: rgba(255,255,255,0.12);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.28);
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
     }
     .lang-btn.active { background: var(--gold); color: var(--navy-dark); border-color: var(--gold); }
-    .back-site-link {
-      color: #CBD5E1;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .back-site-link:hover { color: #fff; border-color: var(--gold); }
 
-    .container { max-width: 1020px; margin: 24px auto; padding: 0 16px; }
+    .container { max-width: 1080px; margin: 20px auto; padding: 0 14px; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 24px;
+      padding: 22px 24px;
       margin-bottom: 18px;
       box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
     }
+    @media (max-width: 640px) { .card { padding: 16px 14px; } }
+
     .admin-banner {
       background: linear-gradient(135deg, #152238 0%, #243b61 100%);
       color: #fff;
@@ -112,10 +129,10 @@
       justify-content: space-between;
       align-items: flex-start;
       flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-    h1 { font-size: 21px; color: var(--navy); }
+    h1 { font-size: 20px; color: var(--navy); }
     .kp-badge {
       display: inline-block;
       background: var(--navy);
@@ -130,37 +147,68 @@
       background: #EFF6FF;
       color: #1D4ED8;
       border: 1px solid #BFDBFE;
-      padding: 8px 14px;
+      padding: 7px 13px;
       border-radius: 10px;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
     }
     .meta-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 12px;
-      padding-top: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 10px;
+      padding-top: 12px;
       border-top: 1px solid var(--border);
-      font-size: 14px;
+      font-size: 13.5px;
     }
-    .meta-item strong { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .meta-item strong { display: block; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
 
-    /* Кликабельные вкладки этапов */
+    /* Полоса общего прогресса заказа в % */
+    .progress-wrap {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 11px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A227 0%, #059669 100%);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* Навигатор по разделам одной страницы */
     .steps-bar {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 8px;
-      margin-top: 18px;
+      margin-top: 14px;
     }
-    @media (max-width: 760px) { .steps-bar { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 780px) { .steps-bar { grid-template-columns: repeat(2, 1fr); } }
     .step-tab {
       appearance: none;
       width: 100%;
       text-align: center;
-      padding: 11px 8px;
+      padding: 10px 8px;
       border-radius: 10px;
       font-family: inherit;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
       background: #F1F5F9;
       color: #475569;
@@ -171,8 +219,8 @@
     .step-tab:hover { border-color: var(--gold); color: var(--navy); background: #FFFDF7; }
     .step-tab.done { background: var(--green-bg); color: var(--green); border-color: #A7F3D0; }
     @keyframes tabGlow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.75); }
-      50% { box-shadow: 0 0 0 8px rgba(201, 162, 39, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.7); }
+      50% { box-shadow: 0 0 0 7px rgba(201, 162, 39, 0); }
     }
     .step-tab.cur {
       background: linear-gradient(135deg, #152238 0%, #1e3152 100%);
@@ -180,14 +228,90 @@
       border-color: var(--gold);
       animation: tabGlow 1.8s infinite;
     }
-    .step-tab.locked {
-      background: #F8FAFC;
-      color: #94A3B8;
-      border-style: dashed;
-    }
-    .step-tab.active-view { outline: 3px solid rgba(201,162,39,0.75); transform: translateY(-1px); }
 
-    /* Горящее модальное окно-оповещение о новом шаге */
+    /* Секции Единой Страницы (аккордеон-блоки сверху вниз) */
+    .stage-block {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+      scroll-margin-top: 84px;
+    }
+    .stage-block.current-stage {
+      border: 2.5px solid var(--gold);
+      box-shadow: 0 8px 30px rgba(201, 162, 39, 0.16);
+    }
+    .stage-block.done-stage {
+      border-color: #A7F3D0;
+    }
+    .stage-header {
+      padding: 16px 22px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      gap: 10px;
+      user-select: none;
+    }
+    .stage-block.current-stage .stage-header {
+      background: linear-gradient(135deg, #FFFDF5 0%, #FEF3C7 100%);
+      border-bottom-color: #FDE68A;
+    }
+    .stage-block.done-stage .stage-header {
+      background: #F0FDF4;
+    }
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stage-title { font-size: 16.5px; font-weight: 800; color: var(--navy); }
+    .stage-pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #E2E8F0;
+      color: #334155;
+    }
+    .stage-pill.cur { background: #152238; color: #FFD966; }
+    .stage-pill.done { background: #D1FAE5; color: #065F46; }
+    .stage-toggle-btn {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy);
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    .stage-body { padding: 22px 24px; }
+    .stage-block.collapsed .stage-body { display: none; }
+    @media (max-width: 640px) {
+      .stage-header { padding: 13px 14px; }
+      .stage-body { padding: 16px 14px; }
+    }
+
+    /* Плашка-подсказка «Что делать на этом шаге» */
+    .helper-guide {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-left: 4px solid #2563EB;
+      border-radius: 10px;
+      padding: 12px 15px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      color: #1E3A8A;
+    }
+    .helper-guide strong { color: #1E40AF; }
+
+    /* Горящее модальное окно-оповещение о новом шаге и окно инструкции */
     .alert-modal-overlay {
       display: none;
       position: fixed;
@@ -208,11 +332,13 @@
       background: #FFFFFF;
       border: 3px solid var(--gold);
       border-radius: 18px;
-      max-width: 520px;
+      max-width: 560px;
       width: 100%;
-      padding: 28px 26px;
+      padding: 26px 24px;
       text-align: center;
       animation: cardGlow 2s infinite;
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .alert-modal-badge {
       display: inline-block;
@@ -226,16 +352,16 @@
       border-radius: 999px;
       margin-bottom: 12px;
     }
-    .alert-modal-card h2 { font-size: 21px; color: var(--navy); margin-bottom: 10px; }
-    .alert-modal-card p { font-size: 14.5px; color: #334155; margin-bottom: 20px; line-height: 1.55; }
+    .alert-modal-card h2 { font-size: 20px; color: var(--navy); margin-bottom: 10px; }
+    .alert-modal-card p { font-size: 14px; color: #334155; margin-bottom: 16px; line-height: 1.55; }
 
     /* Глобальное постоянное уведомление */
     .global-toast {
       display: none;
       padding: 14px 18px;
       border-radius: 12px;
-      margin-bottom: 18px;
-      font-size: 14.5px;
+      margin-bottom: 16px;
+      font-size: 14px;
       font-weight: 600;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     }
@@ -243,34 +369,31 @@
     .global-toast.err { display: block; background: var(--red-bg); color: var(--red); border: 1.5px solid #FCA5A5; }
     .global-toast.info { display: block; background: #EFF6FF; color: #1E40AF; border: 1.5px solid #93C5FD; }
 
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; }
-
-    .section-title { font-size: 18px; color: var(--navy); margin-bottom: 10px; font-weight: 800; }
+    .section-title { font-size: 17px; color: var(--navy); margin-bottom: 10px; font-weight: 800; }
     .notice-box {
       background: var(--amber-bg);
       border: 1px solid #FDE68A;
       border-left: 4px solid var(--amber-border);
       border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      font-size: 14px;
+      padding: 13px 15px;
+      margin-bottom: 14px;
+      font-size: 13.5px;
     }
     .success-banner {
       background: var(--green-bg);
       border: 1px solid #A7F3D0;
       border-left: 4px solid var(--green);
       border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      font-size: 14px;
+      padding: 13px 15px;
+      margin-bottom: 14px;
+      font-size: 13.5px;
       color: #065F46;
     }
 
-    label { display: block; font-weight: 600; font-size: 13.5px; margin: 12px 0 6px; color: var(--navy); }
-    textarea, input[type="text"], input[type="url"], input[type="email"], input[type="number"], select {
+    label { display: block; font-weight: 600; font-size: 13px; margin: 10px 0 5px; color: var(--navy); }
+    textarea, input[type="text"], input[type="url"], input[type="email"], input[type="number"], input[type="tel"], select {
       width: 100%;
-      padding: 10px 13px;
+      padding: 10px 12px;
       border: 1px solid #CBD5E1;
       border-radius: 8px;
       font-family: inherit;
@@ -284,14 +407,15 @@
       box-shadow: 0 0 0 3px rgba(201,162,39,0.16);
     }
     .field-error { border-color: #DC2626 !important; box-shadow: 0 0 0 3px rgba(220,38,38,0.15) !important; }
-    textarea { min-height: 82px; resize: vertical; }
+    textarea { min-height: 76px; resize: vertical; }
 
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-    .kp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 16px 0; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .kp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 14px; margin: 14px 0; }
     .kp-option {
       border: 2px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -299,24 +423,24 @@
     }
     .kp-option.recommended { border-color: var(--gold); background: #FFFDF7; }
     .kp-option.chosen-card { border-color: #059669; background: #ECFDF5; }
-    .kp-option h3 { font-size: 16px; color: var(--navy); margin-bottom: 6px; }
-    .kp-price { font-size: 22px; font-weight: 800; color: var(--navy); margin: 8px 0 4px; }
-    .kp-days { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
-    .kp-scope { font-size: 14px; color: var(--text); margin-bottom: 14px; }
+    .kp-option h3 { font-size: 15.5px; color: var(--navy); margin-bottom: 6px; }
+    .kp-price { font-size: 21px; font-weight: 800; color: var(--navy); margin: 6px 0 4px; }
+    .kp-days { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+    .kp-scope { font-size: 13.5px; color: var(--text); margin-bottom: 12px; }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 7px;
       background: var(--navy);
       color: #fff;
       border: none;
-      padding: 11px 18px;
+      padding: 10px 16px;
       border-radius: 9px;
       font-family: inherit;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
       text-decoration: none;
       transition: opacity 0.15s, background 0.15s;
@@ -329,27 +453,27 @@
     .btn-outline { background: #fff; color: var(--navy); border: 1.5px solid var(--navy); }
     .btn-outline:hover { background: #F8FAFC; }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
 
     /* Голосовой блок */
     .voice-box {
       background: linear-gradient(135deg, #152238 0%, #0D1624 100%);
       color: #fff;
       border-radius: 12px;
-      padding: 18px 20px;
-      margin-bottom: 18px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
       border: 1px solid rgba(201, 162, 39, 0.45);
     }
-    .voice-box h3 { font-size: 15.5px; color: var(--gold-light); margin-bottom: 6px; }
-    .voice-box p { font-size: 13px; color: #E2E8F0; margin-bottom: 12px; }
+    .voice-box h3 { font-size: 15px; color: var(--gold-light); margin-bottom: 5px; }
+    .voice-box p { font-size: 13px; color: #E2E8F0; margin-bottom: 10px; }
     .btn-record {
       background: var(--gold);
       color: var(--navy-dark);
       border: none;
-      padding: 10px 18px;
+      padding: 9px 16px;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
       font-family: inherit;
     }
@@ -364,29 +488,29 @@
       gap: 10px;
       background: #F8FAFC;
       border: 1px solid var(--border);
-      padding: 12px 16px;
+      padding: 12px 15px;
       border-radius: 10px;
-      margin: 16px 0 12px;
+      margin: 14px 0 10px;
     }
     .a4-sheet {
       position: relative;
       background: #FFFFFF;
       border: 1px solid #CBD5E1;
       border-radius: 8px;
-      padding: 34px 38px;
+      padding: 32px 36px;
       box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
-      font-size: 13.5px;
+      font-size: 13.2px;
       line-height: 1.55;
       color: #0F172A;
       overflow: hidden;
     }
-    @media (max-width: 680px) { .a4-sheet { padding: 20px 16px; font-size: 13px; } }
+    @media (max-width: 680px) { .a4-sheet { padding: 18px 14px; font-size: 12.8px; } }
     .a4-watermark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 320px;
+      width: 310px;
       opacity: 0.045;
       pointer-events: none;
       z-index: 0;
@@ -398,14 +522,28 @@
       align-items: flex-start;
       flex-wrap: wrap;
       gap: 12px;
-      padding-bottom: 14px;
+      padding-bottom: 12px;
       border-bottom: 2px solid var(--navy);
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     .a4-brand { display: flex; align-items: center; gap: 12px; }
-    .a4-brand img { width: 46px; height: 46px; object-fit: contain; }
-    .a4-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
-    .a4-table th, .a4-table td { border: 1px solid #CBD5E1; padding: 9px 11px; text-align: left; vertical-align: top; }
+    .a4-brand img { width: 44px; height: 44px; object-fit: contain; }
+    .a4-return-link-bar {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 6px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+      font-size: 11.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .a4-return-link-bar a { color: #1D4ED8; font-weight: 700; text-decoration: underline; }
+    .a4-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12.8px; }
+    .a4-table th, .a4-table td { border: 1px solid #CBD5E1; padding: 8px 10px; text-align: left; vertical-align: top; }
     .a4-table th { background: #F1F5F9; color: var(--navy); font-weight: 700; }
     .a4-editable-active {
       outline: 2px dashed var(--gold);
@@ -413,9 +551,9 @@
       padding: 10px;
       border-radius: 6px;
     }
-    .contract-section { margin-bottom: 14px; }
-    .contract-section h4 { color: var(--navy); font-size: 14px; margin-bottom: 5px; font-weight: 800; }
-    .contract-section p { margin-bottom: 6px; font-size: 13px; }
+    .contract-section { margin-bottom: 12px; }
+    .contract-section h4 { color: var(--navy); font-size: 13.5px; margin-bottom: 4px; font-weight: 800; }
+    .contract-section p { margin-bottom: 5px; font-size: 12.8px; }
     .req-box-edit {
       background: #F8FAFC;
       border: 1.5px solid #CBD5E1;
@@ -424,70 +562,151 @@
       margin-bottom: 16px;
     }
 
-    .gdrive-steps { list-style: none; counter-reset: gd; margin: 14px 0; }
-    .gdrive-steps li {
-      counter-increment: gd;
-      position: relative;
-      padding: 10px 12px 10px 44px;
-      margin-bottom: 8px;
+    /* Блок подписи и печати + Онлайн-роспись клиента */
+    .stamp-sign-img {
+      max-width: 220px;
+      height: auto;
+      display: block;
+      margin: 4px 0;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .e-stamp-box {
+      border: 2px solid #047857;
+      background: #ECFDF5;
+      color: #065F46;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 11px;
+      line-height: 1.35;
+      margin-top: 6px;
+    }
+    .sign-action-card {
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sign-action-card.highlight { border-color: #059669; background: #F0FDF4; }
+    .sign-action-card.gold-card { border-color: var(--gold); background: #FFFDF7; }
+    .sig-canvas-wrap {
+      border: 1.5px dashed #94A3B8;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px;
+      margin: 8px 0;
+      text-align: center;
+    }
+    #client-sig-canvas {
+      width: 100%;
+      max-width: 320px;
+      height: 90px;
+      background: #FAFBFD;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    /* Табло готовности документов и Чат заказа */
+    .deliv-row {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      background: #FAFBFD;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .deliv-row.review { border-color: #F59E0B; background: #FFFBEB; }
+    .deliv-row.approved { border-color: #6EE7B7; background: #F0FDF4; }
+    .chat-box {
+      max-height: 360px;
+      overflow-y: auto;
       background: #F8FAFC;
       border: 1px solid var(--border);
-      border-radius: 9px;
-      font-size: 14px;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
-    .gdrive-steps li::before {
-      content: counter(gd);
-      position: absolute;
-      left: 12px; top: 10px;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: #fff;
-      font-size: 12px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
+    .chat-msg {
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      max-width: 88%;
+      font-size: 13.5px;
     }
+    .chat-msg.staff {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      margin-right: auto;
+    }
+    .chat-msg.client {
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      margin-left: auto;
+    }
+
+    /* Штаб Бюро (список всех заказов для Натальи и Помощницы) */
+    .hub-order-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .hub-order-card:hover { border-color: var(--gold); }
+    .hub-order-card.attention { border-left: 5px solid #EF4444; background: #FFFDF9; }
 
     /* Печать строго выбранного бланка А4 */
     @media print {
       body { background: #fff !important; padding: 0 !important; }
-      body.print-kp .no-print,
-      body.print-kp #sec-contract,
-      body.print-kp #tab-overview,
-      body.print-kp #tab-brief,
-      body.print-kp #tab-materials,
-      body.print-kp #tab-contract,
-      body.print-kp .kp-cards-wrap,
-      body.print-kp .a4-toolbar { display: none !important; }
+      .no-print, .topbar, .stage-header, .a4-toolbar, .req-box-edit, .kp-cards-wrap { display: none !important; }
+      body.print-kp #stage-overview,
+      body.print-kp #stage-brief,
+      body.print-kp #stage-contract,
+      body.print-kp #stage-materials { display: none !important; }
+      body.print-kp #stage-kp,
+      body.print-kp #stage-kp .stage-body { display: block !important; padding: 0 !important; border: none !important; }
 
-      body.print-contract .no-print,
-      body.print-contract #tab-overview,
-      body.print-contract #tab-brief,
-      body.print-contract #tab-kp,
-      body.print-contract #tab-materials,
-      body.print-contract .req-box-edit,
-      body.print-contract .contract-actions-wrap,
-      body.print-contract .a4-toolbar { display: none !important; }
+      body.print-contract #stage-overview,
+      body.print-contract #stage-brief,
+      body.print-contract #stage-kp,
+      body.print-contract #stage-materials { display: none !important; }
+      body.print-contract #stage-contract,
+      body.print-contract #stage-contract .stage-body { display: block !important; padding: 0 !important; border: none !important; }
 
       .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
-      .tab-pane.active { display: block !important; }
+      .card, .stage-block { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
       .a4-sheet { border: none !important; box-shadow: none !important; padding: 0 !important; }
-      .a4-watermark { opacity: 0.065 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .a4-watermark, .stamp-sign-img { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
   </style>
 </head>
 <body>
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ КАБИНЕТА (БЕЗ СЛУЧАЙНОГО ВЫХОДА С ЛИСТА) -->
   <div class="topbar no-print">
     <div class="topbar-inner">
-      <a href="index.html" class="brand">
+      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Наверх к началу кабинета">
         <img src="assets/Metodico_logo_gold.png" alt="МЕТОДИКО">
         <div>
           <div class="brand-title">МЕТОДИКО</div>
-          <div class="brand-sub" id="hdr-sub">Единый кабинет проекта</div>
+          <div class="brand-sub" id="hdr-sub">Единый кабинет вашего заказа</div>
         </div>
-      </a>
+      </div>
       <div class="topbar-right">
-        <a href="index.html" class="back-site-link" id="hdr-back">← На сайт</a>
+        <button type="button" class="top-pill-btn gold" onclick="openHelpModal()">❓ Как работать в кабинете</button>
+        <button type="button" class="top-pill-btn" onclick="openEventsDrawer()" id="btn-top-events">🔔 События <span id="events-count-badge" style="background:#C9A227;color:#0D1624;padding:1px 6px;border-radius:99px;font-size:11px;">0</span></button>
+        <button type="button" class="top-pill-btn" onclick="copyPortalLink()" title="Скопировать вечную ссылку на ваш заказ">📋 Ссылка</button>
+        <button type="button" class="top-pill-btn" onclick="saveLinkToWhatsApp()" title="Сохранить ссылку себе в WhatsApp">💬 В WhatsApp</button>
+        <button type="button" class="top-pill-btn" onclick="openPhoneLoginModal()" title="Найти другой заказ по номеру телефона">🔑 По телефону</button>
         <div class="lang-toggle">
           <button type="button" class="lang-btn active" id="btn-ru" onclick="switchLang('ru')">RU</button>
           <button type="button" class="lang-btn" id="btn-kz" onclick="switchLang('kz')">KZ</button>
@@ -497,21 +716,68 @@
   </div>
 
   <div class="container">
+    <!-- КАРТОЧКА ЗАГРУЗКИ -->
     <div class="card no-print" id="loading-card">
       <p id="loading-text">⏳ Загружаем данные вашего заказа...</p>
     </div>
 
+    <!-- ОКНО ВХОДА ПО НОМЕРУ ТЕЛЕФОНА (ЕСЛИ ОТКРЫЛИ БЕЗ ССЫЛКИ ИЛИ С НОВОГО УСТРОЙСТВА) -->
+    <div class="card no-print" id="phone-login-card" style="display:none; max-width:580px; margin:28px auto; border:2px solid var(--gold);">
+      <div class="kp-badge">🔑 Вход без паролей и СМС</div>
+      <h2 style="color:var(--navy); font-size:21px; margin-bottom:8px;">Войти в свой заказ по номеру телефона</h2>
+      <p style="font-size:14px; color:var(--muted); margin-bottom:14px;">
+        Введите номер телефона, который вы указывали при расчёте сметы (или номер заказа <code>MK-...</code>) — и мы сразу откроем вашу страницу с КП, Договором и готовыми документами на любом устройстве:
+      </p>
+      <label for="login-phone-inp">Ваш номер телефона (или номер КП MK-2026-...):</label>
+      <input type="text" id="login-phone-inp" placeholder="Например: +7 701 123 45 67 или MK-2026-..." onkeydown="if(event.key==='Enter') findOrderByPhoneAction(document.getElementById('btn-find-phone'))">
+      <div class="btn-row" style="margin-top:14px;">
+        <button type="button" class="btn btn-gold" id="btn-find-phone" onclick="findOrderByPhoneAction(this)" style="width:100%; padding:13px;">🔍 Найти и открыть мой заказ →</button>
+      </div>
+      <div id="phone-login-results" style="margin-top:12px;"></div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); text-align:center;">
+        Ещё не оформляли смету? <a href="index.html#calculator" style="color:var(--navy); font-weight:700;">Рассчитать смету в калькуляторе →</a>
+      </div>
+    </div>
+
+    <!-- ==================== РЕЖИМ ШТАБА БЮРО (ДЛЯ НАТАЛЬИ И ПОМОЩНИЦЫ) ==================== -->
+    <div id="staff-hub-root" class="no-print" style="display:none;">
+      <div class="admin-banner">
+        <div>
+          <strong id="hub-role-title" style="font-size:16px;">🏛️ Штаб Бюро стандартов «МЕТОДИКО»</strong><br>
+          <span style="font-size:13px; color:#E2E8F0;">Все клиенты, процент готовности заказов, проверка сырых материалов и выдача готовых документов в одном окне.</span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="hub-top-actions"></div>
+      </div>
+
+      <div class="card">
+        <div class="meta-grid" style="border-top:none; padding-top:0;" id="hub-metrics-grid"></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+          <input type="text" id="hub-search-inp" placeholder="🔍 Быстрый поиск по имени, организации, телефону или MK-..." oninput="renderStaffHubList()" style="max-width:340px;">
+          <button type="button" class="btn btn-outline" onclick="setHubFilter('all')" id="hub-f-all">Все заказы</button>
+          <button type="button" class="btn btn-gold" onclick="setHubFilter('attention')" id="hub-f-att">🔥 Ждут нашего ответа</button>
+          <button type="button" class="btn btn-outline" onclick="setHubFilter('active')" id="hub-f-act">🟢 В работе и согласовании</button>
+          <button type="button" class="btn btn-outline" onclick="loadStaffHub()">🔄 Обновить Штаб</button>
+        </div>
+      </div>
+
+      <div id="hub-orders-list"></div>
+    </div>
+
+    <!-- ==================== ЕДИНАЯ СТРАНИЦА ЗАКАЗА КЛИЕНТА (ВСЕ 5 БЛОКОВ НА ОДНОМ ЛИСТЕ) ==================== -->
     <div id="portal-root" style="display:none;">
-      <!-- Админ-баннер (виден только Наталье по специальной ссылке из бота) -->
+      <!-- Баннер сотрудника Бюро (виден только Наталье и Помощнице) -->
       <div class="admin-banner no-print" id="admin-banner" style="display:none;">
         <div>
-          <strong>🔐 Режим руководителя (Наталья Коденцева)</strong><br>
-          <span style="font-size:12.5px; color:#E2E8F0;">Вы можете просмотреть и отредактировать КП и Договор (А4) до или после отправки клиенту.</span>
+          <strong id="admin-role-badge">🔐 Режим руководителя (Наталья Коденцева)</strong><br>
+          <span style="font-size:12.5px; color:#E2E8F0;" id="admin-role-sub">Вы можете редактировать КП и Договор, ставить печать в 1 клик, загружать готовые документы и отвечать клиенту прямо на странице.</span>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;" id="admin-banner-links"></div>
       </div>
 
-      <!-- Шапка заказа + Кликабельные этапы -->
+      <!-- Глобальное уведомление -->
+      <div class="global-toast no-print" id="global-toast"></div>
+
+      <!-- ГЛАВНЫЙ КОМПАС ЗАКАЗА (ШАПКА + ШКАЛА ПРОГРЕССА В % + ЯКОРЯ НА 5 ШАГОВ) -->
       <div class="card no-print">
         <div class="hero-head">
           <div>
@@ -520,9 +786,10 @@
           </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             <div class="status-pill" id="p-status">...</div>
-            <button type="button" class="btn btn-outline" style="padding:7px 12px; font-size:12.5px;" onclick="manualRefreshPortal(this)" title="Проверить обновления статуса">🔄 Обновить</button>
+            <button type="button" class="btn btn-outline" style="padding:7px 12px; font-size:12.5px;" onclick="manualRefreshPortal(this)">🔄 Обновить данные</button>
           </div>
         </div>
+
         <div class="meta-grid">
           <div class="meta-item"><strong id="lbl-client">Заказчик</strong><span id="v-client">—</span></div>
           <div class="meta-item"><strong id="lbl-cat">Направление</strong><span id="v-cat">—</span></div>
@@ -530,348 +797,588 @@
           <div class="meta-item"><strong id="lbl-price">Смета / Срок</strong><span id="v-price">—</span></div>
         </div>
 
+        <!-- Живая шкала прогресса в % -->
+        <div class="progress-wrap">
+          <div class="progress-head">
+            <span id="lbl-progress-title">📊 Общий прогресс выполнения вашего проекта</span>
+            <span id="v-progress-pct" style="color:var(--green); font-size:15px;">15%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="v-progress-bar" style="width:15%;"></div>
+          </div>
+        </div>
+
+        <!-- Навигатор прокрутки по одной странице -->
         <div class="steps-bar" id="steps-bar">
-          <button type="button" class="step-tab" data-tab="overview" onclick="openTab('overview')" id="tabbtn-overview">1. Смета и заявка</button>
+          <button type="button" class="step-tab" data-tab="overview" onclick="openTab('overview')" id="tabbtn-overview">1. Заявка и смета</button>
           <button type="button" class="step-tab" data-tab="brief" onclick="openTab('brief')" id="tabbtn-brief">2. Распаковка</button>
-          <button type="button" class="step-tab" data-tab="kp" onclick="openTab('kp')" id="tabbtn-kp">3. Финальное КП (А4)</button>
-          <button type="button" class="step-tab" data-tab="contract" onclick="openTab('contract')" id="tabbtn-contract">4. Договор (А4)</button>
-          <button type="button" class="step-tab" data-tab="materials" onclick="openTab('materials')" id="tabbtn-materials">5. Материалы и Старт</button>
+          <button type="button" class="step-tab" data-tab="kp" onclick="openTab('kp')" id="tabbtn-kp">3. Финальное КП</button>
+          <button type="button" class="step-tab" data-tab="contract" onclick="openTab('contract')" id="tabbtn-contract">4. Договор и Оплата</button>
+          <button type="button" class="step-tab" data-tab="materials" onclick="openTab('materials')" id="tabbtn-materials">5. Документы и Связь</button>
+        </div>
+
+        <!-- Плашка сохранения ссылки + опционального Telegram -->
+        <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:13px;">
+          <div>
+            📌 <b>Совет:</b> все шаги и документы открываются прямо на этой странице ниже. Вы всегда можете зайти сюда с любого устройства по своему <b>номеру телефона</b>.
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;" id="tg-connect-bar"></div>
         </div>
       </div>
 
-      <!-- Глобальное уведомление (не исчезает при переключении блоков) -->
-      <div class="global-toast no-print" id="global-toast"></div>
+      <!-- ВЫДВИЖНАЯ ЛЕНТА СОБЫТИЙ И УВЕДОМЛЕНИЙ НА САЙТЕ -->
+      <div class="card no-print" id="events-drawer" style="display:none; border:2px solid var(--gold); background:#FFFDF7;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div class="section-title" style="margin-bottom:0;">🔔 История шагов и уведомлений по вашему заказу</div>
+          <button type="button" class="stage-toggle-btn" onclick="document.getElementById('events-drawer').style.display='none'">Скрыть ✕</button>
+        </div>
+        <div id="events-list-body" style="font-size:13.5px;"></div>
+      </div>
 
-      <!-- Плашка 1-клик подключения Telegram-колокольчика -->
-      <div class="no-print" id="tg-connect-bar" style="display:none; margin-bottom:14px;"></div>
-
-      <!-- ВКЛАДКА 1: СМЕТА И ЗАЯВКА -->
-      <div class="tab-pane" id="tab-overview">
-        <div class="card">
-          <div class="section-title" id="t-overview">📋 Параметры вашей заявки и предварительная смета</div>
+      <!-- ==================== ШАГ 1: СМЕТА И ЗАЯВКА ==================== -->
+      <div class="stage-block no-print" id="stage-overview">
+        <div class="stage-header" onclick="toggleStageBlock('overview')">
+          <div class="stage-title-wrap">
+            <span class="stage-title" id="t-overview">1. Параметры вашей заявки и предварительная смета</span>
+            <span class="stage-pill done" id="pill-overview">Сформировано</span>
+          </div>
+          <button type="button" class="stage-toggle-btn">Свернуть / Развернуть ▾</button>
+        </div>
+        <div class="stage-body">
           <div id="overview-body"></div>
           <div class="btn-row">
-            <button type="button" class="btn btn-gold" onclick="openTab('brief')" id="btn-ov-next">Перейти к Шагу 2: Распаковка →</button>
+            <button type="button" class="btn btn-gold" onclick="openTab('brief')">Перейти ниже к Шагу 2: Распаковка ↓</button>
           </div>
         </div>
       </div>
 
-      <!-- ВКЛАДКА 2: РАСПАКОВКА / БРИФ + ДОП. ВОПРОС -->
-      <div class="tab-pane" id="tab-brief">
-        <!-- Доп. вопрос от Натальи (если есть) -->
-        <div class="card" id="sec-extra" style="display:none;">
-          <div class="section-title" id="t-extra">🟠 Уточняющий вопрос от руководителя бюро</div>
-          <div class="notice-box" id="extra-question-text"></div>
-          <label for="inp-extra" id="lbl-extra-ans">Ваш ответ (можно также приложить ссылку на материалы):</label>
-          <textarea id="inp-extra"></textarea>
-          <div class="btn-row">
-            <button type="button" class="btn btn-gold" onclick="submitExtraAnswer(this)" id="btn-extra">Отправить ответ руководителю</button>
+      <!-- ==================== ШАГ 2: РАСПАКОВКА / БРИФ + ДОП. ВОПРОС ==================== -->
+      <div class="stage-block no-print" id="stage-brief">
+        <div class="stage-header" onclick="toggleStageBlock('brief')">
+          <div class="stage-title-wrap">
+            <span class="stage-title">2. Экспресс-распаковка проекта (исходные ответы)</span>
+            <span class="stage-pill" id="pill-brief">Шаг 2</span>
           </div>
+          <button type="button" class="stage-toggle-btn">Свернуть / Развернуть ▾</button>
         </div>
-
-        <!-- Если бриф уже пройден: красивый архив ответов -->
-        <div class="card" id="brief-done-view" style="display:none;">
-          <div class="success-banner" id="brief-done-banner">
-            ✅ <b>Распаковка заполнена и передана Наталье Коденцевой!</b><br>
-            Как только Финальное КП (3 варианта) будет готово, оно откроется во вкладке «3. Финальное КП» — и мы сразу пришлём вам сигнал в Telegram (если подключён) и на Email.
-          </div>
-          <div class="section-title" id="t-brief-saved">📝 Ваши ответы по проекту</div>
-          <div id="brief-saved-summary" style="font-size:14px; color:#334155;"></div>
-          <div class="btn-row" id="brief-next-actions"></div>
-        </div>
-
-        <!-- Форма распаковки (если ещё не заполнена) -->
-        <div class="card" id="brief-form-view">
-          <div class="section-title" id="t-brief-form">🎙️ Шаг 2: Короткая распаковка проекта (3 минуты)</div>
-          <p style="font-size:14px; color:var(--muted); margin-bottom:16px;" id="brief-lead">
-            Чтобы мы подготовили точное Финальное КП (3 варианта) и Договор без лишних созвонов, ответьте на 6 вопросов текстом или надиктуйте голосом.
-          </p>
-
-          <div class="voice-box">
-            <h3 id="voice-h">🎙️ Не хотите много печатать? Расскажите голосом!</h3>
-            <p id="voice-p">Нажмите кнопку записи и надиктуйте суть задачи (1–3 минуты). Если запишете голос, поля ниже можно заполнить совсем коротко.</p>
-            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-              <button type="button" class="btn-record" id="btn-rec" onclick="toggleAudioRecord()">🎙️ Записать голосовое</button>
-              <span style="font-size:13px; color:#CBD5E1;" id="rec-status">Готово к записи (до 4 минут)</span>
-            </div>
-            <audio id="audio-preview" controls style="display:none; width:100%; margin-top:12px;"></audio>
-          </div>
-
-          <div class="grid-2">
-            <div>
-              <label for="bf-cat" id="lbl-bf-cat">Направление проекта</label>
-              <select id="bf-cat" onchange="renderBranchQuestions()">
-                <option value="vuz">ВУЗы и Колледжи (ГОСО 2026)</option>
-                <option value="b2b">Корпорации и B2B (Тренажёры)</option>
-                <option value="school">Школы и аттестация педагогов («Ұстаз»)</option>
-                <option value="edtech">EdTech и Онлайн-школы</option>
-              </select>
-            </div>
-            <div>
-              <label for="bf-city" id="lbl-bf-city">Город / Страна (для договора и учёта часового пояса)</label>
-              <input type="text" id="bf-city" placeholder="Например: Алматы, Казахстан">
+        <div class="stage-body">
+          <!-- Доп. вопрос от Натальи (если есть) -->
+          <div id="sec-extra" style="display:none; background:#FFFBEB; border:2px solid #F59E0B; border-radius:12px; padding:16px; margin-bottom:16px;">
+            <div class="section-title" id="t-extra" style="color:#92400E;">🟠 Сообщение / уточняющий вопрос от Бюро «МЕТОДИКО»</div>
+            <div class="notice-box" id="extra-question-text" style="background:#fff;"></div>
+            <label for="inp-extra" id="lbl-extra-ans">Ваш ответ (можно также приложить ссылку или перейти ниже в блок 5 для отправки файла):</label>
+            <textarea id="inp-extra" placeholder="Напишите ваш ответ здесь..."></textarea>
+            <div class="btn-row">
+              <button type="button" class="btn btn-gold" onclick="submitExtraAnswer(this)" id="btn-extra">✉️ Отправить ответ руководителю</button>
             </div>
           </div>
 
-          <label for="bf-q1" id="lbl-bf-q1">1. Какую главную задачу должен решить проект прямо сейчас и что изменится через 3–6 месяцев? *</label>
-          <textarea id="bf-q1"></textarea>
-
-          <label for="bf-q2" id="lbl-bf-q2">2. По каким конкретным цифрам или действиям вы поймёте, что работа выполнена отлично?</label>
-          <textarea id="bf-q2"></textarea>
-
-          <label for="bf-q3" id="lbl-bf-q3">3. Что уже есть на руках (видео, презентации, силлабусы, записи звонков — или пока идея с нуля)?</label>
-          <textarea id="bf-q3"></textarea>
-
-          <label for="bf-q4" id="lbl-bf-q4">4. Кто будет участвовать с вашей стороны и сколько времени готовы уделять согласованиям?</label>
-          <textarea id="bf-q4"></textarea>
-
-          <label for="bf-q5" id="lbl-bf-q5">5. Насколько комфортна предварительная смета с сайта и когда планируете старт?</label>
-          <textarea id="bf-q5"></textarea>
-
-          <div id="bf-branch-container"></div>
-
-          <label for="bf-q7" id="lbl-bf-q7">7. Что ещё важно знать о проекте и какие вопросы к нам остались?</label>
-          <textarea id="bf-q7"></textarea>
-
-          <label for="bf-q8" id="lbl-bf-q8">8. Форма оплаты (ТОО / ИП / учебное заведение / физлицо) и реквизиты (если есть под рукой)</label>
-          <textarea id="bf-q8" placeholder="Можно пропустить сейчас и вписать реквизиты позже прямо в Договоре А4"></textarea>
-
-          <div class="btn-row">
-            <button type="button" class="btn btn-gold" onclick="submitBriefFromCabinet(this)" id="btn-submit-brief">Отправить распаковку руководителю →</button>
+          <!-- Если бриф уже пройден: архив ответов клиента -->
+          <div id="brief-done-view" style="display:none;">
+            <div class="success-banner" id="brief-done-banner">
+              ✅ <b>Ваши ответы распаковки сохранены и переданы Наталье Коденцевой!</b><br>
+              Они всегда доступны здесь. Ниже на этой же странице расположены ваше Финальное КП, Договор и Табло документов.
+            </div>
+            <div id="brief-saved-summary" style="font-size:14px; color:#334155; background:#F8FAFC; padding:14px; border-radius:10px; border:1px solid var(--border);"></div>
+            <div class="btn-row" id="brief-next-actions"></div>
           </div>
-        </div>
-      </div>
 
-      <!-- ВКЛАДКА 3: ФИНАЛЬНОЕ КП (3 ВАРИАНТА + РЕДАКТИРУЕМЫЙ А4 + PDF) -->
-      <div class="tab-pane" id="tab-kp">
-        <div class="card" id="kp-waiting-card">
-          <div class="section-title">💼 Финальное коммерческое предложение</div>
-          <p style="color:var(--muted);">⏳ Наталья Коденцева изучает вашу заявку и собирает 3 варианта комплектации. Как только Финальное КП будет готово, оно откроется прямо здесь (и придёт уведомление в Telegram / на Email).</p>
-        </div>
+          <!-- Форма распаковки (если ещё не заполнена) -->
+          <div id="brief-form-view">
+            <div class="helper-guide">
+              <strong>💁‍♀️ Инструкция к Шагу 2:</strong> Ответьте коротко текстом ИЛИ просто нажмите кнопку <b>«🎙️ Записать голосовое»</b> и расскажите задачу своими словами (1–3 минуты). Это сэкономит вам час созвонов, а мы сразу подготовим 3 точных варианта КП и Договор.
+            </div>
 
-        <div id="kp-ready-wrap" style="display:none;">
-          <!-- Карточки выбора 3 вариантов -->
-          <div class="card kp-cards-wrap no-print">
-            <div class="section-title" id="t-kp3">💼 Финальное КП: выберите подходящий вариант</div>
-            <div class="notice-box" id="kp3-deadline-note"></div>
-            <div id="kp-chosen-banner" class="success-banner" style="display:none;"></div>
-
-            <div class="kp-grid" id="kp3-grid"></div>
-
-            <!-- Админ-редактор 3 вариантов -->
-            <div id="admin-kp-editor" style="display:none; background:#F8FAFC; border:1.5px solid var(--gold); border-radius:10px; padding:16px; margin-top:14px;">
-              <strong style="color:var(--navy);">🔐 Редактирование 3 вариантов Финального КП (режим руководителя):</strong>
-              <div id="admin-kp-inputs" style="margin-top:10px;"></div>
-              <div class="btn-row">
-                <button type="button" class="btn btn-gold" onclick="adminSaveKpVariants(this)">💾 Сохранить изменения в КП (и на Google Диск)</button>
+            <div class="voice-box">
+              <h3 id="voice-h">🎙️ Не хотите печатать? Надиктуйте голосом прямо здесь!</h3>
+              <p id="voice-p">Нажмите кнопку записи и расскажите суть проекта. Если запишете голос, текстовые поля ниже можно заполнить совсем коротко.</p>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <button type="button" class="btn-record" id="btn-rec" onclick="toggleAudioRecord()">🎙️ Записать голосовое</button>
+                <span style="font-size:13px; color:#CBD5E1;" id="rec-status">Готово к записи (до 4 минут)</span>
               </div>
-            </div>
-
-            <div id="kp-reqs-wrap" style="margin-top:10px;">
-              <label for="inp-reqs" id="lbl-reqs">Реквизиты для договора (ТОО/ИП, БИН/ИИН, ИИК, БИК, подписант) — можно заполнить сейчас или в следующем шаге:</label>
-              <textarea id="inp-reqs" placeholder="Например: ТОО «...», БИН ..., KZ..., БИК ..., Директор ..."></textarea>
-            </div>
-          </div>
-
-          <!-- Панель кнопок А4 КП -->
-          <div class="a4-toolbar no-print">
-            <div>
-              <strong>📄 Официальный документ Финального КП (формат А4)</strong><br>
-              <span style="font-size:12.5px; color:var(--muted);">Вы можете прочитать его полностью, поправить данные заказчика или скачать в PDF.</span>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button type="button" class="btn btn-outline" onclick="toggleEditableA4('kp', this)">✏️ Редактировать поля в А4</button>
-              <button type="button" class="btn btn-gold" onclick="printSheet('kp')">📥 Скачать Финальное КП (PDF A4)</button>
-              <span id="kp-drive-links"></span>
-            </div>
-          </div>
-
-          <!-- Бланк Финального КП А4 -->
-          <div class="a4-sheet" id="a4-kp-sheet">
-            <img src="assets/Metodico_logo_gold.png" class="a4-watermark" alt="">
-            <div class="a4-content" id="a4-kp-content"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ВКЛАДКА 4: ДОГОВОР (РЕДАКТИРУЕМЫЕ РЕКВИЗИТЫ + РЕДАКТИРУЕМЫЙ А4 + PDF) -->
-      <div class="tab-pane" id="tab-contract">
-        <div class="card" id="contract-waiting-card">
-          <div class="section-title">📄 Договор авторского заказа</div>
-          <p style="color:var(--muted);">⏳ Договор станет доступен здесь сразу после выбора варианта в Финальном КП и проверки руководителем Бюро.</p>
-        </div>
-
-        <div id="contract-ready-wrap" style="display:none;">
-          <div id="contract-agreed-banner" class="success-banner no-print" style="display:none;"></div>
-
-          <!-- Блок живого заполнения реквизитов и правки данных договора -->
-          <div class="card req-box-edit no-print">
-            <div class="section-title" id="t-contract">📄 Реквизиты и параметры Договора (автоматически подставляются в бланк А4 ниже)</div>
-            <p id="contract-summary" style="margin-bottom:12px; font-size:14px;"></p>
-
-            <!-- Админ-поля цены/срока (только для Натальи) -->
-            <div id="admin-contract-controls" style="display:none; background:#FFFDF7; border:1px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:14px;">
-              <strong>🔐 Корректировка суммы и срока (режим руководителя):</strong>
-              <div class="grid-2" style="margin-top:6px;">
-                <div>
-                  <label for="adm-c-price">Итоговая сумма (₸)</label>
-                  <input type="number" id="adm-c-price">
-                </div>
-                <div>
-                  <label for="adm-c-days">Срок разработки (раб. дн.)</label>
-                  <input type="number" id="adm-c-days">
-                </div>
-              </div>
+              <audio id="audio-preview" controls style="display:none; width:100%; margin-top:12px;"></audio>
             </div>
 
             <div class="grid-2">
               <div>
-                <label for="req-org">Наименование организации (ТОО / ИП / Школа / ВУЗ / Физлицо)</label>
-                <input type="text" id="req-org" oninput="syncContractPreview()">
+                <label for="bf-cat" id="lbl-bf-cat">Направление проекта</label>
+                <select id="bf-cat" onchange="renderBranchQuestions()">
+                  <option value="vuz">ВУЗы и Колледжи (ГОСО 2026)</option>
+                  <option value="b2b">Корпорации и B2B (Тренажёры)</option>
+                  <option value="school">Школы и аттестация педагогов («Ұстаз»)</option>
+                  <option value="edtech">EdTech и Онлайн-школы</option>
+                </select>
               </div>
               <div>
-                <label for="req-bin">БИН / ИИН</label>
-                <input type="text" id="req-bin" oninput="syncContractPreview()" placeholder="12 цифр">
-              </div>
-              <div>
-                <label for="req-signer">ФИО подписанта (Директор / ИП)</label>
-                <input type="text" id="req-signer" oninput="syncContractPreview()">
-              </div>
-              <div>
-                <label for="req-basis">Действует на основании</label>
-                <input type="text" id="req-basis" oninput="syncContractPreview()" placeholder="Устава / Свидетельства ИП / Доверенности">
-              </div>
-              <div>
-                <label for="req-addr">Юридический адрес</label>
-                <input type="text" id="req-addr" oninput="syncContractPreview()">
-              </div>
-              <div>
-                <label for="req-bank">Банк (например: АО «Kaspi Bank»)</label>
-                <input type="text" id="req-bank" oninput="syncContractPreview()">
-              </div>
-              <div>
-                <label for="req-iban">Расчётный счёт ИИК (IBAN)</label>
-                <input type="text" id="req-iban" oninput="syncContractPreview()" placeholder="KZ...">
-              </div>
-              <div class="grid-2" style="gap:8px;">
-                <div>
-                  <label for="req-bik">БИК</label>
-                  <input type="text" id="req-bik" oninput="syncContractPreview()">
-                </div>
-                <div>
-                  <label for="req-kbe">КБе</label>
-                  <input type="text" id="req-kbe" oninput="syncContractPreview()" placeholder="17 / 19">
-                </div>
-              </div>
-              <div>
-                <label for="req-phone">Телефон для связи</label>
-                <input type="text" id="req-phone" oninput="syncContractPreview()">
-              </div>
-              <div>
-                <label for="req-email">E-mail для ЭСФ / АВР</label>
-                <input type="email" id="req-email" oninput="syncContractPreview()">
+                <label for="bf-city" id="lbl-bf-city">Город / Страна (для договора)</label>
+                <input type="text" id="bf-city" placeholder="Например: Алматы, Казахстан">
               </div>
             </div>
 
-            <label for="req-notes">Особые условия / правки к Договору (по желанию — добавятся пунктом 7 в документ А4):</label>
-            <textarea id="req-notes" oninput="syncContractPreview()" placeholder="Если всё устраивает, оставьте это поле пустым."></textarea>
+            <label for="bf-q1" id="lbl-bf-q1">1. Какую главную задачу должен решить проект прямо сейчас и что изменится через 3–6 месяцев? *</label>
+            <textarea id="bf-q1"></textarea>
 
-            <div class="btn-row contract-actions-wrap">
-              <button type="button" class="btn btn-green" onclick="agreeContract(this)" id="btn-agree">✅ Договор согласован</button>
-              <button type="button" class="btn btn-gold" onclick="saveContractEdits(this)" id="btn-save-contract">💾 Сохранить реквизиты и правки в Договор</button>
-              <button type="button" class="btn btn-outline" onclick="printSheet('contract')">📥 Скачать Договор (PDF A4)</button>
-            </div>
+            <label for="bf-q2" id="lbl-bf-q2">2. По каким конкретным цифрам или действиям вы поймёте, что работа выполнена отлично?</label>
+            <textarea id="bf-q2"></textarea>
 
-            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
-              <label for="inp-contract-fix" id="lbl-contract-fix">Есть вопрос или нужно обсудить изменение условий до согласования?</label>
-              <textarea id="inp-contract-fix" placeholder="Напишите комментарий руководителю..."></textarea>
-              <div class="btn-row">
-                <button type="button" class="btn btn-outline" onclick="sendContractComment(this)" id="btn-fix">Отправить комментарий руководителю</button>
-              </div>
-            </div>
-          </div>
+            <label for="bf-q3" id="lbl-bf-q3">3. Что уже есть на руках (видео, презентации, силлабусы, записи звонков — или пока идея с нуля)?</label>
+            <textarea id="bf-q3"></textarea>
 
-          <!-- Панель документа А4 Договор -->
-          <div class="a4-toolbar no-print">
-            <div>
-              <strong>📜 Полный текст Договора авторского заказа РК 2026 + ТЗ (формат А4)</strong><br>
-              <span style="font-size:12.5px; color:var(--muted);">Все ваши реквизиты подставляются автоматически. Можно также включить ручную правку текста А4.</span>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button type="button" class="btn btn-outline" onclick="toggleEditableA4('contract', this)" id="btn-edit-a4-contract">✏️ Править текст А4 вручную</button>
-              <button type="button" class="btn btn-gold" onclick="printSheet('contract')">📥 Скачать Договор (PDF A4)</button>
-              <span id="contract-drive-links"></span>
-            </div>
-          </div>
+            <label for="bf-q4" id="lbl-bf-q4">4. Кто будет участвовать с вашей стороны и сколько времени готовы уделять согласованиям?</label>
+            <textarea id="bf-q4"></textarea>
 
-          <!-- Полный Договор А4 -->
-          <div class="a4-sheet" id="a4-contract-sheet">
-            <img src="assets/Metodico_logo_gold.png" class="a4-watermark" alt="">
-            <div class="a4-content" id="a4-contract-content"></div>
+            <label for="bf-q5" id="lbl-bf-q5">5. Насколько комфортна предварительная смета с сайта и когда планируете старт?</label>
+            <textarea id="bf-q5"></textarea>
+
+            <div id="bf-branch-container"></div>
+
+            <label for="bf-q7" id="lbl-bf-q7">7. Что ещё важно знать о проекте и какие вопросы к нам остались?</label>
+            <textarea id="bf-q7"></textarea>
+
+            <label for="bf-q8" id="lbl-bf-q8">8. Форма оплаты (ТОО / ИП / ВУЗ / Школа / физлицо) и реквизиты (можно заполнить позже прямо в Договоре)</label>
+            <textarea id="bf-q8" placeholder="Можно пропустить сейчас и вписать реквизиты на Шаге 4"></textarea>
+
+            <div class="btn-row">
+              <button type="button" class="btn btn-gold" onclick="submitBriefFromCabinet(this)" id="btn-submit-brief">🚀 Отправить распаковку руководителю →</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ВКЛАДКА 5: МАТЕРИАЛЫ И СТАРТ -->
-      <div class="tab-pane" id="tab-materials">
-        <div class="card">
-          <div class="section-title" id="t-mat">📂 Передача исходных материалов и график запуска</div>
+      <!-- ==================== ШАГ 3: ФИНАЛЬНОЕ КП (3 ВАРИАНТА + ПОДПИСАННЫЙ БЛАНК А4) ==================== -->
+      <div class="stage-block" id="stage-kp">
+        <div class="stage-header no-print" onclick="toggleStageBlock('kp')">
+          <div class="stage-title-wrap">
+            <span class="stage-title">3. Финальное коммерческое предложение (3 варианта + официальный бланк А4)</span>
+            <span class="stage-pill" id="pill-kp">Шаг 3</span>
+          </div>
+          <button type="button" class="stage-toggle-btn">Свернуть / Развернуть ▾</button>
+        </div>
+        <div class="stage-body">
+          <div id="kp-waiting-card" class="no-print">
+            <p style="color:var(--muted); font-size:14.5px;">
+              ⏳ Наталья Коденцева изучает ваши ответы и формирует 3 варианта комплектации Финального КП с печатью Бюро. Как только КП будет готово, оно сразу откроется в этом блоке!
+            </p>
+          </div>
+
+          <div id="kp-ready-wrap" style="display:none;">
+            <div class="kp-cards-wrap no-print">
+              <div class="helper-guide">
+                <strong>💁‍♀️ Как работать с Финальным КП:</strong> Ознакомьтесь с 3 вариантами комплектации ниже (или прочитайте официальный лист А4 с печатью Бюро под карточками). Нажмите кнопку <b>«✅ Выбрать этот вариант»</b> на подходящем пакете — и сразу ниже на этой же странице откроется готовый Договор!
+              </div>
+              <div class="notice-box" id="kp3-deadline-note"></div>
+              <div id="kp-chosen-banner" class="success-banner" style="display:none;"></div>
+
+              <div class="kp-grid" id="kp3-grid"></div>
+
+              <!-- Админ-редактор 3 вариантов КП (для Натальи) -->
+              <div id="admin-kp-editor" style="display:none; background:#F8FAFC; border:2px solid var(--gold); border-radius:10px; padding:16px; margin-top:14px;">
+                <strong style="color:var(--navy);">🔐 Панель руководителя: Редактирование и подписание печатью Финального КП</strong>
+                <div id="admin-kp-inputs" style="margin-top:10px;"></div>
+                <div class="btn-row">
+                  <button type="button" class="btn btn-gold" onclick="adminSaveKpVariants(this)">💾 Сохранить правки в КП</button>
+                  <button type="button" class="btn btn-green" onclick="adminSignAndPublish('kp', this)">✒️ Подписать моей печатью и отправить КП клиенту</button>
+                </div>
+              </div>
+
+              <div id="kp-reqs-wrap" style="margin-top:10px;">
+                <label for="inp-reqs" id="lbl-reqs">Реквизиты вашей организации (необязательно сейчас — их можно удобно заполнить по полям в Шаге 4 ниже):</label>
+                <textarea id="inp-reqs" placeholder="Например: ТОО «...», БИН ..., ИИК KZ..., БИК ..., Директор ..."></textarea>
+              </div>
+            </div>
+
+            <!-- Панель кнопок А4 КП -->
+            <div class="a4-toolbar no-print">
+              <div>
+                <strong>📄 Официальный бланк Финального КП с печатью и подписью (формат А4)</strong><br>
+                <span style="font-size:12.5px; color:var(--muted);">Вы можете скачать или распечатать этот лист в чистый PDF А4 для руководства и бухгалтерии.</span>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline" onclick="toggleEditableA4('kp', this)">✏️ Поправить получателя в А4</button>
+                <button type="button" class="btn btn-gold" onclick="printSheet('kp')">📥 Скачать / Распечатать КП (PDF A4)</button>
+                <span id="kp-drive-links"></span>
+              </div>
+            </div>
+
+            <!-- Бланк Финального КП А4 -->
+            <div class="a4-sheet" id="a4-kp-sheet">
+              <img src="assets/Metodico_logo_gold.png" class="a4-watermark" alt="">
+              <div class="a4-content" id="a4-kp-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ШАГ 4: ДОГОВОР (А4 + ОНЛАЙН-ПОДПИСЬ ИЛИ ЗАГРУЗКА СКАНА + ЧЕК) ==================== -->
+      <div class="stage-block" id="stage-contract">
+        <div class="stage-header no-print" onclick="toggleStageBlock('contract')">
+          <div class="stage-title-wrap">
+            <span class="stage-title">4. Договор авторского заказа (А4), подписание и оплата</span>
+            <span class="stage-pill" id="pill-contract">Шаг 4</span>
+          </div>
+          <button type="button" class="stage-toggle-btn">Свернуть / Развернуть ▾</button>
+        </div>
+        <div class="stage-body">
+          <div id="contract-waiting-card" class="no-print">
+            <p style="color:var(--muted); font-size:14.5px;">
+              ⏳ Договор авторского заказа автоматически формируется здесь сразу после выбора варианта в Шаге 3 (Финальное КП).
+            </p>
+          </div>
+
+          <div id="contract-ready-wrap" style="display:none;">
+            <div id="contract-agreed-banner" class="success-banner no-print" style="display:none;"></div>
+
+            <!-- Пошаговая инструкция для клиента на Шаге 4 -->
+            <div class="helper-guide no-print">
+              <strong>💁‍♀️ Как подписать Договор и отправить его нам (выберите любой удобный способ прямо здесь):</strong><br>
+              1️⃣ Заполните или проверьте реквизиты вашей организации ниже — они <b>автоматически впишутся</b> в официальный бланк Договора А4.<br>
+              2️⃣ <b>Способ А (Быстро онлайн без принтера):</b> Нажмите зелёную кнопку <b>«✍️ Подписать Договор онлайн на сайте»</b>.<br>
+              3️⃣ <b>Способ Б (С живой печатью / ЭЦП):</b> Нажмите <b>«📥 Скачать Договор (PDF А4)»</b> (на нём уже стоит печать и подпись ТОО «Метод и Ко»), подпишите со своей стороны и прикрепите скан/PDF кнопкой <b>«📎 Отправить подписанный Договор»</b> прямо ниже!
+            </div>
+
+            <!-- Блок заполнения реквизитов -->
+            <div class="req-box-edit no-print">
+              <div class="section-title" id="t-contract">📝 Шаг 4.1. Реквизиты Заказчика (автоматически подставляются в бланк Договора А4 ниже)</div>
+              <p id="contract-summary" style="margin-bottom:12px; font-size:14px;"></p>
+
+              <!-- Админ-поля цены/срока и подписи печатью (только для Натальи) -->
+              <div id="admin-contract-controls" style="display:none; background:#FFFDF7; border:2px solid var(--gold); border-radius:10px; padding:14px; margin-bottom:14px;">
+                <strong style="color:var(--navy);">🔐 Панель руководителя: Параметры и подписание Договора печатью ТОО «Метод и Ко»</strong>
+                <div class="grid-2" style="margin-top:6px;">
+                  <div>
+                    <label for="adm-c-price">Итоговая сумма договора (₸)</label>
+                    <input type="number" id="adm-c-price" oninput="syncContractPreview()">
+                  </div>
+                  <div>
+                    <label for="adm-c-days">Срок разработки (раб. дн.)</label>
+                    <input type="number" id="adm-c-days" oninput="syncContractPreview()">
+                  </div>
+                </div>
+                <div class="btn-row" style="margin-top:10px;">
+                  <button type="button" class="btn btn-gold" onclick="saveContractEdits(this)">💾 Сохранить сумму и текст</button>
+                  <button type="button" class="btn btn-green" onclick="adminSignAndPublish('contract', this)">✒️ Поставить мою печать/подпись и отправить Договор клиенту</button>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div>
+                  <label for="req-org">Наименование организации (ТОО / ИП / ВУЗ / Школа / ФИО) *</label>
+                  <input type="text" id="req-org" oninput="syncContractPreview()" placeholder="Например: ТОО «Алматы Прогресс»">
+                </div>
+                <div>
+                  <label for="req-bin">БИН / ИИН (12 цифр) *</label>
+                  <input type="text" id="req-bin" oninput="syncContractPreview()" placeholder="12 цифр">
+                </div>
+                <div>
+                  <label for="req-signer">ФИО подписанта (Директор / Ректор / ИП) *</label>
+                  <input type="text" id="req-signer" oninput="syncContractPreview()" placeholder="Иванов Иван Иванович">
+                </div>
+                <div>
+                  <label for="req-basis">Действует на основании</label>
+                  <input type="text" id="req-basis" oninput="syncContractPreview()" placeholder="Устава / Талона ИП / Доверенности">
+                </div>
+                <div>
+                  <label for="req-addr">Юридический адрес</label>
+                  <input type="text" id="req-addr" oninput="syncContractPreview()">
+                </div>
+                <div>
+                  <label for="req-bank">Наименование Банка</label>
+                  <input type="text" id="req-bank" oninput="syncContractPreview()" placeholder="Например: АО «Kaspi Bank»">
+                </div>
+                <div>
+                  <label for="req-iban">Расчётный счёт ИИК (IBAN)</label>
+                  <input type="text" id="req-iban" oninput="syncContractPreview()" placeholder="KZ...">
+                </div>
+                <div class="grid-2" style="gap:8px;">
+                  <div>
+                    <label for="req-bik">БИК</label>
+                    <input type="text" id="req-bik" oninput="syncContractPreview()">
+                  </div>
+                  <div>
+                    <label for="req-kbe">КБе</label>
+                    <input type="text" id="req-kbe" oninput="syncContractPreview()" placeholder="17 / 19">
+                  </div>
+                </div>
+                <div>
+                  <label for="req-phone">Телефон для связи</label>
+                  <input type="text" id="req-phone" oninput="syncContractPreview()">
+                </div>
+                <div>
+                  <label for="req-email">E-mail для ЭСФ и АВР</label>
+                  <input type="email" id="req-email" oninput="syncContractPreview()">
+                </div>
+              </div>
+
+              <label for="req-notes">Особые условия или дополнения к Договору (по желанию — автоматически добавятся пунктом 7 в документ А4):</label>
+              <textarea id="req-notes" oninput="syncContractPreview()" placeholder="Если стандартный текст подходит, оставьте пустым."></textarea>
+
+              <div class="btn-row">
+                <button type="button" class="btn btn-outline" onclick="saveContractEdits(this)" id="btn-save-contract">💾 Сохранить вписанные реквизиты в Договор А4</button>
+                <button type="button" class="btn btn-gold" onclick="printSheet('contract')">🖨️ Скачать / Распечатать Договор с печатью МЕТОДИКО (PDF A4)</button>
+              </div>
+            </div>
+
+            <!-- ШАГ 4.2: ТРИ ПОНЯТНЫЕ КАРТОЧКИ: ОНЛАЙН-ПОДПИСЬ / ЗАГРУЗКА ПОДПИСАННОГО ДОГОВОРА / ЧЕК ОПЛАТЫ -->
+            <div class="grid-3 no-print" style="margin-bottom:18px;">
+              <!-- Карточка А: Подписать онлайн на сайте в 1 клик -->
+              <div class="sign-action-card highlight">
+                <div>
+                  <div style="font-size:12px; font-weight:800; color:#047857; text-transform:uppercase; margin-bottom:4px;">Вариант А (Без распечатки)</div>
+                  <h3 style="font-size:15.5px; color:var(--navy); margin-bottom:6px;">✍️ Подписать Договор онлайн прямо на сайте</h3>
+                  <p style="font-size:12.8px; color:#334155; margin-bottom:8px;">
+                    По ст. 152 и ст. 396 ГК РК вы можете подписать Договор электронно в 1 клик (при желании оставьте роспись мышкой/пальцем в окошке ниже):
+                  </p>
+                  <div class="sig-canvas-wrap">
+                    <canvas id="client-sig-canvas" width="300" height="86"></canvas>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:3px;">
+                      <span>Нарисуйте подпись (по желанию)</span>
+                      <a href="javascript:void(0)" onclick="clearSigCanvas()" style="color:var(--navy); font-weight:700;">Очистить</a>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-green" style="width:100%; margin-top:8px;" onclick="agreeContract(this)" id="btn-agree">
+                  ✅ Согласовать и подписать онлайн
+                </button>
+              </div>
+
+              <!-- Карточка Б: Отправить подписанный бумажный скан / PDF с ЭЦП обратно в Бюро -->
+              <div class="sign-action-card gold-card">
+                <div>
+                  <div style="font-size:12px; font-weight:800; color:#92400E; text-transform:uppercase; margin-bottom:4px;">Вариант Б (Скан с печатью / ЭЦП)</div>
+                  <h3 style="font-size:15.5px; color:var(--navy); margin-bottom:6px;">📎 Отправить подписанный Договор обратно нам</h3>
+                  <p style="font-size:12.8px; color:#334155; margin-bottom:10px;">
+                    Если вы распечатали Договор, поставили печать/подпись (или подписали ЭЦП) — прикрепите подписанный файл (PDF, фото или скан) прямо сюда:
+                  </p>
+                  <input type="file" id="inp-signed-contract-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.sig" style="font-size:12.5px; margin-bottom:8px;">
+                  <div id="signed-contract-files-list" style="font-size:12.5px; margin-bottom:8px;"></div>
+                </div>
+                <button type="button" class="btn btn-gold" style="width:100%;" onclick="uploadSignedContractOrReceipt('contract', this)">
+                  📤 Отправить подписанный Договор в Бюро
+                </button>
+              </div>
+
+              <!-- Карточка В: Оплата 100% и прикрепление чека / платёжки -->
+              <div class="sign-action-card">
+                <div>
+                  <div style="font-size:12px; font-weight:800; color:var(--navy); text-transform:uppercase; margin-bottom:4px;">Оплата и бухгалтерия</div>
+                  <h3 style="font-size:15.5px; color:var(--navy); margin-bottom:6px;">💳 Реквизиты для оплаты и прикрепление чека</h3>
+                  <div style="font-size:12px; background:#F8FAFC; border:1px solid var(--border); padding:8px 10px; border-radius:8px; margin-bottom:8px; line-height:1.45;">
+                    <b>ТОО «Метод и Ко»</b><br>
+                    БИН: <code>231140018015</code> · КБе: <code>17</code><br>
+                    Банк: <b>АО «Kaspi Bank»</b> · БИК: <code>CASPKZKA</code><br>
+                    ИИК: <code>KZ54722S000031140138</code>
+                  </div>
+                  <input type="file" id="inp-receipt-file" accept=".pdf,.jpg,.jpeg,.png" style="font-size:12.5px; margin-bottom:8px;">
+                  <div id="receipt-files-list" style="font-size:12.5px; margin-bottom:8px;"></div>
+                </div>
+                <button type="button" class="btn" style="width:100%;" onclick="uploadSignedContractOrReceipt('receipt', this)">
+                  🧾 Прикрепить чек / платёжное поручение
+                </button>
+              </div>
+            </div>
+
+            <!-- Панель документа А4 Договор -->
+            <div class="a4-toolbar no-print">
+              <div>
+                <strong>📜 Официальный лист Договора авторского заказа РК 2026 (формат А4)</strong><br>
+                <span style="font-size:12.5px; color:var(--muted);">Все ваши реквизиты и штамп подписи ТОО «Метод и Ко» уже встроены в документ ниже.</span>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline" onclick="toggleEditableA4('contract', this)" id="btn-edit-a4-contract">✏️ Править текст А4 вручную</button>
+                <button type="button" class="btn btn-gold" onclick="printSheet('contract')">📥 Скачать Договор (PDF A4)</button>
+                <span id="contract-drive-links"></span>
+              </div>
+            </div>
+
+            <!-- Полный Договор А4 -->
+            <div class="a4-sheet" id="a4-contract-sheet">
+              <img src="assets/Metodico_logo_gold.png" class="a4-watermark" alt="">
+              <div class="a4-content" id="a4-contract-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ШАГ 5: ТАБЛО ГОТОВНОСТИ ДОКУМЕНТОВ, ФАЙЛЫ И ПРЯМАЯ СВЯЗЬ ==================== -->
+      <div class="stage-block no-print" id="stage-materials">
+        <div class="stage-header" onclick="toggleStageBlock('materials')">
+          <div class="stage-title-wrap">
+            <span class="stage-title">5. Табло готовности ваших документов, передача материалов и прямая связь</span>
+            <span class="stage-pill" id="pill-materials">Документы и Старт</span>
+          </div>
+          <button type="button" class="stage-toggle-btn">Свернуть / Развернуть ▾</button>
+        </div>
+        <div class="stage-body">
           <div id="schedule-status-box" class="notice-box"></div>
 
-          <p id="mat-lead" style="font-size:14px; color:var(--muted); margin-bottom:10px;">
-            Вы можете передать исходные материалы двумя удобными способами: вставить ссылку на свою папку Google Диска ИЛИ загрузить файлы напрямую в папку вашего проекта (до 4 МБ на файл).
-          </p>
+          <!-- 5.1. ТАБЛО ВСЕХ РАЗРАБАТЫВАЕМЫХ ДОКУМЕНТОВ ЗАКАЗА (% ВЫПОЛНЕНИЯ И СКАЧИВАНИЕ ПО ГОТОВНОСТИ) -->
+          <div style="margin-bottom:22px;">
+            <div class="section-title">📋 Табло готовности разрабатываемых документов вашего заказа</div>
+            <p style="font-size:13.5px; color:var(--muted); margin-bottom:12px;">
+              Здесь в реальном времени отображается процент готовности каждого документа вашего заказа. Как только документ (или промежуточный раздел) готов, напротив него появляется кнопка <b>«📥 Скачать документ»</b> и кнопка <b>«✅ Утверждаю»</b>:
+            </p>
+            <div id="deliverables-table-wrap"></div>
 
-          <!-- Вариант 1: Прямая загрузка файла в папку 03_Материалы_клиента -->
-          <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px;">
-            <strong>📎 Способ А: Загрузить файлы напрямую в папку проекта (Word, PDF, презентации, аудио до 4 МБ)</strong>
-            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
-              <input type="file" id="inp-mat-file" style="max-width:360px;">
-              <button type="button" class="btn btn-gold" onclick="uploadMaterialFile(this)" id="btn-upload-mat">⬆️ Загрузить файл в проект</button>
+            <!-- Панель Натальи и Помощницы для добавления/загрузки готового документа клиенту -->
+            <div id="staff-deliverable-editor" style="display:none; background:#FFFDF7; border:2px solid var(--gold); border-radius:12px; padding:16px; margin-top:14px;">
+              <strong style="color:var(--navy); font-size:15px;">👩‍💼 Панель Бюро (Руководитель / Помощница): Выложить отработанный документ клиенту или обновить %</strong>
+              <p style="font-size:12.5px; color:var(--muted); margin:4px 0 10px;">
+                Выберите документ из списка (или создайте новый), прикрепите готовый файл с компьютера — система <b>сама положит его в папку клиента на Google Диске («04_Наши_разработки_и_Сдача»)</b>, обновит % выполнения заказа и зажжёт оповещение у клиента!
+              </p>
+              <div class="grid-2">
+                <div>
+                  <label for="st-deliv-select">Какой документ обновляем:</label>
+                  <select id="st-deliv-select" onchange="onSelectStaffDeliverable()"></select>
+                </div>
+                <div>
+                  <label for="st-deliv-title">Название документа:</label>
+                  <input type="text" id="st-deliv-title" placeholder="Например: Силлабус по ГОСО 2026">
+                </div>
+                <div>
+                  <label for="st-deliv-status">Статус документа:</label>
+                  <select id="st-deliv-status">
+                    <option value="pending">⏳ В очереди (0%)</option>
+                    <option value="in_progress">🔨 В разработке у методолога</option>
+                    <option value="review">🟠 Готово — на утверждение клиенту!</option>
+                    <option value="approved">✅ Полностью утверждено и сдано (100%)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="st-deliv-prog">Процент готовности этого документа (0–100%):</label>
+                  <input type="number" id="st-deliv-prog" min="0" max="100" value="50">
+                </div>
+              </div>
+              <label for="st-deliv-note">Пояснение для клиента (что сделано или что проверить):</label>
+              <input type="text" id="st-deliv-note" placeholder="Например: Проверьте, пожалуйста, темы 1–15 и нажмите «Утверждаю»">
+              <div style="margin-top:10px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <input type="file" id="st-deliv-file" style="max-width:340px;">
+                <label style="display:inline-flex; align-items:center; gap:6px; margin:0; cursor:pointer;">
+                  <input type="checkbox" id="st-deliv-notify" checked> 🔔 Отправить клиенту оповещение о готовности
+                </label>
+              </div>
+              <div class="btn-row" style="margin-top:12px;">
+                <button type="button" class="btn btn-gold" onclick="staffSaveDeliverableAction(this)">⬆️ Сохранить и выложить документ клиенту</button>
+              </div>
             </div>
-            <div id="uploaded-files-list" style="margin-top:10px; font-size:13.5px;"></div>
           </div>
 
-          <!-- Вариант 2: Ссылка на Google Диск -->
-          <ol class="gdrive-steps" id="gdrive-steps"></ol>
-          <label for="inp-drive" id="lbl-drive">Способ Б: Ссылка на вашу папку Google Диска (для больших видео/архивов):</label>
-          <input type="url" id="inp-drive" placeholder="https://drive.google.com/drive/folders/...">
-          <label for="inp-drive-note" id="lbl-drive-note">Комментарий по файлам (если нужно):</label>
-          <input type="text" id="inp-drive-note">
-          <div class="btn-row">
-            <button type="button" class="btn" onclick="submitDriveLink(this)" id="btn-drive">Сохранить и передать ссылку в Бюро</button>
+          <!-- 5.2. ДВЕ КОЛОНКИ ФАЙЛОВОГО СЕЙФА: ОТПРАВЛЕНО КЛИЕНТОМ ⇄ ГОТОВЫЕ ФАЙЛЫ С ДИСКА БЮРО -->
+          <div class="grid-2" style="margin-bottom:22px;">
+            <!-- Левая колонка: Исходные материалы от Клиента -->
+            <div style="background:#F8FAFC; border:1.5px solid var(--border); border-radius:12px; padding:16px;">
+              <div class="section-title" style="font-size:15.5px;">📤 Отправлено Вами в Бюро (исходные материалы)</div>
+              <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">
+                Прикрепите ваши сырые материалы (презентации, силлабусы, аудио, тексты до 4 МБ) ИЛИ вставьте ссылку на вашу папку Google/Яндекс Диска:
+              </p>
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+                <input type="file" id="inp-mat-file" style="max-width:260px; font-size:12.5px;">
+                <button type="button" class="btn btn-gold" onclick="uploadMaterialFile(this)" id="btn-upload-mat">⬆️ Загрузить файл</button>
+              </div>
+              <div id="uploaded-files-list" style="margin:10px 0; font-size:13px;"></div>
+
+              <div style="padding-top:10px; border-top:1px dashed var(--border);">
+                <label for="inp-drive" id="lbl-drive" style="margin-top:0;">Или ссылка на вашу облачную папку (для тяжёлых видео):</label>
+                <input type="url" id="inp-drive" placeholder="https://drive.google.com/...">
+                <input type="text" id="inp-drive-note" placeholder="Комментарий к материалам (по желанию)" style="margin-top:6px;">
+                <div class="btn-row" style="margin-bottom:0;">
+                  <button type="button" class="btn btn-outline" onclick="submitDriveLink(this)" id="btn-drive" style="width:100%;">🔗 Передать ссылку в Бюро</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Правая колонка: Готовые документы и файлы из папки 04_Наши_разработки_и_Сдача -->
+            <div style="background:#F0FDF4; border:1.5px solid #A7F3D0; border-radius:12px; padding:16px;">
+              <div class="section-title" style="font-size:15.5px; color:#065F46;">📥 Готовые документы от Бюро «МЕТОДИКО»</div>
+              <p style="font-size:13px; color:#047857; margin-bottom:10px;">
+                Все официальные документы и готовые файлы вашей разработки из проектного сейфа Бюро (доступны для скачивания в 1 клик):
+              </p>
+              <div id="ready-vault-files-list" style="font-size:13.5px;"></div>
+            </div>
+          </div>
+
+          <!-- 5.3. ПРЯМАЯ СВЯЗЬ И СОГЛАСОВАНИЕ ПО ПРОЕКТУ ПРЯМО НА САЙТЕ -->
+          <div style="background:#FFFFFF; border:2px solid var(--border); border-radius:12px; padding:18px;">
+            <div class="section-title" style="font-size:16px;">💬 Прямая связь с методологом и куратором проекта на сайте</div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">
+              Нужно уточнить деталь, спросить по документу или дослать файл? Напишите прямо здесь — сообщение мгновенно поступит руководителю Бюро и сохранится в истории вашего заказа:
+            </p>
+            <div class="chat-box" id="portal-chat-box"></div>
+            <textarea id="inp-chat-msg" placeholder="Напишите ваше сообщение или комментарий по проекту..."></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:10px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span style="font-size:12.5px; color:var(--muted);">📎 Прикрепить файл к сообщению (по желанию):</span>
+                <input type="file" id="inp-chat-file" style="max-width:250px; font-size:12px;">
+              </div>
+              <button type="button" class="btn btn-gold" onclick="sendPortalChatMessage(this)">✉️ Отправить сообщение</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="card no-print" style="text-align:center; font-size:13.5px; color:var(--muted);">
-        <p>Техническая поддержка Бюро «МЕТОДИКО»: +7 (700) 077-35-66 · <a href="index.html" style="color:var(--navy); font-weight:700;">Вернуться на главную страницу</a></p>
+      <!-- Нижний колонтитул (открывает витрину только в новой вкладке, чтобы не потерять кабинет) -->
+      <div class="card no-print" style="text-align:center; font-size:13px; color:var(--muted);">
+        <p>
+          Бюро стандартов и симуляторов «МЕТОДИКО» (ТОО «Метод и Ко») · Служба заботы: <b>+7 (700) 077-35-66</b> ·
+          <a href="index.html" target="_blank" rel="noopener" style="color:var(--navy); font-weight:700;">Открыть главную витрину сайта в новой вкладке ↗</a>
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- ГОРЯЩЕЕ МОДАЛЬНОЕ ОПОВЕЩЕНИЕ О НОВОМ ЭТАПЕ (НЕ ПРОПУСТИТ НИ ОДИН ШАГ) -->
+  <!-- МОДАЛЬНОЕ ОКНО: ИНСТРУКЦИЯ «КАК РАБОТАТЬ В КАБИНЕТЕ» -->
+  <div class="alert-modal-overlay no-print" id="help-guide-modal">
+    <div class="alert-modal-card" style="text-align:left; animation:none;">
+      <div class="alert-modal-badge">❓ Памятка для Заказчика (30 секунд)</div>
+      <h2 style="text-align:center;">Как устроен ваш Единый кабинет заказа</h2>
+      <ol style="margin:12px 0 18px 20px; font-size:13.8px; color:#334155; line-height:1.6;">
+        <li><b>Всё на одной странице:</b> вам не нужно искать вкладки. Просто листайте страницу сверху вниз от Шага 1 до Шага 5.</li>
+        <li><b>Вход с любого устройства без паролей:</b> если вы закрыли сайт или пересели с телефона за компьютер — просто введите свой <b>номер телефона</b> в окне входа на сайте, и ваш кабинет сразу откроется.</li>
+        <li><b>Как подписать КП и Договор (Шаг 3 и 4):</b> КП и Договор уже подписаны печатью ТОО «Метод и Ко». Вы можете подписать Договор <b>онлайн одной кнопкой на сайте</b> ИЛИ скачать PDF, поставить свою печать и прикрепить скан кнопкой <b>«📎 Отправить подписанный Договор»</b>.</li>
+        <li><b>Где видеть процент выполнения и забирать готовые работы (Шаг 5):</b> в «Табло готовности документов» виден статус и % каждого документа. Там же вы нажимаете «📥 Скачать» или «✅ Утверждаю».</li>
+      </ol>
+      <button type="button" class="btn btn-gold" style="width:100%;" onclick="document.getElementById('help-guide-modal').classList.remove('open')">Понятно, вернуться к заказу →</button>
+    </div>
+  </div>
+
+  <!-- ГОРЯЩЕЕ МОДАЛЬНОЕ ОПОВЕЩЕНИЕ О НОВОМ ЭТАПЕ -->
   <div class="alert-modal-overlay no-print" id="alert-action-modal">
     <div class="alert-modal-card">
-      <div class="alert-modal-badge" id="alert-modal-badge">🔔 Новое действие по заказу</div>
-      <h2 id="alert-modal-title">Финальное КП готово!</h2>
+      <div class="alert-modal-badge" id="alert-modal-badge">🔔 Новое событие по вашему заказу</div>
+      <h2 id="alert-modal-title">Обновление статуса</h2>
       <p id="alert-modal-desc">...</p>
-      <button type="button" class="btn btn-gold" style="width:100%; padding:14px 20px; font-size:15.5px;" id="alert-modal-btn" onclick="ackActionAlert()">👉 Открыть и прочитать →</button>
+      <button type="button" class="btn btn-gold" style="width:100%; padding:14px 20px; font-size:15px;" id="alert-modal-btn" onclick="ackActionAlert()">👉 Перейти к шагу →</button>
     </div>
   </div>
 
   <script>
     const API_URL = '/.netlify/functions/crm-api';
     const urlParams = new URLSearchParams(window.location.search);
-    const kpParam = urlParams.get('kp') || '';
-    const tokenParam = urlParams.get('t') || '';
-    const adminParam = urlParams.get('admin') || '';
+    let kpParam = urlParams.get('kp') || '';
+    let tokenParam = urlParams.get('t') || '';
+    let adminParam = urlParams.get('admin') || '';
+    let staffParam = urlParams.get('staff') || '';
     const requestedTab = urlParams.get('tab') || '';
 
     let portalData = null;
+    let staffHubData = null;
+    let hubFilter = 'all';
     let lang = 'ru';
     let activeTab = 'overview';
-    let briefBranches = {
+
+    // Аудиозапись
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let audioBase64Payload = '';
+    let audioMimeTypePayload = 'audio/webm';
+    let isRecording = false;
+
+    // Холст онлайн-подписи клиента
+    let sigCanvas = null;
+    let sigCtx = null;
+    let isDrawingSig = false;
+    let hasDrawnSig = false;
+
+    const briefBranches = {
       vuz: [
         { id: 'b1', label_ru: 'Название дисциплины (или кол-во дисциплин кафедры), специальность и кредиты ECTS', label_kz: 'Пәннің атауы (немесе кафедра пәндерінің саны), мамандық және ECTS кредит саны' },
         { id: 'b2', label_ru: 'Какие практические компетенции должен освоить студент и какую рутину снять с преподавателя?', label_kz: 'Студент қандай практикалық дағдыларды меңгеруі тиіс?' },
@@ -894,54 +1401,47 @@
       ]
     };
 
-    // Запись голоса в браузере
-    let mediaRecorder = null;
-    let recordedChunks = [];
-    let audioBase64Payload = '';
-    let audioMimeTypePayload = 'audio/webm';
-    let isRecording = false;
-
     const I18N = {
       ru: {
-        hdrSub: 'Единый кабинет проекта',
-        hdrBack: '← На сайт',
+        hdrSub: 'Единый кабинет вашего заказа',
         loading: '⏳ Загружаем данные вашего заказа...',
-        badLink: '❌ Неверная или неполная ссылка заявки. Проверьте ссылку из письма или оформите новую заявку на главной странице.',
         title: 'Личный кабинет вашего заказа',
         client: 'Заказчик', cat: 'Направление', devlang: 'Язык материалов', price: 'Смета и срок',
-        tabs: ['1. Смета и заявка', '2. Распаковка', '3. Финальное КП (А4)', '4. Договор (А4)', '5. Материалы и Старт'],
+        tabs: ['1. Заявка и смета', '2. Распаковка', '3. Финальное КП', '4. Договор и Оплата', '5. Документы и Связь'],
         pickBtn: '✅ Выбрать этот вариант',
-        pickedBadge: '✅ Выбран этот вариант',
-        gdSteps: [
-          'Откройте <b>drive.google.com</b> и войдите в свой Google-аккаунт.',
-          'Нажмите <b>«+ Создать» ➔ «Новую папку»</b> (например: <code>МЕТОДИКО — Ваш проект</code>).',
-          'Загрузите туда все исходные файлы любого размера.',
-          'Нажмите правой кнопкой на папку ➔ <b>«Поделиться» ➔ «Доступ по ссылке»</b> ➔ выберите <b>«Редактор»</b> и скопируйте ссылку.',
-          'Вставьте скопированную ссылку в поле ниже и нажмите кнопку отправки.'
-        ]
+        pickedBadge: '✅ Выбран этот вариант'
       },
       kz: {
-        hdrSub: 'Жобаның бірыңғай кабинеті',
-        hdrBack: '← Сайтқа оралу',
+        hdrSub: 'Тапсырыстың бірыңғай кабинеті',
         loading: '⏳ Өтінім деректері жүктелуде...',
-        badLink: '❌ Сілтеме қате немесе толық емес. Поштадағы сілтемені тексеріңіз немесе басты беттен жаңа өтінім қалдырыңыз.',
         title: 'Жобаңыздың жеке кабинеті',
         client: 'Тапсырыс беруші', cat: 'Бағыты', devlang: 'Материалдар тілі', price: 'Смета және мерзім',
-        tabs: ['1. Смета және өтінім', '2. Жобаны ашу', '3. Қорытынды КП (А4)', '4. Шарт (А4)', '5. Материалдар'],
+        tabs: ['1. Смета және өтінім', '2. Жобаны ашу', '3. Қорытынды КП', '4. Шарт және Төлем', '5. Құжаттар мен Байланыс'],
         pickBtn: '✅ Осы нұсқаны таңдау',
-        pickedBadge: '✅ Таңдалған нұсқа',
-        gdSteps: [
-          '<b>drive.google.com</b> сайтын ашып, Google аккаунтыңызға кіріңіз.',
-          '<b>«+ Создать / Жаңа бума»</b> батырмасын басып, бума жасаңыз.',
-          'Оған кез келген көлемдегі бастапқы материалдарды жүктеңіз.',
-          'Буманы оң жақ түймемен басып ➔ <b>«Бөлісу»</b> ➔ <b>«Сілтеме арқылы кез келген адам — Редактор»</b> таңдап, сілтемені көшіріңіз.',
-          'Сілтемені төмендегі өріске қойып, жіберу түймесін басыңыз.'
-        ]
+        pickedBadge: '✅ Таңдалған нұсқа'
       }
     };
 
+    function playGentleChime() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.14);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } catch (e) {}
+    }
+
     function showToast(msg, type = 'ok') {
       const el = document.getElementById('global-toast');
+      if (!el) return;
       el.className = 'global-toast no-print ' + type;
       el.innerHTML = msg;
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -951,38 +1451,65 @@
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function openHelpModal() {
+      document.getElementById('help-guide-modal').classList.add('open');
+    }
+
+    function openEventsDrawer() {
+      const el = document.getElementById('events-drawer');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      if (el.style.display === 'block') el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function copyPortalLink() {
+      const cleanUrl = getCleanClientPortalUrl();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(cleanUrl);
+      }
+      showToast('📋 Ссылка на ваш Личный кабинет скопирована! Сохраните её в закладки или заметки.', 'ok');
+    }
+
+    function saveLinkToWhatsApp() {
+      const cleanUrl = getCleanClientPortalUrl();
+      const kp = (portalData && portalData.kpNumber) || kpParam || '';
+      const txt = `🗂️ Моя постоянная ссылка на Личный кабинет заказа № ${kp} в Бюро «МЕТОДИКО» (КП, Договор, файлы): ${cleanUrl}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
+    function getCleanClientPortalUrl() {
+      if (kpParam && tokenParam) {
+        return `${window.location.origin}${window.location.pathname}?kp=${encodeURIComponent(kpParam)}&t=${encodeURIComponent(tokenParam)}`;
+      }
+      return window.location.href;
+    }
+
+    function openPhoneLoginModal() {
+      const card = document.getElementById('phone-login-card');
+      card.style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const inp = document.getElementById('login-phone-inp');
+      if (inp) inp.focus();
+    }
+
     function switchLang(nextLang) {
       lang = nextLang === 'kz' ? 'kz' : 'ru';
       document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
       document.getElementById('btn-kz').classList.toggle('active', lang === 'kz');
-      render();
+      if (portalData) render();
+    }
+
+    function toggleStageBlock(stageKey) {
+      const block = document.getElementById('stage-' + stageKey);
+      if (block) block.classList.toggle('collapsed');
     }
 
     function openTab(tabName) {
-      if (portalData && !portalData.isAdmin) {
-        const curIdx = computeStepIndex(portalData.crmStatus);
-        const tabOrder = { overview: 0, brief: 1, kp: 2, contract: 3, materials: 4 };
-        const targetIdx = tabOrder[tabName] ?? 0;
-        if (targetIdx === 2 && curIdx < 2 && !portalData.kpPublished) {
-          showToast('⏳ Финальное КП ещё готовится руководителем. Как только оно будет готово, здесь загорится оповещение!', 'info');
-          return;
-        }
-        if (targetIdx === 3 && curIdx < 3 && !portalData.contractPublished) {
-          showToast('🔒 Сначала завершите шаг «3. Финальное КП» (выберите один из 3 вариантов) — и сразу откроется Договор.', 'info');
-          return;
-        }
-        if (targetIdx === 4 && curIdx < 4 && !(portalData.crmStatus || '').includes('✍️')) {
-          showToast('🔒 Загрузка материалов откроется сразу после согласования Договора и оплаты.', 'info');
-          return;
-        }
-      }
       activeTab = tabName;
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      const pane = document.getElementById('tab-' + tabName);
-      if (pane) pane.classList.add('active');
-      document.querySelectorAll('.step-tab').forEach(b => {
-        b.classList.toggle('active-view', b.getAttribute('data-tab') === tabName);
-      });
+      const block = document.getElementById('stage-' + tabName);
+      if (block) {
+        block.classList.remove('collapsed');
+        block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function computeStepIndex(crmStatus) {
@@ -1005,10 +1532,35 @@
       return 'brief';
     }
 
+    function configureStageCollapseState(curStep) {
+      const keys = ['overview', 'brief', 'kp', 'contract', 'materials'];
+      keys.forEach((k, idx) => {
+        const block = document.getElementById('stage-' + k);
+        const pill = document.getElementById('pill-' + k);
+        if (!block) return;
+        block.classList.remove('current-stage', 'done-stage');
+        if (pill) pill.className = 'stage-pill';
+
+        if (idx < curStep) {
+          block.classList.add('done-stage');
+          if (idx === 0 && curStep >= 2) block.classList.add('collapsed');
+          if (pill) { pill.classList.add('done'); pill.innerText = '✅ Выполнено'; }
+        } else if (idx === curStep) {
+          block.classList.add('current-stage');
+          block.classList.remove('collapsed');
+          if (pill) { pill.classList.add('cur'); pill.innerText = '🔥 Текущий шаг'; }
+        } else {
+          block.classList.remove('collapsed');
+          if (pill) pill.innerText = 'Шаг ' + (idx + 1);
+        }
+      });
+    }
+
     function renderBranchQuestions() {
-      const cat = document.getElementById('bf-cat').value || 'b2b';
+      const catEl = document.getElementById('bf-cat');
+      if (!catEl) return;
+      const cat = catEl.value || 'b2b';
       const items = briefBranches[cat] || briefBranches.b2b;
-      const saved = (portalData && portalData.deal && portalData.deal.briefAnswers) || {};
       const container = document.getElementById('bf-branch-container');
       container.innerHTML = items.map(it => {
         const lbl = lang === 'kz' ? it.label_kz : it.label_ru;
@@ -1019,10 +1571,44 @@
       }).join('');
     }
 
+    function initSigCanvas() {
+      sigCanvas = document.getElementById('client-sig-canvas');
+      if (!sigCanvas || sigCtx) return;
+      sigCtx = sigCanvas.getContext('2d');
+      sigCtx.strokeStyle = '#1040A2';
+      sigCtx.lineWidth = 2.2;
+      sigCtx.lineCap = 'round';
+
+      const getPos = (e) => {
+        const r = sigCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - r.left) * (sigCanvas.width / r.width),
+          y: (clientY - r.top) * (sigCanvas.height / r.height)
+        };
+      };
+      const start = (e) => { isDrawingSig = true; hasDrawnSig = true; const p = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); e.preventDefault(); };
+      const move = (e) => { if (!isDrawingSig) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); e.preventDefault(); };
+      const end = () => { isDrawingSig = false; };
+
+      sigCanvas.addEventListener('mousedown', start);
+      sigCanvas.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+      sigCanvas.addEventListener('touchstart', start, { passive: false });
+      sigCanvas.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('touchend', end);
+    }
+
+    function clearSigCanvas() {
+      if (!sigCanvas || !sigCtx) return;
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      hasDrawnSig = false;
+    }
+
     function render() {
       const d = I18N[lang];
       document.getElementById('hdr-sub').innerText = d.hdrSub;
-      document.getElementById('hdr-back').innerText = d.hdrBack;
       document.getElementById('loading-text').innerText = d.loading;
       if (!portalData) return;
 
@@ -1030,18 +1616,29 @@
       try {
         localStorage.setItem('metodiko_active_portal', JSON.stringify({
           kpNumber: portalData.kpNumber,
-          portalUrl: window.location.href.split('&admin=')[0],
+          portalUrl: getCleanClientPortalUrl(),
           clientName: portalData.clientName,
+          clientPhone: portalData.clientPhone,
           totalPrice: portalData.agreedPrice
         }));
       } catch (e) {}
 
+      // Баннер руководителя / помощницы
       if (portalData.isAdmin) {
+        const isDir = portalData.isDirector !== false && portalData.staffRole !== 'assistant';
         document.getElementById('admin-banner').style.display = 'flex';
+        document.getElementById('admin-role-badge').innerText = isDir
+          ? '👑 Режим Руководителя Бюро (Наталья Коденцева)'
+          : '👩‍💼 Режим Куратора проектов (Помощница Бюро)';
         const links = [];
-        if (portalData.driveFolderUrl) links.push(`<a href="${portalData.driveFolderUrl}" target="_blank" class="btn btn-gold">📂 Папка клиента на Диске</a>`);
-        if (portalData.kpDocUrl) links.push(`<a href="${portalData.kpDocUrl}" target="_blank" class="btn btn-outline">📄 Google Док КП</a>`);
-        if (portalData.contractUrl) links.push(`<a href="${portalData.contractUrl}" target="_blank" class="btn btn-outline">📜 Google Док Договор</a>`);
+        if (portalData.staffHubUrl) {
+          links.push(`<a href="${portalData.staffHubUrl}" class="btn btn-gold">🏛️ Открыть Штаб всех заказов</a>`);
+        } else if (adminParam) {
+          links.push(`<a href="client.html?staff=${encodeURIComponent(adminParam)}" class="btn btn-gold">🏛️ Штаб заказов</a>`);
+        }
+        if (portalData.driveFolderUrl && isDir) {
+          links.push(`<a href="${portalData.driveFolderUrl}" target="_blank" class="btn btn-outline" style="color:#fff;border-color:#fff;">📂 Папка на Диске</a>`);
+        }
         document.getElementById('admin-banner-links').innerHTML = links.join('');
       }
 
@@ -1058,60 +1655,43 @@
       const datesNote = portalData.startDate ? ` | ${portalData.startDate} ➔ ${portalData.endDate}` : '';
       document.getElementById('v-price').innerText = `${Number(portalData.agreedPrice || 0).toLocaleString('ru-RU')} ₸ · ${portalData.totalDays} дн.${datesNote}`;
 
-      // Вкладки этапов (подсветка текущего шага и замочки на будущие)
+      // Прогресс заказа в %
+      const pct = Number(portalData.progressPercent || computeFallbackProgress(portalData));
+      document.getElementById('v-progress-pct').innerText = pct + '%';
+      document.getElementById('v-progress-bar').style.width = pct + '%';
+
+      // Вкладки-якоря
       const curStep = computeStepIndex(portalData.crmStatus);
       const tabKeys = ['overview', 'brief', 'kp', 'contract', 'materials'];
       tabKeys.forEach((k, idx) => {
         const btn = document.getElementById('tabbtn-' + k);
-        btn.classList.remove('done', 'cur', 'locked');
+        btn.classList.remove('done', 'cur');
         if (idx < curStep) {
           btn.innerText = '✅ ' + d.tabs[idx];
           btn.classList.add('done');
         } else if (idx === curStep) {
           btn.innerText = '🔥 ' + d.tabs[idx];
           btn.classList.add('cur');
-        } else if (!portalData.isAdmin && idx >= 3) {
-          btn.innerText = '🔒 ' + d.tabs[idx];
-          btn.classList.add('locked');
         } else {
           btn.innerText = d.tabs[idx];
         }
       });
 
-      // --- ПЛАШКА ПОДКЛЮЧЕНИЯ TELEGRAM-УВЕДОМЛЕНИЙ ---
+      // Ненавязчивая кнопка Telegram-колокольчика
       const tgBar = document.getElementById('tg-connect-bar');
       if (tgBar) {
-        if (portalData.isAdmin) {
-          tgBar.style.display = 'none';
+        const tgUrl = portalData.tgDeepLink || `https://t.me/metodico_brif_bot?start=${encodeURIComponent(portalData.kpNumber || '')}`;
+        if (portalData.tgConnected) {
+          tgBar.innerHTML = `<span style="color:var(--green); font-weight:700;">✅ Дубль уведомлений в Telegram подключён</span>`;
         } else {
-          const tgUrl = portalData.tgDeepLink || `https://t.me/metodico_brif_bot?start=${encodeURIComponent(portalData.kpNumber || '')}`;
-          const botName = portalData.tgBotUsername || 'metodico_brif_bot';
-          tgBar.style.display = 'block';
-          if (portalData.tgConnected) {
-            tgBar.innerHTML = lang === 'kz'
-              ? `<div class="success-banner" style="margin-bottom:0;">✅ <b>Telegram хабарламалары қосылған (@${escapeHtml(botName)}):</b> Қорытынды КП, Шарт немесе жоба басталғаны туралы белгі бірден осы ботқа келеді.</div>`
-              : `<div class="success-banner" style="margin-bottom:0;">✅ <b>Telegram-уведомления подключены (@${escapeHtml(botName)}):</b> как только КП, Договор или старт проекта будут готовы, бот сразу пришлёт сигнал со ссылкой сюда.</div>`;
-          } else {
-            tgBar.innerHTML = lang === 'kz'
-              ? `<div class="card" style="margin-bottom:0; border:2px solid var(--gold); background:#FFFBEB; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
-                   <div style="flex:1; min-width:240px;">
-                     <strong style="color:var(--navy); font-size:15px;">🔔 Сайтта күтпеу үшін Telegram хабарламасын қосыңыз</strong><br>
-                     <span style="font-size:13px; color:#475569;">Түймені басып, ботта «Старт» деңіз — жеке кабинетіңіздің сілтемесі сақталады және Қорытынды КП дайын болғанда бірден хабар келеді.</span>
-                   </div>
-                   <a href="${tgUrl}" target="_blank" rel="noopener" class="btn btn-gold" onclick="startTgQuickPoll()">✈️ Telegram-да хабарлама алу</a>
-                 </div>`
-              : `<div class="card" style="margin-bottom:0; border:2px solid var(--gold); background:#FFFBEB; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
-                   <div style="flex:1; min-width:240px;">
-                     <strong style="color:var(--navy); font-size:15px;">🔔 Чтобы не держать сайт открытым — подключите уведомления в Telegram</strong><br>
-                     <span style="font-size:13px; color:#475569;">Нажмите кнопку и затем «Старт» в боте: ссылка на ваш Кабинет сохранится, а как только Наталья подготовит Финальное КП или Договор — придёт сигнал.</span>
-                   </div>
-                   <a href="${tgUrl}" target="_blank" rel="noopener" class="btn btn-gold" onclick="startTgQuickPoll()">✈️ Подключить уведомления в Telegram</a>
-                 </div>`;
-          }
+          tgBar.innerHTML = `<a href="${tgUrl}" target="_blank" rel="noopener" class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="startTgQuickPoll()">✈️ Дублировать уведомления в Telegram (по желанию)</a>`;
         }
       }
 
-      // --- ВКЛАДКА 1: СМЕТА ---
+      // Журнал событий
+      renderEventsLog();
+
+      // --- ШАГ 1: СМЕТА ---
       let itemsHtml = '';
       if (Array.isArray(portalData.selectedItems) && portalData.selectedItems.length) {
         itemsHtml = `<table class="a4-table"><thead><tr><th>№</th><th>Модуль / Услуга</th><th>Срок</th><th>Стоимость</th></tr></thead><tbody>`
@@ -1121,7 +1701,7 @@
         itemsHtml = `<p style="margin:10px 0;"><strong>Выбранные модули:</strong><br>${escapeHtml(portalData.modulesText || '—').replace(/\n/g, '<br>')}</p>`;
       }
       document.getElementById('overview-body').innerHTML = `
-        <div class="meta-grid" style="border-top:none; padding-top:0; margin-bottom:14px;">
+        <div class="meta-grid" style="border-top:none; padding-top:0; margin-bottom:12px;">
           <div class="meta-item"><strong>Телефон (WhatsApp)</strong><span>${escapeHtml(portalData.clientPhone || '—')}</span></div>
           <div class="meta-item"><strong>Email (для документов)</strong><span>${escapeHtml(portalData.clientEmail || '—')}</span></div>
           <div class="meta-item"><strong>Telegram</strong><span>${escapeHtml(portalData.clientTg || '—')}</span></div>
@@ -1130,7 +1710,7 @@
         ${itemsHtml}
       `;
 
-      // --- ВКЛАДКА 2: РАСПАКОВКА + ДОП. ВОПРОС ---
+      // --- ШАГ 2: РАСПАКОВКА + ДОП. ВОПРОС ---
       const hasExtra = (portalData.crmStatus || '').includes('🟠') || Boolean(portalData.deal && portalData.deal.lastExtraQuestion);
       document.getElementById('sec-extra').style.display = hasExtra ? 'block' : 'none';
       if (hasExtra) {
@@ -1153,8 +1733,8 @@
           ${ba.q8 ? `<p><strong>8. Реквизиты:</strong> ${escapeHtml(ba.q8)}</p>` : ''}
         `;
         document.getElementById('brief-next-actions').innerHTML = `
-          <button type="button" class="btn btn-outline" onclick="document.getElementById('brief-form-view').style.display='block';">✏️ Дополнить ответы брифа</button>
-          <button type="button" class="btn btn-gold" onclick="openTab('kp')">Перейти к Финальному КП →</button>
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('brief-form-view').style.display='block';">✏️ Дополнить мои ответы</button>
+          <button type="button" class="btn btn-gold" onclick="openTab('kp')">Перейти ниже к Шагу 3: Финальное КП ↓</button>
         `;
       } else {
         document.getElementById('brief-done-view').style.display = 'none';
@@ -1165,7 +1745,7 @@
       }
       renderBranchQuestions();
 
-      // --- ВКЛАДКА 3: ФИНАЛЬНОЕ КП (А4) ---
+      // --- ШАГ 3: ФИНАЛЬНОЕ КП (А4 С ПЕЧАТЬЮ И ПОДПИСЬЮ) ---
       const variants = (portalData.deal && portalData.deal.kpVariants) || [];
       const showKp = variants.length > 0 && (portalData.isAdmin || portalData.kpPublished);
       document.getElementById('kp-waiting-card').style.display = showKp ? 'none' : 'block';
@@ -1181,7 +1761,7 @@
         const chosenBanner = document.getElementById('kp-chosen-banner');
         if (chosen) {
           chosenBanner.style.display = 'block';
-          chosenBanner.innerHTML = `✅ <b>Вы уже выбрали вариант: ${escapeHtml(chosen.title)}</b> (${Number(chosen.price).toLocaleString('ru-RU')} ₸, ${chosen.days} раб. дн.). Теперь вы можете перейти во вкладку «4. Договор (А4)» или скачать КП в PDF.`;
+          chosenBanner.innerHTML = `✅ <b>Вы выбрали вариант: ${escapeHtml(chosen.title)}</b> (${Number(chosen.price).toLocaleString('ru-RU')} ₸, ${chosen.days} раб. дн.). Опускайтесь чуть ниже к Шагу 4 (Договор А4)!`;
         } else {
           chosenBanner.style.display = 'none';
         }
@@ -1207,8 +1787,7 @@
           document.getElementById('inp-reqs').value = portalData.requisites;
         }
 
-        // Админ-редактор 3 вариантов
-        if (portalData.isAdmin) {
+        if (portalData.isAdmin && portalData.isDirector !== false) {
           document.getElementById('admin-kp-editor').style.display = 'block';
           document.getElementById('admin-kp-inputs').innerHTML = variants.map((v, idx) => `
             <div style="border-bottom:1px solid #E2E8F0; padding-bottom:10px; margin-bottom:10px;">
@@ -1226,34 +1805,44 @@
         }
 
         const kpLinks = [];
-        if (portalData.kpPdfUrl) kpLinks.push(`<a href="${portalData.kpPdfUrl}" target="_blank" class="btn btn-outline">📎 PDF с Диска</a>`);
-        if (portalData.kpDocUrl && portalData.isAdmin) kpLinks.push(`<a href="${portalData.kpDocUrl}" target="_blank" class="btn btn-outline">📄 Google Док</a>`);
+        if (portalData.kpPdfUrl) kpLinks.push(`<a href="${portalData.kpPdfUrl}" target="_blank" class="btn btn-outline">📎 PDF копия</a>`);
         document.getElementById('kp-drive-links').innerHTML = kpLinks.join(' ');
 
         renderA4KpSheet(variants, chosen, dl);
       }
 
-      // --- ВКЛАДКА 4: ДОГОВОР (А4) ---
-      const showContract = portalData.isAdmin || portalData.contractPublished;
+      // --- ШАГ 4: ДОГОВОР (А4 + ОНЛАЙН-ПОДПИСЬ ИЛИ ЗАГРУЗКА СКАНА + ЧЕК) ---
+      const showContract = portalData.isAdmin || portalData.contractPublished || Boolean(portalData.deal && portalData.deal.chosenVariant);
       document.getElementById('contract-waiting-card').style.display = showContract ? 'none' : 'block';
       document.getElementById('contract-ready-wrap').style.display = showContract ? 'block' : 'none';
 
       if (showContract) {
+        initSigCanvas();
         const agreedBanner = document.getElementById('contract-agreed-banner');
-        const isAgreed = (portalData.crmStatus || '').includes('✍️') || (portalData.crmStatus || '').includes('⏳') || (portalData.crmStatus || '').includes('🟢') || (portalData.crmStatus || '').includes('✅');
+        const signedFiles = portalData.signedContractFiles || [];
+        const receiptFiles = portalData.paymentReceiptFiles || [];
+        const isAgreed = Boolean(portalData.clientSignedOnline) || signedFiles.length > 0 || (portalData.crmStatus || '').includes('✍️') || (portalData.crmStatus || '').includes('⏳') || (portalData.crmStatus || '').includes('🟢') || (portalData.crmStatus || '').includes('✅');
+
         if (isAgreed) {
           agreedBanner.style.display = 'block';
-          agreedBanner.innerHTML = `✅ <b>Договор согласован!</b> Ожидайте счёт на 100% предоплату. Вы в любой момент можете скачать окончательный текст Договора в PDF или перейти во вкладку «5. Материалы и Старт».`;
-          document.getElementById('btn-agree').innerText = '✅ Договор уже согласован';
+          agreedBanner.innerHTML = `✅ <b>Договор успешно подписан и согласован!</b> ${signedFiles.length ? `Загружен скан: <b>${escapeHtml(signedFiles[signedFiles.length-1].name)}</b>.` : 'Оформлен электронный акцепт на сайте.'} Переходите ниже к <b>Шагу 5 (Табло документов и передача материалов)</b>!`;
+          document.getElementById('btn-agree').innerText = '✅ Договор подписан онлайн';
         } else {
           agreedBanner.style.display = 'none';
-          document.getElementById('btn-agree').innerText = '✅ Договор согласован';
+          document.getElementById('btn-agree').innerText = '✅ Согласовать и подписать онлайн';
         }
+
+        document.getElementById('signed-contract-files-list').innerHTML = signedFiles.length
+          ? `<div style="color:#047857;font-weight:700;">✅ Загружено Вами:</div>` + signedFiles.map(f => `<div>• <a href="${f.url}" target="_blank">${escapeHtml(f.name)}</a></div>`).join('')
+          : '';
+        document.getElementById('receipt-files-list').innerHTML = receiptFiles.length
+          ? `<div style="color:#047857;font-weight:700;">✅ Чек прикреплён:</div>` + receiptFiles.map(f => `<div>• <a href="${f.url}" target="_blank">${escapeHtml(f.name)}</a></div>`).join('')
+          : '';
 
         document.getElementById('contract-summary').innerHTML =
           `Итоговая стоимость: <b>${Number(portalData.agreedPrice).toLocaleString('ru-RU')} ₸</b> (100% предоплата) · Срок: <b>${portalData.totalDays} раб. дн.</b> · Ближайшее окно старта: <b>${portalData.nextFreeWindow}</b>`;
 
-        if (portalData.isAdmin) {
+        if (portalData.isAdmin && portalData.isDirector !== false) {
           document.getElementById('admin-contract-controls').style.display = 'block';
           document.getElementById('adm-c-price').value = portalData.agreedPrice || 0;
           document.getElementById('adm-c-days').value = portalData.totalDays || 10;
@@ -1262,28 +1851,218 @@
         prefillRequisitesFields();
 
         const cLinks = [];
-        if (portalData.contractPdfUrl) cLinks.push(`<a href="${portalData.contractPdfUrl}" target="_blank" class="btn btn-outline">📎 PDF Договора с Диска</a>`);
-        if (portalData.contractUrl) cLinks.push(`<a href="${portalData.contractUrl}" target="_blank" class="btn btn-outline">📄 Google Док Договора</a>`);
+        if (portalData.contractPdfUrl) cLinks.push(`<a href="${portalData.contractPdfUrl}" target="_blank" class="btn btn-outline">📎 PDF Договора</a>`);
         document.getElementById('contract-drive-links').innerHTML = cLinks.join(' ');
 
         syncContractPreview();
       }
 
-      // --- ВКЛАДКА 5: МАТЕРИАЛЫ ---
+      // --- ШАГ 5: ТАБЛО ГОТОВНОСТИ ДОКУМЕНТОВ, ФАЙЛЫ И ПРЯМАЯ СВЯЗЬ ---
       const schedEl = document.getElementById('schedule-status-box');
       if (portalData.startDate) {
-        schedEl.innerHTML = `🚀 <b>Проект в графике!</b> Дата старта: <b>${portalData.startDate}</b> · Плановая дата сдачи: <b>${portalData.endDate}</b>`;
+        schedEl.innerHTML = `🚀 <b>Проект в графике Бюро!</b> Дата старта: <b>${portalData.startDate}</b> · Плановая дата сдачи: <b>${portalData.endDate}</b>`;
       } else {
-        schedEl.innerHTML = `📅 Ближайшее свободное окно в Графике Бюро: <b>${portalData.nextFreeWindow}</b>. Отсчёт срока начинается на следующий рабочий день после 100% оплаты и получения всех исходников.`;
+        schedEl.innerHTML = `📅 Ближайшее свободное окно в Графике Бюро: <b>${portalData.nextFreeWindow}</b>. Отсчёт срока разработки начинается на следующий рабочий день после оплаты и передачи исходных материалов.`;
       }
-      document.getElementById('gdrive-steps').innerHTML = d.gdSteps.map(s => `<li>${s}</li>`).join('');
+
+      renderDeliverablesSection();
+      renderFilesVaultSection();
+      renderPortalChatSection();
+    }
+
+    function computeFallbackProgress(data) {
+      const s = data.crmStatus || '';
+      if (s.includes('✅')) return 100;
+      if (s.includes('🟢') || s.includes('📅')) return 75;
+      if (s.includes('⏳')) return 65;
+      if (s.includes('✍️')) return 58;
+      if (s.includes('📄')) return 48;
+      if (s.includes('🤝')) return 40;
+      if (s.includes('💼')) return 32;
+      if (data.deal && data.deal.briefAnswers) return 22;
+      return 12;
+    }
+
+    function renderEventsLog() {
+      const logs = (portalData && Array.isArray(portalData.eventsLog)) ? portalData.eventsLog : [];
+      const fallbackLogs = [];
+      if (portalData.createdAt) fallbackLogs.push({ at: portalData.createdAt, text: `Сформирована заявка и смета № ${portalData.kpNumber}` });
+      if (portalData.deal && portalData.deal.briefAnswers) fallbackLogs.push({ at: 'Шаг 2', text: 'Распаковка проекта передана руководителю Бюро' });
+      if (portalData.kpPublished) fallbackLogs.push({ at: portalData.kpSignedAt || 'Шаг 3', text: 'Опубликовано Финальное КП с печатью ТОО «Метод и Ко»' });
+      if (portalData.contractPublished) fallbackLogs.push({ at: portalData.contractSignedAt || 'Шаг 4', text: 'Сформирован и подписан со стороны Исполнителя Договор авторского заказа' });
+      const list = logs.length ? logs : fallbackLogs.reverse();
+
+      document.getElementById('events-count-badge').innerText = String(list.length);
+      document.getElementById('events-list-body').innerHTML = list.length
+        ? list.map(ev => `<div style="padding:7px 0; border-bottom:1px dashed #E2E8F0;"><b>${escapeHtml(ev.at)}:</b> ${escapeHtml(ev.text)}</div>`).join('')
+        : '<p style="color:var(--muted);">Событий пока нет.</p>';
+    }
+
+    function renderDeliverablesSection() {
+      const list = (portalData && Array.isArray(portalData.deliverables) && portalData.deliverables.length)
+        ? portalData.deliverables
+        : [
+            { id: 'doc_1', title: 'Основной методический комплект по ТЗ (' + (portalData.category || 'Проект') + ')', status: 'pending', progress: 0, fileUrl: '', fileName: '', staffNote: '' },
+            { id: 'doc_avr', title: 'Итоговый пакет и Акт выполненных работ (АВР)', status: 'pending', progress: 0, fileUrl: '', fileName: '', staffNote: '' }
+          ];
+
+      const statusBadgeMap = {
+        pending: '<span class="stage-pill">⏳ В очереди (0%)</span>',
+        in_progress: '<span class="stage-pill" style="background:#DBEAFE;color:#1E40AF;">🔨 В разработке</span>',
+        review: '<span class="stage-pill cur">🟠 Готово — ждёт Вашего утверждения!</span>',
+        approved: '<span class="stage-pill done">✅ Утверждено и готово (100%)</span>',
+        revision: '<span class="stage-pill" style="background:#FEF3C7;color:#92400E;">✏️ Вносятся правки по вашему комментарию</span>'
+      };
+
+      document.getElementById('deliverables-table-wrap').innerHTML = list.map((doc, idx) => {
+        const badge = statusBadgeMap[doc.status] || statusBadgeMap.pending;
+        const pct = Math.min(100, Math.max(0, Number(doc.progress || 0)));
+        const cls = doc.status === 'review' ? 'review' : (doc.status === 'approved' ? 'approved' : '');
+        const downloadBtn = doc.fileUrl
+          ? `<a href="${doc.fileUrl}" target="_blank" class="btn btn-gold" style="padding:7px 13px;font-size:12.5px;">📥 Скачать документ (${escapeHtml(doc.fileName || 'Файл')})</a>`
+          : '';
+        const clientReviewBtns = (doc.status === 'review' || (doc.fileUrl && doc.status !== 'approved'))
+          ? `
+            <button type="button" class="btn btn-green" style="padding:7px 13px;font-size:12.5px;" onclick="clientReviewDeliverable('${escapeHtml(doc.id)}', 'approve', this)">✅ Утверждаю документ</button>
+            <button type="button" class="btn btn-outline" style="padding:7px 13px;font-size:12.5px;" onclick="promptDeliverableRevision('${escapeHtml(doc.id)}', this)">✏️ Нужны правки</button>
+          `
+          : '';
+
+        return `
+          <div class="deliv-row ${cls}">
+            <div style="flex:1; min-width:250px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+                <strong style="color:var(--navy); font-size:14.5px;">${idx + 1}. ${escapeHtml(doc.title)}</strong>
+                ${badge}
+              </div>
+              <div class="progress-track" style="height:7px; max-width:340px; margin:6px 0;">
+                <div class="progress-fill" style="width:${pct}%;"></div>
+              </div>
+              <div style="font-size:12px; color:var(--muted);">Готовность документа: <b>${pct}%</b>${doc.updatedAt ? ` · Обновлено: ${escapeHtml(doc.updatedAt)}` : ''}</div>
+              ${doc.staffNote ? `<div style="font-size:12.8px; color:#1E3A8A; margin-top:4px;">💬 <b>Комментарий Бюро:</b> ${escapeHtml(doc.staffNote)}</div>` : ''}
+              ${doc.clientComment ? `<div style="font-size:12.5px; color:#92400E; margin-top:4px;">✍️ <b>Ваш комментарий:</b> ${escapeHtml(doc.clientComment)}</div>` : ''}
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              ${downloadBtn}
+              ${clientReviewBtns}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (portalData.isAdmin) {
+        document.getElementById('staff-deliverable-editor').style.display = 'block';
+        const sel = document.getElementById('st-deliv-select');
+        sel.innerHTML = list.map(d => `<option value="${escapeHtml(d.id)}">${escapeHtml(d.title)} (${d.progress || 0}%)</option>`).join('')
+          + `<option value="__new__">➕ Добавить новый документ в заказ...</option>`;
+        onSelectStaffDeliverable();
+      }
+    }
+
+    function onSelectStaffDeliverable() {
+      const sel = document.getElementById('st-deliv-select');
+      if (!sel || !portalData) return;
+      const list = portalData.deliverables || [];
+      const found = list.find(d => String(d.id) === String(sel.value));
+      if (found) {
+        document.getElementById('st-deliv-title').value = found.title || '';
+        document.getElementById('st-deliv-status').value = found.status || 'in_progress';
+        document.getElementById('st-deliv-prog').value = found.progress || 50;
+        document.getElementById('st-deliv-note').value = found.staffNote || '';
+      } else {
+        document.getElementById('st-deliv-title').value = '';
+        document.getElementById('st-deliv-status').value = 'review';
+        document.getElementById('st-deliv-prog').value = 100;
+        document.getElementById('st-deliv-note').value = '';
+      }
+    }
+
+    function renderFilesVaultSection() {
       if (portalData.clientMaterialsUrl && !document.getElementById('inp-drive').value) {
         document.getElementById('inp-drive').value = portalData.clientMaterialsUrl;
       }
-      const upList = portalData.uploadedMaterials || [];
+      const upList = []
+        .concat((portalData.signedContractFiles || []).map(f => Object.assign({ tag: 'Подписанный договор' }, f)))
+        .concat((portalData.paymentReceiptFiles || []).map(f => Object.assign({ tag: 'Чек оплаты' }, f)))
+        .concat((portalData.uploadedMaterials || []).map(f => Object.assign({ tag: 'Материал' }, f)));
+
       document.getElementById('uploaded-files-list').innerHTML = upList.length
-        ? `<b>Загруженные файлы:</b><ul style="margin:6px 0 0 18px;">` + upList.map(u => `<li><a href="${u.url}" target="_blank">${escapeHtml(u.name)}</a> <span style="color:var(--muted);">(${escapeHtml(u.uploadedAt)})</span></li>`).join('') + `</ul>`
-        : '';
+        ? `<b>Ваши загруженные файлы (${upList.length}):</b><ul style="margin:6px 0 0 18px;">`
+          + upList.map(u => `<li><span style="font-size:11px;background:#E2E8F0;padding:1px 6px;border-radius:4px;">${escapeHtml(u.tag)}</span> <a href="${u.url}" target="_blank" style="font-weight:600;">${escapeHtml(u.name)}</a> <span style="color:var(--muted);font-size:11.5px;">(${escapeHtml(u.uploadedAt || '')})</span></li>`).join('')
+          + `</ul>`
+        : '<span style="color:var(--muted);">Вы ещё не загружали файлы.</span>';
+
+      // Готовые файлы от Бюро (КП, Договор, файлы из Табло и файлы из папки 04_Наши_разработки_и_Сдача)
+      const readyItems = [];
+      if (portalData.kpPublished) {
+        readyItems.push({
+          title: `Финальное КП № ${portalData.kpNumber} (с печатью ТОО «Метод и Ко»)`,
+          actionHtml: `<button type="button" class="btn btn-outline" style="padding:5px 10px;font-size:12px;" onclick="printSheet('kp')">📥 Скачать PDF</button>`
+        });
+      }
+      if (portalData.contractPublished || (portalData.deal && portalData.deal.chosenVariant)) {
+        readyItems.push({
+          title: `Договор авторского заказа № ${portalData.kpNumber} (с печатью ТОО «Метод и Ко»)`,
+          actionHtml: `<button type="button" class="btn btn-outline" style="padding:5px 10px;font-size:12px;" onclick="printSheet('contract')">📥 Скачать PDF</button>`
+        });
+      }
+      (portalData.deliverables || []).forEach(d => {
+        if (d.fileUrl) {
+          readyItems.push({
+            title: `${d.title} (${d.progress || 100}%)`,
+            actionHtml: `<a href="${d.fileUrl}" target="_blank" class="btn btn-gold" style="padding:5px 10px;font-size:12px;">📥 Скачать файл</a>`
+          });
+        }
+      });
+      (portalData.readyFilesFromDrive || []).forEach(rf => {
+        const alreadyListed = (portalData.deliverables || []).some(d => d.fileUrl === rf.url);
+        if (!alreadyListed) {
+          readyItems.push({
+            title: `Готовый файл: ${rf.name}`,
+            actionHtml: `<a href="${rf.url}" target="_blank" class="btn btn-gold" style="padding:5px 10px;font-size:12px;">📥 Скачать</a>`
+          });
+        }
+      });
+
+      document.getElementById('ready-vault-files-list').innerHTML = readyItems.length
+        ? readyItems.map(it => `
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; background:#fff; border:1px solid #A7F3D0; border-radius:8px; padding:8px 11px; margin-bottom:7px;">
+              <span style="font-weight:600; color:#065F46; font-size:13px;">📄 ${escapeHtml(it.title)}</span>
+              ${it.actionHtml}
+            </div>
+          `).join('')
+        : '<p style="color:#047857; font-size:13px;">Готовые документы будут появляться здесь автоматически по мере выполнения этапов.</p>';
+    }
+
+    function renderPortalChatSection() {
+      const box = document.getElementById('portal-chat-box');
+      if (!box) return;
+      const msgs = (portalData && Array.isArray(portalData.messages)) ? portalData.messages.slice() : [];
+      if (msgs.length === 0 && portalData.deal && portalData.deal.lastExtraQuestion) {
+        msgs.push({
+          senderRole: 'director',
+          senderName: 'Наталья Коденцева (Руководитель Бюро)',
+          text: portalData.deal.lastExtraQuestion,
+          createdAt: 'Сообщение по проекту'
+        });
+      }
+      if (msgs.length === 0) {
+        box.innerHTML = `<p style="color:var(--muted); font-size:13px; text-align:center; padding:12px 0;">Здесь будет отображаться вся история ваших сообщений и согласований с Бюро «МЕТОДИКО».</p>`;
+        return;
+      }
+      box.innerHTML = msgs.map(m => {
+        const isClient = m.senderRole === 'client';
+        return `
+          <div class="chat-msg ${isClient ? 'client' : 'staff'}">
+            <div style="font-size:11.5px; font-weight:700; color:${isClient ? '#065F46' : '#1E40AF'}; margin-bottom:3px;">
+              ${escapeHtml(m.senderName || (isClient ? 'Вы' : 'Бюро МЕТОДИКО'))} · <span style="font-weight:400; color:var(--muted);">${escapeHtml(m.createdAt || '')}</span>
+            </div>
+            <div>${escapeHtml(m.text || '').replace(/\n/g, '<br>')}</div>
+            ${m.fileUrl ? `<div style="margin-top:6px;"><a href="${m.fileUrl}" target="_blank" style="font-weight:700; color:#1D4ED8;">📎 Открыть прикреплённый файл: ${escapeHtml(m.fileName || 'Документ')}</a></div>` : ''}
+          </div>
+        `;
+      }).join('');
+      box.scrollTop = box.scrollHeight;
     }
 
     function prefillRequisitesFields() {
@@ -1324,41 +2103,59 @@
       };
     }
 
+    function buildDirectorStampHtml(docTitle, signedAtStr) {
+      const dt = signedAtStr || new Date().toLocaleDateString('ru-RU');
+      return `
+        <div style="text-align:right;">
+          <img src="assets/metodico_stamp_sign.png" alt="Печать и подпись ТОО Метод и Ко" class="stamp-sign-img" style="margin-left:auto;">
+          <div style="font-size:10.5px; color:#1E3A8A; font-weight:700;">
+            ✅ Утверждено и подписано: Директор Коденцева Н.М. (${escapeHtml(dt)})<br>
+            <span style="font-weight:500; color:#64748B;">Реестровый № ${escapeHtml(portalData.kpNumber)} • Подлинность подтверждена в системе МЕТОДИКО</span>
+          </div>
+        </div>
+      `;
+    }
+
     function renderA4KpSheet(variants, chosen, dl) {
+      const cleanPortalUrl = getCleanClientPortalUrl();
       const html = `
+        <div class="a4-return-link-bar">
+          <span>🔗 <b>Личный кабинет этого заказа на сайте (выбор варианта, Договор и готовые файлы):</b></span>
+          <a href="${cleanPortalUrl}">${cleanPortalUrl}</a>
+        </div>
         <div class="a4-head">
           <div class="a4-brand">
             <img src="assets/Metodico_logo_gold.png" alt="МЕТОДИКО">
             <div>
               <div style="font-size:16px;font-weight:800;color:#152238;">ТОО «Метод и Ко»</div>
               <div style="font-size:11px;color:#A68216;font-weight:700;text-transform:uppercase;">Бюро стандартов и симуляторов «МЕТОДИКО»</div>
-              <div style="font-size:11px;color:#64748B;">г. Алматы • metodico-kz.netlify.app • +7 (700) 077-35-66</div>
+              <div style="font-size:11px;color:#64748B;">БИН 231140018015 • г. Алматы • metodico-kz.netlify.app • +7 (700) 077-35-66</div>
             </div>
           </div>
           <div style="text-align:right;font-size:12.5px;">
             <div><b>Финальное КП №:</b> ${escapeHtml(portalData.kpNumber)}</div>
             <div><b>Действует до:</b> ${escapeHtml(dl)}</div>
-            <div><b>Статус:</b> ${chosen ? 'Выбран вариант №' + chosen.id : 'На выборе заказчика'}</div>
+            <div><b>Статус:</b> ${chosen ? 'Выбран вариант №' + chosen.id : 'Утверждено к выбору'}</div>
           </div>
         </div>
-        <h2 style="font-size:17px;color:#152238;margin-bottom:10px;">ФИНАЛЬНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ</h2>
+        <h2 style="font-size:16.5px;color:#152238;margin-bottom:10px;">ФИНАЛЬНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ</h2>
         <p style="margin-bottom:12px;">
-          <b>Кому:</b> <span class="a4-edit-field">${escapeHtml(portalData.clientName)} (${escapeHtml(portalData.clientOrg)})</span><br>
+          <b>Заказчик:</b> <span class="a4-edit-field">${escapeHtml(portalData.clientName)} (${escapeHtml(portalData.clientOrg)})</span><br>
           <b>Направление:</b> ${escapeHtml(portalData.category)} | <b>Язык материалов:</b> ${escapeHtml(portalData.devLanguage)}
         </p>
         <table class="a4-table">
           <thead>
             <tr>
               <th style="width:36px;">№</th>
-              <th style="width:170px;">Пакет</th>
-              <th>Состав работ и результат</th>
+              <th style="width:170px;">Пакет комплектации</th>
+              <th>Состав работ и передаваемый результат</th>
               <th style="width:90px;">Срок</th>
-              <th style="width:120px;">Стоимость</th>
+              <th style="width:125px;">Стоимость</th>
             </tr>
           </thead>
           <tbody>
             ${variants.map(v => {
-              const mark = (chosen && Number(chosen.id) === Number(v.id)) ? ' <span style="color:#047857;font-weight:800;">[ВЫБРАНО]</span>' : '';
+              const mark = (chosen && Number(chosen.id) === Number(v.id)) ? ' <span style="color:#047857;font-weight:800;">[ВЫБРАН ЗАКАЗЧИКОМ]</span>' : '';
               return `<tr>
                 <td><b>${v.id}</b></td>
                 <td><b>${escapeHtml(v.title)}</b>${mark}</td>
@@ -1369,18 +2166,16 @@
             }).join('')}
           </tbody>
         </table>
-        <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:12px;border-radius:6px;font-size:12.5px;margin:14px 0;">
-          <b>Условия работы и оплаты:</b> 100% предоплата (без НДС). Отсчёт срока начинается со следующего рабочего дня после поступления оплаты и передачи полного пакета исходных материалов. Формат оказания услуг — 100% дистанционный (электронные файлы, ЭСФ, АВР).
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:11px;border-radius:6px;font-size:12px;margin:12px 0;">
+          <b>Порядок работы и расчётов:</b> 100% предоплата (без НДС). Отсчёт срока начинается со следующего рабочего дня после поступления оплаты на расчётный счёт ТОО «Метод и Ко» (АО «Kaspi Bank») и передачи полного пакета исходных материалов. Формат оказания услуг — 100% дистанционный (электронные файлы, ЭСФ, АВР).
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;padding-top:12px;border-top:1px solid #CBD5E1;font-size:12.5px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-top:18px;padding-top:12px;border-top:1px solid #CBD5E1;font-size:12.5px;">
           <div>
             <b>Исполнитель:</b> ТОО «Метод и Ко» (БИН 231140018015)<br>
-            Директор: Коденцева Наталья Михайловна
+            ИИК: KZ54722S000031140138 в АО «Kaspi Bank» (БИК CASPKZKA)<br>
+            Директор: <b>Коденцева Наталья Михайловна</b>
           </div>
-          <div style="text-align:right;">
-            ____________________ / Коденцева Н.М. /<br>
-            <span style="font-size:11px;color:#64748B;">М.П.</span>
-          </div>
+          ${buildDirectorStampHtml('КП', portalData.kpSignedAt)}
         </div>
       `;
       document.getElementById('a4-kp-content').innerHTML = html;
@@ -1390,10 +2185,10 @@
       if (!portalData) return;
       const r = collectRequisitesObj();
       const customNotes = document.getElementById('req-notes').value.trim();
-      const priceVal = portalData.isAdmin && document.getElementById('adm-c-price').value
+      const priceVal = (portalData.isAdmin && document.getElementById('adm-c-price') && document.getElementById('adm-c-price').value)
         ? Number(document.getElementById('adm-c-price').value)
         : Number(portalData.agreedPrice || portalData.sitePrice || 0);
-      const daysVal = portalData.isAdmin && document.getElementById('adm-c-days').value
+      const daysVal = (portalData.isAdmin && document.getElementById('adm-c-days') && document.getElementById('adm-c-days').value)
         ? Number(document.getElementById('adm-c-days').value)
         : Number(portalData.totalDays || 10);
 
@@ -1403,6 +2198,7 @@
       const chosen = (portalData.deal && portalData.deal.chosenVariant) || {};
       const pkgText = chosen.title ? `${chosen.title}: ${chosen.scope || ''}` : (portalData.modulesText || portalData.category);
       const customSavedBody = portalData.deal && portalData.deal.contractCustomBodyHtml;
+      const cleanPortalUrl = getCleanClientPortalUrl();
 
       const defaultBody = `
         <div class="contract-section">
@@ -1413,7 +2209,7 @@
           <p>1.1. Исполнитель обязуется по заданию Заказчика оказать комплекс научно-методических, проектных и учебно-аналитических услуг («Работы»), а Заказчик обязуется принять результат надлежаще выполненных Работ и оплатить их.</p>
           <p>1.2. Направление: <b>${escapeHtml(portalData.category)}</b> | Язык разработки материалов: <b>${escapeHtml(portalData.devLanguage)}</b>.</p>
           <p>1.3. Согласованный состав работ (ТЗ по заявке № ${escapeHtml(portalData.kpNumber)}): <b>${escapeHtml(pkgText)}</b>.</p>
-          <p>1.4. Формат оказания услуг: <b>100% дистанционный (удалённый)</b>. Результаты передаются в электронном виде (DOCX, XLSX, PDF, HTML) через Google Диск и электронную почту.</p>
+          <p>1.4. Формат оказания услуг: <b>100% дистанционный (удалённый)</b>. Результаты передаются в электронном виде через Личный кабинет Заказчика на сайте Исполнителя.</p>
         </div>
         <div class="contract-section">
           <h4>2. СТОИМОСТЬ РАБОТ И ПОРЯДОК РАСЧЁТОВ</h4>
@@ -1429,7 +2225,7 @@
         </div>
         <div class="contract-section">
           <h4>4. ПОРЯДОК СДАЧИ И АВТОМАТИЧЕСКОЙ ПРИЁМКИ</h4>
-          <p>4.1. По завершении Работ Исполнитель загружает готовые материалы в проектную папку и направляет АВР. Заказчик в течение 3 (трёх) рабочих дней подписывает АВР либо направляет мотивированный отказ с указанием несоответствий ТЗ.</p>
+          <p>4.1. По завершении Работ Исполнитель загружает готовые материалы в Личный кабинет Заказчика и направляет АВР. Заказчик в течение 3 (трёх) рабочих дней подписывает АВР либо направляет мотивированный отказ с указанием несоответствий ТЗ.</p>
           <p>4.2. При отсутствии ответа в течение 3 рабочих дней Работы считаются принятыми Заказчиком в полном объёме без замечаний (автоприёмка).</p>
         </div>
         <div class="contract-section">
@@ -1439,8 +2235,9 @@
           <p>5.3. Исполнитель гарантирует соответствие материалов ТЗ и стандартам, но не несёт ответственности за коммерческие продажи Заказчика и субъективные решения внешних комиссий. Согласно ст. 963 ГК РК возврат средств за качественно выполненные интеллектуальные работы не предусмотрен.</p>
         </div>
         <div class="contract-section">
-          <h4>6. РАЗРЕШЕНИЕ СПОРОВ</h4>
-          <p>6.1. Обязательный досудебный претензионный порядок — 10 рабочих дней; при недостижении согласия — СМЭС г. Алматы по праву РК. Электронные/сканированные копии Договора и АВР имеют полную юридическую силу.</p>
+          <h4>6. ЮРИДИЧЕСКАЯ СИЛА ЭЛЕКТРОННОГО ПОДПИСАНИЯ И РАЗРЕШЕНИЕ СПОРОВ</h4>
+          <p>6.1. Обязательный досудебный претензионный порядок — 10 рабочих дней; при недостижении согласия — СМЭС г. Алматы по праву РК.</p>
+          <p>6.2. В соответствии с п. 2 ст. 152 и п. 3 ст. 396 Гражданского кодекса РК Стороны признают полную юридическую силу настоящего Договора и Приложений, подписанных с использованием факсимильного воспроизведения печати и подписи Исполнителя, электронного акцепта Заказчиком в Личном кабинете на сайте Исполнителя (<code>metodico-kz.netlify.app</code>), обмена скан-копиями, а также подтверждённых оплатой счёта на расчётный счёт ТОО «Метод и Ко» (ИИК KZ54722S000031140138 в АО «Kaspi Bank»). Оттиск печати Исполнителя действителен исключительно при регистрации номера Договора в базе Исполнителя.</p>
         </div>
       `;
 
@@ -1448,13 +2245,35 @@
         ? `<div class="contract-section"><h4>7. ОСОБЫЕ УСЛОВИЯ И ДОПОЛНЕНИЯ СТОРОН</h4><p>${escapeHtml(customNotes).replace(/\n/g, '<br>')}</p></div>`
         : '';
 
+      const signedFiles = portalData.signedContractFiles || [];
+      let clientStampHtml = `<div style="margin-top:16px;">Подписант: ____________________ / <b>${escapeHtml(signerTxt)}</b> /<br><span style="font-size:11px;color:#64748B;">М.П. (при наличии)</span></div>`;
+
+      if (portalData.clientSignedOnline || signedFiles.length > 0 || (portalData.crmStatus || '').includes('✍️')) {
+        const sigImgHtml = portalData.clientSignatureDataUrl
+          ? `<img src="${portalData.clientSignatureDataUrl}" alt="Подпись Заказчика" style="max-height:58px; display:block; margin:4px 0;">`
+          : '';
+        clientStampHtml = `
+          ${sigImgHtml}
+          <div class="e-stamp-box">
+            <b>✅ ДОГОВОР ПОДПИСАН И АКЦЕПТОВАН ЗАКАЗЧИКОМ</b><br>
+            Организация: <b>${escapeHtml(orgTxt)}</b> (БИН/ИИН: ${escapeHtml(r.binIin || '—')})<br>
+            Подписант: <b>${escapeHtml(signerTxt)}</b><br>
+            Дата акцепта: ${escapeHtml(portalData.clientSignedAt || new Date().toLocaleDateString('ru-RU'))} · Код: <code>${escapeHtml(portalData.kpNumber)}</code>
+          </div>
+        `;
+      }
+
       const html = `
+        <div class="a4-return-link-bar">
+          <span>🔗 <b>Постоянная ссылка на этот Договор и обмен файлами в Личном кабинете:</b></span>
+          <a href="${cleanPortalUrl}">${cleanPortalUrl}</a>
+        </div>
         <div class="a4-head">
           <div class="a4-brand">
             <img src="assets/Metodico_logo_gold.png" alt="МЕТОДИКО">
             <div>
               <div style="font-size:15.5px;font-weight:800;color:#152238;">ДОГОВОР АВТОРСКОГО ЗАКАЗА № ${escapeHtml(portalData.kpNumber)}</div>
-              <div style="font-size:12px;color:#64748B;">г. Алматы • Бюро стандартов «МЕТОДИКО» (ТОО «Метод и Ко»)</div>
+              <div style="font-size:12px;color:#64748B;">г. Алматы • Бюро стандартов «МЕТОДИКО» (ТОО «Метод и Ко», БИН 231140018015)</div>
             </div>
           </div>
           <div style="text-align:right;font-size:12.5px;">
@@ -1477,8 +2296,8 @@
                 Банк: АО «Kaspi Bank»<br>
                 ИИК (IBAN): KZ54722S000031140138<br>
                 БИК: CASPKZKA | КБе: 17<br>
-                Тел.: +7 (700) 077-35-66<br><br>
-                Директор: ____________ / <b>Коденцева Н.М.</b> /
+                Тел.: +7 (700) 077-35-66<br>
+                ${buildDirectorStampHtml('Договор', portalData.contractSignedAt)}
               </td>
               <td>
                 <b>${escapeHtml(orgTxt)}</b><br>
@@ -1487,8 +2306,8 @@
                 Банк: ${escapeHtml(r.bankName || '________________')}<br>
                 ИИК (IBAN): ${escapeHtml(r.iban || '________________')}<br>
                 БИК: ${escapeHtml(r.bik || '________')} | КБе: ${escapeHtml(r.kbe || '__')}<br>
-                Тел.: ${escapeHtml(r.phone || '—')} | Email: ${escapeHtml(r.email || '—')}<br><br>
-                Подписант: ____________ / <b>${escapeHtml(signerTxt)}</b> /
+                Тел.: ${escapeHtml(r.phone || '—')} | Email: ${escapeHtml(r.email || '—')}<br>
+                ${clientStampHtml}
               </td>
             </tr>
           </tbody>
@@ -1505,7 +2324,7 @@
           f.setAttribute('contenteditable', editing ? 'false' : 'true');
           f.classList.toggle('a4-editable-active', !editing);
         });
-        btn.innerText = editing ? '✏️ Редактировать поля в А4' : '✅ Закончить правку А4';
+        btn.innerText = editing ? '✏️ Поправить получателя в А4' : '✅ Закончить правку А4';
         return;
       }
       const box = document.getElementById('a4-contract-body-editable');
@@ -1515,7 +2334,7 @@
       box.classList.toggle('a4-editable-active', !isEditing);
       btn.innerText = isEditing ? '✏️ Править текст А4 вручную' : '✅ Закончить правку текста А4';
       if (!isEditing) {
-        showToast('✏️ Включено прямое редактирование текста Договора А4. После правки нажмите «💾 Сохранить реквизиты и правки в Договор».', 'info');
+        showToast('✏️ Включено прямое редактирование текста Договора А4. После правки нажмите «💾 Сохранить вписанные реквизиты в Договор А4».', 'info');
       }
     }
 
@@ -1526,42 +2345,256 @@
       setTimeout(() => document.body.classList.remove('print-kp', 'print-contract'), 500);
     }
 
-    async function loadPortal(silent) {
-      if (!kpParam || !tokenParam) {
-        if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
+    // ==================== ВХОД ПО НОМЕРУ ТЕЛЕФОНА ====================
+    async function findOrderByPhoneAction(btn) {
+      const inp = document.getElementById('login-phone-inp');
+      const raw = (inp ? inp.value : '').trim();
+      const resBox = document.getElementById('phone-login-results');
+      if (!raw || raw.length < 4) {
+        showToast('⚠️ Введите ваш номер телефона (10–11 цифр) или номер заказа MK-...', 'err');
         return;
       }
+      const origTxt = btn ? btn.innerText : '';
+      if (btn) { btn.disabled = true; btn.innerText = '⏳ Ищем ваш заказ...'; }
+      resBox.innerHTML = '';
+
+      try {
+        const isKp = raw.toUpperCase().startsWith('MK-');
+        const qs = isKp ? `kp=${encodeURIComponent(raw)}` : `phone=${encodeURIComponent(raw)}`;
+        const resp = await fetch(`${API_URL}?action=find_by_phone&${qs}`);
+        const data = await resp.json();
+
+        if (data && data.status === 'ok' && Array.isArray(data.orders) && data.orders.length > 0) {
+          if (data.orders.length === 1) {
+            window.location.href = data.orders[0].portalUrl;
+            return;
+          }
+          resBox.innerHTML = `<div style="font-weight:700; color:var(--navy); margin-bottom:8px;">Найдено заказов (${data.orders.length}) — выберите нужный:</div>`
+            + data.orders.map(o => `
+                <div style="border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:#F8FAFC;">
+                  <div>
+                    <strong>${escapeHtml(o.kpNumber)} — ${escapeHtml(o.clientName)}</strong> (${escapeHtml(o.clientOrg)})<br>
+                    <span style="font-size:12.5px; color:var(--muted);">${escapeHtml(o.crmStatus)} · Готовность: ${o.progressPercent || 15}%</span>
+                  </div>
+                  <a href="${o.portalUrl}" class="btn btn-gold">Открыть заказ →</a>
+                </div>
+              `).join('');
+          return;
+        }
+      } catch (e) {}
+
+      // Резервный поиск в локальной памяти этого браузера
+      try {
+        const cleanDigits = raw.replace(/[^\d]/g, '').slice(-10);
+        const activeSaved = JSON.parse(localStorage.getItem('metodiko_active_portal') || 'null');
+        if (activeSaved && activeSaved.portalUrl) {
+          const savedDigits = String(activeSaved.clientPhone || '').replace(/[^\d]/g, '').slice(-10);
+          if ((cleanDigits && savedDigits === cleanDigits) || String(activeSaved.kpNumber || '').toUpperCase() === raw.toUpperCase()) {
+            window.location.href = activeSaved.portalUrl;
+            return;
+          }
+        }
+      } catch (e) {}
+
+      resBox.innerHTML = `<div class="notice-box" style="margin-bottom:0;">⚠️ Заказ с таким номером телефона не найден. Проверьте введённые цифры или <a href="index.html#calculator" style="font-weight:700;color:var(--navy);">оформите расчёт сметы на главной странице</a>.</div>`;
+      if (btn) { btn.disabled = false; btn.innerText = origTxt; }
+    }
+
+    // ==================== ЗАГРУЗКА ШТАБА БЮРО (ДЛЯ НАТАЛЬИ И ПОМОЩНИЦЫ) ====================
+    async function loadStaffHub() {
+      document.getElementById('loading-card').style.display = 'block';
+      try {
+        const res = await fetch(`${API_URL}?action=staff_dashboard&staff=${encodeURIComponent(staffParam)}`);
+        const data = await res.json();
+        document.getElementById('loading-card').style.display = 'none';
+        if (!data || data.status !== 'ok') {
+          document.getElementById('phone-login-card').style.display = 'block';
+          showToast('⚠️ Ссылка Штаба недействительна или скрипт ещё не обновлён в Google Таблице.', 'err');
+          return;
+        }
+        staffHubData = data;
+        document.getElementById('staff-hub-root').style.display = 'block';
+        renderStaffHub();
+      } catch (e) {
+        document.getElementById('loading-card').style.display = 'none';
+        document.getElementById('phone-login-card').style.display = 'block';
+      }
+    }
+
+    function setHubFilter(f) {
+      hubFilter = f;
+      renderStaffHubList();
+    }
+
+    function renderStaffHub() {
+      if (!staffHubData) return;
+      const isDir = staffHubData.role === 'director';
+      document.getElementById('hub-role-title').innerText = isDir
+        ? '👑 Штаб Бюро «МЕТОДИКО» — Режим Руководителя (Наталья Коденцева)'
+        : '👩‍💼 Штаб Бюро «МЕТОДИКО» — Режим Куратора проектов (Помощница)';
+
+      const topBtns = [];
+      if (isDir && staffHubData.assistantHubUrl) {
+        topBtns.push(`<button type="button" class="btn btn-gold" onclick="navigator.clipboard.writeText('${staffHubData.assistantHubUrl}');alert('Ссылка для Помощницы скопирована! Отправьте её вашей помощнице.');">👩‍💼 Скопировать ссылку для Помощницы</button>`);
+      }
+      document.getElementById('hub-top-actions').innerHTML = topBtns.join('');
+
+      const orders = staffHubData.orders || [];
+      const activeOrders = orders.filter(o => !(o.crmStatus || '').includes('✅'));
+      const attOrders = orders.filter(o => o.needsAttention);
+      const q = staffHubData.queue || { usedPoints: 0, nextFreeWindow: '—' };
+
+      document.getElementById('hub-metrics-grid').innerHTML = `
+        <div class="meta-item"><strong>Всего заказов в базе</strong><span style="font-size:18px;font-weight:800;color:var(--navy);">${orders.length}</span></div>
+        <div class="meta-item"><strong>В работе и согласовании</strong><span style="font-size:18px;font-weight:800;color:#1D4ED8;">${activeOrders.length}</span></div>
+        <div class="meta-item"><strong>🔥 Ждут нашего ответа / файла</strong><span style="font-size:18px;font-weight:800;color:#DC2626;">${attOrders.length}</span></div>
+        <div class="meta-item"><strong>Загрузка Бюро / Ближайшее окно</strong><span style="font-size:15px;font-weight:700;color:var(--green);">${q.usedPoints} из 10 б. · ${escapeHtml(q.nextFreeWindow)}</span></div>
+      `;
+
+      renderStaffHubList();
+    }
+
+    function renderStaffHubList() {
+      if (!staffHubData) return;
+      const qStr = (document.getElementById('hub-search-inp').value || '').trim().toLowerCase();
+      let list = (staffHubData.orders || []).slice();
+      if (hubFilter === 'attention') list = list.filter(o => o.needsAttention);
+      if (hubFilter === 'active') list = list.filter(o => !(o.crmStatus || '').includes('✅'));
+      if (qStr) {
+        list = list.filter(o =>
+          String(o.kpNumber || '').toLowerCase().includes(qStr) ||
+          String(o.clientName || '').toLowerCase().includes(qStr) ||
+          String(o.clientOrg || '').toLowerCase().includes(qStr) ||
+          String(o.clientPhone || '').toLowerCase().includes(qStr)
+        );
+      }
+
+      const container = document.getElementById('hub-orders-list');
+      if (list.length === 0) {
+        container.innerHTML = `<div class="card"><p style="color:var(--muted);">Заказов по выбранному фильтру нет.</p></div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(o => {
+        const docsHtml = (o.deliverables || []).map(d => {
+          const ic = d.status === 'approved' ? '✅' : (d.status === 'review' ? '🟠' : (d.status === 'in_progress' ? '🔨' : '⏳'));
+          return `<span class="stage-pill" style="margin-right:4px;margin-bottom:4px;display:inline-block;">${ic} ${escapeHtml(d.title)}: ${d.progress || 0}%</span>`;
+        }).join('');
+        const waDigits = String(o.clientPhone || '').replace(/[^\d]/g, '');
+        const waLink = waDigits.length >= 10 ? `https://wa.me/${waDigits}` : '';
+
+        return `
+          <div class="hub-order-card ${o.needsAttention ? 'attention' : ''}">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+              <div>
+                <span class="kp-badge">${escapeHtml(o.kpNumber)}</span>
+                ${o.needsAttention ? `<span class="stage-pill cur">🔥 Клиент ждёт проверки / ответа!</span>` : ''}
+                <h3 style="font-size:16.5px; color:var(--navy); margin-top:4px;">${escapeHtml(o.clientName)} (${escapeHtml(o.clientOrg)})</h3>
+                <div style="font-size:13px; color:var(--muted);">
+                  ${escapeHtml(o.category)} · ${escapeHtml(o.devLanguage)} · 📞 ${escapeHtml(o.clientPhone)} · 📧 ${escapeHtml(o.clientEmail)}
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div class="status-pill" style="margin-bottom:6px;">${escapeHtml(o.crmStatus)}</div>
+                <div style="font-size:14px; font-weight:800; color:var(--navy);">${Number(o.agreedPrice || 0).toLocaleString('ru-RU')} ₸ · ${o.totalDays} раб. дн.</div>
+              </div>
+            </div>
+
+            <div class="progress-wrap" style="margin:8px 0; padding:8px 12px;">
+              <div class="progress-head" style="font-size:12px;">
+                <span>Выполнение заказа по документам и шагам</span>
+                <span>${o.progressPercent || 15}%</span>
+              </div>
+              <div class="progress-track" style="height:8px;">
+                <div class="progress-fill" style="width:${o.progressPercent || 15}%;"></div>
+              </div>
+            </div>
+
+            <div style="margin:8px 0;">${docsHtml}</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
+              <div style="font-size:12.5px; color:var(--muted);">
+                📎 Файлов от клиента: <b>${o.uploadedCount || 0}</b> · 💬 Сообщений в кабинете: <b>${o.messagesCount || 0}</b>
+                ${o.endDate ? ` · 🏁 Сдача до: <b>${escapeHtml(o.endDate)}</b>` : ''}
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                ${waLink ? `<a href="${waLink}" target="_blank" class="btn btn-outline" style="padding:7px 12px;font-size:12.5px;">📱 WhatsApp</a>` : ''}
+                ${o.driveFolderUrl ? `<a href="${o.driveFolderUrl}" target="_blank" class="btn btn-outline" style="padding:7px 12px;font-size:12.5px;">📂 Папка на Диске</a>` : ''}
+                <a href="${o.openCabinetUrl}" class="btn btn-gold" style="padding:7px 14px;font-size:13px;">👉 Открыть заказ (управление и файлы) →</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== ЗАГРУЗКА ПОРТАЛА КЛИЕНТА ====================
+    async function loadPortal(silent) {
+      if (staffParam && !kpParam) {
+        await loadStaffHub();
+        return;
+      }
+      if (!kpParam || !tokenParam) {
+        // Пробуем восстановить активную ссылку из памяти этого браузера
+        try {
+          const saved = JSON.parse(localStorage.getItem('metodiko_active_portal') || 'null');
+          if (saved && saved.portalUrl && saved.portalUrl.includes('kp=') && saved.portalUrl.includes('t=')) {
+            window.location.replace(saved.portalUrl);
+            return;
+          }
+        } catch (e) {}
+        document.getElementById('loading-card').style.display = 'none';
+        document.getElementById('phone-login-card').style.display = 'block';
+        return;
+      }
+
       try {
         const adminQs = adminParam ? `&admin=${encodeURIComponent(adminParam)}` : '';
         const res = await fetch(`${API_URL}?action=client_portal&kp=${encodeURIComponent(kpParam)}&t=${encodeURIComponent(tokenParam)}${adminQs}`);
         const data = await res.json();
         if (data.status !== 'ok') {
-          if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
+          if (!silent) {
+            document.getElementById('loading-card').style.display = 'none';
+            document.getElementById('phone-login-card').style.display = 'block';
+          }
           return;
         }
         const firstLoad = !portalData;
         const prevStatus = portalData ? portalData.crmStatus : '';
         const prevExtra = portalData && portalData.deal ? portalData.deal.lastExtraQuestion : '';
+        const prevMsgLen = (portalData && Array.isArray(portalData.messages)) ? portalData.messages.length : 0;
+
         portalData = data;
         lang = data.chatLang === 'kz' ? 'kz' : 'ru';
         document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
         document.getElementById('btn-kz').classList.toggle('active', lang === 'kz');
         document.getElementById('loading-card').style.display = 'none';
+        document.getElementById('phone-login-card').style.display = 'none';
         document.getElementById('portal-root').style.display = 'block';
+
+        const curStep = computeStepIndex(data.crmStatus);
         render();
+
         if (firstLoad) {
-          openTab(pickInitialTab(data));
+          configureStageCollapseState(curStep);
+          const initStage = pickInitialTab(data);
+          if (initStage !== 'overview') {
+            setTimeout(() => openTab(initStage), 150);
+          }
           checkAndShowActionAlert(data);
         } else {
-          if (prevStatus !== data.crmStatus || prevExtra !== (data.deal && data.deal.lastExtraQuestion)) {
-            openTab(pickInitialTab(data));
+          const newMsgLen = Array.isArray(data.messages) ? data.messages.length : 0;
+          if (prevStatus !== data.crmStatus || prevExtra !== (data.deal && data.deal.lastExtraQuestion) || newMsgLen > prevMsgLen) {
+            playGentleChime();
+            configureStageCollapseState(curStep);
             checkAndShowActionAlert(data);
-          } else {
-            openTab(activeTab);
           }
         }
       } catch (e) {
-        if (!silent) document.getElementById('loading-text').innerText = I18N[lang].badLink;
+        if (!silent) {
+          document.getElementById('loading-card').style.display = 'none';
+          document.getElementById('phone-login-card').style.display = 'block';
+        }
       }
     }
 
@@ -1580,38 +2613,38 @@
 
       if (s.includes('🟠')) {
         stageKey = 'extra_' + (data.deal && data.deal.lastExtraQuestion || '').slice(0, 20);
-        badge = '🟠 Вопрос от руководителя Бюро';
-        title = 'Нужно короткое уточнение по проекту';
-        desc = 'Наталья Коденцева задала уточняющий вопрос, чтобы точно рассчитать Финальное КП. Пожалуйста, прочитайте и ответьте, чтобы двигаться дальше.';
-        btnTxt = '👉 Прочитать вопрос и ответить →';
+        badge = '🟠 Сообщение от Бюро «МЕТОДИКО»';
+        title = 'Новое сообщение или документ на проверке';
+        desc = data.deal && data.deal.lastExtraQuestion ? data.deal.lastExtraQuestion : 'Пожалуйста, ознакомьтесь с информацией в кабинете.';
+        btnTxt = '👉 Прочитать и ответить →';
         targetTab = 'brief';
       } else if (s.includes('💼')) {
         stageKey = 'kp_ready';
         badge = '🔥 Важный шаг: Финальное КП готово!';
-        title = 'Ваше Финальное КП (3 варианта) опубликовано!';
-        desc = 'Нажмите кнопку ниже, чтобы открыть официальный документ А4, ознакомиться с 3 вариантами комплектации, скачать PDF и выбрать удобный вариант.';
-        btnTxt = '👉 Открыть и прочитать Финальное КП →';
+        title = 'Ваше Финальное КП (3 варианта с печатью) опубликовано!';
+        desc = 'Нажмите кнопку ниже, чтобы просмотреть 3 варианта комплектации и официальный лист А4 с печатью ТОО «Метод и Ко», и выберите подходящий вариант.';
+        btnTxt = '👉 Перейти к выбору варианта КП →';
         targetTab = 'kp';
       } else if (s.includes('📄')) {
         stageKey = 'contract_ready';
-        badge = '🔥 Договор готов к проверке!';
-        title = 'Подготовлен Договор авторского заказа (А4)';
-        desc = 'Пожалуйста, откройте текст Договора, проверьте/допишите ваши реквизиты прямо в бланке А4 и нажмите «✅ Договор согласован».';
-        btnTxt = '👉 Открыть, проверить и согласовать Договор →';
+        badge = '🔥 Договор подписан со стороны МЕТОДИКО!';
+        title = 'Договор авторского заказа (А4) готов к вашей подписи';
+        desc = 'Проверьте ваши реквизиты и подпишите Договор онлайн в 1 клик прямо на сайте (или скачайте PDF с печатью и прикрепите подписанный скан).';
+        btnTxt = '👉 Перейти к подписанию Договора →';
         targetTab = 'contract';
       } else if (s.includes('⏳')) {
         stageKey = 'waiting_materials';
         badge = '💰 Оплата подтверждена!';
         title = 'Готовы принимать исходные материалы';
-        desc = 'Мы забронировали для вас окно в Графике. Передайте файлы проекта (ссылкой на Google Диск или прямой загрузкой), чтобы запустить счётчик срока.';
-        btnTxt = '👉 Перейти к передаче материалов →';
+        desc = 'Мы забронировали для вас окно в Графике. Загрузите файлы проекта в Шаге 5, чтобы запустить счётчик срока разработки.';
+        btnTxt = '👉 Перейти к Шагу 5 (Материалы и Табло) →';
         targetTab = 'materials';
       } else if (s.includes('🟢') || s.includes('📅')) {
         stageKey = 'started';
         badge = '🚀 Проект запущен в работу!';
         title = `Зафиксированы даты старта и сдачи`;
-        desc = `Старт работ: ${data.startDate || '—'} · Плановая дата сдачи: ${data.endDate || '—'}. Все детали доступны в вашем Кабинете.`;
-        btnTxt = '👉 Посмотреть график работ →';
+        desc = `Старт работ: ${data.startDate || '—'} · Плановая дата сдачи: ${data.endDate || '—'}. Следите за процентом готовности каждого документа в Шаге 5!`;
+        btnTxt = '👉 Открыть Табло готовности документов →';
         targetTab = 'materials';
       }
 
@@ -1637,7 +2670,6 @@
       }
       if (pendingAlertTab) {
         openTab(pendingAlertTab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
@@ -1648,16 +2680,17 @@
       await loadPortal(true);
       btn.disabled = false;
       btn.innerText = orig;
-      showToast('✅ Статус заказа обновлён!', 'info');
+      showToast('✅ Данные и статусы документов обновлены!', 'info');
     }
 
     function startAutoPolling() {
       setInterval(() => {
-        if (document.visibilityState !== 'visible' || isRecording) return;
+        if (document.visibilityState !== 'visible' || isRecording || isDrawingSig) return;
         const ae = document.activeElement;
         if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.getAttribute('contenteditable') === 'true')) {
-          return; // Не мешаем клиенту, пока он печатает в поле
+          return;
         }
+        if (staffParam && !kpParam) return;
         loadPortal(true);
       }, 10000);
     }
@@ -1673,13 +2706,13 @@
       }, 3000);
     }
 
-    async function sendAction(payload, btnEl, successMsg, nextTab) {
+    async function sendAction(payload, btnEl, successMsg, nextTab, fallbackPayload) {
       const origText = btnEl ? btnEl.innerText : '';
       if (btnEl) {
         btnEl.disabled = true;
-        btnEl.innerText = '⏳ Отправляем...';
+        btnEl.innerText = '⏳ Сохраняем...';
       }
-      showToast('⏳ Сохраняем данные в системе «МЕТОДИКО» (3–5 сек)...', 'info');
+      showToast('⏳ Сохраняем данные в системе «МЕТОДИКО» (2–4 сек)...', 'info');
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
@@ -1691,9 +2724,25 @@
             admin: adminParam
           }, payload))
         });
-        const ans = await res.json();
+        let ans = await res.json();
+
+        // Автоматическая совместимость с v5.0, если скрипт в Google Таблице ещё не обновлён до v6.0
+        if (ans.status !== 'ok' && fallbackPayload && String(ans.message || '').includes('Неизвестное действие')) {
+          const resFb = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.assign({
+              type: 'client_portal_action',
+              kpNumber: kpParam,
+              token: tokenParam,
+              admin: adminParam
+            }, fallbackPayload))
+          });
+          ans = await resFb.json();
+        }
+
         if (ans.status === 'ok') {
-          await loadPortal();
+          await loadPortal(true);
           if (nextTab) openTab(nextTab);
           showToast(successMsg || '✅ Данные успешно сохранены!', 'ok');
           return ans;
@@ -1711,7 +2760,7 @@
       return null;
     }
 
-    // --- ЗАПИСЬ ГОЛОСА В КАБИНЕТЕ ---
+    // --- ЗАПИСЬ ГОЛОСА ---
     async function toggleAudioRecord() {
       const btn = document.getElementById('btn-rec');
       const status = document.getElementById('rec-status');
@@ -1787,7 +2836,7 @@
           q8: document.getElementById('bf-q8').value.trim(),
           city: document.getElementById('bf-city').value.trim()
         }
-      }, btn, '✅ Распаковка отправлена руководителю Бюро! Ожидайте Финальное КП — оно откроется во вкладке «3. Финальное КП» и придёт вам на Email.', 'brief');
+      }, btn, '✅ Распаковка передана руководителю Бюро! Ожидайте Финальное КП ниже в Шаге 3.', 'kp');
     }
 
     function submitExtraAnswer(btn) {
@@ -1806,7 +2855,7 @@
     function pickKp(variantId, btn) {
       const reqs = document.getElementById('inp-reqs').value.trim();
       sendAction({ action: 'select_kp_variant', variantId: variantId, requisites: reqs }, btn,
-        '✅ Вариант Финального КП выбран! Уведомление передано руководителю — скоро здесь и на вашем Email откроется готовый Договор.');
+        '✅ Вариант Финального КП выбран! Опускайтесь ниже к Шагу 4 (Договор авторского заказа).', 'contract');
     }
 
     function adminSaveKpVariants(btn) {
@@ -1817,7 +2866,19 @@
         days: Number(document.getElementById(`adm-kp-days-${idx}`).value || 5),
         scope: document.getElementById(`adm-kp-scope-${idx}`).value.trim()
       }));
-      sendAction({ action: 'admin_save_kp', kpVariants: variants }, btn, '✅ Изменения Финального КП сохранены и обновлены на Google Диске!');
+      sendAction({ action: 'admin_save_kp', kpVariants: variants }, btn, '✅ Изменения Финального КП сохранены!');
+    }
+
+    function adminSignAndPublish(docType, btn) {
+      sendAction(
+        { action: 'admin_sign_doc', docType: docType },
+        btn,
+        docType === 'kp'
+          ? '✒️ Финальное КП подписано вашей печатью и опубликовано для клиента!'
+          : '✒️ Договор подписан вашей печатью и опубликован для клиента!',
+        null,
+        { action: docType === 'kp' ? 'admin_save_kp' : 'admin_save_contract', kpVariants: portalData.deal.kpVariants }
+      );
     }
 
     function validateRequisitesObj(r, requireMandatory) {
@@ -1842,14 +2903,7 @@
       }
       if (r.iban) {
         const cleanIban = r.iban.replace(/\s+/g, '').toUpperCase();
-        if (!/^KZ[A-Z0-9]{18}$/.test(cleanIban)) return markErr('req-iban', 'Счёт ИИК (IBAN) в РК должен начинаться с KZ и содержать 20 символов (например: KZ54722S000031140138).');
-      }
-      if (r.phone) {
-        const pDigits = r.phone.replace(/[^\d]/g, '');
-        if (pDigits.length < 10 || pDigits.length > 15) return markErr('req-phone', 'Проверьте номер телефона (минимум 10 цифр).');
-      }
-      if (r.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(r.email)) {
-        return markErr('req-email', 'Проверьте формат E-mail (например: name@company.kz).');
+        if (!/^KZ[A-Z0-9]{18}$/.test(cleanIban)) return markErr('req-iban', 'Счёт ИИК (IBAN) в РК должен начинаться с KZ и содержать 20 символов.');
       }
       return true;
     }
@@ -1872,7 +2926,7 @@
         payload.agreedPrice = Number(document.getElementById('adm-c-price').value || portalData.agreedPrice);
         payload.totalDays = Number(document.getElementById('adm-c-days').value || portalData.totalDays);
       }
-      sendAction(payload, btn, '✅ Реквизиты и правки сохранены в Договоре А4 и обновлены на Google Диске!');
+      sendAction(payload, btn, '✅ Реквизиты и правки сохранены в бланке Договора А4!');
     }
 
     function agreeContract(btn) {
@@ -1881,25 +2935,169 @@
       const notes = document.getElementById('req-notes').value.trim();
       const bodyBox = document.getElementById('a4-contract-body-editable');
       const customBody = (bodyBox && bodyBox.getAttribute('contenteditable') === 'true') ? bodyBox.innerHTML : (portalData.deal.contractCustomBodyHtml || '');
+      const sigDataUrl = (hasDrawnSig && sigCanvas) ? sigCanvas.toDataURL('image/png') : '';
+
       sendAction({
         action: 'agree_contract',
         requisitesObj: reqObj,
+        clientSignatureDataUrl: sigDataUrl,
         contractCustomNotes: notes,
         contractCustomBodyHtml: customBody
-      }, btn, '✅ Договор согласован! Ожидайте счёт на 100% предоплату — после оплаты откроется передача материалов.');
+      }, btn, '✅ Договор подписан онлайн! Теперь вы можете прикрепить чек об оплате или перейти к Шагу 5.', 'materials');
     }
 
-    function sendContractComment(btn) {
-      const el = document.getElementById('inp-contract-fix');
-      el.classList.remove('field-error');
-      const txt = el.value.trim();
-      if (!txt) {
-        el.classList.add('field-error');
-        el.focus();
-        showToast('⚠️ Напишите ваш комментарий или правку к договору в поле выше.', 'err');
+    function uploadSignedContractOrReceipt(kind, btn) {
+      const inputId = kind === 'contract' ? 'inp-signed-contract-file' : 'inp-receipt-file';
+      const fileInput = document.getElementById(inputId);
+      const file = fileInput && fileInput.files && fileInput.files[0];
+      if (!file) {
+        showToast(kind === 'contract'
+          ? '⚠️ Сначала выберите файл подписанного Договора (PDF, фото или скан) на вашем устройстве.'
+          : '⚠️ Сначала выберите файл чека или платёжного поручения.', 'err');
         return;
       }
-      sendAction({ action: 'contract_comment', text: txt }, btn, '✅ Комментарий к договору отправлен руководителю Бюро!');
+      if (file.size > 4.5 * 1024 * 1024) {
+        showToast('⚠️ Файл больше 4.5 МБ. Сожмите файл или отправьте ссылку ниже в Шаге 5.', 'err');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const b64 = (reader.result || '').split(',')[1] || '';
+        const actionName = kind === 'contract' ? 'upload_signed_contract' : 'upload_payment_receipt';
+        const prefixTag = kind === 'contract' ? 'Подписанный_Договор_' : 'Чек_оплаты_';
+        sendAction(
+          {
+            action: actionName,
+            fileName: file.name,
+            mimeType: file.type || 'application/pdf',
+            fileBase64: b64
+          },
+          btn,
+          kind === 'contract'
+            ? `✅ Подписанный Договор «${escapeHtml(file.name)}» получен Бюро «МЕТОДИКО»!`
+            : `✅ Чек об оплате «${escapeHtml(file.name)}» получен Бюро «МЕТОДИКО»!`,
+          'materials',
+          {
+            action: 'upload_material_file',
+            fileName: prefixTag + file.name,
+            mimeType: file.type || 'application/pdf',
+            fileBase64: b64
+          }
+        );
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clientReviewDeliverable(deliverableId, decision, btn) {
+      sendAction(
+        { action: 'client_review_deliverable', deliverableId: deliverableId, decision: decision },
+        btn,
+        '✅ Документ утверждён Вами! Благодарим за обратную связь.',
+        null,
+        { action: 'contract_comment', text: `Утверждаю документ ID ${deliverableId}` }
+      );
+    }
+
+    function promptDeliverableRevision(deliverableId, btn) {
+      const comment = prompt('Опишите коротко, какие дополнения или правки нужно внести в этот документ:');
+      if (!comment || !comment.trim()) return;
+      sendAction(
+        { action: 'client_review_deliverable', deliverableId: deliverableId, decision: 'revision', comment: comment.trim() },
+        btn,
+        '✍️ Ваш комментарий к документу передан методологу Бюро!',
+        null,
+        { action: 'contract_comment', text: `Комментарий к документу ${deliverableId}: ${comment.trim()}` }
+      );
+    }
+
+    function staffSaveDeliverableAction(btn) {
+      const selVal = document.getElementById('st-deliv-select').value;
+      const title = document.getElementById('st-deliv-title').value.trim();
+      const status = document.getElementById('st-deliv-status').value;
+      const progress = Number(document.getElementById('st-deliv-prog').value || 0);
+      const staffNote = document.getElementById('st-deliv-note').value.trim();
+      const notifyClient = document.getElementById('st-deliv-notify').checked;
+      const fileInput = document.getElementById('st-deliv-file');
+      const file = fileInput && fileInput.files && fileInput.files[0];
+
+      if (!title) {
+        showToast('⚠️ Укажите название документа.', 'err');
+        return;
+      }
+
+      const payload = {
+        action: 'staff_update_deliverable',
+        deliverableId: selVal === '__new__' ? '' : selVal,
+        title: title,
+        status: status,
+        progress: progress,
+        staffNote: staffNote,
+        notifyClient: notifyClient
+      };
+
+      if (file) {
+        if (file.size > 4.5 * 1024 * 1024) {
+          showToast('⚠️ Файл больше 4.5 МБ. Положите крупный файл напрямую в папку «04_Наши_разработки_и_Сдача» на Диске — он появится у клиента сам!', 'err');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          payload.fileName = file.name;
+          payload.mimeType = file.type || 'application/octet-stream';
+          payload.fileBase64 = (reader.result || '').split(',')[1] || '';
+          sendAction(payload, btn, `✅ Документ «${escapeHtml(title)}» выложен в кабинет клиента и сохранён на Google Диске!`);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        sendAction(payload, btn, `✅ Статус и процент документа «${escapeHtml(title)}» обновлены!`);
+      }
+    }
+
+    function sendPortalChatMessage(btn) {
+      const txtEl = document.getElementById('inp-chat-msg');
+      const txt = txtEl.value.trim();
+      const fileInput = document.getElementById('inp-chat-file');
+      const file = fileInput && fileInput.files && fileInput.files[0];
+
+      if (!txt && !file) {
+        showToast('⚠️ Напишите текст сообщения или выберите файл для отправки.', 'err');
+        return;
+      }
+
+      const doSend = (b64, fname, ftype) => {
+        sendAction(
+          {
+            action: 'post_portal_message',
+            text: txt,
+            fileBase64: b64 || '',
+            fileName: fname || '',
+            mimeType: ftype || ''
+          },
+          btn,
+          '✉️ Сообщение отправлено и сохранено в истории заказа!',
+          null,
+          { action: 'contract_comment', text: txt || `Отправлен файл: ${fname}` }
+        ).then(ans => {
+          if (ans) {
+            txtEl.value = '';
+            if (fileInput) fileInput.value = '';
+          }
+        });
+      };
+
+      if (file) {
+        if (file.size > 4.5 * 1024 * 1024) {
+          showToast('⚠️ Файл больше 4.5 МБ.', 'err');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          doSend((reader.result || '').split(',')[1] || '', file.name, file.type || 'application/octet-stream');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        doSend('', '', '');
+      }
     }
 
     function submitDriveLink(btn) {
@@ -1910,10 +3108,10 @@
       if (!url) {
         el.classList.add('field-error');
         el.focus();
-        showToast('⚠️ Вставьте ссылку на папку Google Диска (или загрузите файл выше).', 'err');
+        showToast('⚠️ Вставьте ссылку на папку с материалами (или загрузите файл кнопкой выше).', 'err');
         return;
       }
-      sendAction({ action: 'submit_materials_link', driveLink: url, note: note }, btn, '✅ Ссылка на материалы передана! После проверки зафиксируем дату старта и сдачи.');
+      sendAction({ action: 'submit_materials_link', driveLink: url, note: note }, btn, '✅ Ссылка на материалы передана в Бюро!');
     }
 
     function uploadMaterialFile(btn) {
@@ -1923,8 +3121,8 @@
         showToast('⚠️ Сначала выберите файл на компьютере или телефоне.', 'err');
         return;
       }
-      if (file.size > 4 * 1024 * 1024) {
-        showToast('⚠️ Файл больше 4 МБ. Для больших файлов загрузите их на ваш Google Диск и вставьте ссылку ниже.', 'err');
+      if (file.size > 4.5 * 1024 * 1024) {
+        showToast('⚠️ Файл больше 4.5 МБ. Для больших видео вставьте ссылку на облачную папку ниже.', 'err');
         return;
       }
       const reader = new FileReader();
@@ -1935,7 +3133,7 @@
           fileName: file.name,
           mimeType: file.type || 'application/octet-stream',
           fileBase64: b64
-        }, btn, `✅ Файл «${escapeHtml(file.name)}» успешно загружен в папку проекта!`);
+        }, btn, `✅ Файл «${escapeHtml(file.name)}» загружен в папку вашего проекта!`);
       };
       reader.readAsDataURL(file);
     }

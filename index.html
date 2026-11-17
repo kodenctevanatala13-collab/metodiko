@@ -1887,7 +1887,7 @@
         <a href="articles.html" class="nav-link" style="color:var(--gold-light); font-weight:700;">📚 Журнал стандартов</a>
         <a href="case-1-sales-simulator.html" class="nav-link">⚡ 4D Симулятор</a>
         <a href="#calculator" class="nav-link" data-i18n="nav_calc">Калькулятор сметы</a>
-        <a href="#" id="nav-active-portal" class="nav-link" style="display:none; color:#4ADE80; font-weight:700;">🗂️ Мой заказ</a>
+        <a href="client.html" id="nav-active-portal" class="nav-link" style="color:#4ADE80; font-weight:700;">🔑 Мой заказ</a>
         <a href="#calculator" class="nav-btn nav-btn-gold" data-i18n="nav_btn_kp">Получить КП</a>
         
         <!-- Языковой переключатель -->
@@ -1910,10 +1910,23 @@
       <a href="articles.html" class="nav-link" style="color:var(--gold-light); font-weight:700;">📚 Журнал стандартов</a>
       <a href="case-1-sales-simulator.html" class="nav-link">⚡ 4D Симулятор</a>
       <a href="#calculator" class="nav-link" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_calc">Калькулятор сметы</a>
-      <a href="#" id="nav-active-portal-mob" class="nav-link" style="display:none; color:#4ADE80; font-weight:700;" onclick="this.parentElement.classList.remove('open')">🗂️ Мой заказ</a>
+      <a href="client.html" id="nav-active-portal-mob" class="nav-link" style="color:#4ADE80; font-weight:700;" onclick="this.parentElement.classList.remove('open')">🔑 Мой заказ (по телефону)</a>
       <a href="#calculator" class="nav-btn nav-btn-gold" onclick="this.parentElement.classList.remove('open')" data-i18n="nav_btn_kp">Получить КП</a>
     </div>
   </header>
+
+  <!-- ЗАМЕТНАЯ ПЛАШКА БЫСТРОГО ВОЗВРАТА В АКТИВНЫЙ ЗАКАЗ КЛИЕНТА -->
+  <div id="active-order-top-banner" style="display:none; background:linear-gradient(135deg,#152238 0%,#1E3152 100%); border-bottom:3px solid #C9A227; padding:12px 16px; color:#fff;">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="font-size:14px;">
+        🗂️ <strong id="top-banner-order-txt" style="color:#FFD966;">У вас открыт активный заказ в Бюро «МЕТОДИКО»</strong> — все ваши расчёты, КП, Договор и документы сохранены:
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="client.html" id="top-banner-order-link" class="nav-btn nav-btn-gold" style="padding:9px 18px; font-size:13.5px; font-weight:800; text-decoration:none;">👉 Вернуться в мой Личный кабинет →</a>
+        <a href="client.html" class="nav-btn" style="padding:9px 14px; font-size:12.5px; color:#E2E8F0; border:1px solid rgba(255,255,255,0.28); text-decoration:none; border-radius:6px;">🔑 Найти по телефону</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ГЛАВНЫЙ ЭКРАН: СВЕТЛЫЙ ФОН + BENTO GRID С МИНИ-ВИДЖЕТОМ -->
   <section class="hero-section">
@@ -3238,14 +3251,16 @@
           <strong>Порядок согласования:</strong> Данный расчет является предварительным (не является публичной офертой, ст. 395 ГК РК). Работа ведется по 100% предоплате со стартом на следующий рабочий день после оплаты и получения материалов.
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 24px; padding-top: 14px; border-top: 1px solid #E2E8F0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 12px; border-top: 1px solid #E2E8F0;">
           <div>
-            <div style="font-weight: 700; color: #0D1624;">Руководитель ТОО «Метод и Ко»:</div>
-            <div style="font-size: 11px; color: #64748B;">Учебный отдел и нормоконтроль</div>
+            <div style="font-weight: 700; color: #0D1624;">Исполнитель: ТОО «Метод и Ко» (БИН 231140018015)</div>
+            <div style="font-size: 11px; color: #64748B;">Директор: Коденцева Наталья Михайловна • +7 (700) 077-35-66</div>
+            <div style="font-size: 11px; color: #1D4ED8; margin-top: 4px;">
+              🔗 Личный кабинет заказа (вход по вашему телефону): <b>https://metodico-kz.netlify.app/client.html</b>
+            </div>
           </div>
           <div style="text-align: right;">
-            <div style="border-bottom: 1px solid #000; width: 140px; margin-bottom: 4px;"></div>
-            <div style="font-size: 10px; color: #94A3B8;">М.П. / Подпись</div>
+            <img src="assets/metodico_stamp_sign.png" alt="Печать и подпись ТОО Метод и Ко" style="max-width: 195px; height: auto; display: block; margin-left: auto;">
           </div>
         </div>
 
@@ -4290,6 +4305,7 @@
                 kpNumber: data.kpNumber || kpNumber,
                 portalUrl: data.portalUrl,
                 clientName: clientName,
+                clientPhone: clientPhone,
                 totalPrice: totalPrice
               }));
               showActivePortalNav();
@@ -4302,7 +4318,7 @@
 
       if (!syncedOk) {
         const defaultWebhookUrl = 'https://script.google.com/macros/s/AKfycbzjPyBVs_o-rvviKsJtxmSQkx_NUdy7Ijnp5q6wA2WMYUbz18WZDVLZ6MWTFROu5E_U/exec';
-        const webhookUrl = localStorage.getItem('metodiko_google_script_url') || defaultWebhookUrl;
+        const webhookUrl = defaultWebhookUrl;
         if (webhookUrl) {
           try {
             fetch(webhookUrl, {
@@ -4340,6 +4356,16 @@
               el.style.display = 'inline-block';
             }
           });
+          const topBar = document.getElementById('active-order-top-banner');
+          const topTxt = document.getElementById('top-banner-order-txt');
+          const topLnk = document.getElementById('top-banner-order-link');
+          if (topBar && topLnk) {
+            topLnk.href = saved.portalUrl;
+            if (topTxt) {
+              topTxt.innerText = `У вас открыт активный заказ № ${saved.kpNumber || ''}${saved.clientName ? ' (' + saved.clientName + ')' : ''}`;
+            }
+            topBar.style.display = 'block';
+          }
         }
       } catch (e) {}
     }

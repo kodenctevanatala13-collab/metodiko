@@ -742,6 +742,7 @@
                 kpNumber: data.kpNumber,
                 portalUrl: data.portalUrl,
                 clientName: payload.clientName,
+                clientPhone: payload.clientPhone,
                 totalPrice: payload.totalPrice
               }));
             } catch (e) {}
@@ -796,7 +797,7 @@
       setBriefLang(lang === 'kz' ? 'kz' : 'ru');
 
       // Запрос обезличенного ближайшего свободного окна в графике
-      fetch(WEBHOOK_URL + '?action=queue_status')
+      fetch('/.netlify/functions/crm-api?action=queue_status')
         .then(r => r.json())
         .then(data => {
           const pill = document.getElementById('queue-status-pill');

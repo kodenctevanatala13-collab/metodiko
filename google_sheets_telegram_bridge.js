@@ -188,7 +188,13 @@ function doGet(e) {
     if (action === "client_portal") {
       return jsonResponse(getClientPortalState(params.kp || "", params.t || "", params.admin || ""));
     }
-    return jsonResponse({ status: "ok", service: "METODIKO Bridge v5.0" });
+    if (action === "find_by_phone") {
+      return jsonResponse(findOrdersByPhoneApi(params.phone || "", params.kp || ""));
+    }
+    if (action === "staff_dashboard") {
+      return jsonResponse(getStaffDashboardState(params.staff || ""));
+    }
+    return jsonResponse({ status: "ok", service: "METODIKO Bridge v6.0" });
   } catch (err) {
     return jsonResponse({ status: "error", message: err.toString() });
   }
@@ -647,7 +653,9 @@ function sendBriefReadyCardToAdmin(sheet, rowIdx, aiAnalysis, customHeader) {
       { text: "❓ Задать доп. вопрос", callback_data: `ask_${kpNumber}` },
       { text: "✏️ Изменить сумму/срок", callback_data: `edit_${kpNumber}` }
     ],
-    [{ text: "👁️ Проверить / Редактировать в Кабинете", url: adminPortalUrl }]
+    [{ text: "👁️ Проверить / Редактировать в Кабинете", url: adminPortalUrl }],
+    [{ text: "🏛️ Открыть Штаб всех заказов на сайте", url: getStaffHubUrl("director") }],
+    [{ text: "📊 Сводка по клиентам (% и документы)", callback_data: "staff_report" }]
   ];
   if (driveUrl) kb.push([{ text: "📂 Папка клиента на Google Диске", url: driveUrl }]);
 
@@ -672,6 +680,11 @@ function handleAdminCallback(callbackQuery) {
   if (data === "admin_cancel") {
     clearAdminPendingAction(chatId);
     sendTelegramApi(token, "sendMessage", { chat_id: chatId, text: "❎ Ввод отменён." });
+    return ContentService.createTextOutput("OK");
+  }
+
+  if (data === "staff_report") {
+    sendStaffSummaryReportToAdmin(chatId);
     return ContentService.createTextOutput("OK");
   }
 
@@ -761,9 +774,12 @@ function handleAdminCallback(callbackQuery) {
     patchDealState(sheet, rowIdx, {
       kpVariants: variants,
       kpSentAt: new Date().toISOString(),
+      kpSignedByAdmin: true,
+      kpSignedAt: formatDateRu(new Date()),
       kpDeadlineText: deadlineDate,
       remindedKp2d: false
     });
+    appendPortalEvent(sheet, rowIdx, "Финальное КП утверждено и подписано руководителем Бюро «МЕТОДИКО»");
     SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
@@ -835,6 +851,11 @@ function handleAdminCallback(callbackQuery) {
 
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
     paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
+    patchDealState(sheet, rowIdx, {
+      contractSignedByAdmin: true,
+      contractSignedAt: formatDateRu(new Date())
+    });
+    appendPortalEvent(sheet, rowIdx, "Договор авторского заказа подписан со стороны ТОО «Метод и Ко» и направлен Заказчику");
     SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
@@ -959,6 +980,11 @@ function handleAdminMessage(msg) {
   const chatId = msg.chat.id.toString();
   const userText = (msg.text || "").trim();
   if (!userText) return ContentService.createTextOutput("OK");
+
+  if (/^\/(start|report|штаб|сводка|отчет|отчёт)/i.test(userText) || /^(штаб|сводка|отчет|отчёт)$/i.test(userText)) {
+    sendStaffSummaryReportToAdmin(chatId);
+    return ContentService.createTextOutput("OK");
+  }
 
   const pending = getAdminPendingAction(chatId);
   let mode = pending ? pending.type : "";
@@ -1268,9 +1294,37 @@ function verifyPortalToken(kpNumber, token) {
   return generatePortalToken(kpNumber) === String(token).trim();
 }
 
+function generateAssistantToken(kpNumber) {
+  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_AST_MK";
+  const sigBytes = Utilities.computeHmacSha256Signature("AST:" + String(kpNumber), secret);
+  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
+}
+
+function generateGlobalStaffToken(role) {
+  const ver = getSecret("ASSISTANT_KEY_VERSION") || "v1";
+  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_GLOBAL_" + role + "_" + ver;
+  const sigBytes = Utilities.computeHmacSha256Signature("STAFF:" + role, secret);
+  return (role === "director" ? "DIR_" : "AST_") + sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 18);
+}
+
+function getStaffHubUrl(role) {
+  const key = encodeURIComponent(generateGlobalStaffToken(role === "assistant" ? "assistant" : "director"));
+  return `${CONFIG.SITE_URL}/client.html?staff=${key}`;
+}
+
+function resolveStaffRole(kpNumber, sig) {
+  if (!sig) return "";
+  const s = String(sig).trim();
+  if (s === generateGlobalStaffToken("director")) return "director";
+  if (s === generateGlobalStaffToken("assistant")) return "assistant";
+  if (kpNumber && s === generateAdminToken(kpNumber)) return "director";
+  if (kpNumber && s === generateAssistantToken(kpNumber)) return "assistant";
+  return "";
+}
+
 function verifyAdminToken(kpNumber, adminSig) {
-  if (!kpNumber || !adminSig) return false;
-  return generateAdminToken(kpNumber) === String(adminSig).trim();
+  const r = resolveStaffRole(kpNumber, adminSig);
+  return r === "director" || r === "assistant";
 }
 
 function getClientPortalUrl(kpNumber, tab) {
@@ -1298,17 +1352,27 @@ function getClientPortalState(kpNumber, token, adminSig) {
   const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
   const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
   const qInfo = getPublicQueueStatus();
-  const isAdmin = verifyAdminToken(kpNumber, adminSig);
+  const staffRole = resolveStaffRole(kpNumber, adminSig);
+  const isAdmin = staffRole === "director" || staffRole === "assistant";
+  const isDirector = staffRole === "director";
   const crmStatus = row[COL.STATUS - 1] || "";
 
-  // Разрешаем видеть Финальное КП: админу всегда если собрано, клиенту — с момента отправки (и дальше в архиве!)
-  const kpPublished = crmStatus.includes("💼") || crmStatus.includes("🤝") || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
-  const contractPublished = crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+  const kpPublished = Boolean(deal.kpSignedByAdmin) || crmStatus.includes("💼") || crmStatus.includes("🤝") || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+  const contractPublished = Boolean(deal.contractSignedByAdmin) || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+
+  const deliverables = ensureDeliverablesList(row, deal);
+  const readyDriveFiles = listReadyFilesFromDrive(deal);
+  const progressPercent = computeOrderProgress(crmStatus, deal, deliverables);
 
   return {
     status: "ok",
     isAdmin: isAdmin,
+    isDirector: isDirector,
+    staffRole: staffRole || "client",
+    staffHubUrl: isAdmin ? getStaffHubUrl(staffRole) : "",
+    assistantHubUrl: isDirector ? getStaffHubUrl("assistant") : "",
     kpNumber: kpNumber,
+    createdAt: row[COL.DATE - 1] || "",
     branchKey: resolveBranchKeyFromCategory(row[COL.CATEGORY - 1]),
     clientName: row[COL.NAME - 1],
     clientOrg: row[COL.ORG - 1],
@@ -1324,6 +1388,7 @@ function getClientPortalState(kpNumber, token, adminSig) {
     isUrgent: String(row[COL.URGENT - 1] || "").toLowerCase().includes("сроч"),
     chatLang: deal.chatLang || "ru",
     crmStatus: crmStatus,
+    progressPercent: progressPercent,
     agreedPrice: Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0),
     totalDays: Number(row[COL.DAYS - 1] || 10),
     requisites: row[COL.REQUISITES - 1] || "",
@@ -1335,6 +1400,19 @@ function getClientPortalState(kpNumber, token, adminSig) {
     driveFolderUrl: isAdmin ? (row[COL.DRIVE_LINK - 1] || "") : "",
     clientMaterialsUrl: deal.clientMaterialsUrl || "",
     uploadedMaterials: deal.uploadedMaterials || [],
+    signedContractFiles: deal.signedContractFiles || [],
+    paymentReceiptFiles: deal.paymentReceiptFiles || [],
+    readyFilesFromDrive: readyDriveFiles,
+    deliverables: deliverables,
+    messages: deal.messages || [],
+    eventsLog: deal.eventsLog || [],
+    kpSignedByAdmin: Boolean(deal.kpSignedByAdmin || kpPublished),
+    kpSignedAt: deal.kpSignedAt || "",
+    contractSignedByAdmin: Boolean(deal.contractSignedByAdmin || contractPublished),
+    contractSignedAt: deal.contractSignedAt || "",
+    clientSignedOnline: Boolean(deal.clientSignedOnline),
+    clientSignedAt: deal.clientSignedAt || "",
+    clientSignatureDataUrl: deal.clientSignatureDataUrl || "",
     startDate: row[COL.START_DATE - 1] || "",
     endDate: row[COL.END_DATE - 1] || "",
     nextFreeWindow: qInfo.nextFreeWindow,
@@ -1529,21 +1607,31 @@ function handleClientPortalPost(data) {
     return { status: "ok", contractUrl: docRes.docUrl || "", contractPdfUrl: docRes.pdfUrl || "" };
   }
 
-  // 5. Согласование Договора клиентом
+  // 5. Согласование и онлайн-подписание Договора клиентом на сайте
   if (act === "agree_contract") {
     if (data.requisitesObj) {
       saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
     }
+    const agreePatch = {
+      contractAgreedAt: new Date().toISOString(),
+      clientSignedOnline: true,
+      clientSignedAt: new Date().toLocaleString("ru-RU"),
+      needsAttention: true
+    };
+    if (typeof data.clientSignatureDataUrl === "string" && data.clientSignatureDataUrl.startsWith("data:image/")) {
+      agreePatch.clientSignatureDataUrl = data.clientSignatureDataUrl;
+    }
     if (typeof data.contractCustomNotes === "string" && data.contractCustomNotes.trim()) {
-      patchDealState(sheet, rowIdx, { contractCustomNotes: data.contractCustomNotes.trim() });
+      agreePatch.contractCustomNotes = data.contractCustomNotes.trim();
     }
     if (typeof data.contractCustomBodyHtml === "string" && data.contractCustomBodyHtml.trim()) {
-      patchDealState(sheet, rowIdx, { contractCustomBodyHtml: data.contractCustomBodyHtml });
+      agreePatch.contractCustomBodyHtml = data.contractCustomBodyHtml;
     }
 
     sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
     paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
-    patchDealState(sheet, rowIdx, { contractAgreedAt: new Date().toISOString() });
+    patchDealState(sheet, rowIdx, agreePatch);
+    appendPortalEvent(sheet, rowIdx, "Заказчик подписал и согласовал Договор онлайн в Личном кабинете");
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveContractDoc(sheet, rowIdx, true);
@@ -1672,6 +1760,271 @@ function handleClientPortalPost(data) {
     ensureProjectDriveFolder(sheet, rowIdx);
     const docRes = generateAndSaveContractDoc(sheet, rowIdx);
     return { status: "ok", contractUrl: docRes.docUrl || "", contractPdfUrl: docRes.pdfUrl || "" };
+  }
+
+  // 11. Загрузка клиентом подписанного Договора (скан/фото/PDF) или чека об оплате
+  if (act === "upload_signed_contract" || act === "upload_payment_receipt") {
+    const isContractFile = act === "upload_signed_contract";
+    const prefix = isContractFile ? "Подписанный_Договор_" : "Чек_оплаты_";
+    const rawName = (data.fileName || (prefix + kpNumber + ".pdf")).replace(/[\\/:*?"<>|]/g, "_");
+    const fileName = rawName.startsWith(prefix) ? rawName : (prefix + rawName);
+    const mimeType = data.mimeType || "application/pdf";
+    const fileBase64 = data.fileBase64 || "";
+    if (!fileBase64) return { status: "error", message: "Файл пустой" };
+
+    try {
+      const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
+      const targetFolderId = (folderInfo.subFolders && folderInfo.subFolders.contractId) || folderInfo.rootId;
+      const folder = DriveApp.getFolderById(targetFolderId);
+      const bytes = Utilities.base64Decode(fileBase64);
+      const blob = Utilities.newBlob(bytes, mimeType, fileName);
+      const created = folder.createFile(blob);
+      try { created.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+
+      const deal = readDealState(sheet, rowIdx);
+      const keyName = isContractFile ? "signedContractFiles" : "paymentReceiptFiles";
+      const list = Array.isArray(deal[keyName]) ? deal[keyName] : [];
+      list.push({ name: rawName, url: created.getUrl(), uploadedAt: new Date().toLocaleString("ru-RU") });
+
+      const patch = { needsAttention: true };
+      patch[keyName] = list;
+      if (isContractFile) {
+        const curSt = String(row[COL.STATUS - 1] || "");
+        if (!curSt.includes("⏳") && !curSt.includes("🟢") && !curSt.includes("📅") && !curSt.includes("✅")) {
+          sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
+          paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
+        }
+      }
+      patchDealState(sheet, rowIdx, patch);
+      appendPortalEvent(sheet, rowIdx, isContractFile
+        ? `Заказчик загрузил подписанный файл Договора: ${rawName}`
+        : `Заказчик прикрепил документ об оплате (чек/платёжку): ${rawName}`);
+
+      if (adminToken && adminChatId) {
+        const icon = isContractFile ? "✍️📄" : "💳🧾";
+        const label = isContractFile ? "КЛИЕНТ ЗАГРУЗИЛ ПОДПИСАННЫЙ ДОГОВОР" : "КЛИЕНТ ПРИКРЕПИЛ ЧЕК ОБ ОПЛАТЕ";
+        sendTelegramApi(adminToken, "sendMessage", {
+          chat_id: adminChatId,
+          text: `${icon} <b>${label} (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n📎 Файл: <code>${escapeHtml(rawName)}</code>\n📂 Автоматически сохранён в папку «02_Договор_и_Реквизиты» на Google Диске.`,
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "📄 Открыть загруженный файл", url: created.getUrl() }],
+              [{ text: "💰 Подписано + 100% оплачено (Ждем материалы / Старт)", callback_data: `paid_${kpNumber}` }],
+              [{ text: "👁️ Открыть Кабинет сделки", url: getAdminPortalUrl(kpNumber, "contract") }]
+            ]
+          }
+        });
+      }
+      return { status: "ok", fileName: rawName, fileUrl: created.getUrl() };
+    } catch (err) {
+      return { status: "error", message: "Ошибка загрузки: " + err.toString() };
+    }
+  }
+
+  // 12. Прямое сообщение в чате заказа на сайте (от клиента или от Натальи/помощницы)
+  if (act === "post_portal_message") {
+    const msgText = (data.text || "").trim();
+    const fileBase64 = data.fileBase64 || "";
+    if (!msgText && !fileBase64) return { status: "error", message: "Введите сообщение или прикрепите файл" };
+
+    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
+    const fromStaff = Boolean(staffRole);
+    const senderName = fromStaff
+      ? (staffRole === "director" ? "Наталья Коденцева (Руководитель Бюро)" : "Куратор проектов Бюро «МЕТОДИКО»")
+      : (row[COL.NAME - 1] || "Заказчик");
+
+    let attachedUrl = "";
+    let attachedName = "";
+    if (fileBase64) {
+      try {
+        const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
+        const targetFolderId = fromStaff
+          ? ((folderInfo.subFolders && folderInfo.subFolders.resultsId) || folderInfo.rootId)
+          : ((folderInfo.subFolders && folderInfo.subFolders.materialsId) || folderInfo.rootId);
+        const folder = DriveApp.getFolderById(targetFolderId);
+        attachedName = (data.fileName || ("file_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_");
+        const bytes = Utilities.base64Decode(fileBase64);
+        const blob = Utilities.newBlob(bytes, data.mimeType || "application/octet-stream", attachedName);
+        const created = folder.createFile(blob);
+        try { created.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+        attachedUrl = created.getUrl();
+      } catch (e) {}
+    }
+
+    const deal = readDealState(sheet, rowIdx);
+    const messages = Array.isArray(deal.messages) ? deal.messages : [];
+    const newMsg = {
+      id: "m_" + Date.now(),
+      senderRole: fromStaff ? staffRole : "client",
+      senderName: senderName,
+      text: msgText,
+      fileName: attachedName,
+      fileUrl: attachedUrl,
+      createdAt: new Date().toLocaleString("ru-RU")
+    };
+    messages.push(newMsg);
+
+    const patch = {
+      messages: messages,
+      needsAttention: !fromStaff
+    };
+    if (fromStaff && msgText) {
+      patch.lastExtraQuestion = msgText;
+    }
+    patchDealState(sheet, rowIdx, patch);
+    appendPortalEvent(sheet, rowIdx, `${fromStaff ? "Сообщение от Бюро" : "Сообщение от Заказчика"}: ${(msgText || attachedName).slice(0, 80)}`);
+
+    if (!fromStaff && adminToken && adminChatId) {
+      sendTelegramApi(adminToken, "sendMessage", {
+        chat_id: adminChatId,
+        text: `💬 <b>НОВОЕ СООБЩЕНИЕ В КАБИНЕТЕ (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n\n<i>«${escapeHtml(msgText || "Прикреплён файл")}»</i>${attachedUrl ? `\n📎 <a href="${attachedUrl}">${escapeHtml(attachedName)}</a>` : ""}`,
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "👁️ Ответить прямо в Кабинете на сайте", url: getAdminPortalUrl(kpNumber, "materials") }],
+            [{ text: "❓ Ответить через бота", callback_data: `ask_${kpNumber}` }]
+          ]
+        }
+      });
+    } else if (fromStaff) {
+      notifyClientAllChannels(sheet, rowIdx, "extra_question");
+    }
+    return { status: "ok", messageObj: newMsg };
+  }
+
+  // 13. Клиент утверждает промежуточный/готовый документ заказа ИЛИ просит правку
+  if (act === "client_review_deliverable") {
+    const delivId = data.deliverableId || "";
+    const decision = data.decision === "approve" ? "approved" : "revision";
+    const comment = (data.comment || "").trim();
+    const deal = readDealState(sheet, rowIdx);
+    const list = ensureDeliverablesList(row, deal);
+    const item = list.find(d => String(d.id) === String(delivId));
+    if (!item) return { status: "error", message: "Документ не найден" };
+
+    item.status = decision;
+    if (decision === "approved") item.progress = 100;
+    if (comment) item.clientComment = comment;
+    item.updatedAt = new Date().toLocaleString("ru-RU");
+
+    patchDealState(sheet, rowIdx, { deliverables: list, needsAttention: true });
+    appendPortalEvent(sheet, rowIdx, decision === "approved"
+      ? `Заказчик утвердил документ: «${item.title}»`
+      : `Заказчик оставил комментарий к документу «${item.title}»: ${comment}`);
+
+    if (adminToken && adminChatId) {
+      const badge = decision === "approved" ? "✅ ДОКУМЕНТ УТВЕРЖДЁН КЛИЕНТОМ" : "✏️ КОММЕНТАРИЙ К ДОКУМЕНТУ";
+      sendTelegramApi(adminToken, "sendMessage", {
+        chat_id: adminChatId,
+        text: `${badge} (${kpNumber}):\n👤 ${escapeHtml(row[COL.NAME - 1])}\n📄 Документ: <b>${escapeHtml(item.title)}</b>${comment ? `\n💬 Комментарий: <i>${escapeHtml(comment)}</i>` : ""}\n📊 Общий прогресс заказа: <b>${computeOrderProgress(row[COL.STATUS - 1], deal, list)}%</b>`,
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [[{ text: "👁️ Открыть табло документов заказа", url: getAdminPortalUrl(kpNumber, "materials") }]]
+        }
+      });
+    }
+    return { status: "ok", deliverables: list };
+  }
+
+  // 14. Руководитель или Помощница обновляет статус/% документа или загружает готовый файл в папку 04_Наши_разработки_и_Сдача
+  if (act === "staff_update_deliverable") {
+    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
+    if (!staffRole) return { status: "forbidden", message: "Требуется доступ сотрудника Бюро" };
+
+    const deal = readDealState(sheet, rowIdx);
+    const list = ensureDeliverablesList(row, deal);
+    let item = list.find(d => String(d.id) === String(data.deliverableId || ""));
+    if (!item) {
+      item = {
+        id: "doc_" + Date.now(),
+        title: (data.title || "Новый документ проекта").trim(),
+        status: "pending",
+        progress: 0,
+        fileUrl: "",
+        fileName: "",
+        staffNote: "",
+        clientComment: "",
+        updatedAt: new Date().toLocaleString("ru-RU")
+      };
+      list.push(item);
+    }
+
+    if (typeof data.title === "string" && data.title.trim()) item.title = data.title.trim();
+    if (typeof data.status === "string" && data.status) item.status = data.status;
+    if (data.progress !== undefined) item.progress = Math.min(100, Math.max(0, Number(data.progress || 0)));
+    if (typeof data.staffNote === "string") item.staffNote = data.staffNote.trim();
+    if (item.status === "approved" || item.status === "done") item.progress = 100;
+    item.updatedAt = new Date().toLocaleString("ru-RU");
+
+    if (data.fileBase64) {
+      try {
+        const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
+        const targetFolderId = (folderInfo.subFolders && folderInfo.subFolders.resultsId) || folderInfo.rootId;
+        const folder = DriveApp.getFolderById(targetFolderId);
+        const cleanName = (data.fileName || (item.title + ".pdf")).replace(/[\\/:*?"<>|]/g, "_");
+        const bytes = Utilities.base64Decode(data.fileBase64);
+        const blob = Utilities.newBlob(bytes, data.mimeType || "application/octet-stream", cleanName);
+        const created = folder.createFile(blob);
+        try { created.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+        item.fileUrl = created.getUrl();
+        item.fileName = cleanName;
+        if (item.status === "pending" || item.status === "in_progress") {
+          item.status = "review";
+          if (item.progress < 85) item.progress = 85;
+        }
+      } catch (e) {
+        return { status: "error", message: "Ошибка сохранения файла на Диск: " + e.toString() };
+      }
+    }
+
+    patchDealState(sheet, rowIdx, { deliverables: list, needsAttention: false });
+    appendPortalEvent(sheet, rowIdx, `Бюро обновило документ «${item.title}» (готовность ${item.progress}%)`);
+
+    if (data.notifyClient) {
+      patchDealState(sheet, rowIdx, { lastExtraQuestion: `Готов документ «${item.title}» (${item.progress}%). Пожалуйста, ознакомьтесь и подтвердите в вашем Кабинете.` });
+      notifyClientAllChannels(sheet, rowIdx, "extra_question");
+    }
+    return { status: "ok", deliverables: list };
+  }
+
+  // 15. Руководитель (Директор) в 1 клик с сайта подписывает печатью и публикует КП или Договор клиенту
+  if (act === "admin_sign_doc") {
+    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
+    if (staffRole !== "director") return { status: "forbidden", message: "Право подписи печатью есть только у Директора Бюро" };
+
+    const docType = data.docType === "kp" ? "kp" : "contract";
+    if (docType === "kp") {
+      const deal = readDealState(sheet, rowIdx);
+      const variants = Array.isArray(deal.kpVariants) && deal.kpVariants.length ? deal.kpVariants : buildFinalKpVariants(sheet, rowIdx);
+      const deadlineDate = formatDateRu(addWorkingDays(new Date(), 2));
+      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FINAL_KP_SENT);
+      paintStatusCell(sheet, rowIdx, STATUSES.FINAL_KP_SENT);
+      patchDealState(sheet, rowIdx, {
+        kpVariants: variants,
+        kpSentAt: new Date().toISOString(),
+        kpSignedByAdmin: true,
+        kpSignedAt: formatDateRu(new Date()),
+        kpDeadlineText: deadlineDate
+      });
+      ensureProjectDriveFolder(sheet, rowIdx);
+      generateAndSaveFinalKpDoc(sheet, rowIdx);
+      appendPortalEvent(sheet, rowIdx, "Финальное КП подписано печатью ТОО «Метод и Ко» и опубликовано для Заказчика");
+      notifyClientAllChannels(sheet, rowIdx, "final_kp");
+      return { status: "ok" };
+    } else {
+      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
+      paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
+      patchDealState(sheet, rowIdx, {
+        contractSignedByAdmin: true,
+        contractSignedAt: formatDateRu(new Date())
+      });
+      ensureProjectDriveFolder(sheet, rowIdx);
+      generateAndSaveContractDoc(sheet, rowIdx);
+      appendPortalEvent(sheet, rowIdx, "Договор подписан печатью ТОО «Метод и Ко» и опубликован для Заказчика");
+      notifyClientAllChannels(sheet, rowIdx, "contract");
+      return { status: "ok" };
+    }
   }
 
   return { status: "error", message: "Неизвестное действие" };
@@ -2692,4 +3045,297 @@ function sendTelegramApi(token, method, payload) {
 function escapeHtml(text) {
   if (!text) return "";
   return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+
+/**
+ * =========================================================================
+ * 11. ВХОД КЛИЕНТА ПО НОМЕРУ ТЕЛЕФОНА, ШТАБ БЮРО, ПРОГРЕСС % И СВОДКИ (v6.0)
+ * =========================================================================
+ */
+function findOrdersByPhoneApi(rawPhone, rawKp) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  if (!sheet || sheet.getLastRow() < 2) {
+    return { status: "not_found", message: "Заявки пока не найдены." };
+  }
+
+  // Защита от перебора (Rate Limit)
+  const cleanDigits = String(rawPhone || "").replace(/[^\d]/g, "");
+  const cleanKp = String(rawKp || "").trim().toUpperCase();
+  if (cleanDigits.length < 10 && !cleanKp.startsWith("MK-")) {
+    return { status: "error", message: "Введите корректный номер телефона (10–11 цифр) или номер заказа MK-..." };
+  }
+
+  const tail10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : "";
+  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
+  const matches = [];
+
+  for (let i = data.length - 1; i >= 0; i--) {
+    const r = data[i];
+    const kp = String(r[COL.KP - 1] || "").trim();
+    if (!kp) continue;
+    const rowDigits = String(r[COL.PHONE - 1] || "").replace(/[^\d]/g, "");
+    const rowTail10 = rowDigits.length >= 10 ? rowDigits.slice(-10) : "";
+
+    const phoneMatched = tail10 && rowTail10 && tail10 === rowTail10;
+    const kpMatched = cleanKp && kp.toUpperCase() === cleanKp;
+
+    if (phoneMatched || kpMatched) {
+      const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
+      const deliverables = ensureDeliverablesList(r, deal);
+      matches.push({
+        kpNumber: kp,
+        date: String(r[COL.DATE - 1] || ""),
+        clientName: String(r[COL.NAME - 1] || ""),
+        clientOrg: String(r[COL.ORG - 1] || ""),
+        category: String(r[COL.CATEGORY - 1] || ""),
+        crmStatus: String(r[COL.STATUS - 1] || ""),
+        agreedPrice: Number(r[COL.AGREED_PRICE - 1] || r[COL.SITE_PRICE - 1] || 0),
+        progressPercent: computeOrderProgress(r[COL.STATUS - 1], deal, deliverables),
+        portalToken: generatePortalToken(kp),
+        portalUrl: getClientPortalUrl(kp)
+      });
+      if (matches.length >= 5) break;
+    }
+  }
+
+  if (matches.length === 0) {
+    return {
+      status: "not_found",
+      message: "Заказ с таким номером телефона не найден. Проверьте цифры номера или оформите смету на главной странице."
+    };
+  }
+
+  return {
+    status: "ok",
+    orders: matches,
+    primaryOrder: matches[0]
+  };
+}
+
+function ensureDeliverablesList(row, deal) {
+  if (deal && Array.isArray(deal.deliverables) && deal.deliverables.length > 0) {
+    return deal.deliverables;
+  }
+  const items = [];
+  const chosen = deal && deal.chosenVariant;
+  const sel = (deal && Array.isArray(deal.selectedItems)) ? deal.selectedItems : [];
+  const crmStatus = String((row && row[COL.STATUS - 1]) || "");
+  const isDone = crmStatus.includes("✅");
+  const isWork = crmStatus.includes("🟢") || crmStatus.includes("📅");
+
+  if (sel.length > 0) {
+    sel.forEach((it, idx) => {
+      items.push({
+        id: "mod_" + (idx + 1),
+        title: it.name || ("Раздел проекта №" + (idx + 1)),
+        status: isDone ? "approved" : (isWork ? "in_progress" : "pending"),
+        progress: isDone ? 100 : (isWork ? 35 : 0),
+        fileUrl: "",
+        fileName: "",
+        staffNote: "",
+        clientComment: "",
+        updatedAt: ""
+      });
+    });
+  } else if (chosen && chosen.title) {
+    items.push({
+      id: "pkg_1",
+      title: chosen.title + (chosen.scope ? " (" + chosen.scope.slice(0, 70) + ")" : ""),
+      status: isDone ? "approved" : (isWork ? "in_progress" : "pending"),
+      progress: isDone ? 100 : (isWork ? 35 : 0),
+      fileUrl: "",
+      fileName: "",
+      staffNote: "",
+      clientComment: "",
+      updatedAt: ""
+    });
+  } else {
+    const cat = (row && row[COL.CATEGORY - 1]) || "Методический комплект";
+    items.push({
+      id: "doc_main_1",
+      title: "Основной комплект разработки (" + cat + ")",
+      status: isDone ? "approved" : (isWork ? "in_progress" : "pending"),
+      progress: isDone ? 100 : (isWork ? 30 : 0),
+      fileUrl: "",
+      fileName: "",
+      staffNote: "",
+      clientComment: "",
+      updatedAt: ""
+    });
+  }
+
+  items.push({
+    id: "doc_avr",
+    title: "Итоговый пакет сдачи и Акт выполненных работ (АВР)",
+    status: isDone ? "approved" : "pending",
+    progress: isDone ? 100 : 0,
+    fileUrl: "",
+    fileName: "",
+    staffNote: "",
+    clientComment: "",
+    updatedAt: ""
+  });
+
+  return items;
+}
+
+function computeOrderProgress(crmStatus, deal, deliverables) {
+  const s = String(crmStatus || "");
+  if (s.includes("✅")) return 100;
+
+  let base = 10;
+  if (s.includes("🟣") || s.includes("🔵") || s.includes("🟠") || (deal && deal.briefAnswers)) base = 22;
+  if (s.includes("💼") || (deal && deal.kpSignedByAdmin)) base = 35;
+  if (s.includes("🤝")) base = 42;
+  if (s.includes("📄") || (deal && deal.contractSignedByAdmin)) base = 50;
+  if (s.includes("✍️") || (deal && (deal.clientSignedOnline || (deal.signedContractFiles && deal.signedContractFiles.length)))) base = 60;
+  if (s.includes("⏳")) base = 68;
+  if (s.includes("🟢") || s.includes("📅")) base = 75;
+
+  const list = Array.isArray(deliverables) ? deliverables : [];
+  if (list.length > 0 && base >= 60) {
+    const avgDoc = list.reduce((acc, d) => acc + Number(d.progress || 0), 0) / list.length;
+    return Math.min(99, Math.round(60 + (avgDoc * 0.40)));
+  }
+  return base;
+}
+
+function listReadyFilesFromDrive(deal) {
+  const out = [];
+  try {
+    const resultsId = deal && deal.driveFolders && deal.driveFolders.subFolders && deal.driveFolders.subFolders.resultsId;
+    if (!resultsId) return out;
+    const folder = DriveApp.getFolderById(resultsId);
+    const files = folder.getFiles();
+    while (files.hasNext()) {
+      const f = files.next();
+      if (f.isTrashed()) continue;
+      out.push({
+        name: f.getName(),
+        url: f.getUrl(),
+        updatedAt: Utilities.formatDate(f.getLastUpdated(), "Asia/Almaty", "dd.MM.yyyy HH:mm")
+      });
+    }
+  } catch (e) {}
+  return out;
+}
+
+function appendPortalEvent(sheet, rowIdx, text) {
+  if (!sheet || rowIdx === -1 || !text) return;
+  const deal = readDealState(sheet, rowIdx);
+  const log = Array.isArray(deal.eventsLog) ? deal.eventsLog : [];
+  log.unshift({
+    at: Utilities.formatDate(new Date(), "Asia/Almaty", "dd.MM.yyyy HH:mm"),
+    text: text
+  });
+  patchDealState(sheet, rowIdx, { eventsLog: log.slice(0, 40) });
+}
+
+function getStaffDashboardState(staffKey) {
+  const role = resolveStaffRole("", staffKey);
+  if (!role) {
+    return { status: "forbidden", message: "Недействительная ссылка доступа в Штаб Бюро." };
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  const qInfo = getPublicQueueStatus();
+  if (!sheet || sheet.getLastRow() < 2) {
+    return { status: "ok", role: role, queue: qInfo, orders: [] };
+  }
+
+  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
+  const orders = [];
+  for (let i = data.length - 1; i >= 0; i--) {
+    const r = data[i];
+    const kp = String(r[COL.KP - 1] || "").trim();
+    if (!kp) continue;
+    const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
+    const deliverables = ensureDeliverablesList(r, deal);
+    const prog = computeOrderProgress(r[COL.STATUS - 1], deal, deliverables);
+    const t = encodeURIComponent(generatePortalToken(kp));
+    const sig = encodeURIComponent(role === "director" ? generateAdminToken(kp) : generateAssistantToken(kp));
+
+    orders.push({
+      kpNumber: kp,
+      date: String(r[COL.DATE - 1] || ""),
+      clientName: String(r[COL.NAME - 1] || ""),
+      clientOrg: String(r[COL.ORG - 1] || ""),
+      clientPhone: String(r[COL.PHONE - 1] || ""),
+      clientEmail: String(r[COL.EMAIL - 1] || ""),
+      category: String(r[COL.CATEGORY - 1] || ""),
+      devLanguage: String(r[COL.DEV_LANG - 1] || ""),
+      crmStatus: String(r[COL.STATUS - 1] || ""),
+      agreedPrice: Number(r[COL.AGREED_PRICE - 1] || r[COL.SITE_PRICE - 1] || 0),
+      totalDays: Number(r[COL.DAYS - 1] || 10),
+      startDate: String(r[COL.START_DATE - 1] || ""),
+      endDate: String(r[COL.END_DATE - 1] || ""),
+      progressPercent: prog,
+      needsAttention: Boolean(deal.needsAttention),
+      uploadedCount: (deal.uploadedMaterials ? deal.uploadedMaterials.length : 0) + (deal.signedContractFiles ? deal.signedContractFiles.length : 0) + (deal.paymentReceiptFiles ? deal.paymentReceiptFiles.length : 0),
+      messagesCount: deal.messages ? deal.messages.length : 0,
+      deliverables: deliverables,
+      driveFolderUrl: role === "director" ? String(r[COL.DRIVE_LINK - 1] || "") : "",
+      openCabinetUrl: `${CONFIG.SITE_URL}/client.html?kp=${encodeURIComponent(kp)}&t=${t}&admin=${sig}`
+    });
+  }
+
+  return {
+    status: "ok",
+    role: role,
+    directorHubUrl: role === "director" ? getStaffHubUrl("director") : "",
+    assistantHubUrl: role === "director" ? getStaffHubUrl("assistant") : "",
+    queue: qInfo,
+    orders: orders
+  };
+}
+
+function sendStaffSummaryReportToAdmin(targetChatId) {
+  const token = getSecret("ADMIN_BOT_TOKEN");
+  const chatId = targetChatId || getSecret("ADMIN_CHAT_ID");
+  if (!token || !chatId) return;
+
+  const state = getStaffDashboardState(generateGlobalStaffToken("director"));
+  const orders = state.orders || [];
+  const active = orders.filter(o => !o.crmStatus.includes("✅"));
+  const doneCount = orders.length - active.length;
+
+  let msg = `🏛️ <b>ШТАБНАЯ СВОДКА БЮРО «МЕТОДИКО»</b>\n`;
+  msg += `⚖️ Загрузка: <b>${state.queue.usedPoints} / ${CONFIG.MAX_CAPACITY_POINTS} баллов</b> | Ближайшее окно: <b>${state.queue.nextFreeWindow}</b>\n`;
+  msg += `📂 Всего заказов: <b>${orders.length}</b> (в работе и согласовании: <b>${active.length}</b>, завершено: <b>${doneCount}</b>)\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+
+  if (active.length === 0) {
+    msg += `<i>Сейчас нет активных незавершённых заявок.</i>\n`;
+  } else {
+    active.slice(0, 12).forEach((o, idx) => {
+      const fire = o.needsAttention ? "🔥 " : "";
+      const docsSummary = (o.deliverables || []).map(d => {
+        const ic = d.status === "approved" ? "✅" : (d.status === "review" ? "🟠" : (d.status === "in_progress" ? "🔨" : "⏳"));
+        return `${ic} ${escapeHtml(d.title.slice(0, 28))} (${d.progress || 0}%)`;
+      }).join("; ");
+      msg += `\n<b>${idx + 1}. ${fire}${escapeHtml(o.kpNumber)} — ${escapeHtml(o.clientName)}</b> (${escapeHtml(o.clientOrg)})\n`;
+      msg += `   • Статус: ${escapeHtml(o.crmStatus)} | <b>Готовность: ${o.progressPercent}%</b>\n`;
+      msg += `   • Сумма: ${Number(o.agreedPrice).toLocaleString("ru-RU")} ₸${o.endDate ? " | Сдача до: " + escapeHtml(o.endDate) : ""}\n`;
+      if (docsSummary) msg += `   • Документы: <i>${docsSummary}</i>\n`;
+    });
+  }
+
+  msg += `\n🔑 <b>Ссылки для работы на сайте (без поисков по папкам):</b>\n`;
+  msg += `• 👑 Ваша ссылка Руководителя (полные права + печать): по кнопке ниже\n`;
+  msg += `• 👩‍💼 Ссылка для Помощницы (куратор проектов):\n<code>${getStaffHubUrl("assistant")}</code>`;
+
+  sendTelegramApi(token, "sendMessage", {
+    chat_id: chatId,
+    text: msg,
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "👑 Открыть Штаб всех заказов (Режим Руководителя)", url: getStaffHubUrl("director") }],
+        [{ text: "👩‍💼 Открыть Штаб (Режим Помощницы)", url: getStaffHubUrl("assistant") }],
+        [{ text: "🔄 Обновить сводку", callback_data: "staff_report" }]
+      ]
+    }
+  });
 }
