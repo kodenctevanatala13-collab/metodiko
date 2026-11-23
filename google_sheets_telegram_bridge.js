@@ -1,9 +1,9 @@
 /**
  * =========================================================================
  * ТОО «Метод и Ко» | Бюро стандартов «МЕТОДИКО»
- * УМНЫЙ ОБЛАЧНЫЙ МОСТ v5.0:
+ * УМНЫЙ ОБЛАЧНЫЙ МОСТ v7.1:
  * САЙТ (Единый Кабинет client.html + index.html + brief.html)
- *   ➔ GOOGLE ТАБЛИЦА + GOOGLE ДИСК (Папки клиентов, Документы КП и Договора)
+ *   ➔ GOOGLE ТАБЛИЦА + ЖУРНАЛ СОБЫТИЙ ДЛЯ БОТА + GOOGLE ДИСК
  *   ➔ АВТО-EMAIL КЛИЕНТУ (0 ₸)
  *   ➔ ЛИЧНЫЙ ПУЛЬТ РУКОВОДИТЕЛЯ (@metodico_sait_zayavki_bot) + GEMINI
  * =========================================================================
@@ -12,9 +12,13 @@
  *   - CLIENT_BOT_TOKEN         : токен ТГ-колокольчика уведомлений (@metodico_brif_bot)
  *   - ADMIN_CHAT_ID            : ваш личный Telegram ID
  *   - GEMINI_API_KEY           : ключ из Google AI Studio
- *   - PORTAL_SECRET            : секрет для подписей клиентских и админских ссылок (опционально)
+ *   - DIRECTOR_KEY             : длинный секретный ключ входа в Штаб Руководителя (сменяемый за 1 мин)
+ *   - CURATOR_KEY              : длинный секретный ключ входа для Куратора (сменяемый за 1 мин)
+ *   - STAMP_FILE_ID            : ID файла печати metodico_stamp_sign.png в закрытой папке на Google Диске
+ *   - NOTIFY_EVENTS_EMAIL      : "true" или email для дублирования событий Журнала на почту (для бота)
+ *   - PORTAL_SECRET            : секрет для подписей клиентских ссылок (опционально)
  *   - ROOT_PROJECTS_FOLDER_ID  : ID корневой папки проектов на Диске (создаётся сам при 1-м запуске)
- *   - CONTRACT_TEMPLATE_ID     : (необязательно) ID шаблона Google Docs, если хотите использовать свой шаблон
+ *   - CONTRACT_TEMPLATE_ID     : (необязательно) ID шаблона Google Docs
  * =========================================================================
  */
 
@@ -22,6 +26,7 @@ const CONFIG = {
   SHEET_LEADS: "Заявки МЕТОДИКО",
   SHEET_QUEUE: "График и Очередь",
   SHEET_MEMORY: "Память диалогов",
+  SHEET_EVENTS: "Журнал событий",
   COMPANY_NAME: "ТОО «Метод и Ко» | Бюро «МЕТОДИКО»",
   SITE_URL: "https://metodico-kz.netlify.app",
   CLIENT_BOT_USERNAME: "metodico_brif_bot",
@@ -30,7 +35,7 @@ const CONFIG = {
   GEMINI_MODEL: "gemini-3.5-flash-lite"
 };
 
-// Карта столбцов листа «Заявки МЕТОДИКО» (1-based, совместима с v4.0)
+// Карта столбцов листа «Заявки МЕТОДИКО» (1-based; колонки 1..24 неизменны, 25..29 добавлены справа по К4)
 const COL = {
   KP: 1,
   DATE: 2,
@@ -55,7 +60,12 @@ const COL = {
   END_DATE: 21,
   META_DOC: 22,
   DRIVE_LINK: 23,
-  DEAL_JSON: 24
+  DEAL_JSON: 24,
+  CLIENT_TYPE: 25,   // Y: Тип клиента (ВУЗы и колледжи / Корпорации и B2B / Школы и «Ұстаз» / EdTech и онлайн-школы)
+  NEXT_ACTION: 26,   // Z: Следующее действие (ведёт Наталья / бот)
+  ACTION_DUE: 27,    // AA: Срок (дата) (ведёт Наталья / бот)
+  MISSING_INFO: 28,  // AB: Чего не хватает (ведёт Наталья / бот)
+  LAST_CONTACT: 29   // AC: Последний контакт (дата) (ведёт Наталья / бот)
 };
 
 const STATUSES = {
@@ -70,8 +80,41 @@ const STATUSES = {
   WAITING_MATERIALS: "⏳ 9. Оплачено — ждем материалы (бронь 3 раб. дн.)",
   IN_WORK: "🟢 10. В РАБОТЕ (Активный слот)",
   IN_QUEUE: "📅 11. В ОЧЕРЕДИ (Забронирована дата)",
-  DONE: "✅ 12. Сдано / АВР подписан"
+  DONE: "✅ 12. Сдано / АВР подписан",
+  REJECTED: "⚪ 13. Отказ",
+  PAUSED: "⏸️ 14. Пауза"
 };
+
+// Официальный серверный прайс-лист модулей калькулятора (для серверного пересчёта суммы по В4 и В1)
+const SERVER_PRICE_CATALOG = [
+  // 1. ВУЗы и колледжи
+  { code: "vuz_36", match: ["36 академ", "36 сағат"], price: 180000, days: 3 },
+  { code: "vuz_72", match: ["72 академ", "72 сағат"], price: 300000, days: 4 },
+  { code: "vuz_108", match: ["108–144", "108-144"], price: 450000, days: 6 },
+  { code: "vuz_pool", match: ["комплексный цикл кафедры", "кафедраның кешенді циклі", "4–5 дисцип", "4–5 пән"], price: 950000, days: 10 },
+  { code: "vuz_rubric", match: ["шкала оценки навыков", "бағалау шкаласы", "дескриптор"], price: 150000, days: 2 },
+  { code: "vuz_tests", match: ["фонд оценочных средств", "бағалау құралдарының қоры", "100 тест"], price: 150000, days: 2 },
+  { code: "vuz_html", match: ["интерактивная панель запуска", "интерактивті панелі"], price: 120000, days: 2 },
+  // 2. Корпорации и B2B
+  { code: "corp_salesbook", match: ["книга продаж", "сату кітабы"], price: 200000, days: 3 },
+  { code: "corp_onboard", match: ["стандарты онбординга", "бейімдеу стандарттары", "72 час", "72 сағат"], price: 250000, days: 3 },
+  { code: "corp_sim", match: ["диалоговый тренажер", "диалогтік тренажер", "3 ключевых сценар", "3 негізгі сценарий"], price: 350000, days: 5 },
+  { code: "corp_qa", match: ["отдел контроля качества", "сапаны бақылау бөлімі"], price: 180000, days: 2 },
+  // 3. Школы и «Ұстаз»
+  { code: "sch_34", match: ["34 часа", "34 сағат", "34 академ"], price: 180000, days: 3 },
+  { code: "sch_68", match: ["68 часов", "68 сағат", "68 академ"], price: 280000, days: 4 },
+  { code: "sch_comic", match: ["предпечатная верстка", "комикс-дәптерін әзірлеу", "pre-press pdf"], price: 180000, days: 5 },
+  { code: "sch_html", match: ["html-тренажер программы", "бағдарламаның интерактивті html"], price: 150000, days: 3 },
+  { code: "sch_qa", match: ["стандарты преподавания и qa", "жеке мектеп үшін оқыту стандарттары"], price: 280000, days: 4 },
+  // 4. EdTech и онлайн-школы
+  { code: "edt_express", match: ["экспресс-аудит курса", "экспресс-аудиті"], price: 150000, days: 2 },
+  { code: "edt_deep", match: ["глубокий аудит 10 уроков", "10 сабақ пен үй тапсырмаларына"], price: 250000, days: 4 },
+  { code: "edt_arch", match: ["проектирование онбординга и архитектуры", "онбординг пен курс архитектурасын"], price: 180000, days: 3 },
+  { code: "edt_reanim", match: ["реанимация курса", "қайта жандандыру"], price: 450000, days: 6 },
+  { code: "edt_voice", match: ["voice-to-course", "аудио-наговоров", "аудиожазбалардан курс"], price: 350000, days: 5 },
+  { code: "edt_workbook", match: ["воркбук а4", "брендированная рабочая тетрадь"], price: 150000, days: 3 },
+  { code: "edt_curators", match: ["регламент проверки дз", "үй тапсырмасын тексеру регламенті"], price: 120000, days: 2 }
+];
 
 function getSecret(key, fallback) {
   const props = PropertiesService.getScriptProperties();
@@ -117,7 +160,12 @@ function setupMetodikoCRM() {
     "Плановая дата сдачи",            // U (21)
     "Ссылка на Договор (Google Док)", // V (22)
     "Папка проекта (Google Диск)",    // W (23)
-    "Состояние сделки (JSON)"         // X (24)
+    "Состояние сделки (JSON)",        // X (24)
+    "Тип клиента",                    // Y (25)
+    "Следующее действие",             // Z (26)
+    "Срок (дата)",                    // AA (27)
+    "Чего не хватает",                // AB (28)
+    "Последний контакт (дата)"        // AC (29)
   ];
 
   leadsSheet.getRange(1, 1, 1, leadHeaders.length).setValues([leadHeaders]);
@@ -127,6 +175,7 @@ function setupMetodikoCRM() {
     .setFontColor("#FFFFFF")
     .setWrap(true);
   leadsSheet.setFrozenRows(1);
+  ensureExtendedColumns(leadsSheet);
 
   let queueSheet = ss.getSheetByName(CONFIG.SHEET_QUEUE);
   if (!queueSheet) queueSheet = ss.insertSheet(CONFIG.SHEET_QUEUE);
@@ -139,21 +188,469 @@ function setupMetodikoCRM() {
   memSheet.getRange(1, 1, 1, memHeaders.length).setFontWeight("bold").setBackground("#1E293B").setFontColor("#FFFFFF");
   memSheet.setFrozenRows(1);
 
+  ensureEventsLogSheet(ss);
+
   recalculateQueueSheet();
   try { getOrCreateRootProjectsFolder(); } catch (e) { Logger.log("Root folder init: " + e); }
   try { MailApp.getRemainingDailyQuota(); } catch (e) { Logger.log("MailApp quota check: " + e); }
+  try {
+    const dKey = getOrCreateStaffSecretKey("director");
+    const cKey = getOrCreateStaffSecretKey("assistant");
+    const tgRes = sendStaffKeysToAdminTelegram("🔐 СИСТЕМА МЕТОДИКО v7.1 ОБНОВЛЕНА — ВАШИ СЕКРЕТНЫЕ КЛЮЧИ ШТАБА");
+    setSecret("KEYS_SENT_TO_TG_V7", "1");
+    Logger.log("✅ Ключи Штаба созданы и отправлены в Telegram! Руководитель: " + dKey.slice(0, 8) + "... | Куратор: " + cKey.slice(0, 8) + "... | Ответ TG: " + (tgRes ? tgRes.getResponseCode() : "нет ADMIN_BOT_TOKEN/ADMIN_CHAT_ID"));
+  } catch (e) {
+    Logger.log("⚠️ Ошибка отправки ключей в TG: " + e);
+  }
+}
+
+// Синоним для запуска из выпадающего меню Apps Script
+function setupMetodicoSystem() {
+  return setupMetodikoCRM();
+}
+
+// Смена секретных ключей Штаба за 1 минуту (из Apps Script или командой /newkey в Telegram-боте)
+function rotateStaffKeys(targetChatId) {
+  const dirKey = "DIR_" + Utilities.getUuid().replace(/-/g, "") + Utilities.getUuid().replace(/-/g, "").slice(0, 12);
+  const curKey = "CUR_" + Utilities.getUuid().replace(/-/g, "") + Utilities.getUuid().replace(/-/g, "").slice(0, 12);
+  setSecret("DIRECTOR_KEY", dirKey);
+  setSecret("CURATOR_KEY", curKey);
+  setSecret("KEYS_SENT_TO_TG_V7", "1");
+  sendStaffKeysToAdminTelegram("🔄 СЕКРЕТНЫЕ КЛЮЧИ ШТАБА СМЕНЕНЫ (старые ключи больше не работают)", targetChatId);
+  return { directorKey: dirKey, curatorKey: curKey };
+}
+
+function sendStaffKeysToAdminTelegram(customHeader, targetChatId) {
+  const token = getSecret("ADMIN_BOT_TOKEN");
+  const chatId = targetChatId || getSecret("ADMIN_CHAT_ID");
+  if (!token || !chatId) return;
+
+  const dirKey = getOrCreateStaffSecretKey("director");
+  const curKey = getOrCreateStaffSecretKey("assistant");
+  const dirUrl = getStaffHubUrl("director");
+  const curUrl = getStaffHubUrl("assistant");
+
+  const hdr = customHeader || "🔐 СЕКРЕТНЫЕ КЛЮЧИ И ССЫЛКИ ВХОДА В ШТАБ БЮРО «МЕТОДИКО»";
+  let msg = `<b>${hdr}</b>\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `👑 <b>1. Ключ Руководителя (Наталья Коденцева):</b>\n<code>${dirKey}</code>\n\n`;
+  msg += `👩‍💼 <b>2. Ключ Куратора (Помощница):</b>\n<code>${curKey}</code>\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📌 <b>Как пользоваться:</b>\n`;
+  msg += `• Нажмите кнопку <b>«👑 Открыть Штаб всех заказов»</b> ниже (или вставьте ключ в поле входа на странице <code>client.html</code>).\n`;
+  msg += `• Чтобы сменить ключи в любой момент за 5 секунд, отправьте в этот бот команду <code>/newkey</code> (или нажмите кнопку ниже).`;
+
+  return sendTelegramApi(token, "sendMessage", {
+    chat_id: chatId,
+    text: msg,
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "👑 Открыть Штаб всех заказов (Руководитель)", url: dirUrl }],
+        [{ text: "👩‍💼 Открыть Штаб (Режим Куратора)", url: curUrl }],
+        [{ text: "📊 Штабная сводка по заказам", callback_data: "staff_report" }],
+        [{ text: "🔄 Сменить секретные ключи (/newkey)", callback_data: "rotate_staff_keys" }]
+      ]
+    }
+  });
+}
+
+function ensureInitialKeysSentToTelegram() {
+  try {
+    if (!getSecret("KEYS_SENT_TO_TG_V7")) {
+      const token = getSecret("ADMIN_BOT_TOKEN");
+      const chatId = getSecret("ADMIN_CHAT_ID");
+      if (token && chatId) {
+        setSecret("KEYS_SENT_TO_TG_V7", "1");
+        sendStaffKeysToAdminTelegram("🔐 ВАШИ СЕКРЕТНЫЕ КЛЮЧИ ШТАБА БЮРО «МЕТОДИКО» (автоматическая отправка после обновления)");
+      }
+    }
+  } catch (e) {}
+}
+
+function ensureEventsLogSheet(ssObj) {
+  const ss = ssObj || SpreadsheetApp.getActiveSpreadsheet();
+  let evSheet = ss.getSheetByName(CONFIG.SHEET_EVENTS);
+  if (!evSheet) {
+    evSheet = ss.insertSheet(CONFIG.SHEET_EVENTS);
+    const evHeaders = ["Время", "№ заявки", "Событие", "Кратко", "Кто"];
+    evSheet.getRange(1, 1, 1, evHeaders.length).setValues([evHeaders])
+      .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
+    evSheet.setFrozenRows(1);
+    try {
+      evSheet.setColumnWidth(1, 150);
+      evSheet.setColumnWidth(2, 130);
+      evSheet.setColumnWidth(3, 210);
+      evSheet.setColumnWidth(4, 460);
+      evSheet.setColumnWidth(5, 110);
+    } catch (e) {}
+  } else if (!evSheet.getRange(1, 1).getValue()) {
+    const evHeaders = ["Время", "№ заявки", "Событие", "Кратко", "Кто"];
+    evSheet.getRange(1, 1, 1, evHeaders.length).setValues([evHeaders])
+      .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
+    evSheet.setFrozenRows(1);
+  }
+  return evSheet;
 }
 
 function ensureExtendedColumns(sheet) {
   if (!sheet) return;
-  if (!sheet.getRange(1, COL.DRIVE_LINK).getValue()) {
-    sheet.getRange(1, COL.DRIVE_LINK).setValue("Папка проекта (Google Диск)")
-      .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
+  const extHeaders = [
+    { col: COL.DRIVE_LINK, title: "Папка проекта (Google Диск)" },
+    { col: COL.DEAL_JSON, title: "Состояние сделки (JSON)" },
+    { col: COL.CLIENT_TYPE, title: "Тип клиента" },
+    { col: COL.NEXT_ACTION, title: "Следующее действие" },
+    { col: COL.ACTION_DUE, title: "Срок (дата)" },
+    { col: COL.MISSING_INFO, title: "Чего не хватает" },
+    { col: COL.LAST_CONTACT, title: "Последний контакт (дата)" }
+  ];
+  extHeaders.forEach(h => {
+    if (!sheet.getRange(1, h.col).getValue()) {
+      sheet.getRange(1, h.col).setValue(h.title)
+        .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
+    }
+  });
+
+  // Автозаполнение колонки «Тип клиента» (Y) для существующих строк, если она ещё пустая (колонки Z..AC не трогаем)
+  try {
+    const lastRow = sheet.getLastRow();
+    if (lastRow >= 2) {
+      const cats = sheet.getRange(2, COL.CATEGORY, lastRow - 1, 1).getValues();
+      const types = sheet.getRange(2, COL.CLIENT_TYPE, lastRow - 1, 1).getValues();
+      let changed = false;
+      for (let i = 0; i < cats.length; i++) {
+        if (!types[i][0] && cats[i][0]) {
+          types[i][0] = mapCategoryToClientType(cats[i][0]);
+          changed = true;
+        }
+      }
+      if (changed) {
+        sheet.getRange(2, COL.CLIENT_TYPE, lastRow - 1, 1).setValues(types);
+      }
+    }
+  } catch (e) {}
+
+  try { ensureEventsLogSheet(); } catch (e) {}
+}
+
+function mapCategoryToClientType(categoryText) {
+  const key = detectBranchKey(categoryText);
+  if (key === "vuz") return "ВУЗы и колледжи";
+  if (key === "school") return "Школы и «Ұстаз»";
+  if (key === "edtech") return "EdTech и онлайн-школы";
+  if (key === "b2b") return "Корпорации и B2B";
+  const s = String(categoryText || "").toLowerCase();
+  if (s.includes("вуз") || s.includes("колледж") || s.includes("жоо")) return "ВУЗы и колледжи";
+  if (s.includes("школ") || s.includes("ұстаз") || s.includes("устаз") || s.includes("мектеп")) return "Школы и «Ұстаз»";
+  if (s.includes("edtech") || s.includes("онлайн")) return "EdTech и онлайн-школы";
+  return "Корпорации и B2B";
+}
+
+function isRejectedStatus(statusText) {
+  const s = String(statusText || "").toLowerCase();
+  return s.includes("отказ");
+}
+
+function isPausedStatus(statusText) {
+  const s = String(statusText || "").toLowerCase();
+  return s.includes("пауза");
+}
+
+// Лестница статусов для предотвращения случайного отката назад (К3)
+function getStatusStageOrder(statusText) {
+  const s = String(statusText || "");
+  if (isRejectedStatus(s)) return 99;
+  if (isPausedStatus(s)) return 98;
+  if (s.includes("✅") || s.includes("12.")) return 12;
+  if (s.includes("📅") || s.includes("11.")) return 11;
+  if (s.includes("🟢") || s.includes("10.")) return 10;
+  if (s.includes("⏳") || s.includes("9.")) return 9;
+  if (s.includes("✍️") || s.includes("8.")) return 8;
+  if (s.includes("📄") || s.includes("7.")) return 7;
+  if (s.includes("🤝") || s.includes("6.")) return 6;
+  if (s.includes("💼") || s.includes("5.")) return 5;
+  if (s.includes("🟠") || s.includes("4.")) return 4;
+  if (s.includes("🔵") || s.includes("3.")) return 3;
+  if (s.includes("🟣") || s.includes("2.")) return 2;
+  if (s.includes("🟡") || s.includes("1.")) return 1;
+  return 0;
+}
+
+// Централизованное обновление статуса с записью в лист «Журнал событий» (К3, К4)
+function updateOrderStatus(sheet, rowIdx, newStatus, actor, options) {
+  if (!sheet || rowIdx < 2 || !newStatus) return false;
+  const opts = options || {};
+  const oldStatus = String(sheet.getRange(rowIdx, COL.STATUS).getValue() || "").trim();
+  const kp = String(sheet.getRange(rowIdx, COL.KP).getValue() || "").trim();
+
+  if (oldStatus === newStatus) {
+    paintStatusCell(sheet, rowIdx, newStatus);
+    return false;
   }
-  if (!sheet.getRange(1, COL.DEAL_JSON).getValue()) {
-    sheet.getRange(1, COL.DEAL_JSON).setValue("Состояние сделки (JSON)")
-      .setFontWeight("bold").setBackground("#152238").setFontColor("#FFFFFF").setWrap(true);
+
+  // Запрещаем непроизвольный откат статуса назад (если только не передан force: true или статус Доп.вопрос/Отказ/Пауза)
+  if (!opts.force && oldStatus) {
+    const oldRank = getStatusStageOrder(oldStatus);
+    const newRank = getStatusStageOrder(newStatus);
+    if (oldRank > newRank && newStatus !== STATUSES.EXTRA_QUESTION) {
+      return false;
+    }
   }
+
+  sheet.getRange(rowIdx, COL.STATUS).setValue(newStatus);
+  paintStatusCell(sheet, rowIdx, newStatus);
+
+  if (isRejectedStatus(newStatus)) {
+    patchDealState(sheet, rowIdx, { needsAttention: false });
+  }
+
+  if (oldStatus && oldStatus !== newStatus && !opts.skipStatusEvent) {
+    appendBotEventLog(kp, "статус_изменён", `${oldStatus} → ${newStatus}`, actor || "система");
+  }
+  if (isRejectedStatus(newStatus) && !isRejectedStatus(oldStatus)) {
+    appendBotEventLog(kp, "отказ", "Заказ переведён в статус «Отказ»", actor || "Наталья");
+  }
+  return true;
+}
+
+// Автоматическое выравнивание отставшего статуса (например, MK-2026-826, где договор отправлен, а статус остался «3. На разборе»)
+function healLaggingOrderStatus(sheet, rowIdx, row, deal) {
+  if (!sheet || rowIdx < 2 || !row || !deal) return row ? row[COL.STATUS - 1] : "";
+  const curStatus = String(row[COL.STATUS - 1] || "");
+  if (isRejectedStatus(curStatus) || isPausedStatus(curStatus)) return curStatus;
+
+  const curRank = getStatusStageOrder(curStatus);
+  let targetStatus = "";
+
+  if (deal.paidAt && curRank < 9) {
+    targetStatus = STATUSES.WAITING_MATERIALS;
+  } else if ((deal.clientSignedOnline || (Array.isArray(deal.signedContractFiles) && deal.signedContractFiles.length > 0)) && curRank < 8) {
+    targetStatus = STATUSES.CONTRACT_AGREED;
+  } else if ((deal.contractSignedByAdmin || deal.contractSignedAt || extractDocUrlFromCol22(row[COL.META_DOC - 1]) || deal.contractDocUrl) && curRank < 7) {
+    targetStatus = STATUSES.CONTRACT_SENT;
+  } else if (deal.chosenVariant && curRank < 6) {
+    targetStatus = STATUSES.KP_ACCEPTED;
+  } else if ((deal.kpSignedByAdmin || deal.kpSentAt) && curRank < 5) {
+    targetStatus = STATUSES.FINAL_KP_SENT;
+  }
+
+  if (targetStatus && targetStatus !== curStatus) {
+    updateOrderStatus(sheet, rowIdx, targetStatus, "система", { force: true });
+    row[COL.STATUS - 1] = targetStatus;
+    return targetStatus;
+  }
+  return curStatus;
+}
+
+// Очистка строки «Кратко» от телефонов, ИИН/БИН, email и банковских счетов (К3)
+function sanitizeEventShortText(rawText, maxLen) {
+  const limit = maxLen || 120;
+  let s = String(rawText || "").replace(/[\r\n\t]+/g, " ").trim();
+  // Вырезаем IBAN счета KZ...
+  s = s.replace(/\bKZ[A-Z0-9]{14,20}\b/gi, "[ИИК скрыт]");
+  // Вырезаем Email
+  s = s.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "[email]");
+  // Вырезаем БИН/ИИН (12 цифр подряд) и телефоны (10-15 цифр с пробелами/скобками/дефисами)
+  s = s.replace(/\b\d{12}\b/g, "[ИИН/БИН]");
+  s = s.replace(/(?:\+?\d[\d\s\-()]{8,16}\d)/g, "[тел.]");
+  s = s.replace(/\s{2,}/g, " ").trim();
+  if (s.length > limit) {
+    s = s.slice(0, limit).trim() + "…";
+  }
+  return s || "—";
+}
+
+// Запись строки в лист «Журнал событий» + опциональное дублирование на почту Натальи (К3)
+function appendBotEventLog(kpNumber, eventCode, shortText, actor) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const evSheet = ensureEventsLogSheet(ss);
+    const timeAlmaty = Utilities.formatDate(new Date(), "Asia/Almaty", "dd.MM.yyyy HH:mm:ss");
+    const kp = String(kpNumber || "—").trim();
+    const code = String(eventCode || "событие").trim();
+    const maxChars = code === "сообщение_клиента" ? 100 : 130;
+    const cleanShort = sanitizeEventShortText(shortText, maxChars);
+    const who = actor || "система";
+
+    evSheet.appendRow([timeAlmaty, kp, code, cleanShort, who]);
+
+    // Опциональное дублирование события письмом на почту Натальи (включается настройкой NOTIFY_EVENTS_EMAIL в Свойствах скрипта)
+    const emailPref = String(getSecret("NOTIFY_EVENTS_EMAIL") || "").trim();
+    if (emailPref && emailPref.toLowerCase() !== "false" && emailPref !== "0") {
+      let targetEmail = emailPref.includes("@") ? emailPref : "";
+      if (!targetEmail) {
+        try { targetEmail = Session.getEffectiveUser().getEmail(); } catch (e) {}
+      }
+      if (!targetEmail) targetEmail = "metodico.kz@gmail.com";
+      const subj = `[МЕТОДИКО] событие ${kp}: ${code}`;
+      const bodyLines = [
+        `Заявка: ${kp} | Время: ${timeAlmaty} (Алматы)`,
+        `Событие: ${code} | Кто: ${who}`,
+        `Кратко: ${cleanShort}`
+      ].join("\n");
+      MailApp.sendEmail(targetEmail, subj, bodyLines, { name: "Журнал событий МЕТОДИКО" });
+    }
+  } catch (err) {
+    Logger.log("appendBotEventLog warn: " + err.toString());
+  }
+}
+
+// Триггер ручного изменения колонки «Статус (Маркер)» прямо в Google Таблице (К3, К4)
+function onEdit(e) {
+  try {
+    if (!e || !e.range) return;
+    const sheet = e.range.getSheet();
+    if (!sheet || sheet.getName() !== CONFIG.SHEET_LEADS) return;
+    const col = e.range.getColumn();
+    const rowIdx = e.range.getRow();
+    if (rowIdx < 2 || col !== COL.STATUS) return;
+
+    const newVal = String(e.value || sheet.getRange(rowIdx, COL.STATUS).getValue() || "").trim();
+    const oldVal = String(e.oldValue || "").trim();
+    const kp = String(sheet.getRange(rowIdx, COL.KP).getValue() || "").trim();
+    if (!newVal || !kp) return;
+
+    paintStatusCell(sheet, rowIdx, newVal);
+    if (isRejectedStatus(newVal)) {
+      patchDealState(sheet, rowIdx, { needsAttention: false });
+    }
+    if (oldVal && oldVal !== newVal) {
+      appendBotEventLog(kp, "статус_изменён", `${oldVal} → ${newVal}`, "Наталья");
+    }
+    if (isRejectedStatus(newVal) && !isRejectedStatus(oldVal)) {
+      appendBotEventLog(kp, "отказ", "Заказ переведён в статус «Отказ» в таблице", "Наталья");
+    }
+  } catch (err) {}
+}
+
+// Порядковый номер КП с сервера: MK-2026-001, MK-2026-002... (В3)
+function generateNextSequentialKpNumber(sheet) {
+  const year = new Date().getFullYear();
+  const propKey = "LAST_KP_SEQ_" + year;
+  const lock = LockService.getScriptLock();
+  try { lock.waitLock(10000); } catch (e) {}
+
+  try {
+    let lastSeq = parseInt(getSecret(propKey, "0"), 10) || 0;
+    const existingSet = {};
+
+    if (sheet && sheet.getLastRow() >= 2) {
+      const vals = sheet.getRange(2, COL.KP, sheet.getLastRow() - 1, 1).getValues();
+      for (let i = 0; i < vals.length; i++) {
+        const val = String(vals[i][0] || "").trim().toUpperCase();
+        if (!val) continue;
+        existingSet[val] = true;
+        // Учитываем уже выданные порядковые номера с ведущим нулём (001..099) либо если счётчик уже выше
+        const m = val.match(new RegExp("^MK-" + year + "-(\\d+)$"));
+        if (m) {
+          const numStr = m[1];
+          const numVal = parseInt(numStr, 10);
+          if (numStr.startsWith("0") && numVal > lastSeq) {
+            lastSeq = numVal;
+          }
+        }
+      }
+    }
+
+    let nextSeq = lastSeq + 1;
+    let candidate = "";
+    while (true) {
+      const padded = nextSeq < 10 ? ("00" + nextSeq) : (nextSeq < 100 ? ("0" + nextSeq) : String(nextSeq));
+      candidate = `MK-${year}-${padded}`;
+      if (!existingSet[candidate.toUpperCase()]) break;
+      nextSeq++;
+    }
+
+    setSecret(propKey, String(nextSeq));
+    return candidate;
+  } finally {
+    try { lock.releaseLock(); } catch (e) {}
+  }
+}
+
+// Пересчёт сметы и срока на сервере по прайсу (В1, В2, В4)
+function recalculateServerLeadTotals(selectedItems, devLangCode, isUrgent) {
+  const items = Array.isArray(selectedItems) ? selectedItems : [];
+  let basePrice = 0;
+  let baseDays = 0;
+  const verifiedItems = [];
+
+  items.forEach(rawIt => {
+    if (!rawIt || typeof rawIt !== "object") return;
+    const rawCode = String(rawIt.code || "").trim().toLowerCase();
+    const rawName = String(rawIt.name || "").trim().slice(0, 220);
+    const nameLower = rawName.toLowerCase();
+
+    let matched = null;
+    if (rawCode) {
+      matched = SERVER_PRICE_CATALOG.find(c => c.code === rawCode);
+    }
+    if (!matched && nameLower) {
+      matched = SERVER_PRICE_CATALOG.find(c => c.match.some(sub => nameLower.includes(sub)));
+    }
+
+    if (matched) {
+      basePrice += matched.price;
+      baseDays += matched.days;
+      verifiedItems.push({ code: matched.code, name: rawName || matched.code, price: matched.price, days: matched.days });
+    } else {
+      // Шаг 1 калькулятора (цель задачи, 0 ₸)
+      verifiedItems.push({ code: "task_0", name: rawName || "Цель задачи", price: 0, days: 0 });
+    }
+  });
+
+  let priceMult = 1.0;
+  let daysMult = 1.0;
+  if (devLangCode === "kz") { priceMult = 1.10; daysMult = 1.10; }
+  else if (devLangCode === "both") { priceMult = 1.25; daysMult = 1.20; }
+
+  let totalPrice = basePrice * priceMult;
+  if (isUrgent) totalPrice *= 1.20;
+  totalPrice = Math.round(totalPrice / 1000) * 1000;
+
+  const totalDays = baseDays > 0 ? Math.ceil(baseDays * daysMult) : 0;
+
+  return {
+    basePrice: basePrice,
+    baseDays: baseDays,
+    totalPrice: totalPrice,
+    totalDays: totalDays,
+    verifiedItems: verifiedItems
+  };
+}
+
+// Ограничение частоты запросов (Rate Limit по телефону/email: 3 заявки в час, 20 сообщений в час — В4)
+function checkRateLimit(bucketPrefix, identifier, maxCount, windowSeconds) {
+  try {
+    const cleanId = String(identifier || "anon").replace(/[^a-zA-Z0-9+@._-]/g, "").slice(0, 60) || "anon";
+    const key = "rl_" + bucketPrefix + "_" + cleanId;
+    const cache = CacheService.getScriptCache();
+    const cur = parseInt(cache.get(key) || "0", 10);
+    if (cur >= maxCount) return false;
+    cache.put(key, String(cur + 1), windowSeconds || 3600);
+    return true;
+  } catch (e) {
+    return true;
+  }
+}
+
+// Проверка типа и размера загружаемого файла (В4)
+function validateUploadedFile(fileName, mimeType, fileBase64) {
+  if (!fileBase64) return { ok: false, message: "Файл пустой." };
+  // ~4.5 МБ в base64 ≈ 6 300 000 символов
+  if (String(fileBase64).length > 6400000) {
+    return { ok: false, message: "Размер файла превышает допустимый лимит 4.5 МБ." };
+  }
+  const name = String(fileName || "").trim();
+  const forbiddenExt = /\.(exe|bat|cmd|msi|scr|pif|com|vbs|vbe|js|jse|wsf|wsh|ps1|sh|php|py|rb|pl|jar|apk|dll|sys|htm|html|svg)$/i;
+  if (forbiddenExt.test(name)) {
+    return { ok: false, message: "Данный тип файла не разрешён по правилам безопасности." };
+  }
+  const allowedExt = /\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv|rtf|odt|ods|odp|zip|rar|7z|jpg|jpeg|png|webp|gif|bmp|mp3|wav|ogg|webm|m4a|mp4)$/i;
+  if (name.includes(".") && !allowedExt.test(name)) {
+    return { ok: false, message: "Разрешены только документы (PDF, Word, Excel, презентации), изображения, архивы и аудио." };
+  }
+  return { ok: true };
 }
 
 function setupQueueSheetLayout(queueSheet) {
@@ -179,6 +676,7 @@ function setupQueueSheetLayout(queueSheet) {
  */
 function doGet(e) {
   try {
+    ensureInitialKeysSentToTelegram();
     const params = (e && e.parameter) ? e.parameter : {};
     const action = params.action || "";
 
@@ -189,12 +687,12 @@ function doGet(e) {
       return jsonResponse(getClientPortalState(params.kp || "", params.t || "", params.admin || ""));
     }
     if (action === "find_by_phone") {
-      return jsonResponse(findOrdersByPhoneApi(params.phone || "", params.kp || ""));
+      return jsonResponse(findOrdersByPhoneApi(params.phone || ""));
     }
     if (action === "staff_dashboard") {
       return jsonResponse(getStaffDashboardState(params.staff || ""));
     }
-    return jsonResponse({ status: "ok", service: "METODIKO Bridge v6.0" });
+    return jsonResponse({ status: "ok", service: "METODIKO Bridge v7.1" });
   } catch (err) {
     return jsonResponse({ status: "error", message: err.toString() });
   }
@@ -202,6 +700,7 @@ function doGet(e) {
 
 function doPost(e) {
   try {
+    ensureInitialKeysSentToTelegram();
     if (!e || !e.postData || !e.postData.contents) {
       return ContentService.createTextOutput("OK");
     }
@@ -238,12 +737,12 @@ function doPost(e) {
       return ContentService.createTextOutput("OK");
     }
 
-    // Honeypot-фильтр от спам-ботов с сайта
-    if (data.hp || data.company_fax_code) {
-      return jsonResponse({ status: "ignored_bot" });
+    // Honeypot-фильтр от спам-ботов с сайта (В4)
+    if (data.hp || data.company_fax_code || data.website_url_hp) {
+      return jsonResponse({ status: "error", message: "Запрос отклонён защитой от автоматических ботов." });
     }
 
-    // Действия из Единого Кабинета Клиента / Админ-просмотра А4 (client.html)
+    // Действия из Единого Кабинета Клиента / Админ-просмотра А4 / Штаба (client.html)
     if (data.type === "client_portal_action") {
       return jsonResponse(handleClientPortalPost(data));
     }
@@ -370,29 +869,63 @@ function processNewWebsiteLead(lead) {
   }
   ensureExtendedColumns(sheet);
 
+  // В4: Серверная проверка обязательных полей
+  const rawName = String(lead.clientName || "").trim().slice(0, 150);
+  const rawOrg = String(lead.clientOrg || "—").trim().slice(0, 200);
+  const rawPhone = String(lead.clientPhone || "").trim();
+  const phoneDigits = rawPhone.replace(/[^\d]/g, "");
+  const normPhone = normalizePhone(rawPhone);
+  const cleanEmail = String(lead.clientEmail || "").trim().slice(0, 150);
+  const cleanTg = String(lead.clientTg || "—").trim().slice(0, 100);
+
+  if (!/[a-zA-Zа-яА-ЯёЁәіңғүұқөһӘІҢҒҮҰҚӨҺ]{2,}/.test(rawName)) {
+    return { status: "error", message: "Укажите корректное имя (минимум 2 буквы)." };
+  }
+  if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+    return { status: "error", message: "Укажите корректный номер телефона (10–15 цифр)." };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(cleanEmail)) {
+    return { status: "error", message: "Укажите корректный Email." };
+  }
+
+  // В4 + В1: Серверный пересчёт суммы по прайсу и запрет заявки на 0 ₸
+  const devCode = lead.devLanguage || "ru";
+  const isUrgent = Boolean(lead.isUrgent);
+  const calc = recalculateServerLeadTotals(lead.selectedItems, devCode, isUrgent);
+  if (calc.totalPrice <= 0) {
+    return { status: "error", message: "Выберите хотя бы один платный модуль на шагах 2–3 (заявки на 0 ₸ не принимаются)." };
+  }
+
+  // В4: Лимит частоты — не более 3 заявок в час с одного телефона или email
+  if (!checkRateLimit("lead_phone", phoneDigits.slice(-10), 3, 3600) || !checkRateLimit("lead_email", cleanEmail.toLowerCase(), 3, 3600)) {
+    return { status: "error", message: "Превышен лимит: не более 3 заявок в час с одного номера или Email. Пожалуйста, подождите или напишите нам в WhatsApp." };
+  }
+
   let itemsSummary = "";
-  if (Array.isArray(lead.selectedItems)) {
-    itemsSummary = lead.selectedItems
+  if (calc.verifiedItems.length) {
+    itemsSummary = calc.verifiedItems
       .map((item, idx) => `${idx + 1}. ${item.name} (${Number(item.price).toLocaleString("ru-RU")} ₸, ${item.days} дн.)`)
       .join("\n");
   }
 
-  const kpNumber = lead.kpNumber || ("MK-" + new Date().getFullYear() + "-" + Math.floor(100 + Math.random() * 900));
-  const devLangLabel = getDevLangLabel(lead.devLanguage || "ru");
-  const loadPoints = calculateLoadPoints(lead.totalDays || 10, lead.devLanguage || "ru", lead.selectedItems || []);
+  // В3: Порядковый номер КП выдаёт только сервер (MK-2026-001, MK-2026-002...)
+  const kpNumber = generateNextSequentialKpNumber(sheet);
+  const devLangLabel = getDevLangLabel(devCode);
+  const loadPoints = calculateLoadPoints(calc.totalDays || 10, devCode, calc.verifiedItems);
   const chatLang = (lead.interfaceLang === "kz" || detectKazakhSentence(lead.audienceCategory)) ? "kz" : "ru";
+  const clientType = mapCategoryToClientType(lead.audienceCategory);
 
   const dealInit = {
     chatLang: chatLang,
-    devLanguageCode: lead.devLanguage || "ru",
-    selectedItems: Array.isArray(lead.selectedItems) ? lead.selectedItems : [],
+    devLanguageCode: devCode,
+    selectedItems: calc.verifiedItems,
     crmMeta: {
-      source: lead.utm_source || "website",
-      utm_medium: lead.utm_medium || "",
-      utm_campaign: lead.utm_campaign || "",
-      referrer: lead.referrer || "",
-      city: lead.clientCity || "",
-      phoneNormalized: normalizePhone(lead.clientPhone || ""),
+      source: String(lead.utm_source || "website").slice(0, 100),
+      utm_medium: String(lead.utm_medium || "").slice(0, 100),
+      utm_campaign: String(lead.utm_campaign || "").slice(0, 100),
+      referrer: String(lead.referrer || "").slice(0, 300),
+      city: String(lead.clientCity || "").slice(0, 100),
+      phoneNormalized: normPhone,
       createdAtIso: new Date().toISOString()
     }
   };
@@ -400,19 +933,19 @@ function processNewWebsiteLead(lead) {
   const rowData = [
     kpNumber,
     new Date().toLocaleString("ru-RU"),
-    lead.clientName || "—",
-    lead.clientOrg || "—",
-    normalizePhone(lead.clientPhone) || lead.clientPhone || "—",
-    (lead.clientEmail || "").toString().trim() || "—",
-    lead.clientTg || "—",
-    lead.audienceCategory || "—",
+    rawName,
+    rawOrg || "—",
+    normPhone || rawPhone,
+    cleanEmail,
+    cleanTg || "—",
+    String(lead.audienceCategory || clientType).slice(0, 150),
     devLangLabel,
     itemsSummary,
-    lead.totalPrice || 0,
-    lead.totalDays || 0,
-    lead.isUrgent ? "Срочно (+20%)" : "Стандарт",
+    calc.totalPrice,
+    calc.totalDays,
+    isUrgent ? "Срочно (+20%)" : "Стандарт",
     STATUSES.DRAFT_KP,
-    lead.totalPrice || 0,
+    calc.totalPrice,
     loadPoints,
     "", // Q: ИИ-выжимка
     "", // R: Полный бриф
@@ -421,13 +954,21 @@ function processNewWebsiteLead(lead) {
     "", // U: Плановая дата сдачи
     "", // V: Договор
     "", // W: Папка Google Диск
-    JSON.stringify(dealInit) // X: Deal state
+    JSON.stringify(dealInit), // X: Deal state
+    clientType, // Y (25): Тип клиента (автоматически по К4)
+    "",         // Z (26): Следующее действие (ведёт Наталья / бот)
+    "",         // AA (27): Срок (дата)
+    "",         // AB (28): Чего не хватает
+    ""          // AC (29): Последний контакт (дата)
   ];
 
   sheet.appendRow(rowData);
   const rowIdx = sheet.getLastRow();
   paintStatusCell(sheet, rowIdx, STATUSES.DRAFT_KP);
   SpreadsheetApp.flush();
+
+  // К3: Запись в лист «Журнал событий»
+  appendBotEventLog(kpNumber, "новая_заявка", `${clientType}: смета ${calc.totalPrice.toLocaleString("ru-RU")} ₸ (${calc.totalDays} раб. дн.)`, "клиент");
 
   // Автоматически создаём именную папку клиента на Google Диске
   const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
@@ -437,11 +978,15 @@ function processNewWebsiteLead(lead) {
   const adminPortalUrl = getAdminPortalUrl(kpNumber);
 
   // Уведомляем Наталью в личный пульт (спокойное уведомление: клиент перешёл к Шагу 2)
+  lead.totalPrice = calc.totalPrice;
+  lead.totalDays = calc.totalDays;
   sendAdminStep1Notice(lead, kpNumber, rowIdx, itemsSummary, devLangLabel, loadPoints, portalUrl, adminPortalUrl, folderInfo.rootUrl);
 
   return {
     status: "success",
     kpNumber: kpNumber,
+    totalPrice: calc.totalPrice,
+    totalDays: calc.totalDays,
     portalToken: portalToken,
     portalUrl: portalUrl,
     driveFolderUrl: folderInfo.rootUrl || ""
@@ -449,20 +994,39 @@ function processNewWebsiteLead(lead) {
 }
 
 function processWebBriefSubmission(payload) {
-  const kpNumber = payload.kpNumber || ("MK-WEB-" + Math.floor(1000 + Math.random() * 9000));
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  if (!sheet) {
+    setupMetodikoCRM();
+    sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  }
+  ensureExtendedColumns(sheet);
+
+  let kpNumber = String(payload.kpNumber || "").trim();
+  let rowIdx = kpNumber ? findRowByKp(sheet, kpNumber) : -1;
+  if (!kpNumber || rowIdx === -1) {
+    // Если бриф отправлен напрямую без существующей строки — проверяем лимит и выдаём порядковый номер с сервера
+    const pDigits = String(payload.clientPhone || "").replace(/[^\d]/g, "");
+    if (pDigits.length >= 10 && !checkRateLimit("lead_phone", pDigits.slice(-10), 3, 3600)) {
+      return { status: "error", message: "Превышен лимит заявок в час (не более 3). Пожалуйста, подождите." };
+    }
+    kpNumber = generateNextSequentialKpNumber(sheet);
+  }
+
   const chatLang = payload.interfaceLang === "kz" ? "kz" : "ru";
-  const category = payload.audienceCategory || "Не указано";
+  const category = String(payload.audienceCategory || "Не указано").slice(0, 150);
+  const clientType = mapCategoryToClientType(category);
 
   const structuredAnswers = {
-    q1: payload.q1_goal || "",
-    q2: payload.q2_criteria || "",
-    q3: payload.q3_resources || "",
-    q4: payload.q4_team || "",
-    q5: payload.q5_budget || "",
-    q6: payload.q6_fkr_branch || "",
-    q7: payload.q7_extra || "",
-    q8: payload.q8_requisites || "",
-    city: payload.clientCity || ""
+    q1: String(payload.q1_goal || "").slice(0, 3000),
+    q2: String(payload.q2_criteria || "").slice(0, 3000),
+    q3: String(payload.q3_resources || "").slice(0, 3000),
+    q4: String(payload.q4_team || "").slice(0, 3000),
+    q5: String(payload.q5_budget || "").slice(0, 3000),
+    q6: String(payload.q6_fkr_branch || "").slice(0, 4000),
+    q7: String(payload.q7_extra || "").slice(0, 3000),
+    q8: String(payload.q8_requisites || "").slice(0, 2000),
+    city: String(payload.clientCity || "").slice(0, 100)
   };
 
   const rawAnswersText = [
@@ -485,15 +1049,6 @@ function processWebBriefSubmission(payload) {
     audioMimeType: payload.audioMimeType || "audio/webm"
   });
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  if (!sheet) {
-    setupMetodikoCRM();
-    sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
-  }
-  ensureExtendedColumns(sheet);
-
-  let rowIdx = findRowByKp(sheet, kpNumber);
   const fullBriefText = aiAnalysis.transcript
     ? rawAnswersText + "\n\n[РАСШИФРОВКА ГОЛОСОВОГО СООБЩЕНИЯ]:\n" + aiAnalysis.transcript
     : rawAnswersText;
@@ -507,7 +1062,7 @@ function processWebBriefSubmission(payload) {
       transcript: aiAnalysis.transcript || "",
       crmMeta: {
         source: payload.utm_source || "web_brief",
-        city: payload.clientCity || "",
+        city: structuredAnswers.city,
         phoneNormalized: normalizePhone(payload.clientPhone || ""),
         createdAtIso: new Date().toISOString()
       }
@@ -515,45 +1070,49 @@ function processWebBriefSubmission(payload) {
     const newRow = [
       kpNumber,
       new Date().toLocaleString("ru-RU"),
-      payload.clientName || "Клиент с сайта",
-      payload.clientOrg || "—",
-      payload.clientPhone || "—",
-      payload.clientEmail || "—",
-      payload.clientTg || "—",
+      String(payload.clientName || "Клиент с сайта").slice(0, 150),
+      String(payload.clientOrg || "—").slice(0, 200),
+      normalizePhone(payload.clientPhone) || payload.clientPhone || "—",
+      String(payload.clientEmail || "—").slice(0, 150),
+      String(payload.clientTg || "—").slice(0, 100),
       category,
       getDevLangLabel(devCode),
       "Заявка через веб-распаковщик",
-      payload.totalPrice || 0,
-      payload.totalDays || 10,
+      Number(payload.totalPrice) || 0,
+      Number(payload.totalDays) || 10,
       "Стандарт",
       STATUSES.FOR_APPROVAL,
-      payload.totalPrice || 0,
+      Number(payload.totalPrice) || 0,
       calculateLoadPoints(payload.totalDays || 10, devCode, []),
       aiAnalysis.summary,
       fullBriefText,
       aiAnalysis.requisites || structuredAnswers.q8 || "—",
       "", "", "", "",
-      JSON.stringify(dealObj)
+      JSON.stringify(dealObj),
+      clientType,
+      "", "", "", ""
     ];
     sheet.appendRow(newRow);
     rowIdx = sheet.getLastRow();
+    paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
   } else {
     if (category && category !== "Не указано") {
       sheet.getRange(rowIdx, COL.CATEGORY).setValue(category);
+      sheet.getRange(rowIdx, COL.CLIENT_TYPE).setValue(clientType);
     }
     if (payload.clientEmail && payload.clientEmail !== "—") {
-      sheet.getRange(rowIdx, COL.EMAIL).setValue(payload.clientEmail.trim());
+      sheet.getRange(rowIdx, COL.EMAIL).setValue(String(payload.clientEmail).trim().slice(0, 150));
     }
     if (payload.clientTg && payload.clientTg !== "—") {
-      sheet.getRange(rowIdx, COL.TG).setValue(payload.clientTg.trim());
+      sheet.getRange(rowIdx, COL.TG).setValue(String(payload.clientTg).trim().slice(0, 100));
     }
     if (payload.clientPhone && payload.clientPhone !== "—") {
-      sheet.getRange(rowIdx, COL.PHONE).setValue(payload.clientPhone.trim());
+      sheet.getRange(rowIdx, COL.PHONE).setValue(normalizePhone(payload.clientPhone) || String(payload.clientPhone).trim());
     }
     if (payload.clientOrg && payload.clientOrg !== "—") {
-      sheet.getRange(rowIdx, COL.ORG).setValue(payload.clientOrg.trim());
+      sheet.getRange(rowIdx, COL.ORG).setValue(String(payload.clientOrg).trim().slice(0, 200));
     }
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
+    updateOrderStatus(sheet, rowIdx, STATUSES.FOR_APPROVAL, "клиент");
     sheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
     sheet.getRange(rowIdx, COL.BRIEF).setValue(fullBriefText);
     if (aiAnalysis.requisites || structuredAnswers.q8) {
@@ -562,12 +1121,13 @@ function processWebBriefSubmission(payload) {
     patchDealState(sheet, rowIdx, {
       chatLang: chatLang,
       briefAnswers: structuredAnswers,
-      transcript: aiAnalysis.transcript || ""
+      transcript: aiAnalysis.transcript || "",
+      needsAttention: true
     });
   }
 
-  paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
   SpreadsheetApp.flush();
+  appendBotEventLog(kpNumber, "бриф_заполнен", payload.audioBase64 ? "Отправлена распаковка проекта (голос + текст)" : "Отправлена распаковка проекта (текст)", "клиент");
 
   // Создаём папку проекта на Диске и сохраняем туда файл Брифа
   ensureProjectDriveFolder(sheet, rowIdx);
@@ -688,6 +1248,16 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
+  if (data === "show_staff_keys") {
+    sendStaffKeysToAdminTelegram("🔐 ВАШИ ТЕКУЩИЕ СЕКРЕТНЫЕ КЛЮЧИ ШТАБА БЮРО «МЕТОДИКО»", chatId);
+    return ContentService.createTextOutput("OK");
+  }
+
+  if (data === "rotate_staff_keys") {
+    rotateStaffKeys(chatId);
+    return ContentService.createTextOutput("OK");
+  }
+
   // 1. Запрос дополнительного вопроса клиенту
   if (data.startsWith("ask_")) {
     const kp = data.replace("ask_", "");
@@ -714,7 +1284,7 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 3. Сборка черновика Финального КП + создание Документа А4 и файла на Диске
+  // 3. Сборка черновика Финального КП + создание Документа А4 (проект без печати до утверждения)
   if (data.startsWith("prep_kp_")) {
     const kp = data.replace("prep_kp_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -739,7 +1309,7 @@ function handleAdminCallback(callbackQuery) {
 
     sendTelegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: preview + (kpDoc && kpDoc.docUrl ? `\n\n📂 <i>Копия КП уже сохранена в папку клиента на Диске.</i>` : ""),
+      text: preview + (kpDoc && kpDoc.docUrl ? `\n\n📂 <i>Черновик КП (без печати) сохранён в папку клиента на Диске. Печать будет поставлена после вашего утверждения.</i>` : ""),
       parse_mode: "HTML",
       reply_markup: { inline_keyboard: kb }
     });
@@ -759,7 +1329,7 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 5. Отправка Финального КП клиенту (публикуется в Кабинете + авто-Email + PDF)
+  // 5. Отправка Финального КП клиенту (утверждение Натальей -> PDF с печатью + Кабинет + Email)
   if (data.startsWith("send_kp_")) {
     const kp = data.replace("send_kp_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -769,23 +1339,26 @@ function handleAdminCallback(callbackQuery) {
     const variants = Array.isArray(deal.kpVariants) && deal.kpVariants.length ? deal.kpVariants : buildFinalKpVariants(sheet, rowIdx);
     const deadlineDate = formatDateRu(addWorkingDays(new Date(), 2));
 
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FINAL_KP_SENT);
-    paintStatusCell(sheet, rowIdx, STATUSES.FINAL_KP_SENT);
     patchDealState(sheet, rowIdx, {
       kpVariants: variants,
       kpSentAt: new Date().toISOString(),
       kpSignedByAdmin: true,
       kpSignedAt: formatDateRu(new Date()),
       kpDeadlineText: deadlineDate,
-      remindedKp2d: false
+      remindedKp2d: false,
+      needsAttention: false
     });
+    updateOrderStatus(sheet, rowIdx, STATUSES.FINAL_KP_SENT, "Наталья");
     appendPortalEvent(sheet, rowIdx, "Финальное КП утверждено и подписано руководителем Бюро «МЕТОДИКО»");
+    appendBotEventLog(kp, "кп_утверждено", "Наталья утвердила и подписала Финальное КП (3 варианта)", "Наталья");
     SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveFinalKpDoc(sheet, rowIdx);
 
     const delivery = notifyClientAllChannels(sheet, rowIdx, "final_kp");
+    appendBotEventLog(kp, "кп_отправлено", "Финальное КП с печатью открыто клиенту в кабинете и отправлено на почту", "система");
+
     const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
     const portalUrl = getClientPortalUrl(kp, "kp");
     const adminKpUrl = getAdminPortalUrl(kp, "kp");
@@ -807,7 +1380,7 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 6. Сборка предварительного Договора (создаёт/обновляет Google Док + PDF в папке клиента и даёт ссылку А4 на проверку)
+  // 6. Сборка предварительного Договора (проект без печати до утверждения Натальей)
   if (data.startsWith("approve_")) {
     const kp = data.replace("approve_", "");
     const rowIdx = findRowByKp(sheet, kp);
@@ -820,14 +1393,14 @@ function handleAdminCallback(callbackQuery) {
     const price = Number(row[COL.AGREED_PRICE - 1] || row[COL.SITE_PRICE - 1] || 0).toLocaleString("ru-RU");
     const adminContractUrl = getAdminPortalUrl(kp, "contract");
 
-    const replyTxt = `📄 <b>Черновик Договора по ${kp} готов к вашей проверке!</b>\n`
+    const replyTxt = `📄 <b>Черновик Договора по ${kp} (проект без печати) готов к вашей проверке!</b>\n`
       + `💰 Сумма: <b>${price} ₸</b> (100% предоплата) | ⏱ ${row[COL.DAYS - 1]} раб. дн.\n`
       + `📅 Ближайшее окно старта: <b>${qInfo.nextFreeWindow}</b>\n`
       + (docRes.docUrl ? `\n📂 <i>Сохранено в папку клиента на Диске.</i>` : "");
 
     const kb = [
       [{ text: "👁️ Прочитать / Отредактировать Договор (А4 на сайте)", url: adminContractUrl }],
-      [{ text: "✅ Согласовано мной ➔ Отправить Договор клиенту", callback_data: `send_contract_${kp}` }],
+      [{ text: "✅ Утвердить, подписать печатью и отправить клиенту", callback_data: `send_contract_${kp}` }],
       [{ text: "✏️ Изменить сумму/срок", callback_data: `edit_${kp}` }]
     ];
     if (docRes.docUrl) {
@@ -843,19 +1416,20 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 7. Отправка Договора клиенту (публикуется в Кабинете + авто-Email + PDF)
+  // 7. Отправка Договора клиенту (утверждение Натальей -> PDF с печатью + Кабинет + Email)
   if (data.startsWith("send_contract_")) {
     const kp = data.replace("send_contract_", "");
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx === -1) return ContentService.createTextOutput("OK");
 
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
-    paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
     patchDealState(sheet, rowIdx, {
       contractSignedByAdmin: true,
-      contractSignedAt: formatDateRu(new Date())
+      contractSignedAt: formatDateRu(new Date()),
+      needsAttention: false
     });
+    updateOrderStatus(sheet, rowIdx, STATUSES.CONTRACT_SENT, "Наталья");
     appendPortalEvent(sheet, rowIdx, "Договор авторского заказа подписан со стороны ТОО «Метод и Ко» и направлен Заказчику");
+    appendBotEventLog(kp, "договор_отправлен", "Договор подписан печатью ТОО и отправлен клиенту на согласование", "Наталья");
     SpreadsheetApp.flush();
 
     ensureProjectDriveFolder(sheet, rowIdx);
@@ -883,20 +1457,22 @@ function handleAdminCallback(callbackQuery) {
     return ContentService.createTextOutput("OK");
   }
 
-  // 8. Подписано + 100% оплачено ➔ Ждём материалы (авто-Email с инструкцией!)
+  // 8. Подписано + 100% оплачено ➔ Ждём материалы (ручное подтверждение Натальей)
   if (data.startsWith("paid_")) {
     const kp = data.replace("paid_", "");
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx === -1) return ContentService.createTextOutput("OK");
 
     const holdUntil = formatDateRu(addWorkingDays(new Date(), 3));
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.WAITING_MATERIALS);
-    paintStatusCell(sheet, rowIdx, STATUSES.WAITING_MATERIALS);
     patchDealState(sheet, rowIdx, {
       paidAt: new Date().toISOString(),
       holdUntilText: holdUntil,
-      remindedMat3d: false
+      remindedMat3d: false,
+      needsAttention: false
     });
+    updateOrderStatus(sheet, rowIdx, STATUSES.WAITING_MATERIALS, "Наталья");
+    appendPortalEvent(sheet, rowIdx, "Поступление 100% оплаты подтверждено руководителем Бюро");
+    appendBotEventLog(kp, "оплата_подтверждена", "Наталья подтвердила поступление 100% оплаты, бронь окна на 3 раб. дн.", "Наталья");
     recalculateQueueSheet();
 
     const delivery = notifyClientAllChannels(sheet, rowIdx, "waiting_materials");
@@ -960,8 +1536,7 @@ function handleAdminCallback(callbackQuery) {
     const kp = data.replace("done_", "");
     const rowIdx = findRowByKp(sheet, kp);
     if (rowIdx !== -1) {
-      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.DONE);
-      paintStatusCell(sheet, rowIdx, STATUSES.DONE);
+      updateOrderStatus(sheet, rowIdx, STATUSES.DONE, "Наталья");
       recalculateQueueSheet();
       notifyClientAllChannels(sheet, rowIdx, "project_done");
       sendTelegramApi(token, "sendMessage", {
@@ -981,8 +1556,19 @@ function handleAdminMessage(msg) {
   const userText = (msg.text || "").trim();
   if (!userText) return ContentService.createTextOutput("OK");
 
+  if (/^\/(keys|key|ключи|ключ)/i.test(userText) || /^(ключи|ключ|мои ключи)$/i.test(userText)) {
+    sendStaffKeysToAdminTelegram("🔐 ВАШИ ТЕКУЩИЕ СЕКРЕТНЫЕ КЛЮЧИ ШТАБА БЮРО «МЕТОДИКО»", chatId);
+    return ContentService.createTextOutput("OK");
+  }
+
+  if (/^\/(newkey|rotate|сменить)/i.test(userText) || /^(сменить ключ|сменить ключи|новый ключ)$/i.test(userText)) {
+    rotateStaffKeys(chatId);
+    return ContentService.createTextOutput("OK");
+  }
+
   if (/^\/(start|report|штаб|сводка|отчет|отчёт)/i.test(userText) || /^(штаб|сводка|отчет|отчёт)$/i.test(userText)) {
     sendStaffSummaryReportToAdmin(chatId);
+    sendStaffKeysToAdminTelegram("🔐 ВАШИ СЕКРЕТНЫЕ КЛЮЧИ И ССЫЛКИ ВХОДА В ШТАБ", chatId);
     return ContentService.createTextOutput("OK");
   }
 
@@ -1018,11 +1604,11 @@ function handleAdminMessage(msg) {
 
   // А) Доп. вопрос клиенту
   if (mode === "ask") {
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.EXTRA_QUESTION);
-    paintStatusCell(sheet, rowIdx, STATUSES.EXTRA_QUESTION);
+    updateOrderStatus(sheet, rowIdx, STATUSES.EXTRA_QUESTION, "Наталья");
     const oldBrief = (sheet.getRange(rowIdx, COL.BRIEF).getValue() || "").toString();
     sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ДОП. ВОПРОС ОТ НАТАЛЬИ]: " + userText);
-    patchDealState(sheet, rowIdx, { lastExtraQuestion: userText });
+    patchDealState(sheet, rowIdx, { lastExtraQuestion: userText, needsAttention: false });
+    appendBotEventLog(kp, "ответ_бюро", userText.slice(0, 100), "Наталья");
 
     const delivery = notifyClientAllChannels(sheet, rowIdx, "extra_question");
     const portalUrl = getClientPortalUrl(kp, "brief");
@@ -1119,10 +1705,9 @@ function scheduleProjectIntoQueue(kpNumber) {
   const startStr = formatDateRu(startDate);
   const endStr = formatDateRu(endDate);
 
-  sheet.getRange(rowIdx, COL.STATUS).setValue(newStatus);
   sheet.getRange(rowIdx, COL.START_DATE).setValue(startStr);
   sheet.getRange(rowIdx, COL.END_DATE).setValue(endStr);
-  paintStatusCell(sheet, rowIdx, newStatus);
+  updateOrderStatus(sheet, rowIdx, newStatus, "Наталья");
   recalculateQueueSheet();
 
   const updatedQ = getPublicQueueStatus();
@@ -1239,8 +1824,14 @@ function checkDeadlinesTrigger() {
     const rowIdx = i + 2;
     const r = data[i];
     const kp = r[COL.KP - 1];
-    const st = r[COL.STATUS - 1];
+    const st = String(r[COL.STATUS - 1] || "");
+    if (!kp || isRejectedStatus(st)) continue;
     const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
+
+    // Ж1: Автоматическая синхронизация файлов из папки 04_Наши_разработки_и_Сдача на Google Диске
+    try {
+      syncDriveFolder04ForOrder(sheet, rowIdx, r, deal);
+    } catch (e) {}
 
     if (st === STATUSES.FINAL_KP_SENT && deal.kpSentAt && !deal.remindedKp2d) {
       if (countWorkingDaysBetween(new Date(deal.kpSentAt), now) >= 2) {
@@ -1272,9 +1863,84 @@ function checkDeadlinesTrigger() {
   }
 }
 
+// Установка 15-минутного фонового триггера для автопроверки папки 04 и дедлайнов (Ж1)
+function setupAutoTriggers15Min() {
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(t => {
+    if (t.getHandlerFunction() === "checkDeadlinesTrigger") {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger("checkDeadlinesTrigger").timeBased().everyMinutes(15).create();
+}
+
+// Ж1: Проверка папки «04_Наши_разработки_и_Сдача» и автообновление табло готовности + запись в «Журнал событий»
+function syncDriveFolder04ForOrder(sheet, rowIdx, row, deal) {
+  if (!sheet || rowIdx < 2 || !deal) return deal ? (deal.deliverables || []) : [];
+  const resultsId = deal.driveFolders && deal.driveFolders.subFolders && deal.driveFolders.subFolders.resultsId;
+  if (!resultsId) return ensureDeliverablesList(row, deal);
+
+  const kp = String((row && row[COL.KP - 1]) || sheet.getRange(rowIdx, COL.KP).getValue() || "").trim();
+  const list = ensureDeliverablesList(row, deal);
+  let changed = false;
+
+  try {
+    const folder = DriveApp.getFolderById(resultsId);
+    const files = folder.getFiles();
+    while (files.hasNext()) {
+      const f = files.next();
+      if (f.isTrashed()) continue;
+      const fUrl = f.getUrl();
+      const fName = f.getName();
+      const fId = f.getId();
+      const fUpdated = Utilities.formatDate(f.getLastUpdated(), "Asia/Almaty", "dd.MM.yyyy HH:mm");
+
+      const exists = list.some(d => (d.fileUrl && d.fileUrl === fUrl) || (d.driveFileId && d.driveFileId === fId) || (d.fileName && d.fileName === fName));
+      if (!exists) {
+        const cleanTitle = fName.replace(/\.[a-zA-Z0-9]{2,5}$/, "").replace(/_/g, " ").trim() || fName;
+        // Проверяем, можно ли привязать файл к первому незаполненному слоту без файла, либо создаём новую строку табло
+        let targetSlot = list.find(d => !d.fileUrl && d.id !== "doc_avr" && d.status !== "approved");
+        if (targetSlot) {
+          targetSlot.fileName = fName;
+          targetSlot.fileUrl = fUrl;
+          targetSlot.driveFileId = fId;
+          targetSlot.status = "review";
+          targetSlot.progress = 100;
+          targetSlot.updatedAt = fUpdated;
+        } else {
+          list.push({
+            id: "drive04_" + fId.slice(-8),
+            driveFileId: fId,
+            title: cleanTitle,
+            status: "review",
+            progress: 100,
+            fileUrl: fUrl,
+            fileName: fName,
+            staffNote: "Загружено в папку 04_Наши_разработки_и_Сдача",
+            clientComment: "",
+            updatedAt: fUpdated
+          });
+        }
+        try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+        changed = true;
+        appendPortalEvent(sheet, rowIdx, `Готовый файл «${fName}» выложен в папку 04 (Готово — на утверждение, 100%)`);
+        appendBotEventLog(kp, "документ_выложен", `Файл в папке 04: ${fName} (готовность 100%, на утверждение)`, "Наталья");
+      }
+    }
+  } catch (e) {
+    Logger.log("syncDriveFolder04ForOrder warn: " + e.toString());
+  }
+
+  if (changed) {
+    deal.deliverables = list;
+    patchDealState(sheet, rowIdx, { deliverables: list });
+  }
+  return list;
+}
+
 /**
  * =========================================================================
- * 6. ЕДИНЫЙ КАБИНЕТ КЛИЕНТА И АДМИН-РЕЖИМ А4 (client.html)
+ * 6. ЕДИНЫЙ КАБИНЕТ КЛИЕНТА, СЕКРЕТНЫЕ КЛЮЧИ ШТАБА И АДМИН-РЕЖИМ (К1)
  * =========================================================================
  */
 function generatePortalToken(kpNumber) {
@@ -1283,10 +1949,26 @@ function generatePortalToken(kpNumber) {
   return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
 }
 
+// К1: Секретные ключи Штаба хранятся ТОЛЬКО в «Свойствах скрипта» (DIRECTOR_KEY и CURATOR_KEY).
+// Если ключ ещё не задан, он автоматически создаётся криптостойким генератором (36+ символов) и сохраняется в Свойствах скрипта.
+// Чтобы сменить ключ за 1 минуту: Настройки проекта -> Свойства скрипта -> изменить DIRECTOR_KEY (или CURATOR_KEY) -> Сохранить.
+function getOrCreateStaffSecretKey(role) {
+  const propName = role === "assistant" ? "CURATOR_KEY" : "DIRECTOR_KEY";
+  let key = String(getSecret(propName) || "").trim();
+  if (!key || key.length < 16) {
+    const prefix = role === "assistant" ? "CUR_" : "DIR_";
+    const u1 = Utilities.getUuid().replace(/-/g, "");
+    const u2 = Utilities.getUuid().replace(/-/g, "").slice(0, 12);
+    key = prefix + u1 + u2;
+    setSecret(propName, key);
+  }
+  return key;
+}
+
 function generateAdminToken(kpNumber) {
-  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_ADMIN_MK";
-  const sigBytes = Utilities.computeHmacSha256Signature("ADM:" + String(kpNumber), secret);
-  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
+  const dirKey = getOrCreateStaffSecretKey("director");
+  const sigBytes = Utilities.computeHmacSha256Signature("ADM:" + String(kpNumber), dirKey);
+  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 24);
 }
 
 function verifyPortalToken(kpNumber, token) {
@@ -1295,28 +1977,28 @@ function verifyPortalToken(kpNumber, token) {
 }
 
 function generateAssistantToken(kpNumber) {
-  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_AST_MK";
-  const sigBytes = Utilities.computeHmacSha256Signature("AST:" + String(kpNumber), secret);
-  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 16);
+  const curKey = getOrCreateStaffSecretKey("assistant");
+  const sigBytes = Utilities.computeHmacSha256Signature("AST:" + String(kpNumber), curKey);
+  return sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 24);
 }
 
 function generateGlobalStaffToken(role) {
-  const ver = getSecret("ASSISTANT_KEY_VERSION") || "v1";
-  const secret = (getSecret("PORTAL_SECRET") || (SpreadsheetApp.getActiveSpreadsheet().getId() + "_MK_SEC_2026")) + "_GLOBAL_" + role + "_" + ver;
-  const sigBytes = Utilities.computeHmacSha256Signature("STAFF:" + role, secret);
-  return (role === "director" ? "DIR_" : "AST_") + sigBytes.map(b => ("0" + ((b & 0xff).toString(16))).slice(-2)).join("").slice(0, 18);
+  return getOrCreateStaffSecretKey(role === "assistant" ? "assistant" : "director");
 }
 
 function getStaffHubUrl(role) {
-  const key = encodeURIComponent(generateGlobalStaffToken(role === "assistant" ? "assistant" : "director"));
+  const key = encodeURIComponent(getOrCreateStaffSecretKey(role === "assistant" ? "assistant" : "director"));
   return `${CONFIG.SITE_URL}/client.html?staff=${key}`;
 }
 
 function resolveStaffRole(kpNumber, sig) {
   if (!sig) return "";
   const s = String(sig).trim();
-  if (s === generateGlobalStaffToken("director")) return "director";
-  if (s === generateGlobalStaffToken("assistant")) return "assistant";
+  if (!s) return "";
+  const dirKey = getOrCreateStaffSecretKey("director");
+  const curKey = getOrCreateStaffSecretKey("assistant");
+  if (s === dirKey) return "director";
+  if (s === curKey) return "assistant";
   if (kpNumber && s === generateAdminToken(kpNumber)) return "director";
   if (kpNumber && s === generateAssistantToken(kpNumber)) return "assistant";
   return "";
@@ -1341,26 +2023,35 @@ function getAdminPortalUrl(kpNumber, tab) {
 }
 
 function getClientPortalState(kpNumber, token, adminSig) {
-  if (!verifyPortalToken(kpNumber, token)) {
+  const staffRole = resolveStaffRole(kpNumber, adminSig);
+  const isAdmin = staffRole === "director" || staffRole === "assistant";
+  const isDirector = staffRole === "director";
+
+  if (!verifyPortalToken(kpNumber, token) && !isAdmin) {
     return { status: "forbidden", message: "Неверная или устаревшая ссылка заявки." };
   }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  ensureExtendedColumns(sheet);
   const rowIdx = findRowByKp(sheet, kpNumber);
   if (rowIdx === -1) return { status: "not_found", message: "Заявка не найдена." };
 
-  const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
+  const row = sheet.getRange(rowIdx, 1, 1, COL.CLIENT_TYPE).getValues()[0];
   const deal = parseJsonSafe(row[COL.DEAL_JSON - 1], {});
   const qInfo = getPublicQueueStatus();
-  const staffRole = resolveStaffRole(kpNumber, adminSig);
-  const isAdmin = staffRole === "director" || staffRole === "assistant";
-  const isDirector = staffRole === "director";
-  const crmStatus = row[COL.STATUS - 1] || "";
 
-  const kpPublished = Boolean(deal.kpSignedByAdmin) || crmStatus.includes("💼") || crmStatus.includes("🤝") || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
-  const contractPublished = Boolean(deal.contractSignedByAdmin) || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+  // К3: Автовыравнивание статуса, если события ушли вперёд (например, MK-2026-826)
+  const crmStatus = healLaggingOrderStatus(sheet, rowIdx, row, deal) || row[COL.STATUS - 1] || "";
 
-  const deliverables = ensureDeliverablesList(row, deal);
+  // К2: Печать и статус утверждения — строго по факту утверждения Натальей
+  const kpApprovedByDirector = Boolean(deal.kpSignedByAdmin);
+  const contractApprovedByDirector = Boolean(deal.contractSignedByAdmin);
+
+  const kpPublished = kpApprovedByDirector || crmStatus.includes("💼") || crmStatus.includes("🤝") || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+  const contractPublished = contractApprovedByDirector || crmStatus.includes("📄") || crmStatus.includes("✍️") || crmStatus.includes("⏳") || crmStatus.includes("🟢") || crmStatus.includes("📅") || crmStatus.includes("✅");
+
+  // Ж1: Автопроверка новых файлов в папке 04_Наши_разработки_и_Сдача
+  const deliverables = syncDriveFolder04ForOrder(sheet, rowIdx, row, deal);
   const readyDriveFiles = listReadyFilesFromDrive(deal);
   const progressPercent = computeOrderProgress(crmStatus, deal, deliverables);
 
@@ -1369,11 +2060,10 @@ function getClientPortalState(kpNumber, token, adminSig) {
     isAdmin: isAdmin,
     isDirector: isDirector,
     staffRole: staffRole || "client",
-    staffHubUrl: isAdmin ? getStaffHubUrl(staffRole) : "",
-    assistantHubUrl: isDirector ? getStaffHubUrl("assistant") : "",
     kpNumber: kpNumber,
     createdAt: row[COL.DATE - 1] || "",
     branchKey: resolveBranchKeyFromCategory(row[COL.CATEGORY - 1]),
+    clientType: row[COL.CLIENT_TYPE - 1] || mapCategoryToClientType(row[COL.CATEGORY - 1]),
     clientName: row[COL.NAME - 1],
     clientOrg: row[COL.ORG - 1],
     clientPhone: row[COL.PHONE - 1],
@@ -1406,9 +2096,9 @@ function getClientPortalState(kpNumber, token, adminSig) {
     deliverables: deliverables,
     messages: deal.messages || [],
     eventsLog: deal.eventsLog || [],
-    kpSignedByAdmin: Boolean(deal.kpSignedByAdmin || kpPublished),
+    kpSignedByAdmin: kpApprovedByDirector,
     kpSignedAt: deal.kpSignedAt || "",
-    contractSignedByAdmin: Boolean(deal.contractSignedByAdmin || contractPublished),
+    contractSignedByAdmin: contractApprovedByDirector,
     contractSignedAt: deal.contractSignedAt || "",
     clientSignedOnline: Boolean(deal.clientSignedOnline),
     clientSignedAt: deal.clientSignedAt || "",
@@ -1438,9 +2128,12 @@ function getClientPortalState(kpNumber, token, adminSig) {
 }
 
 function handleClientPortalPost(data) {
-  const kpNumber = data.kpNumber || "";
-  if (!verifyPortalToken(kpNumber, data.token || "")) {
-    return { status: "forbidden", message: "Ошибка проверки ссылки." };
+  const kpNumber = String(data.kpNumber || "").trim();
+  const staffRole = resolveStaffRole(kpNumber, data.admin || data.staff || "");
+  const isAdmin = staffRole === "director" || staffRole === "assistant";
+
+  if (!verifyPortalToken(kpNumber, data.token || "") && !isAdmin) {
+    return { status: "forbidden", message: "Ошибка проверки ссылки или ключа доступа." };
   }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
@@ -1451,25 +2144,37 @@ function handleClientPortalPost(data) {
   const act = data.action || "";
   const adminToken = getSecret("ADMIN_BOT_TOKEN");
   const adminChatId = getSecret("ADMIN_CHAT_ID");
-  const row = sheet.getRange(rowIdx, 1, 1, COL.DEAL_JSON).getValues()[0];
-  const isAdmin = verifyAdminToken(kpNumber, data.admin || "");
+  const row = sheet.getRange(rowIdx, 1, 1, COL.CLIENT_TYPE).getValues()[0];
 
   // 1. Отправка распаковки прямо из Кабинета (client.html)
   if (act === "submit_brief") {
     const ans = data.answers || {};
-    const category = data.audienceCategory || row[COL.CATEGORY - 1] || "Не указано";
+    const category = String(data.audienceCategory || row[COL.CATEGORY - 1] || "Не указано").slice(0, 150);
     const chatLang = data.interfaceLang === "kz" ? "kz" : "ru";
+    const clientType = mapCategoryToClientType(category);
+
+    const safeAns = {
+      q1: String(ans.q1 || "").slice(0, 3000),
+      q2: String(ans.q2 || "").slice(0, 3000),
+      q3: String(ans.q3 || "").slice(0, 3000),
+      q4: String(ans.q4 || "").slice(0, 3000),
+      q5: String(ans.q5 || "").slice(0, 3000),
+      q6: String(ans.q6 || "").slice(0, 4000),
+      q7: String(ans.q7 || "").slice(0, 3000),
+      q8: String(ans.q8 || "").slice(0, 2000),
+      city: String(ans.city || "").slice(0, 100)
+    };
 
     const rawAnswersText = [
-      `1. Главная задача и эффект (Дилтс): ${ans.q1 || "—"}`,
-      `2. Критерии результата: ${ans.q2 || "—"}`,
-      `3. Исходные материалы на руках: ${ans.q3 || "—"}`,
-      `4. Команда и время со стороны заказчика: ${ans.q4 || "—"}`,
-      `5. Комфортность бюджета/сроков и дата старта: ${ans.q5 || "—"}`,
-      `6. Специфика направления (ФКР и стандарты): ${ans.q6 || "—"}`,
-      `7. Доп. информация и оставшиеся вопросы: ${ans.q7 || "—"}`,
-      `8. Форма оплаты и реквизиты: ${ans.q8 || "—"}`,
-      ans.city ? `9. Город / Страна: ${ans.city}` : ""
+      `1. Главная задача и эффект (Дилтс): ${safeAns.q1 || "—"}`,
+      `2. Критерии результата: ${safeAns.q2 || "—"}`,
+      `3. Исходные материалы на руках: ${safeAns.q3 || "—"}`,
+      `4. Команда и время со стороны заказчика: ${safeAns.q4 || "—"}`,
+      `5. Комфортность бюджета/сроков и дата старта: ${safeAns.q5 || "—"}`,
+      `6. Специфика направления (ФКР и стандарты): ${safeAns.q6 || "—"}`,
+      `7. Доп. информация и оставшиеся вопросы: ${safeAns.q7 || "—"}`,
+      `8. Форма оплаты и реквизиты: ${safeAns.q8 || "—"}`,
+      safeAns.city ? `9. Город / Страна: ${safeAns.city}` : ""
     ].filter(Boolean).join("\n");
 
     const aiAnalysis = analyzeBriefWithGemini({
@@ -1485,33 +2190,33 @@ function handleClientPortalPost(data) {
       ? rawAnswersText + "\n\n[РАСШИФРОВКА ГОЛОСОВОГО СООБЩЕНИЯ]:\n" + aiAnalysis.transcript
       : rawAnswersText;
 
-    if (category && category !== "Не указано") sheet.getRange(rowIdx, COL.CATEGORY).setValue(category);
-    if (data.clientName && data.clientName.trim()) sheet.getRange(rowIdx, COL.NAME).setValue(data.clientName.trim());
-    if (data.clientOrg && data.clientOrg.trim()) sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim());
-    if (data.clientPhone && data.clientPhone.trim()) sheet.getRange(rowIdx, COL.PHONE).setValue(data.clientPhone.trim());
-    if (data.clientEmail && data.clientEmail.trim()) sheet.getRange(rowIdx, COL.EMAIL).setValue(data.clientEmail.trim());
-    if (data.clientTg && data.clientTg.trim()) sheet.getRange(rowIdx, COL.TG).setValue(data.clientTg.trim());
-
-    const curSt1 = String(row[COL.STATUS - 1] || "");
-    if (!curSt1 || curSt1.includes("🟡") || curSt1.includes("🟣") || curSt1.includes("🔵") || curSt1.includes("🟠")) {
-      if (!row[COL.START_DATE - 1]) {
-        sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-        paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
-      }
+    if (category && category !== "Не указано") {
+      sheet.getRange(rowIdx, COL.CATEGORY).setValue(category);
+      sheet.getRange(rowIdx, COL.CLIENT_TYPE).setValue(clientType);
     }
+    if (data.clientName && data.clientName.trim()) sheet.getRange(rowIdx, COL.NAME).setValue(data.clientName.trim().slice(0, 150));
+    if (data.clientOrg && data.clientOrg.trim()) sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim().slice(0, 200));
+    if (data.clientPhone && data.clientPhone.trim()) sheet.getRange(rowIdx, COL.PHONE).setValue(normalizePhone(data.clientPhone.trim()));
+    if (data.clientEmail && data.clientEmail.trim()) sheet.getRange(rowIdx, COL.EMAIL).setValue(data.clientEmail.trim().slice(0, 150));
+    if (data.clientTg && data.clientTg.trim()) sheet.getRange(rowIdx, COL.TG).setValue(data.clientTg.trim().slice(0, 100));
+
+    updateOrderStatus(sheet, rowIdx, STATUSES.FOR_APPROVAL, "клиент");
     sheet.getRange(rowIdx, COL.SUMMARY).setValue(aiAnalysis.summary);
     sheet.getRange(rowIdx, COL.BRIEF).setValue(fullBriefText);
 
     const reqFinal = (aiAnalysis.requisites && !aiAnalysis.requisites.toLowerCase().includes("не предостав"))
       ? aiAnalysis.requisites
-      : (ans.q8 || row[COL.REQUISITES - 1] || "");
+      : (safeAns.q8 || row[COL.REQUISITES - 1] || "");
     if (reqFinal) sheet.getRange(rowIdx, COL.REQUISITES).setValue(reqFinal);
 
     patchDealState(sheet, rowIdx, {
       chatLang: chatLang,
-      briefAnswers: ans,
-      transcript: aiAnalysis.transcript || ""
+      briefAnswers: safeAns,
+      transcript: aiAnalysis.transcript || "",
+      needsAttention: true
     });
+
+    appendBotEventLog(kpNumber, "бриф_заполнен", data.audioBase64 ? "Отправлена распаковка из кабинета (голос + текст)" : "Отправлена распаковка из кабинета (текст)", "клиент");
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveBriefDoc(sheet, rowIdx, fullBriefText, aiAnalysis.summary);
@@ -1523,17 +2228,17 @@ function handleClientPortalPost(data) {
 
   // 2. Ответ на дополнительный вопрос
   if (act === "answer_extra") {
-    const ansText = (data.text || "").trim();
+    const ansText = String(data.text || "").trim().slice(0, 4000);
     if (!ansText) return { status: "error", message: "Введите текст ответа" };
+    if (!checkRateLimit("chat_" + kpNumber, kpNumber, 20, 3600)) {
+      return { status: "error", message: "Превышен лимит сообщений в час (не более 20). Пожалуйста, подождите." };
+    }
     const oldBrief = (row[COL.BRIEF - 1] || "").toString();
     const updated = oldBrief + "\n\n[ОТВЕТ КЛИЕНТА ИЗ КАБИНЕТА НА ДОП. ВОПРОС]:\n" + ansText;
     sheet.getRange(rowIdx, COL.BRIEF).setValue(updated);
-    const curSt2 = String(row[COL.STATUS - 1] || "");
-    if (curSt2.includes("🟠") && !row[COL.START_DATE - 1]) {
-      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FOR_APPROVAL);
-      paintStatusCell(sheet, rowIdx, STATUSES.FOR_APPROVAL);
-    }
-    patchDealState(sheet, rowIdx, { lastExtraQuestion: "" });
+    updateOrderStatus(sheet, rowIdx, STATUSES.FOR_APPROVAL, "клиент");
+    patchDealState(sheet, rowIdx, { lastExtraQuestion: "", needsAttention: true });
+    appendBotEventLog(kpNumber, "сообщение_клиента", ansText.slice(0, 100), "клиент");
 
     const aiAnalysis = analyzeBriefWithGemini({
       kpNumber: kpNumber,
@@ -1562,11 +2267,11 @@ function handleClientPortalPost(data) {
     if (data.requisitesObj) {
       saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
     } else if (data.requisites && data.requisites.trim()) {
-      sheet.getRange(rowIdx, COL.REQUISITES).setValue(data.requisites.trim());
+      sheet.getRange(rowIdx, COL.REQUISITES).setValue(data.requisites.trim().slice(0, 2000));
     }
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.KP_ACCEPTED);
-    paintStatusCell(sheet, rowIdx, STATUSES.KP_ACCEPTED);
-    patchDealState(sheet, rowIdx, { chosenVariant: chosen });
+    updateOrderStatus(sheet, rowIdx, STATUSES.KP_ACCEPTED, "клиент");
+    patchDealState(sheet, rowIdx, { chosenVariant: chosen, needsAttention: true });
+    appendBotEventLog(kpNumber, "вариант_выбран", `Вариант №${chosen.id}: ${chosen.title} (${Number(chosen.price).toLocaleString("ru-RU")} ₸)`, "клиент");
 
     // Обновляем КП на Диске отметкой выбранного пакета
     ensureProjectDriveFolder(sheet, rowIdx);
@@ -1585,13 +2290,13 @@ function handleClientPortalPost(data) {
     }
     const patch = {};
     if (typeof data.contractCustomNotes === "string") {
-      patch.contractCustomNotes = data.contractCustomNotes.trim();
+      patch.contractCustomNotes = data.contractCustomNotes.trim().slice(0, 4000);
     }
     if (typeof data.contractCustomBodyHtml === "string") {
-      patch.contractCustomBodyHtml = data.contractCustomBodyHtml;
+      patch.contractCustomBodyHtml = data.contractCustomBodyHtml.slice(0, 45000);
     }
     if (typeof data.clientOrg === "string" && data.clientOrg.trim()) {
-      sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim());
+      sheet.getRange(rowIdx, COL.ORG).setValue(data.clientOrg.trim().slice(0, 200));
     }
     if (Object.keys(patch).length) patchDealState(sheet, rowIdx, patch);
 
@@ -1630,16 +2335,16 @@ function handleClientPortalPost(data) {
       agreePatch.clientSignatureDataUrl = data.clientSignatureDataUrl;
     }
     if (typeof data.contractCustomNotes === "string" && data.contractCustomNotes.trim()) {
-      agreePatch.contractCustomNotes = data.contractCustomNotes.trim();
+      agreePatch.contractCustomNotes = data.contractCustomNotes.trim().slice(0, 4000);
     }
     if (typeof data.contractCustomBodyHtml === "string" && data.contractCustomBodyHtml.trim()) {
-      agreePatch.contractCustomBodyHtml = data.contractCustomBodyHtml;
+      agreePatch.contractCustomBodyHtml = data.contractCustomBodyHtml.slice(0, 45000);
     }
 
-    sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
-    paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
     patchDealState(sheet, rowIdx, agreePatch);
+    updateOrderStatus(sheet, rowIdx, STATUSES.CONTRACT_AGREED, "клиент");
     appendPortalEvent(sheet, rowIdx, "Заказчик подписал и согласовал Договор онлайн в Личном кабинете");
+    appendBotEventLog(kpNumber, "договор_подписан_клиентом", "Клиент подписал и согласовал договор онлайн в кабинете", "клиент");
 
     ensureProjectDriveFolder(sheet, rowIdx);
     generateAndSaveContractDoc(sheet, rowIdx, true);
@@ -1651,11 +2356,15 @@ function handleClientPortalPost(data) {
 
   // 6. Комментарий / правка по договору
   if (act === "contract_comment") {
-    const comment = (data.text || "").trim();
+    const comment = String(data.text || "").trim().slice(0, 4000);
     if (!comment) return { status: "error", message: "Введите текст правки" };
+    if (!checkRateLimit("chat_" + kpNumber, kpNumber, 20, 3600)) {
+      return { status: "error", message: "Превышен лимит сообщений в час (не более 20). Пожалуйста, подождите." };
+    }
     const oldBrief = (row[COL.BRIEF - 1] || "").toString();
     sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + "\n\n[ПРАВКА ПО ДОГОВОРУ С ПОРТАЛА]: " + comment);
-    patchDealState(sheet, rowIdx, { contractComment: comment });
+    patchDealState(sheet, rowIdx, { contractComment: comment, needsAttention: true });
+    appendBotEventLog(kpNumber, "сообщение_клиента", comment.slice(0, 100), "клиент");
 
     if (adminToken && adminChatId) {
       sendTelegramApi(adminToken, "sendMessage", {
@@ -1676,13 +2385,14 @@ function handleClientPortalPost(data) {
 
   // 7. Передача ссылки на папку Google Диска клиента
   if (act === "submit_materials_link") {
-    const url = (data.driveLink || "").trim();
-    const note = (data.note || "").trim();
+    const url = String(data.driveLink || "").trim().slice(0, 600);
+    const note = String(data.note || "").trim().slice(0, 1000);
     if (!url) return { status: "error", message: "Укажите ссылку на папку" };
 
-    patchDealState(sheet, rowIdx, { clientMaterialsUrl: url, clientMaterialsNote: note });
+    patchDealState(sheet, rowIdx, { clientMaterialsUrl: url, clientMaterialsNote: note, needsAttention: true });
     const oldBrief = (row[COL.BRIEF - 1] || "").toString();
     sheet.getRange(rowIdx, COL.BRIEF).setValue(oldBrief + `\n\n[ССЫЛКА НА МАТЕРИАЛЫ КЛИЕНТА]: ${url}${note ? " — " + note : ""}`);
+    appendBotEventLog(kpNumber, "материалы_загружены", `Передана ссылка на материалы${note ? ": " + note : ""}`, "клиент");
 
     // Создаём файл-ярлык со ссылкой внутри подпапки 03_Материалы_клиента на вашем Диске
     try {
@@ -1706,10 +2416,11 @@ function handleClientPortalPost(data) {
 
   // 8. Прямая загрузка файла материалов клиентом в подпапку 03_Материалы_клиента
   if (act === "upload_material_file") {
-    const fileName = (data.fileName || ("material_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_");
+    const fileName = (data.fileName || ("material_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
     const mimeType = data.mimeType || "application/octet-stream";
     const fileBase64 = data.fileBase64 || "";
-    if (!fileBase64) return { status: "error", message: "Файл пустой" };
+    const checkF = validateUploadedFile(fileName, mimeType, fileBase64);
+    if (!checkF.ok) return { status: "error", message: checkF.message };
 
     try {
       const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
@@ -1722,7 +2433,8 @@ function handleClientPortalPost(data) {
       const deal = readDealState(sheet, rowIdx);
       const list = Array.isArray(deal.uploadedMaterials) ? deal.uploadedMaterials : [];
       list.push({ name: fileName, url: created.getUrl(), uploadedAt: new Date().toLocaleString("ru-RU") });
-      patchDealState(sheet, rowIdx, { uploadedMaterials: list, uploadedMaterialsCount: list.length });
+      patchDealState(sheet, rowIdx, { uploadedMaterials: list, uploadedMaterialsCount: list.length, needsAttention: true });
+      appendBotEventLog(kpNumber, "материалы_загружены", `Загружен файл: ${fileName}`, "клиент");
 
       if (adminToken && adminChatId) {
         sendTelegramApi(adminToken, "sendMessage", {
@@ -1762,8 +2474,8 @@ function handleClientPortalPost(data) {
     if (data.totalDays) sheet.getRange(rowIdx, COL.DAYS).setValue(Number(data.totalDays));
     if (data.requisitesObj) saveRequisitesHelper(sheet, rowIdx, data.requisitesObj);
     patchDealState(sheet, rowIdx, {
-      contractCustomNotes: typeof data.contractCustomNotes === "string" ? data.contractCustomNotes : "",
-      contractCustomBodyHtml: typeof data.contractCustomBodyHtml === "string" ? data.contractCustomBodyHtml : ""
+      contractCustomNotes: typeof data.contractCustomNotes === "string" ? data.contractCustomNotes.slice(0, 4000) : "",
+      contractCustomBodyHtml: typeof data.contractCustomBodyHtml === "string" ? data.contractCustomBodyHtml.slice(0, 45000) : ""
     });
     ensureProjectDriveFolder(sheet, rowIdx);
     const docRes = generateAndSaveContractDoc(sheet, rowIdx);
@@ -1774,11 +2486,12 @@ function handleClientPortalPost(data) {
   if (act === "upload_signed_contract" || act === "upload_payment_receipt") {
     const isContractFile = act === "upload_signed_contract";
     const prefix = isContractFile ? "Подписанный_Договор_" : "Чек_оплаты_";
-    const rawName = (data.fileName || (prefix + kpNumber + ".pdf")).replace(/[\\/:*?"<>|]/g, "_");
+    const rawName = (data.fileName || (prefix + kpNumber + ".pdf")).replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
     const fileName = rawName.startsWith(prefix) ? rawName : (prefix + rawName);
     const mimeType = data.mimeType || "application/pdf";
     const fileBase64 = data.fileBase64 || "";
-    if (!fileBase64) return { status: "error", message: "Файл пустой" };
+    const checkF = validateUploadedFile(rawName, mimeType, fileBase64);
+    if (!checkF.ok) return { status: "error", message: checkF.message };
 
     try {
       const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
@@ -1796,14 +2509,15 @@ function handleClientPortalPost(data) {
 
       const patch = { needsAttention: true };
       patch[keyName] = list;
-      if (isContractFile) {
-        const curSt = String(row[COL.STATUS - 1] || "");
-        if (!curSt.includes("⏳") && !curSt.includes("🟢") && !curSt.includes("📅") && !curSt.includes("✅")) {
-          sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_AGREED);
-          paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_AGREED);
-        }
-      }
       patchDealState(sheet, rowIdx, patch);
+
+      if (isContractFile) {
+        updateOrderStatus(sheet, rowIdx, STATUSES.CONTRACT_AGREED, "клиент");
+        appendBotEventLog(kpNumber, "договор_подписан_клиентом", `Клиент загрузил скан подписанного договора: ${rawName}`, "клиент");
+      } else {
+        appendBotEventLog(kpNumber, "чек_прикреплён", `Клиент прикрепил документ об оплате: ${rawName}`, "клиент");
+      }
+
       appendPortalEvent(sheet, rowIdx, isContractFile
         ? `Заказчик загрузил подписанный файл Договора: ${rawName}`
         : `Заказчик прикрепил документ об оплате (чек/платёжку): ${rawName}`);
@@ -1830,17 +2544,35 @@ function handleClientPortalPost(data) {
     }
   }
 
-  // 12. Прямое сообщение в чате заказа на сайте (от клиента или от Натальи/помощницы)
+  // 12. Прямое сообщение в чате заказа на сайте (от клиента, от Натальи/помощницы или от цифрового помощника Бюро — Ж3)
   if (act === "post_portal_message") {
-    const msgText = (data.text || "").trim();
+    const msgText = String(data.text || "").trim().slice(0, 4000);
     const fileBase64 = data.fileBase64 || "";
     if (!msgText && !fileBase64) return { status: "error", message: "Введите сообщение или прикрепите файл" };
 
-    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
     const fromStaff = Boolean(staffRole);
-    const senderName = fromStaff
-      ? (staffRole === "director" ? "Наталья Коденцева (Руководитель Бюро)" : "Куратор проектов Бюро «МЕТОДИКО»")
-      : (row[COL.NAME - 1] || "Заказчик");
+    const isAssistantBot = Boolean(data.isAssistantBot);
+
+    if (!fromStaff && !isAssistantBot) {
+      if (!checkRateLimit("chat_" + kpNumber, kpNumber, 20, 3600)) {
+        return { status: "error", message: "Превышен лимит сообщений в час (не более 20). Пожалуйста, подождите." };
+      }
+    }
+
+    if (fileBase64) {
+      const checkF = validateUploadedFile(data.fileName || "file", data.mimeType || "", fileBase64);
+      if (!checkF.ok) return { status: "error", message: checkF.message };
+    }
+
+    let senderRoleVal = "client";
+    let senderName = row[COL.NAME - 1] || "Заказчик";
+    if (isAssistantBot) {
+      senderRoleVal = "assistant_bot";
+      senderName = "Цифровой помощник Бюро";
+    } else if (fromStaff) {
+      senderRoleVal = staffRole;
+      senderName = staffRole === "director" ? "Наталья Коденцева (Руководитель Бюро)" : "Куратор проектов Бюро «МЕТОДИКО»";
+    }
 
     let attachedUrl = "";
     let attachedName = "";
@@ -1851,7 +2583,7 @@ function handleClientPortalPost(data) {
           ? ((folderInfo.subFolders && folderInfo.subFolders.resultsId) || folderInfo.rootId)
           : ((folderInfo.subFolders && folderInfo.subFolders.materialsId) || folderInfo.rootId);
         const folder = DriveApp.getFolderById(targetFolderId);
-        attachedName = (data.fileName || ("file_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_");
+        attachedName = (data.fileName || ("file_" + Date.now())).replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
         const bytes = Utilities.base64Decode(fileBase64);
         const blob = Utilities.newBlob(bytes, data.mimeType || "application/octet-stream", attachedName);
         const created = folder.createFile(blob);
@@ -1864,7 +2596,8 @@ function handleClientPortalPost(data) {
     const messages = Array.isArray(deal.messages) ? deal.messages : [];
     const newMsg = {
       id: "m_" + Date.now(),
-      senderRole: fromStaff ? staffRole : "client",
+      senderRole: senderRoleVal,
+      isBot: isAssistantBot,
       senderName: senderName,
       text: msgText,
       fileName: attachedName,
@@ -1875,28 +2608,32 @@ function handleClientPortalPost(data) {
 
     const patch = {
       messages: messages,
-      needsAttention: !fromStaff
+      needsAttention: (!fromStaff && !isAssistantBot)
     };
-    if (fromStaff && msgText) {
+    if ((fromStaff || isAssistantBot) && msgText) {
       patch.lastExtraQuestion = msgText;
     }
     patchDealState(sheet, rowIdx, patch);
-    appendPortalEvent(sheet, rowIdx, `${fromStaff ? "Сообщение от Бюро" : "Сообщение от Заказчика"}: ${(msgText || attachedName).slice(0, 80)}`);
+    appendPortalEvent(sheet, rowIdx, `${(fromStaff || isAssistantBot) ? "Сообщение от Бюро" : "Сообщение от Заказчика"}: ${(msgText || attachedName).slice(0, 80)}`);
 
-    if (!fromStaff && adminToken && adminChatId) {
-      sendTelegramApi(adminToken, "sendMessage", {
-        chat_id: adminChatId,
-        text: `💬 <b>НОВОЕ СООБЩЕНИЕ В КАБИНЕТЕ (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n\n<i>«${escapeHtml(msgText || "Прикреплён файл")}»</i>${attachedUrl ? `\n📎 <a href="${attachedUrl}">${escapeHtml(attachedName)}</a>` : ""}`,
-        parse_mode: "HTML",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "👁️ Ответить прямо в Кабинете на сайте", url: getAdminPortalUrl(kpNumber, "materials") }],
-            [{ text: "❓ Ответить через бота", callback_data: `ask_${kpNumber}` }]
-          ]
-        }
-      });
-    } else if (fromStaff) {
+    if (fromStaff || isAssistantBot) {
+      appendBotEventLog(kpNumber, "ответ_бюро", (msgText || attachedName).slice(0, 100), isAssistantBot ? "система" : "Наталья");
       notifyClientAllChannels(sheet, rowIdx, "extra_question");
+    } else {
+      appendBotEventLog(kpNumber, "сообщение_клиента", (msgText || attachedName).slice(0, 100), "клиент");
+      if (adminToken && adminChatId) {
+        sendTelegramApi(adminToken, "sendMessage", {
+          chat_id: adminChatId,
+          text: `💬 <b>НОВОЕ СООБЩЕНИЕ В КАБИНЕТЕ (${kpNumber}):</b>\n👤 ${escapeHtml(row[COL.NAME - 1])} (${escapeHtml(row[COL.ORG - 1])})\n\n<i>«${escapeHtml(msgText || "Прикреплён файл")}»</i>${attachedUrl ? `\n📎 <a href="${attachedUrl}">${escapeHtml(attachedName)}</a>` : ""}`,
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "👁️ Ответить прямо в Кабинете на сайте", url: getAdminPortalUrl(kpNumber, "materials") }],
+              [{ text: "❓ Ответить через бота", callback_data: `ask_${kpNumber}` }]
+            ]
+          }
+        });
+      }
     }
     return { status: "ok", messageObj: newMsg };
   }
@@ -1905,7 +2642,7 @@ function handleClientPortalPost(data) {
   if (act === "client_review_deliverable") {
     const delivId = data.deliverableId || "";
     const decision = data.decision === "approve" ? "approved" : "revision";
-    const comment = (data.comment || "").trim();
+    const comment = String(data.comment || "").trim().slice(0, 2000);
     const deal = readDealState(sheet, rowIdx);
     const list = ensureDeliverablesList(row, deal);
     const item = list.find(d => String(d.id) === String(delivId));
@@ -1920,6 +2657,12 @@ function handleClientPortalPost(data) {
     appendPortalEvent(sheet, rowIdx, decision === "approved"
       ? `Заказчик утвердил документ: «${item.title}»`
       : `Заказчик оставил комментарий к документу «${item.title}»: ${comment}`);
+
+    if (decision === "approved") {
+      appendBotEventLog(kpNumber, "утверждаю", `Клиент утвердил документ: ${item.title}`, "клиент");
+    } else {
+      appendBotEventLog(kpNumber, "сообщение_клиента", (`Правка к «${item.title}»: ${comment}`).slice(0, 100), "клиент");
+    }
 
     if (adminToken && adminChatId) {
       const badge = decision === "approved" ? "✅ ДОКУМЕНТ УТВЕРЖДЁН КЛИЕНТОМ" : "✏️ КОММЕНТАРИЙ К ДОКУМЕНТУ";
@@ -1937,8 +2680,11 @@ function handleClientPortalPost(data) {
 
   // 14. Руководитель или Помощница обновляет статус/% документа или загружает готовый файл в папку 04_Наши_разработки_и_Сдача
   if (act === "staff_update_deliverable") {
-    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
     if (!staffRole) return { status: "forbidden", message: "Требуется доступ сотрудника Бюро" };
+    if (data.fileBase64) {
+      const checkF = validateUploadedFile(data.fileName || "doc.pdf", data.mimeType || "", data.fileBase64);
+      if (!checkF.ok) return { status: "error", message: checkF.message };
+    }
 
     const deal = readDealState(sheet, rowIdx);
     const list = ensureDeliverablesList(row, deal);
@@ -1946,7 +2692,7 @@ function handleClientPortalPost(data) {
     if (!item) {
       item = {
         id: "doc_" + Date.now(),
-        title: (data.title || "Новый документ проекта").trim(),
+        title: String(data.title || "Новый документ проекта").trim().slice(0, 200),
         status: "pending",
         progress: 0,
         fileUrl: "",
@@ -1958,10 +2704,10 @@ function handleClientPortalPost(data) {
       list.push(item);
     }
 
-    if (typeof data.title === "string" && data.title.trim()) item.title = data.title.trim();
+    if (typeof data.title === "string" && data.title.trim()) item.title = data.title.trim().slice(0, 200);
     if (typeof data.status === "string" && data.status) item.status = data.status;
     if (data.progress !== undefined) item.progress = Math.min(100, Math.max(0, Number(data.progress || 0)));
-    if (typeof data.staffNote === "string") item.staffNote = data.staffNote.trim();
+    if (typeof data.staffNote === "string") item.staffNote = data.staffNote.trim().slice(0, 1000);
     if (item.status === "approved" || item.status === "done") item.progress = 100;
     item.updatedAt = new Date().toLocaleString("ru-RU");
 
@@ -1970,13 +2716,14 @@ function handleClientPortalPost(data) {
         const folderInfo = ensureProjectDriveFolder(sheet, rowIdx);
         const targetFolderId = (folderInfo.subFolders && folderInfo.subFolders.resultsId) || folderInfo.rootId;
         const folder = DriveApp.getFolderById(targetFolderId);
-        const cleanName = (data.fileName || (item.title + ".pdf")).replace(/[\\/:*?"<>|]/g, "_");
+        const cleanName = (data.fileName || (item.title + ".pdf")).replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
         const bytes = Utilities.base64Decode(data.fileBase64);
         const blob = Utilities.newBlob(bytes, data.mimeType || "application/octet-stream", cleanName);
         const created = folder.createFile(blob);
         try { created.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
         item.fileUrl = created.getUrl();
         item.fileName = cleanName;
+        item.driveFileId = created.getId();
         if (item.status === "pending" || item.status === "in_progress") {
           item.status = "review";
           if (item.progress < 85) item.progress = 85;
@@ -1988,6 +2735,7 @@ function handleClientPortalPost(data) {
 
     patchDealState(sheet, rowIdx, { deliverables: list, needsAttention: false });
     appendPortalEvent(sheet, rowIdx, `Бюро обновило документ «${item.title}» (готовность ${item.progress}%)`);
+    appendBotEventLog(kpNumber, "документ_выложен", `Документ «${item.title}» — готовность ${item.progress}%`, "Наталья");
 
     if (data.notifyClient) {
       patchDealState(sheet, rowIdx, { lastExtraQuestion: `Готов документ «${item.title}» (${item.progress}%). Пожалуйста, ознакомьтесь и подтвердите в вашем Кабинете.` });
@@ -1996,9 +2744,8 @@ function handleClientPortalPost(data) {
     return { status: "ok", deliverables: list };
   }
 
-  // 15. Руководитель (Директор) в 1 клик с сайта подписывает печатью и публикует КП или Договор клиенту
+  // 15. Руководитель (Директор) в 1 клик с сайта подписывает печатью и публикует КП или Договор клиенту (К2)
   if (act === "admin_sign_doc") {
-    const staffRole = resolveStaffRole(kpNumber, data.admin || "");
     if (staffRole !== "director") return { status: "forbidden", message: "Право подписи печатью есть только у Директора Бюро" };
 
     const docType = data.docType === "kp" ? "kp" : "contract";
@@ -2006,33 +2753,67 @@ function handleClientPortalPost(data) {
       const deal = readDealState(sheet, rowIdx);
       const variants = Array.isArray(deal.kpVariants) && deal.kpVariants.length ? deal.kpVariants : buildFinalKpVariants(sheet, rowIdx);
       const deadlineDate = formatDateRu(addWorkingDays(new Date(), 2));
-      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.FINAL_KP_SENT);
-      paintStatusCell(sheet, rowIdx, STATUSES.FINAL_KP_SENT);
       patchDealState(sheet, rowIdx, {
         kpVariants: variants,
         kpSentAt: new Date().toISOString(),
         kpSignedByAdmin: true,
         kpSignedAt: formatDateRu(new Date()),
-        kpDeadlineText: deadlineDate
+        kpDeadlineText: deadlineDate,
+        needsAttention: false
       });
+      updateOrderStatus(sheet, rowIdx, STATUSES.FINAL_KP_SENT, "Наталья");
+      appendBotEventLog(kpNumber, "кп_утверждено", "Наталья утвердила и подписала Финальное КП в Штабе/Кабинете", "Наталья");
       ensureProjectDriveFolder(sheet, rowIdx);
-      generateAndSaveFinalKpDoc(sheet, rowIdx);
+      const savedKp = generateAndSaveFinalKpDoc(sheet, rowIdx);
       appendPortalEvent(sheet, rowIdx, "Финальное КП подписано печатью ТОО «Метод и Ко» и опубликовано для Заказчика");
       notifyClientAllChannels(sheet, rowIdx, "final_kp");
-      return { status: "ok" };
+      appendBotEventLog(kpNumber, "кп_отправлено", "Финальное КП с печатью открыто клиенту и отправлено на почту", "система");
+      return { status: "ok", kpPdfUrl: savedKp.pdfUrl || "" };
     } else {
-      sheet.getRange(rowIdx, COL.STATUS).setValue(STATUSES.CONTRACT_SENT);
-      paintStatusCell(sheet, rowIdx, STATUSES.CONTRACT_SENT);
       patchDealState(sheet, rowIdx, {
         contractSignedByAdmin: true,
-        contractSignedAt: formatDateRu(new Date())
+        contractSignedAt: formatDateRu(new Date()),
+        needsAttention: false
       });
+      updateOrderStatus(sheet, rowIdx, STATUSES.CONTRACT_SENT, "Наталья");
       ensureProjectDriveFolder(sheet, rowIdx);
-      generateAndSaveContractDoc(sheet, rowIdx);
+      const savedContract = generateAndSaveContractDoc(sheet, rowIdx);
       appendPortalEvent(sheet, rowIdx, "Договор подписан печатью ТОО «Метод и Ко» и опубликован для Заказчика");
+      appendBotEventLog(kpNumber, "договор_отправлен", "Договор подписан печатью ТОО в Штабе/Кабинете и направлен клиенту", "Наталья");
       notifyClientAllChannels(sheet, rowIdx, "contract");
-      return { status: "ok" };
+      return { status: "ok", contractPdfUrl: savedContract.pdfUrl || "" };
     }
+  }
+
+  // 16. Смена статуса заказа руководителем из Штаба / Кабинета (вкл. «Отказ», «Пауза», ручное подтверждение оплаты — К3, К4)
+  if (act === "admin_set_status") {
+    if (!staffRole) return { status: "forbidden", message: "Требуются права сотрудника Бюро" };
+    const statusCode = String(data.statusCode || "").trim();
+
+    if (statusCode === "confirm_payment") {
+      if (staffRole !== "director") return { status: "forbidden", message: "Подтверждать оплату может только Руководитель Бюро" };
+      const holdUntil = formatDateRu(addWorkingDays(new Date(), 3));
+      patchDealState(sheet, rowIdx, {
+        paidAt: new Date().toISOString(),
+        holdUntilText: holdUntil,
+        remindedMat3d: false,
+        needsAttention: false
+      });
+      updateOrderStatus(sheet, rowIdx, STATUSES.WAITING_MATERIALS, "Наталья", { force: true });
+      appendPortalEvent(sheet, rowIdx, "Поступление 100% оплаты подтверждено руководителем Бюро");
+      appendBotEventLog(kpNumber, "оплата_подтверждена", "Наталья подтвердила поступление 100% оплаты", "Наталья");
+      recalculateQueueSheet();
+      notifyClientAllChannels(sheet, rowIdx, "waiting_materials");
+      return { status: "ok", newStatus: STATUSES.WAITING_MATERIALS };
+    }
+
+    let targetSt = STATUSES[statusCode] || statusCode;
+    if (statusCode === "REJECTED" || statusCode.toLowerCase() === "отказ") targetSt = STATUSES.REJECTED;
+    if (statusCode === "PAUSED" || statusCode.toLowerCase() === "пауза") targetSt = STATUSES.PAUSED;
+
+    updateOrderStatus(sheet, rowIdx, targetSt, "Наталья", { force: true });
+    recalculateQueueSheet();
+    return { status: "ok", newStatus: targetSt };
   }
 
   return { status: "error", message: "Неизвестное действие" };
@@ -2194,6 +2975,7 @@ function generateAndSaveFinalKpDoc(sheet, rowIdx) {
     const kp = String(row[COL.KP - 1]);
     const variants = Array.isArray(deal.kpVariants) ? deal.kpVariants : [];
     const folderId = deal.driveFolders && deal.driveFolders.subFolders ? deal.driveFolders.subFolders.briefKpId : "";
+    const isApproved = Boolean(deal.kpSignedByAdmin);
 
     let doc;
     if (deal.kpDocId) {
@@ -2203,7 +2985,7 @@ function generateAndSaveFinalKpDoc(sheet, rowIdx) {
 
     const body = doc.getBody();
     body.appendParagraph(`ТОО «Метод и Ко» | Бюро стандартов «МЕТОДИКО»`).setHeading(DocumentApp.ParagraphHeading.HEADING2);
-    body.appendParagraph(`ФИНАЛЬНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ № ${kp}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    body.appendParagraph(`ФИНАЛЬНОЕ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ № ${kp}${isApproved ? "" : " [ПРОЕКТ, БЕЗ ПЕЧАТИ]"}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
     body.appendParagraph(`Дата: ${formatDateRu(new Date())} | Срок действия условий: до ${deal.kpDeadlineText || "2 раб. дня"}`);
     body.appendParagraph(`Заказчик: ${row[COL.NAME - 1]} (${row[COL.ORG - 1]})`);
     body.appendParagraph(`Направление: ${row[COL.CATEGORY - 1]} | Язык разработки: ${row[COL.DEV_LANG - 1]}`);
@@ -2218,11 +3000,18 @@ function generateAndSaveFinalKpDoc(sheet, rowIdx) {
 
     body.appendHorizontalRule();
     body.appendParagraph(`Условия работы: 100% предоплата. Отсчёт срока ведётся со следующего рабочего дня после поступления оплаты и полного комплекта исходных материалов. Формат: 100% дистанционно.`);
-    body.appendParagraph(`Исполнитель: ТОО «Метод и Ко», БИН 231140018015, г. Алматы, АО «Kaspi Bank», ИИК KZ54722S000031140138, БИК CASPKZKA, Директор Коденцева Н.М.`);
-    appendDirectorStampToDocBody(body, kp, deal.kpSignedAt || formatDateRu(new Date()));
+    body.appendParagraph(`Исполнитель: ТОО «Метод и Ко», БИН 231140018015, 050019, г. Алматы, Турксибский район, мкр. Кайрат, ул. Жетысай, дом 15/2, АО «Kaspi Bank», ИИК KZ54722S000031140138, БИК CASPKZKA, Директор Коденцева Н.М.`);
+
+    // К2: Печать и подпись ставятся ТОЛЬКО после утверждения Натальей
+    if (isApproved) {
+      appendDirectorStampToDocBody(body, kp, deal.kpSignedAt || formatDateRu(new Date()));
+    } else {
+      body.appendParagraph(`📝 СТАТУС ДОКУМЕНТА: Проект, без печати (ожидает утверждения руководителем Бюро «МЕТОДИКО»).`);
+    }
     doc.saveAndClose();
 
-    const saved = saveDocAndPdfToFolder(doc, folderId, `Финальное_КП_${kp}.pdf`);
+    const pdfName = isApproved ? `Финальное_КП_${kp}.pdf` : `Проект_КП_${kp}_без_печати.pdf`;
+    const saved = saveDocAndPdfToFolder(doc, folderId, pdfName);
     patchDealState(sheet, rowIdx, { kpDocId: saved.docId, kpDocUrl: saved.docUrl, kpPdfUrl: saved.pdfUrl });
     return saved;
   } catch (e) {
@@ -2238,6 +3027,7 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
     const kp = String(row[COL.KP - 1]);
     const folderId = deal.driveFolders && deal.driveFolders.subFolders ? deal.driveFolders.subFolders.contractId : "";
     const templateId = getSecret("CONTRACT_TEMPLATE_ID");
+    const isApprovedByDirector = Boolean(deal.contractSignedByAdmin);
 
     const req = deal.requisitesObj || {};
     const orgDisplay = req.orgName || row[COL.ORG - 1] || "________________________________________";
@@ -2258,7 +3048,6 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
     const chosen = deal.chosenVariant || {};
     const pkgText = chosen.title ? `${chosen.title} — ${chosen.scope || ""}` : (row[COL.MODULES - 1] || row[COL.CATEGORY - 1]);
 
-    // Если пользователь явно задал свой Google Docs шаблон — используем его, иначе создаём полный Договор автоматически!
     if (templateId && !deal.contractDocId) {
       const templateFile = DriveApp.getFileById(templateId);
       const copyFile = templateFile.makeCopy(`Договор_${kp}_${orgDisplay}`);
@@ -2274,7 +3063,7 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
       bodyT.replaceText("{{CHOSEN_PACKAGE}}", pkgText);
       bodyT.replaceText("{{PAYMENT_TERMS}}", "100% предоплата; отсчёт срока со следующего рабочего дня после поступления оплаты И полного комплекта исходных материалов (п. 3.1)");
       docT.saveAndClose();
-      const savedT = saveDocAndPdfToFolder(docT, folderId, `Договор_${kp}.pdf`);
+      const savedT = saveDocAndPdfToFolder(docT, folderId, isApprovedByDirector ? `Договор_${kp}.pdf` : `Проект_Договора_${kp}_без_печати.pdf`);
       updateCol22KeepingTgChat(sheet, rowIdx, savedT.docUrl);
       patchDealState(sheet, rowIdx, { contractDocId: savedT.docId, contractDocUrl: savedT.docUrl, contractPdfUrl: savedT.pdfUrl });
       return savedT;
@@ -2287,7 +3076,9 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
     if (!doc) doc = DocumentApp.create(`Договор_авторского_заказа_${kp}`);
 
     const body = doc.getBody();
-    const statusBadge = isFinalAgreed ? " [СОГЛАСОВАН СТОРОНАМИ]" : " [ПРОЕКТ ДЛЯ СОГЛАСОВАНИЯ]";
+    const statusBadge = isFinalAgreed
+      ? " [СОГЛАСОВАН СТОРОНАМИ]"
+      : (isApprovedByDirector ? " [УТВЕРЖДЁН ИСПОЛНИТЕЛЕМ]" : " [ПРОЕКТ, БЕЗ ПЕЧАТИ]");
     body.appendParagraph(`ДОГОВОР АВТОРСКОГО ЗАКАЗА И УЧЕБНО-МЕТОДИЧЕСКОГО ПРОЕКТИРОВАНИЯ № ${kp}${statusBadge}`).setHeading(DocumentApp.ParagraphHeading.HEADING1);
     body.appendParagraph(`г. Алматы | Дата: ${formatDateRu(new Date())}`);
     body.appendParagraph(`Товарищество с ограниченной ответственностью «Метод и Ко» (Бюро стандартов «МЕТОДИКО»), именуемое в дальнейшем «Исполнитель», в лице Директора Коденцевой Натальи Михайловны, действующей на основании Устава, с одной стороны, и ${orgDisplay}, именуемое в дальнейшем «Заказчик», в лице ${signerDisplay}, действующего(ей) на основании ${signerBasis}, с другой стороны, заключили настоящий Договор о нижеследующем:`);
@@ -2300,14 +3091,22 @@ function generateAndSaveContractDoc(sheet, rowIdx, isFinalAgreed) {
 
     body.appendHorizontalRule();
     body.appendParagraph(`10. РЕКВИЗИТЫ И ПОДПИСИ СТОРОН`).setHeading(DocumentApp.ParagraphHeading.HEADING3);
-    body.appendParagraph(`ИСПОЛНИТЕЛЬ:\nТОО «Метод и Ко» (Бюро «МЕТОДИКО»)\nБИН: 231140018015\nЮр. адрес: 050019, г. Алматы, Турксибский р-н, мкр. Кайрат, ул. Жетысай, дом 15/2\nБанк: АО «Kaspi Bank» | ИИК: KZ54722S000031140138 | БИК: CASPKZKA | КБе: 17\nТел.: +7 (700) 077-35-66 | Сайт: metodico-kz.netlify.app\nДиректор: Коденцева Н.М.`);
-    appendDirectorStampToDocBody(body, kp, deal.contractSignedAt || formatDateRu(new Date()));
+    body.appendParagraph(`ИСПОЛНИТЕЛЬ:\nТОО «Метод и Ко» (Бюро «МЕТОДИКО»)\nБИН: 231140018015\nЮр. адрес: 050019, Республика Казахстан, г. Алматы, Турксибский район, мкр. Кайрат, ул. Жетысай, дом 15/2\nБанк: АО «Kaspi Bank» | ИИК: KZ54722S000031140138 | БИК: CASPKZKA | КБе: 17\nТел.: +7 (700) 077-35-66 | Сайт: metodico-kz.netlify.app\nДиректор: Коденцева Н.М.`);
+
+    // К2: Печать и подпись со стороны ТОО ставятся ТОЛЬКО после утверждения Натальей
+    if (isApprovedByDirector) {
+      appendDirectorStampToDocBody(body, kp, deal.contractSignedAt || formatDateRu(new Date()));
+    } else {
+      body.appendParagraph(`📝 СТАТУС ДОКУМЕНТА: Проект, без печати (ожидает утверждения и подписания руководителем Бюро «МЕТОДИКО»).`);
+    }
 
     body.appendParagraph(`\nЗАКАЗЧИК:\n${reqBlock}\nПодписант: ${signerDisplay}`);
     appendClientSignatureToDocBody(body, kp, orgDisplay, req.binIin || "", signerDisplay, deal, isFinalAgreed);
     doc.saveAndClose();
 
-    const pdfName = isFinalAgreed ? `Договор_${kp}_СОГЛАСОВАН.pdf` : `Договор_${kp}_проект.pdf`;
+    const pdfName = isFinalAgreed
+      ? `Договор_${kp}_СОГЛАСОВАН.pdf`
+      : (isApprovedByDirector ? `Договор_${kp}.pdf` : `Проект_Договора_${kp}_без_печати.pdf`);
     const saved = saveDocAndPdfToFolder(doc, folderId, pdfName);
     updateCol22KeepingTgChat(sheet, rowIdx, saved.docUrl);
     patchDealState(sheet, rowIdx, { contractDocId: saved.docId, contractDocUrl: saved.docUrl, contractPdfUrl: saved.pdfUrl });
@@ -2913,19 +3712,22 @@ function findRowByKp(sheet, kpNumber) {
 
 function paintStatusCell(sheet, rowIdx, statusText) {
   const cell = sheet.getRange(rowIdx, COL.STATUS);
+  const s = String(statusText || "");
   let bg = "#F1F5F9";
-  if (statusText.includes("🟡")) bg = "#FEF9C3";
-  else if (statusText.includes("🟣")) bg = "#F3E8FF";
-  else if (statusText.includes("🔵")) bg = "#DBEAFE";
-  else if (statusText.includes("🟠")) bg = "#FFEDD5";
-  else if (statusText.includes("💼")) bg = "#E0E7FF";
-  else if (statusText.includes("🤝")) bg = "#D1FAE5";
-  else if (statusText.includes("📄")) bg = "#E2E8F0";
-  else if (statusText.includes("✍️")) bg = "#BAE6FD";
-  else if (statusText.includes("⏳")) bg = "#FEF3C7";
-  else if (statusText.includes("🟢")) bg = "#DCFCE7";
-  else if (statusText.includes("📅")) bg = "#FDE68A";
-  else if (statusText.includes("✅")) bg = "#BBF7D0";
+  if (s.includes("🟡")) bg = "#FEF9C3";
+  else if (s.includes("🟣")) bg = "#F3E8FF";
+  else if (s.includes("🔵")) bg = "#DBEAFE";
+  else if (s.includes("🟠")) bg = "#FFEDD5";
+  else if (s.includes("💼")) bg = "#E0E7FF";
+  else if (s.includes("🤝")) bg = "#D1FAE5";
+  else if (s.includes("📄")) bg = "#E2E8F0";
+  else if (s.includes("✍️")) bg = "#BAE6FD";
+  else if (s.includes("⏳")) bg = "#FEF3C7";
+  else if (s.includes("🟢")) bg = "#DCFCE7";
+  else if (s.includes("📅")) bg = "#FDE68A";
+  else if (s.includes("✅")) bg = "#BBF7D0";
+  else if (isRejectedStatus(s)) bg = "#E2E8F0";
+  else if (isPausedStatus(s)) bg = "#F3F4F6";
   cell.setBackground(bg).setFontWeight("bold");
 }
 
@@ -3062,23 +3864,27 @@ function escapeHtml(text) {
 
 /**
  * =========================================================================
- * 11. ВХОД КЛИЕНТА ПО НОМЕРУ ТЕЛЕФОНА, ШТАБ БЮРО, ПРОГРЕСС % И СВОДКИ (v6.0)
+ * 11. ВХОД КЛИЕНТА ПО НОМЕРУ ТЕЛЕФОНА, ШТАБ БЮРО, ПРОГРЕСС % И СВОДКИ (v7.0)
  * =========================================================================
  */
-function findOrdersByPhoneApi(rawPhone, rawKp) {
+function findOrdersByPhoneApi(rawPhone) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
   if (!sheet || sheet.getLastRow() < 2) {
-    return { status: "not_found", message: "Заявки пока не найдены." };
+    return { status: "not_found", message: "Проверьте введённый номер телефона или оформите смету на главной странице." };
   }
 
+  // К1 + В3: Вход по кодовым словам («ШТАБ», «НАТАЛЬЯ», «ДИРЕКТОР») и по номеру КП (MK-...) полностью удалён.
+  // Ввод телефона руководителя больше не выдаёт ссылку на Штаб и никак не выделяется.
   const cleanDigits = String(rawPhone || "").replace(/[^\d]/g, "");
-  const cleanKp = String(rawKp || "").trim().toUpperCase();
   const tail10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : "";
-  const isOwnerPhone = (tail10 === "7000773566") || cleanKp === "ШТАБ" || cleanKp === "НАТАЛЬЯ" || cleanKp === "ДИРЕКТОР";
 
-  if (cleanDigits.length < 10 && !cleanKp.startsWith("MK-") && !isOwnerPhone) {
-    return { status: "error", message: "Введите корректный номер телефона (10–11 цифр) или номер заказа MK-..." };
+  if (tail10.length !== 10) {
+    return { status: "error", message: "Введите корректный номер телефона (10–11 цифр)." };
+  }
+
+  if (!checkRateLimit("phone_login", tail10, 12, 900)) {
+    return { status: "error", message: "Слишком много попыток входа. Пожалуйста, подождите 15 минут." };
   }
 
   const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
@@ -3088,13 +3894,13 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
     const r = data[i];
     const kp = String(r[COL.KP - 1] || "").trim();
     if (!kp) continue;
+    const st = String(r[COL.STATUS - 1] || "");
+    if (isRejectedStatus(st)) continue;
+
     const rowDigits = String(r[COL.PHONE - 1] || "").replace(/[^\d]/g, "");
     const rowTail10 = rowDigits.length >= 10 ? rowDigits.slice(-10) : "";
 
-    const phoneMatched = tail10 && rowTail10 && tail10 === rowTail10;
-    const kpMatched = cleanKp && kp.toUpperCase() === cleanKp;
-
-    if (phoneMatched || kpMatched) {
+    if (tail10 && rowTail10 && tail10 === rowTail10) {
       const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
       const deliverables = ensureDeliverablesList(r, deal);
       matches.push({
@@ -3103,9 +3909,9 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
         clientName: String(r[COL.NAME - 1] || ""),
         clientOrg: String(r[COL.ORG - 1] || ""),
         category: String(r[COL.CATEGORY - 1] || ""),
-        crmStatus: String(r[COL.STATUS - 1] || ""),
+        crmStatus: st,
         agreedPrice: Number(r[COL.AGREED_PRICE - 1] || r[COL.SITE_PRICE - 1] || 0),
-        progressPercent: computeOrderProgress(r[COL.STATUS - 1], deal, deliverables),
+        progressPercent: computeOrderProgress(st, deal, deliverables),
         portalToken: generatePortalToken(kp),
         portalUrl: getClientPortalUrl(kp)
       });
@@ -3113,18 +3919,15 @@ function findOrdersByPhoneApi(rawPhone, rawKp) {
     }
   }
 
-  if (matches.length === 0 && !isOwnerPhone) {
+  if (matches.length === 0) {
     return {
       status: "not_found",
-      message: "Заказ с таким номером телефона не найден. Проверьте цифры номера или оформите смету на главной странице."
+      message: "Проверьте введённый номер телефона или оформите расчёт сметы на главной странице."
     };
   }
 
   return {
     status: "ok",
-    isOwnerPhone: isOwnerPhone,
-    directorHubUrl: isOwnerPhone ? getStaffHubUrl("director") : "",
-    assistantHubUrl: isOwnerPhone ? getStaffHubUrl("assistant") : "",
     orders: matches,
     primaryOrder: matches[0] || null
   };
@@ -3200,6 +4003,7 @@ function ensureDeliverablesList(row, deal) {
 function computeOrderProgress(crmStatus, deal, deliverables) {
   const s = String(crmStatus || "");
   if (s.includes("✅")) return 100;
+  if (isRejectedStatus(s)) return 0;
 
   let base = 10;
   if (s.includes("🟣") || s.includes("🔵") || s.includes("🟠") || (deal && deal.briefAnswers)) base = 22;
@@ -3252,43 +4056,54 @@ function appendPortalEvent(sheet, rowIdx, text) {
 function getStaffDashboardState(staffKey) {
   const role = resolveStaffRole("", staffKey);
   if (!role) {
-    return { status: "forbidden", message: "Недействительная ссылка доступа в Штаб Бюро." };
+    return { status: "forbidden", message: "Недействительный или устаревший секретный ключ Штаба Бюро." };
   }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(CONFIG.SHEET_LEADS);
+  ensureExtendedColumns(sheet);
   const qInfo = getPublicQueueStatus();
   if (!sheet || sheet.getLastRow() < 2) {
     return { status: "ok", role: role, queue: qInfo, orders: [] };
   }
 
-  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.DEAL_JSON).getValues();
+  const data = sheet.getRange(2, 1, sheet.getLastRow() - 1, COL.CLIENT_TYPE).getValues();
   const orders = [];
   for (let i = data.length - 1; i >= 0; i--) {
+    const rowIdx = i + 2;
     const r = data[i];
     const kp = String(r[COL.KP - 1] || "").trim();
     if (!kp) continue;
     const deal = parseJsonSafe(r[COL.DEAL_JSON - 1], {});
+    const crmStatus = healLaggingOrderStatus(sheet, rowIdx, r, deal) || String(r[COL.STATUS - 1] || "");
+    const rejected = isRejectedStatus(crmStatus);
     const deliverables = ensureDeliverablesList(r, deal);
-    const prog = computeOrderProgress(r[COL.STATUS - 1], deal, deliverables);
+    const prog = computeOrderProgress(crmStatus, deal, deliverables);
     const t = encodeURIComponent(generatePortalToken(kp));
     const sig = encodeURIComponent(role === "director" ? generateAdminToken(kp) : generateAssistantToken(kp));
 
     orders.push({
       kpNumber: kp,
+      portalToken: generatePortalToken(kp),
+      adminToken: role === "director" ? generateAdminToken(kp) : generateAssistantToken(kp),
       date: String(r[COL.DATE - 1] || ""),
       clientName: String(r[COL.NAME - 1] || ""),
       clientOrg: String(r[COL.ORG - 1] || ""),
       clientPhone: String(r[COL.PHONE - 1] || ""),
       clientEmail: String(r[COL.EMAIL - 1] || ""),
       category: String(r[COL.CATEGORY - 1] || ""),
+      clientType: String(r[COL.CLIENT_TYPE - 1] || mapCategoryToClientType(r[COL.CATEGORY - 1])),
       devLanguage: String(r[COL.DEV_LANG - 1] || ""),
-      crmStatus: String(r[COL.STATUS - 1] || ""),
+      crmStatus: crmStatus,
+      isRejected: rejected,
+      kpSignedByAdmin: Boolean(deal.kpSignedByAdmin),
+      contractSignedByAdmin: Boolean(deal.contractSignedByAdmin),
       agreedPrice: Number(r[COL.AGREED_PRICE - 1] || r[COL.SITE_PRICE - 1] || 0),
       totalDays: Number(r[COL.DAYS - 1] || 10),
       startDate: String(r[COL.START_DATE - 1] || ""),
       endDate: String(r[COL.END_DATE - 1] || ""),
       progressPercent: prog,
-      needsAttention: Boolean(deal.needsAttention),
+      // К4: Заказы в статусе «Отказ» никогда не показываются в «Ждут нашего ответа», но остаются в таблице
+      needsAttention: rejected ? false : Boolean(deal.needsAttention),
       uploadedCount: (deal.uploadedMaterials ? deal.uploadedMaterials.length : 0) + (deal.signedContractFiles ? deal.signedContractFiles.length : 0) + (deal.paymentReceiptFiles ? deal.paymentReceiptFiles.length : 0),
       messagesCount: deal.messages ? deal.messages.length : 0,
       deliverables: deliverables,
@@ -3300,7 +4115,6 @@ function getStaffDashboardState(staffKey) {
   return {
     status: "ok",
     role: role,
-    directorHubUrl: role === "director" ? getStaffHubUrl("director") : "",
     assistantHubUrl: role === "director" ? getStaffHubUrl("assistant") : "",
     queue: qInfo,
     orders: orders
@@ -3312,10 +4126,10 @@ function sendStaffSummaryReportToAdmin(targetChatId) {
   const chatId = targetChatId || getSecret("ADMIN_CHAT_ID");
   if (!token || !chatId) return;
 
-  const state = getStaffDashboardState(generateGlobalStaffToken("director"));
+  const state = getStaffDashboardState(getOrCreateStaffSecretKey("director"));
   const orders = state.orders || [];
-  const active = orders.filter(o => !o.crmStatus.includes("✅"));
-  const doneCount = orders.length - active.length;
+  const active = orders.filter(o => !o.crmStatus.includes("✅") && !o.isRejected);
+  const doneCount = orders.filter(o => o.crmStatus.includes("✅")).length;
 
   let msg = `🏛️ <b>ШТАБНАЯ СВОДКА БЮРО «МЕТОДИКО»</b>\n`;
   msg += `⚖️ Загрузка: <b>${state.queue.usedPoints} / ${CONFIG.MAX_CAPACITY_POINTS} баллов</b> | Ближайшее окно: <b>${state.queue.nextFreeWindow}</b>\n`;
@@ -3338,9 +4152,8 @@ function sendStaffSummaryReportToAdmin(targetChatId) {
     });
   }
 
-  msg += `\n🔑 <b>Ссылки для работы на сайте (без поисков по папкам):</b>\n`;
-  msg += `• 👑 Ваша ссылка Руководителя (полные права + печать): по кнопке ниже\n`;
-  msg += `• 👩‍💼 Ссылка для Помощницы (куратор проектов):\n<code>${getStaffHubUrl("assistant")}</code>`;
+  msg += `\n🔐 <b>Доступ в Штаб защищён секретным ключом (в Свойствах скрипта):</b>\n`;
+  msg += `• 👑 Вход для Руководителя и Куратора — по кнопкам ниже.`;
 
   sendTelegramApi(token, "sendMessage", {
     chat_id: chatId,
@@ -3349,18 +4162,44 @@ function sendStaffSummaryReportToAdmin(targetChatId) {
     reply_markup: {
       inline_keyboard: [
         [{ text: "👑 Открыть Штаб всех заказов (Режим Руководителя)", url: getStaffHubUrl("director") }],
-        [{ text: "👩‍💼 Открыть Штаб (Режим Помощницы)", url: getStaffHubUrl("assistant") }],
+        [{ text: "👩‍💼 Открыть Штаб (Режим Куратора)", url: getStaffHubUrl("assistant") }],
+        [{ text: "🔑 Показать / Сменить секретные ключи Штаба", callback_data: "show_staff_keys" }],
         [{ text: "🔄 Обновить сводку", callback_data: "staff_report" }]
       ]
     }
   });
 }
 
+// К2: Получение изображения печати ТОЛЬКО из закрытой папки Натальи на Google Диске (никогда с публичного сайта)
+function getStampBlobFromPrivateDrive() {
+  try {
+    let fileId = String(getSecret("STAMP_FILE_ID") || "").trim();
+    if (fileId) {
+      try {
+        return DriveApp.getFileById(fileId).getBlob();
+      } catch (e) {
+        fileId = "";
+      }
+    }
+    const it = DriveApp.getFilesByName("metodico_stamp_sign.png");
+    while (it.hasNext()) {
+      const f = it.next();
+      if (!f.isTrashed()) {
+        setSecret("STAMP_FILE_ID", f.getId());
+        return f.getBlob();
+      }
+    }
+  } catch (err) {
+    Logger.log("getStampBlobFromPrivateDrive warn: " + err.toString());
+  }
+  return null;
+}
+
 function appendDirectorStampToDocBody(body, kp, signedAtStr) {
   try {
-    const stampResp = UrlFetchApp.fetch(`${CONFIG.SITE_URL}/assets/metodico_stamp_sign.png`, { muteHttpExceptions: true });
-    if (stampResp.getResponseCode() === 200) {
-      const img = body.appendImage(stampResp.getBlob());
+    const stampBlob = getStampBlobFromPrivateDrive();
+    if (stampBlob) {
+      const img = body.appendImage(stampBlob);
       img.setWidth(190);
       img.setHeight(138);
     }

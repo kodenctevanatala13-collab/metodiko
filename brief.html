@@ -414,6 +414,17 @@
           <textarea id="q8"></textarea>
         </div>
 
+        <!-- В4: Скрытая ловушка (honeypot) от ботов -->
+        <div style="display:none !important; visibility:hidden; position:absolute; left:-9999px; width:0; height:0; overflow:hidden;" aria-hidden="true">
+          <input type="text" id="brief-hp-check" name="company_fax_code" tabindex="-1" autocomplete="off" value="">
+        </div>
+
+        <!-- В7: Отдельная обязательная галочка согласия на обработку голоса, файлов и ИИ -->
+        <label style="display:flex; align-items:flex-start; gap:10px; margin:12px 0 16px; padding:11px 13px; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; font-size:12.5px; color:#1E293B; cursor:pointer; font-weight:500;">
+          <input type="checkbox" id="brief-voice-files-consent" required style="width:17px; height:17px; margin-top:2px; accent-color:var(--gold-dark); flex-shrink:0;">
+          <span id="lbl-brief-consent">Я даю отдельное согласие на обработку моих персональных данных, голосовых записей брифа и загружаемых файлов (включая расшифровку голоса и подготовку КП с помощью ИИ-сервисов и хранение на Google Диске/в Таблицах ТОО «Метод и Ко») согласно <a href="privacy.html" target="_blank" rel="noopener noreferrer" style="color:var(--navy-header); font-weight:700; text-decoration:underline;">Политике конфиденциальности</a> (Закон РК № 94-V) *</span>
+        </label>
+
         <button type="submit" class="btn-submit" id="btn-submit">Отправить распаковку руководителю на утверждение →</button>
       </div>
     </form>
@@ -464,6 +475,7 @@
         s3_desc: 'Мы сами перенесем данные в проект договора, чтобы вам не пришлось заполнять бумажные анкеты.',
         lbl_q7: 'Что еще нам важно знать о вашем проекте и какие вопросы к нам у вас остались?',
         lbl_q8: 'Форма оплаты (ТОО / ИП / учебное заведение / физлицо) и реквизиты организации (БИН/ИИН, название, банк, подписант)',
+        lbl_consent: 'Я даю отдельное согласие на обработку моих персональных данных, голосовых записей брифа и загружаемых файлов (включая расшифровку голоса и подготовку КП с помощью ИИ-сервисов и хранение на Google Диске/в Таблицах ТОО «Метод и Ко») согласно <a href="privacy.html" target="_blank" rel="noopener noreferrer" style="color:var(--navy-header); font-weight:700; text-decoration:underline;">Политике конфиденциальности</a> (Закон РК № 94-V) *',
         btn_submit: 'Отправить распаковку руководителю на утверждение →',
         suc_h: '✅ Распаковка отправлена!',
         suc_p: 'Материалы переданы Наталье Коденцевой. После разбора мы направим уточнения либо Финальное КП с 3 вариантами комплектации прямо на вашу личную страницу заявки (работаем по 100% предоплате со стартом после оплаты и получения материалов).',
@@ -518,6 +530,7 @@
         s3_desc: 'Құжаттарды дайындау үшін барлық деректі шарт жобасына өзіміз көшіріп енгіземіз.',
         lbl_q7: 'Жобаңыз туралы тағы нені білуіміз маңызды және бізге қандай сұрақтарыңыз қалды?',
         lbl_q8: 'Төлем түрі (ЖШС / ЖК / оқу орны / жеке тұлға) және ұйым деректемелері (БСН/ЖСН, атауы, банк, қол қоюшы)',
+        lbl_consent: 'Мен <a href="privacy.html" target="_blank" rel="noopener noreferrer" style="color:var(--navy-header); font-weight:700; text-decoration:underline;">Құпиялылық саясатына</a> (ҚР № 94-V Заңы) сәйкес дербес деректерімді, брифтің дауыстық жазбаларын және жүктелетін файлдарды өңдеуге (дауысты мәтінге айналдыру, ЖИ-сервистер көмегімен КП дайындау және «Метод и Ко» ЖШС Google Дискінде/Кестелерінде сақтауды қоса алғанда) жеке келісім беремін *',
         btn_submit: 'Мәліметтерді басшыға бекітуге жіберу →',
         suc_h: '✅ Мәліметтер жіберілді!',
         suc_p: 'Ақпарат Наталья Коденцеваға жолданды. Талдаудан кейін өтініміңіздің жеке бетінде нақтылау сұрақтары немесе 3 нұсқалы Қорытынды КП беріледі (100% алдын ала төлеммен, төлем мен материалдар алынғаннан кейін басталады).',
@@ -580,6 +593,9 @@
       document.getElementById('s3-desc').innerText = d.s3_desc;
       document.getElementById('lbl-q7').innerText = d.lbl_q7;
       document.getElementById('lbl-q8').innerText = d.lbl_q8;
+      if (document.getElementById('lbl-brief-consent') && d.lbl_consent) {
+        document.getElementById('lbl-brief-consent').innerHTML = d.lbl_consent;
+      }
       document.getElementById('btn-submit').innerText = d.btn_submit;
       document.getElementById('suc-h').innerText = d.suc_h;
       document.getElementById('suc-p').innerText = d.suc_p;
@@ -665,6 +681,21 @@
 
     document.getElementById('brief-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // В4: Honeypot-проверка от ботов
+      const hpEl = document.getElementById('brief-hp-check');
+      if (hpEl && hpEl.value.trim()) return;
+
+      // В7: Обязательная галочка согласия на обработку голоса, файлов и ИИ
+      const consentEl = document.getElementById('brief-voice-files-consent');
+      if (consentEl && !consentEl.checked) {
+        alert(currentLang === 'kz'
+          ? 'Жіберу алдында дауыстық жазбалар мен файлдарды өңдеуге келісім белгісін қойыңыз.'
+          : 'Пожалуйста, отметьте согласие на обработку голосовых записей, файлов и использование ИИ перед отправкой.');
+        consentEl.focus();
+        return;
+      }
+
       const fbVisible = document.getElementById('contact-fallback').style.display !== 'none';
       const fbName = document.getElementById('q-contact-name').value.trim();
       const fbPhone = document.getElementById('q-contact-phone').value.trim();
@@ -724,6 +755,7 @@
         q6_fkr_branch: branchAnswers,
         q7_extra: document.getElementById('q7').value.trim(),
         q8_requisites: document.getElementById('q8').value.trim(),
+        company_fax_code: hpEl ? hpEl.value.trim() : '',
         audioBase64: audioBase64Payload,
         audioMimeType: audioMimeTypePayload
       };
